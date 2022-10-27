@@ -1,0 +1,165 @@
+.popular-rubrics .or-in-line
+{
+    display:inline-block;
+}
+.popular-rubrics__link img
+{
+    height:100px;
+    margin-bottom:3%;
+}
+.popular-rubrics .XQskgrQ
+{
+    margin-top: 15%;
+    margin-left: 30%;
+}
+.popular-rubrics__link {
+    text-align: center;
+    color: black;
+    font-weight: 700;
+    font-size: 18px;
+}
+a:hover{
+    color:black;
+}
+.UsV1pzf {
+    width: 100%;
+    padding: 24px 24px 48px;
+    margin: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.UsV1pzf {
+    padding: 32px 32px 64px;
+    margin: 0;
+}
+.listings-perseus .error-page {
+    text-align: center;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+.listings-perseus .error-image {
+    margin-bottom: 24px;
+    position: relative;
+    height: 133px;
+}
+.listings-perseus .error-image {
+    height: 232px;
+    margin-bottom: 32px;
+}
+.listings-perseus .error-image img {
+    height: 100%;
+    width: auto;
+    display: block;
+    margin: auto;
+}
+.listings-perseus .error-image small {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 50%;
+    margin-left: 90px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #b5b6ba;
+    text-align: left;
+}
+.listings-perseus .error-image small {
+    top: 25px;
+    margin-left: 150px;
+    line-height: 18px;
+}
+.listings-perseus .error-image small {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 50%;
+    margin-left: 90px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: #b5b6ba;
+    text-align: left;
+}
+.listings-perseus .error-image small {
+    top: 25px;
+    margin-left: 150px;
+    line-height: 18px;
+}
+.listings-perseus .error-page h2 {
+    position: relative;
+    padding-bottom: 12px;
+}
+.listings-perseus .error-page p:first-of-type {
+    max-width: 500px;
+    margin: 0 auto;
+}
+.FW1syM7 {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 100%;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+    -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+    transition: 70ms cubic-bezier(.75,0,.25,1);
+}
+.listings-perseus .error-page .no-results-redirect-button {
+    margin-top: 28px;
+}
+.listings-perseus .empty-search-results .or-in-line {
+    max-width: 600px;
+    border-bottom: 1px solid #e4e5e7;
+    text-align: center;
+    margin: 16px auto 32px;
+}
+.listings-perseus .empty-search-results .or-in-line p {
+    position: relative;
+    top: 12px;
+    width: 35px;
+    padding: 0 5px;
+    background-color: #fff;
+}
+.listings-perseus .empty-search-results .username-search {
+    font-size: 18px;
+    line-height: 26px;
+    color: #446ee7;
+}
+.listings-perseus .empty-search-results .username-search .fa-stack {
+    position: relative;
+    margin: 20px 3px 0 0;
+}
+.listings-perseus .empty-search-results .username-search .fa-stack .icon {
+    fill: #446ee7;
+}
+.XQskgrQ {
+    fill: #74767e;
+    background: none;
+    border: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.listings-perseus .empty-search-results .username-search .fa-stack .search-icon {
+    position: absolute;
+    border: 2px solid #fff;
+    fill: #446ee7;
+    border-radius: 50%;
+    font-size: 10px;
+    right: -3px;
+    bottom: 6px;
+    z-index: 1;
+}
+.XQskgrQ svg {
+    float: left;
+    height: 100%;
+    width: 100%;
+}

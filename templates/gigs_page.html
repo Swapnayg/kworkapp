@@ -1,0 +1,711 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>{{details.category_Name}} starting at $10 | Letworkbedone Freelance Marketplace</title>
+<div class="all_page page-flex__content pt0 is_cat">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="app">
+      <div class="">
+         <div>
+            <!----> 
+            <div class="tagcloud standart_cat_header cat-fon-repeat">
+               <div class="kw-wrapper kw-wrapper--1536">
+                  <div class="bread-crump block-response bread-crump--pretty">
+                     <ol itemscope="itemscope" class="mb0">
+                        <li itemprop="itemListElement" itemscope="itemscope" data-item-type="category" data-level="1">
+                           <a itemprop="item" href="/categories/{{details.category_Name}}"><span itemprop="name" class="bread-crumb-title">{{details.category_Name |title}}</span></a> 
+                           <meta itemprop="position" content="1">
+                        </li>
+                        <li itemprop="itemListElement" itemscope="itemscope"  data-item-type="category" data-level="2">
+                           <a itemprop="item" href="/categories/{{details.category_Name}}/{{sub_details.sub_category_Name}}" ><span itemprop="name" class="bread-crumb-title">{{sub_details.sub_category_Name|title}}</span></a> 
+                           <meta itemprop="position" content="2">
+                        </li>
+                        <!----> <!---->
+                     </ol>
+                  </div>
+                  <h1 class="catalog-header">{{sub_details.sub_category_Name|title}}</h1>
+                  <!---->
+               </div>
+            </div>
+            <!----> 
+            <div class="kw-wrapper kw-wrapper--1536">
+               <div class="cat-header-tags cat-header-tags--pretty mt16">
+                  <div class="cat-header-tags__wrap overflow-hidden js-cat-header-tags swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden">
+                     <div class="cat-header-tags__wrap-inner swiper-wrapper" id="header_sub_cat">
+                        {% for st in sub_topics %} 
+                            <span class="cat-header-tags__item swiper-slide swiper-slide-active">
+                                {{st.sub_sub_category_Name}}
+                            <span class="cat-header-tags__item-close"></span></span>
+                        {% endfor %}
+                     </div>
+                  </div>
+                  <div class="cat-header-tags__button left swiper-button-disabled js-cat-header-tags-btn-l swiper-button-lock"></div>
+                  <div class="cat-header-tags__button right swiper-button-disabled js-cat-header-tags-btn-r swiper-button-lock"></div>
+               </div>
+            </div>
+         </div>
+         <div class="clear m-visible"></div>
+         <div class="base-filters-wrap">
+            <div class="kw-wrapper kw-wrapper--1536">
+               <div class="base-filters-block base-filters top-filters-panel__base-filters">
+                  <div class="base-filters-content-wrapper">
+                     <div class="base-filters-content base-filters-content--pretty">
+                        <div></div>
+                        <div class="kwork-list-display-mode sort-by_container sort-by_container__en">
+                         
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="clear"></div>
+         <div class="page-filters kw-wrapper kw-wrapper--1536 kwork-list-cards">
+            <div class="left-col js-kworks-filter-button-parent page-filters__filters">
+               <div class="left-col w230 js-kworks-filter kworks-filter popup-filter popup-filter--pretty">
+                  <!----> 
+                  <div class="popup-filter__header m-visible">
+                     <div class="popup-filter__header-name">Filters</div>
+                     <span class="popup-filter__close">Cancel</span>
+                  </div>
+                  <!----> 
+                  <div class="popup-filter__container">
+                     <!----> 
+                     <div class="popup-filter__group popup-filter__group--categories mt0">
+                        <div class="kworks-filter-header m-hidden">Categories</div>
+                        <h3 class="popup-filter__group-title popup-filter__group-title--big-offset m-visible"><span class="popup-filter__group-title-text">Categories</span></h3>
+                        <div class="allmusic filter-rubrics popup-filter__rubrics js-popup-filter-rubrics">
+                           <div class="popup-filter__rubrics-mark js-popup-filter-rubrics-mark"></div>
+                           <div class="card__content-header popup-filter__rubrics-header">
+                              <a href="/categories/{{details.category_Name}}" class="db link-color-black popup-filter__rubrics-link">
+                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175" class="arrow-svg">
+                                    <path d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225 c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"></path>
+                                 </svg>
+                                 {{details.category_Name|title}}
+                              </a>
+                           </div>
+                           <div class="card__content-body popup-filter__rubrics-body">
+                              <ul id="foxdontshowcats" class="filter-rubrics__attributes">
+                                 <li class="subcats popup-filter__rubrics-item js-popup-filter-rubrics-item active popup-filter__rubrics-item--active">
+                                    <a href="/categories/{{details.category_Name}}/{{sub_details.sub_category_Name}}" class="category subId popup-filter__rubrics-link">
+                                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175" class="arrow-svg">
+                                          <path d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225 c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"></path>
+                                       </svg>
+                                       {{sub_details.sub_category_Name|title}}
+                                    </a>
+                                    <ul class="sub_cat_list popup-filter__rubrics-list" id="sub_cat_list">
+                                        {% for st in sub_topics %}
+                                            <li class="subcats popup-filter__rubrics-item js-popup-filter-rubrics-item">
+                                                <a data-id="2573" href="/categories/{{details.category_Name}}/{{sub_details.sub_category_Name}}/{{st.sub_sub_category_Name}}" class="f13 subId popup-filter__rubrics-link popup-filter__rubrics-link--children">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 477.175 477.175" class="arrow arrow-svg hide">
+                                                        <path d="M145.188,238.575l215.5-215.5c5.3-5.3,5.3-13.8,0-19.1s-13.8-5.3-19.1,0l-225.1,225.1c-5.3,5.3-5.3,13.8,0,19.1l225.1,225 c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4c5.3-5.3,5.3-13.8,0-19.1L145.188,238.575z"></path>
+                                                    </svg>
+                                                    {{st.sub_sub_category_Name}}
+                                                </a>
+                                            </li> 
+                                        {% endfor %}
+
+                                    </ul>
+                                 </li>
+                              </ul>
+                           </div>
+                        </div>
+                        <hr>
+                     </div>
+                     <!----> <!----> <!----> 
+                     <div></div>
+                     <div class="price-filters__block popup-filter__group popup-filter__group_margin_mobile volume-price-filters__block js-test-volume-filter">
+                        <div class="popup-filter__group popup-filter__combined-filter">
+                           <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">
+                              Price<span class="popup-filter__currency m-visible">, $</span></span>
+                           </h3>
+                           <div class="card__content-column">
+                              <div class="card__content-header"><strong>Price</strong></div>
+                              <div class="card__content-body mt-3" >
+                                 <!----> 
+                                 <div class="m-mb65 js-set-price-block popup-filter__set-price-block popup-filter__props-list popup-filter__props-list--price">
+                                    <div class="clear popup-filter__prop">
+                                       <label class="popup-filter__radio-label price_link">
+                                          <a  class="popup-filter__radio-link" onclick="price_onclick(this);">
+                                             <span class="popup-filter__prop-title">$10</span> 
+                                             <span class="popup-filter__prop-title--mob">
+                                                10
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                                   <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                                </svg>
+                                             </span>
+                                          </a>
+                                       </label>
+                                    </div>
+                                    <div class="clear popup-filter__prop">
+                                       <label class="popup-filter__radio-label price_link">
+                                          <a class="popup-filter__radio-link" onclick="price_onclick(this);">
+                                             <span class="popup-filter__prop-title">$20–$60</span> 
+                                             <span class="popup-filter__prop-title--mob">
+                                                20–60
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                                   <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                                </svg>
+                                             </span>
+                                          </a>
+                                       </label>
+                                    </div>
+                                    <div class="clear popup-filter__prop">
+                                       <label class="popup-filter__radio-label price_link">
+                                          <a  class="popup-filter__radio-link" onclick="price_onclick(this);">
+                                             <span class="popup-filter__prop-title">$70–$300</span> 
+                                             <span class="popup-filter__prop-title--mob">
+                                                70–300
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                                   <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                                </svg>
+                                             </span>
+                                          </a>
+                                       </label>
+                                    </div>
+                                    <div class="clear popup-filter__prop">
+                                       
+                                       <label class="popup-filter__radio-label price_link">
+                                          <a  class="popup-filter__radio-link"  onclick="price_onclick(this);">
+                                             <span class="popup-filter__prop-title">$320+</span> 
+                                             <span class="popup-filter__prop-title--mob">
+                                                min 320
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                                   <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                                </svg>
+                                             </span>
+                                          </a>
+                                       </label>
+                                    </div>
+                                 </div>                              
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!----> 
+                     <div class="popup-filter__group">
+                        <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">Seller Level</span> <i data-tooltip-text="<p>Advanced and Professional sellers are vetted freelancers with a track record of providing high-quality work on time.</p> <p>Advanced sellers have completed a minimum of 10 orders with a 90% success rate. Professional sellers have completed a minimum of 50 orders with a 92% success rate.</p>" data-tooltip-class="popup-filter__tooltip" class="icon-question-outlined tooltipster cur popup-filter__group-title-icon"></i></h3>
+                        <div class="card__content-column">
+                           <div class="card__content-header"><strong>Seller Level</strong> <span class="wrap-tooltip_circle wrap-tooltip_circle--scale-16 ml0"><span data-tooltip-side="right" data-tooltip-text="<p>Advanced and Professional sellers are vetted freelancers with a track record of providing high-quality work on time.</p> <p>Advanced sellers have completed a minimum of 10 orders with a 90% success rate. Professional sellers have completed a minimum of 50 orders with a 92% success rate.</p>" data-tooltip-theme="dark" class="tooltipster tooltip_circle tooltip_circle--light tooltip_circle--hover tooltip_circle--scale-16">?</span></span></div>
+                           <div class="card__content-body popup-filter__props popup-filter__props-list mt-3">
+                              <!----> 
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label seller_link" >
+                                    <a class="popup-filter__radio-link" onclick="selleronclick(this);">
+                                       New or higher
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label seller_link" >
+                                    <a  class="popup-filter__radio-link" onclick="selleronclick(this);">
+                                       Advanced or higher
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">                    
+                                 <label class="popup-filter__radio-label seller_link">
+                                    <a class="popup-filter__radio-link" onclick="selleronclick(this);">
+                                       Professional
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>                   
+                     <div class="popup-filter__group attibute-review-filter">
+                        <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">Positive Reviews</span> <i data-tooltip-text="The total number of positive reviews the seller has." data-tooltip-class="popup-filter__tooltip" class="icon-question-outlined tooltipster cur popup-filter__group-title-icon"></i></h3>
+                        <div class="card__content-column">
+                           <div class="card__content-header"><strong>Positive Reviews</strong> <span class="wrap-tooltip_circle wrap-tooltip_circle--scale-16 ml0"><span data-tooltip-side="right" data-tooltip-text="The total number of positive reviews the seller has." data-tooltip-theme="dark" class="tooltipster tooltip_circle tooltip_circle--light tooltip_circle--hover tooltip_circle--scale-16">?</span></span></div>
+                           <div class="card__content-body popup-filter__props popup-filter__props-list mt-3">
+                              <!----> 
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label review_link">
+                                    <a  class="popup-filter__radio-link" onclick="review_onclick(this);">
+                                       1 or more
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">                       
+                                 <label class="popup-filter__radio-label review_link">
+                                    <a  class="popup-filter__radio-link" onclick="review_onclick(this);">
+                                       5 or more
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label review_link">
+                                    <a  class="popup-filter__radio-link" onclick="review_onclick(this);">
+                                       20 or more
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label review_link">
+                                    <a class="popup-filter__radio-link" onclick="review_onclick(this);">
+                                       100 or more
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="popup-filter__group">
+                        <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">Delivery Time</span> <i data-tooltip-text="When would you like your order delivered?" data-tooltip-class="popup-filter__tooltip" class="icon-question-outlined tooltipster cur popup-filter__group-title-icon"></i></h3>
+                        <div class="card__content-column">
+                           <div class="card__content-header"><strong>Delivery Time</strong> <span class="wrap-tooltip_circle wrap-tooltip_circle--scale-16 ml0"><span data-tooltip-side="right" data-tooltip-text="When would you like your order delivered?" data-tooltip-theme="dark" class="tooltipster tooltip_circle tooltip_circle--light tooltip_circle--hover tooltip_circle--scale-16">?</span></span></div>
+                           <div class="card__content-body popup-filter__props fw400 mt-3">
+                              <!----> 
+                              <div class="popup-filter__props-list">
+                                 <div class="popup-filter__prop">      
+                                    <label class="popup-filter__radio-label delivery_link">
+                                       <a class="popup-filter__radio-link" onclick="deliveryonclick(this);">
+                                          Within 24 hours
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                             <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                          </svg>
+                                       </a>
+                                    </label>
+                                 </div>
+                                 <div class="popup-filter__prop">
+                                    <label class="popup-filter__radio-label delivery_link">
+                                       <a class="popup-filter__radio-link" onclick="deliveryonclick(this);">
+                                          Within 2 days
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                             <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                          </svg>
+                                       </a>
+                                    </label>
+                                 </div>
+                                 <div class="popup-filter__prop">
+                                    <label class="popup-filter__radio-label delivery_link">
+                                       <a  class="popup-filter__radio-link" onclick="deliveryonclick(this);">
+                                          Within 3 days
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                             <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                          </svg>
+                                       </a>
+                                    </label>
+                                 </div>
+                                 <div class="popup-filter__prop">
+                                    <label class="popup-filter__radio-label delivery_link">
+                                       <a  class="popup-filter__radio-link" onclick="deliveryonclick(this);">
+                                          Within 5 days
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                             <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                          </svg>
+                                       </a>
+                                    </label>
+                                 </div>
+                                 <div class="popup-filter__prop">
+                                   
+                                    <label class="popup-filter__radio-label delivery_link">
+                                       <a  class="popup-filter__radio-link" onclick="deliveryonclick(this);">
+                                          Within 10 days
+                                          <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                             <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                          </svg>
+                                       </a>
+                                    </label>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="popup-filter__group">
+                        <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">Orders In Progress</span> <i data-tooltip-text="Indicates the number of orders the seller is currently working on" data-tooltip-class="popup-filter__tooltip" class="icon-question-outlined tooltipster cur popup-filter__group-title-icon"></i></h3>
+                        <div class="card__content-column">
+                           <div class="card__content-header"><strong>Orders In Progress</strong> <span class="wrap-tooltip_circle wrap-tooltip_circle--scale-16 ml0"><span data-tooltip-side="right" data-tooltip-text="Indicates the number of orders the seller is currently working on" data-tooltip-theme="dark" class="tooltipster tooltip_circle tooltip_circle--light tooltip_circle--hover tooltip_circle--scale-16">?</span></span></div>
+                           <div class="card__content-body fw400 popup-filter__props popup-filter__props-list mt-3">
+                              <!----> 
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label order_link">
+                                    <a  class="popup-filter__radio-link" onclick="orderinprogressClick(this);">
+                                       None
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label order_link">
+                                    <a class="popup-filter__radio-link" onclick="orderinprogressClick(this);">
+                                       Up to 1
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label order_link">
+                                    <a  class="popup-filter__radio-link" onclick="orderinprogressClick(this);">
+                                       Up to 3
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 
+                                 <label class="popup-filter__radio-label order_link">
+                                    <a class="popup-filter__radio-link" onclick="orderinprogressClick(this);">
+                                       Up to 5
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                              <div class="popup-filter__prop">
+                                 <label class="popup-filter__radio-label order_link">
+                                    <a class="popup-filter__radio-link" onclick="orderinprogressClick(this);">
+                                       Up to 8
+                                       <svg xmlns="http://www.w3.org/2000/svg" class="popup-filter__radio-cancel">
+                                          <path d="M7.562.438a.525.525 0 00-.743 0L4 3.258 1.18.438a.525.525 0 10-.742.743L3.258 4 .438 6.82a.525.525 0 10.743.742L4 4.742l2.82 2.82a.525.525 0 10.742-.743L4.742 4l2.82-2.82a.525.525 0 000-.742z"></path>
+                                       </svg>
+                                    </a>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!----> 
+                     <div class="popup-filter__group">
+                        <h3 class="popup-filter__group-title m-visible"><span class="popup-filter__group-title-text">Tags</span></h3>
+                        <div class="card__content-column options">
+                           <div class="allmusic ml0">
+                              <div class="card__content-header">
+                                 <div class="showmorebtnx show-land"><span class="showSubLand relative cur" onclick="toogle_tags();">Tags</span></div>
+                              </div>
+                              <div class="card__content-body popup-filter__props mt-3">
+                                 <div class="sub_land" style="display: none;" id="taglists">
+                                    <ul class="sub_land_list mt5 p0" >
+                                         {% for tag in tagslist %} 
+                                            <li class="tag_link"><a onclick="ontagclick(this);" class="f13">
+                                                {{tag}}
+                                                </a>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <!---->
+                  </div>
+                  <!---->
+               </div>
+               <!----> <!----> 
+               <button type="button" class="kworks-filter-button kworks-filter-button--pretty">
+                  <span>Filters</span> <img src="https://cdn.kwork.com/images/filter-sliders-icon.svg" alt="" width="16" height="16" class="kworks-filter-button__icon"> <!---->
+               </button>
+            </div>
+            <div class="right-col page-filters__content">
+
+               <div id="catalog-cards" data-kwork-load-category="2" data-kworks-per-page="24" class="cusongslist clearfix kwork-card-data-wrap js-kwork-card-data-wrap kwork-list-table">
+               </div>
+               
+              
+               <div>
+                  <div class="clear"></div>
+               </div>
+            </div>
+         </div> 
+         <div class="button-go-top" style="display: none;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="12" fill="none">
+               <path d="M2.156 10.594L12 1.406l9.844 9.187" stroke="#666" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<style>
+   .popup-filter__radio-label a.active,.tag_link a.active
+   {
+      font-weight: 700;
+   }
+</style>
+<script>
+   var JsonObj = [];
+   var filteredObj = [];
+      $(document).ready(function(){
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       refresh_gigs();
+    }
+    if(window.location.pathname.split("/")[4].length != 0)
+    {
+      $("#sub_cat_list").find("li").removeClass("active");
+      $("#header_sub_cat").find("span").removeClass("active");
+      $("#header_sub_cat").find("span:contains("+window.location.pathname.split("/")[4].trim().replace(/%20/g, " ")+")").addClass("active");
+      $("#sub_cat_list").find("li:contains("+window.location.pathname.split("/")[4].trim().replace(/%20/g, " ")+")").addClass("active");
+   }
+   });
+
+   function toogle_tags()
+   {
+      if($('#taglists').is(':visible')){
+         $("#taglists").hide();
+      }else{
+         $("#taglists").show();
+      }
+   }
+   function price_onclick(ev)
+   {
+      $(".price_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "price";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).find(".popup-filter__prop-title--mob").text();
+      }
+      else{
+         filteredObj.push({"name":"price","value":$(ev).find(".popup-filter__prop-title--mob").text()});
+      }
+      refresh_filter_data();
+   }
+
+   function ontagclick(ev)
+   {
+      $(".tag_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "tag";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).find(".popup-filter__prop-title--mob").text();
+      }
+      else{
+         filteredObj.push({"name":"tag","value":$(ev).find(".popup-filter__prop-title--mob").text()});
+      }
+      refresh_filter_data();
+   }
+   function selleronclick(ev)
+   {
+      $(".seller_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "level";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).text().trim();
+      }
+      else{
+         filteredObj.push({"name":"level","value":$(ev).text().trim()});
+      }
+      refresh_filter_data();
+   }
+   function review_onclick(ev)
+   {
+      $(".review_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "review";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).text().trim();
+      }
+      else{
+         filteredObj.push({"name":"review","value":$(ev).text().trim()});
+      }
+      refresh_filter_data();
+   }
+
+   function deliveryonclick(ev)
+   {
+      $(".delivery_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "delivery";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).text().trim();
+      }
+      else{
+         filteredObj.push({"name":"delivery","value":$(ev).text().trim()});
+      }
+      refresh_filter_data();
+   }
+
+   function orderinprogressClick(ev)
+   {
+      $(".order_link").find('a').removeClass("active");
+      $(ev).addClass("active");
+      itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "order";});
+      if(itemObj.length != 0){
+         itemObj[0].value = $(ev).text().trim();
+      }
+      else{
+         filteredObj.push({"name":"order","value":$(ev).text().trim()});
+      }
+      refresh_filter_data();
+   }
+   function refresh_gigs()
+   {
+      $.ajax({
+         type:"GET",
+         url: "/get_filter_gigs_details/",
+         data: {"category_name":"{{sub_details.id}}","sub_Cat_Name":window.location.pathname.split("/")[4].trim().replace(/%20/g, " ")},
+         success: function(data) 
+         {  
+            JsonObj = data;
+            $("#catalog-cards").empty();
+            $.each(data, function(i, v) {
+               $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div> <a href="/user/profile/'+v.gig_title+'" title="'+v.gig_user_name+'">'+v.gig_user_name+'</a> </div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">'+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
+            });
+         }
+       });
+   }
+   function refresh_filter_data()
+   {
+      var jsonfiltered;
+      $.each(filteredObj, function(i, v_ed) {
+         if(v_ed.name == "price")
+         {
+            objval = v_ed.value.trim();
+            var min = 0;
+            var max = 0;
+            if(objval=="10")
+            {
+               min = 0;
+               max= 10;
+            }
+            else if(objval=="20–60")
+            {
+               min = 20;
+               max= 60;
+            }
+            else if(objval=="70–300")
+            {
+               min = 70;
+               max= 300;
+            }
+            else if(objval=="min 320")
+            {
+               min = 320;
+               max= "unlimted";
+            }
+            jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.start_price.trim() > parseInt(min) && obj.start_price.trim() < parseInt(max) });
+         }
+         else if(v_ed.name == "tag")
+         {
+            if(jsonfiltered != null)
+            {
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.tags.trim().includes(v_ed.value.trim(), 1) });
+            }
+            else{
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.tags.trim().includes(v_ed.value.trim(), 1) });
+            }
+         }
+         else if(v_ed.name == "level")
+         {
+            if(jsonfiltered != null)
+            {
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.seller_level.trim() === v_ed.value.trim() });
+            }
+            else{
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.seller_level.trim() === v_ed.value.trim() });
+            }
+         }
+         else if(v_ed.name == "review")
+         {
+            review_val = v_ed.value.trim().match(/\d+/);
+            if(jsonfiltered != null)
+
+            {
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.review_count <= review_val[0];});
+            }
+            else{
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.review_count <= review_val[0]; });
+            }
+         }
+         else if(v_ed.name == "delivery")
+         {
+            if(jsonfiltered != null)
+            {
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.delivery_time.trim() == v_ed.value.trim();});
+            }
+            else{
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.delivery_time.trim() == v_ed.value.trim(); });
+            }
+         }
+         else if(v_ed.name == "order")
+         {
+            order_val = '';
+            if(v_ed.value.trim() == "None")
+            {
+               order_val= 0;
+            }
+            else{
+               order_val = v_ed.value.trim().match(/\d+/);
+               order_val = order_val[0];
+            }
+            if(jsonfiltered != null)
+            {
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.order_in_progress.trim() <= order_val;});
+            }
+            else{
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.order_in_progress.trim() <= order_val; });
+            }
+         }
+      });
+      if(jsonfiltered != null)
+      {
+         $("#catalog-cards").empty();
+         $.each(jsonfiltered, function(i, v) {
+            $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div> <a href="/user/profile/'+v.gig_title+'" title="'+v.gig_user_name+'">'+v.gig_user_name+'</a> </div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">'+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
+         });
+      }
+   }
+</script>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Categories</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block">
+   </div>
+   <div class="kw-wrapper kw-wrapper--988 js-categories-list">
+      <div class="all-categories">
+         <h1>All categories</h1>
+         <div id="categories_wrapper">
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<script>
+   $(document).ready(function() {
+      value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+      $.ajax({
+         type:"GET",
+         url: "/get_all_categories/",
+         data: {},
+         success: function(data) 
+         {
+            dataObj = JSON.parse(data);
+            donelist = []
+            mainmenu =  JSON.parse(dataObj.main_menu);
+            submenu =  JSON.parse(dataObj.sub_menu);
+            subsubmenu =  JSON.parse(dataObj.sub_sub_menu);
+            dataappend = ''; 
+            $("#categories_wrapper").empty();
+            $.each(mainmenu, function(i, v) {
+               $("#categories_wrapper").append('<div class="categories-item js-categories-collapse" id="cat'+i+'" data-collapse-mobile="" data-header-class="categories-item__title--open"><h2 class="categories-item__title not-h2 js-categories-collapse-header"><a href="/categories/'+v.category+'" target="_blank">'+v.category+'</a></h2><div class="categories-columns categories-columns--all js-categories-collapse-body" data-label="'+v.category+'"></div></div>');
+            });
+            var submenuData = _.groupBy(submenu, function(d){return d.category}); 
+            $.each(submenuData, function(i, v) {
+               get_menuitem = $("#categories_wrapper").find("[data-label='" + submenuData[i][0].category + "']"); 
+               $.each(submenuData[i], function(j, vv) {
+                  length_v = vv.lengthsubmenu;
+                  actheight = '';
+                  if(length_v < 10){
+                     actheight = "150px";
+                  }
+                  else if(length_v < 20){
+                     actheight = "300px";
+                  }
+                  else{
+                     actheight = "500px";
+                  }
+                  get_menuitem.append('<div class="categories-columns__item" style="height: '+actheight+';" id="subcat'+vv.subcategory.substring(0, 3)+vv.category.substring(0, 3)+'"><div class="categories-item__subitem js-categories-collapse" data-collapse-mobile="" data-header-class="categories-item__subtitle--open"><div class="js-categories-collapse-header categories-item__subtitle"><a class="categories-item__subtitle-link">'+vv.subcategory+'</a></div><ul class="categories-list js-categories-collapse-body" data-category="'+vv.category+'" data-subcat="'+vv.subcategory+'"  ></ul></div></div>');
+               });
+            });
+            $.each(subsubmenu, function(k, vvv) {
+               parent_id = 'subcat'+vvv.subcategory.substring(0, 3)+vvv.category.substring(0, 3);
+               getdivmenu = $("#categories_wrapper").find("#"+parent_id).find("ul");
+               getdivmenu.append('<li class="js-categories-collapse categories-list__item" data-header-class="categories-list__title--open"><div class="js-categories-collapse-header categories-list__title"><span class="js-categories-collapse-toggle categories-list__icon categories-list__icon--rotated"></span><a href="/categories/'+vvv.category+'/'+vvv.subcategory+'/'+vvv.subsubcategory+'" target="_blank">'+vvv.subsubcategory+'</a></div><ul class="js-categories-collapse-body categories-list__body"></ul></li>');
+            });
+         }
+      });
+   });
+</script>
+{% endblock %}

@@ -1,0 +1,542 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - {{request.user.username}} / Buyer Request</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/buyer_request.css' %}" type="text/css" />
+<script src="{% static 'assets/js/moment.min.js' %}"></script>
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="refferral_gigs">
+       <div class="col-11 text-center p-0 mt-3 mb-2">
+          <div class="card px-0 pt-4 pb-0 mb-3"  id="refferral_gigs_card">
+            <div class="row">
+                <div class="col-md-12 db-manage-gigs ">
+                    <h1 class="alt">Billing</h1>
+                </div>
+                <div class="col-md-12 db-manage-gigs">
+                    <small class="offers-left"><span class="js-offers-left">{{user_details.offers_left}}</span> offers left today
+                        <div class="fa fa-question-circle offers-left-tooltip-trigger">
+                            <aside class="offers-left-tooltip">
+                                <div class="offers-tooltip-triangle"></div>
+                                <p>You can send Maximum {{max_offers}} offers daily.</p>
+                            </aside>
+                        </div>
+                </small>
+                </div>
+                <div class="col-md-12 mx-0">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li ><a href="#activerequesttab" role="tab" class="active" data-toggle="tab">Active <div class="circle"><span id="active_req"></span></div> </a></li>
+                        <li><a href="#sentofferstab" role="tab" data-toggle="tab">Sent Offers <div class="circle"><span id="sent_offers">{{offer_sent_req|length}}</span></div>  </a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="activerequesttab">
+
+                            <div class="db-new-main-table align-top js-db-table">
+                                <table id="tbl_buyer_req">
+                                    <thead>
+                                       <tr class="header-filter">
+                                          <td colspan="2" class="js-filter-title">Buyer requests</td>
+                                          <td colspan="4" class="sort-by">
+                                            <div class="js-sort-by">
+                                                <div class="dropdown js-ddown-sub-cats">
+                                                   <div class="filter-select cf ">
+                                                      <div class="fake-dropdown" style="visibility: visible;">
+                                                         <a class="dropdown-toggle no-uppercase" data-toggle="dropdown" style="width: 156px;">All Subcategories</a>
+                                                         <ul class="dropdown-menu no-uppercase  " role="menu" style="top: -2px; width: 196px;" id="cat_dropdown">
+                                                            <li class="initial" onclick="refresh_buyer_list('All Subcategories');">
+                                                               <a data-val="-1">
+                                                               <span class="text">All Subcategories</span>
+                                                               </a>
+                                                            </li>
+                                                            {% for cat in all_categories %}
+                                                               <li onclick="refresh_buyer_list('{{cat.cat_Name}}');">
+                                                                  <a data-val="163">
+                                                                  <span class="text-inner" >{{cat.cat_Name}}</span>
+                                                                  </a>
+                                                               </li>  
+                                                            {% endfor %}                                                                                            
+                                                         </ul>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                       <tr class="js-header-titles">
+                                          <td>
+                                             date
+                                          </td>
+                                          <td>
+                                             buyer
+                                          </td>
+                                          <td>
+                                             request
+                                          </td>
+                                          <td>
+                                             offers
+                                          </td>
+                                          <td>
+                                             Duration
+                                          </td>
+                                          <td>
+                                             Budget
+                                          </td>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                      
+                                    </tbody>
+                                 </table>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="sentofferstab"> <div class="db-new-main-table align-top js-db-table">
+                            <table id="tbl_sent_offers">
+                               <thead>
+                                  <tr class="header-filter">
+                                     <td colspan="2" class="js-filter-title">Offers submitted for buyer requests</td>
+                                     <td colspan="4" class="sort-by">
+                                        <div class="js-sort-by hidden">
+                                           <div class="dropdown js-ddown-sub-cats">
+                                              <div class="filter-select cf ">
+                                                 <div class="fake-dropdown" style="visibility: visible;">
+                                                    <a class="dropdown-toggle no-uppercase" data-toggle="dropdown" style="width: 156px;">
+                                                    All Subcategories
+                                                    </a>
+                                                    <ul class="dropdown-menu no-uppercase  " role="menu" style="top: -2px; width: 196px;">
+                                                       <li class="initial">
+                                                          <a data-val="-1">
+                                                          <span class="text">All Subcategories</span>
+                                                          </a>
+                                                       </li>
+                                                       <li>
+                                                          <a data-val="163">
+                                                          <span class="text-inner">Articles &amp; Blog Posts</span>
+                                                          </a>
+                                                       </li>
+                                                       <li>
+                                                          <a data-val="138">
+                                                          <span class="text-inner">Website Builders &amp; CMS</span>
+                                                          </a>
+                                                       </li>
+                                                       <li>
+                                                          <a data-val="140">
+                                                          <span class="text-inner">Web Programming</span>
+                                                          </a>
+                                                       </li>
+                                                    </ul>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                        </div>
+                                     </td>
+                                  </tr>
+                                  <tr class="js-header-titles">
+                                     <td>
+                                        offer
+                                     </td>
+                                     <td>
+                                        Duration
+                                     </td>
+                                     <td>
+                                        Price
+                                     </td>
+                                     <td colspan="2">
+                                        request
+                                     </td>
+                                  </tr>
+                               </thead>
+                               <tbody>
+                                 {% for offers in offer_sent_req %}
+                                  <tr>
+                                     <td class="text-wide">
+                                        <h4>{{offers.gig_title}}</h4>
+                                        <span>{{offers.offer_desc}}</span>
+                                     </td>
+                                     <td class="text-simple ">
+                                        <span>{{offers.duration}} Days</span>
+                                     </td>
+                                     <td class="text-simple ">
+                                        <span>$ {{offers.price}}</span>
+                                     </td>
+                                     <td class="profile-sml">
+                                        <span class="user-pict-24"><img src="{{offers.buyer_img}}" alt="xringo" width="24" height="24"></span>
+                                        <span></span>
+                                     </td>
+                                     <td class="text-simple ">
+                                        <h4 class="txt-green">{{offers.buyer_name}}</h4>
+                                        <span>{{offers.buyer_req_desc}}</span>
+                                        <div>
+                                           <div class="info-line">Delivery Time - {{offers.buyer_delivery_time}}</div>
+                                           <div class="info-line">Budget - <span>$ {{offers.buyer_price}}</span></div>
+                                        </div>
+                                     </td>
+                                  </tr> 
+                                  {% endfor %}
+                               </tbody>
+                            </table>
+                         </div></div>
+                    </div>
+                </div>     
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% include  'Dashboard/base_seller.html' %}
+<div class="modal fade" id="modal_send_offer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+   <div class="modal-dialog  modal-lg" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4>Select a Gig to Offer</h4>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       </div>
+       <div class="modal-body">
+         <div class="row tab1" id="send_offer_div">
+            <div class="col-lg-11">
+               <div class="popup-content ">
+                  <div class="offer-request-summary js-offer-request-summary cf">
+                     <aside>
+                        <span class="user-pict-60">
+                        <img src="" alt="paulherretch" width="100" height="100" id="gig_user_img">
+                        </span>
+                     </aside>
+                     <p id= "gig_user_mssg">
+                     </p>
+                  </div>
+                  <div id="model_gig_choose">
+                     <div class="js-offer-gigs-list">
+                        <div class="offer-gigs-list1 antiscroll-wrap1">
+                           <ul class="antiscroll-inner scroll-shadow" id="gig_ul_li">
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+                  <form id="offer_gig_req_form">
+                     <input type="hidden" value="" id= "tbl_row_id">
+                     <input type="hidden" value="" id= "tbl_req_id">
+                     <input type="hidden" value="" id= "tbl_gig_id">
+                  <div class="offer-extras-list conditions js-conditions" id="gig_details">
+                     <ul class="antiscroll-inner scroll-shadow">
+                        <li class="sel selected-gig">
+                           <label class="fake-radio-black radio-text">
+                              <p id="sel_gig_title"></p>
+                              <span class="gig-pict-74"><img src="" class="" id="sel_gig_img" ></span>
+                              <div class="js-personal-message offer-personal-message">
+                                 <div class="write-wrap cf">
+                                    <textarea name="offer[custom_offer][description]" required maxlength="{{offer_description}}" placeholder="Describe Your Offer" id="text_offer_desc"></textarea>
+                                    <span class="char-count rf"><em>0</em> / {{offer_description}} Chars Max</span>
+                                    <div class="js-desc-error-text error-text p-t-0 p-b-0 hidden">Please provide a description.</div>
+                                 </div>
+                              </div>
+                           </label>
+                        </li> 
+                     </ul>
+                     <ul>
+                        <li>
+                           <label>
+                              <small class="extra-text">Total Offer Amount</small>
+                              <div class="js-price-error-text error-text lf hidden">Define a price between ₹433-₹432401</div>
+                           </label>
+                           <div class="input-wrap">
+                              <small>$</small>
+                              <input type="text" name="offer[custom_offer][price]" required class="js-custom-offer-price js-force-digits"  id="text_offer_price" maxlength="5" placeholder="5000 max." value="">
+                           </div>
+                        </li>
+                        <li>
+                           <label><small class="extra-text">Delivery Time</small></label>
+                           <select name="offer[custom_offer][duration]" class="js-ddown-delivery" id="delivery_time" required>
+                              {% for del in delivery_time %}
+                                 {% if forloop.first %}
+                                    <option value="{{del.parameter_value}}" selected="">{{del.parameter_value}}</option>
+                                 {% else %}
+                                    <option value="{{del.parameter_value}}">{{del.parameter_value}}</option>
+                                 {% endif %}
+                              {% endfor %}
+                           </select>
+                        </li>
+                        <li class="js-revisions">
+                           <label><small class="extra-text">Number of Revisions (optional)</small></label>
+                           <select name="offer[num_of_revisions]" class="js-ddown-revisions" id="no_revisions" required>
+                              <option value="" selected="">Select</option>
+                              {% for rev in no_revisions %}
+                                    <option value="{{rev.parameter_value}}">{{rev.parameter_value}}</option>
+                              {% endfor %}
+                           </select>
+                        </li>
+                        <li class="toggle-li">
+                           <div class="toggle-wrapper">
+                              <label class="switch" for="req_gig">
+                                 <small class="extra-text">Ask for Gig Requirements</small>
+                                 <input type="checkbox" name="req_gig" id="req_gig" class="sel">
+                                 <span class="slider round"></span>
+                              </label>
+                           </div>
+                        </li>
+                     </ul>
+                  </div>
+                  <div class="js-gig-items offer-gig-items show" id="gig_offer_scopes">
+                     <a href="#" class="expander js-gig-items-expander js-gtm-event-auto" data-gtm-category="offers-popup" data-gtm-action="click" data-gtm-label="extras-expander"><p>Define the Offer Scope:</p></a>
+                     <div class="offer-extras-list">
+                        <ul id="offer_extra_li">
+
+                        </ul>
+                     </div>
+                     <p class="label-helper">
+                        <i class="fa fa-exclamation-circle"></i>
+                        The order will start immediately upon payment.<br><span>Make sure you have all of the required information to start working.</span>
+                     </p>
+                  </div>
+                 
+                  <footer class="cf p-20 modal_footer">
+                     <div class="error-container hidden js-error-container">
+                        <p class="msg-error t-a-center">Something went wrong, please try again.</p>
+                     </div>
+                     <input type="submit" class="btn-standard btn-green-grad js-fiverr-form-submit js-gtm-event-auto" value="Submit Offer"  />
+                     <a onclick="gig_back_click();" class="btn-back lf m-t-10 p-r-20 js-btn-back">Back</a>
+                  </footer>
+                  </form>
+               </div>
+            </div>
+           
+       </div>
+     </div>
+   </div>
+ </div>
+
+<script>
+    $(document).ready(function(){
+        $('.offers-left').hover(function (e) {
+            $('.offers-left-tooltip').toggle();
+        });
+        $("#cat_dropdown").find('li:first').trigger("click");
+
+        $('#text_offer_desc').keyup(function() { 
+         var thisChars = this.value.replace(/{.*}/g, '').length; 
+         var maxlength = $(this).attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         }else{
+            $(".char-count").text( maxlength - thisChars + " /"+maxlength  +" Chars Max" ); 
+         }
+      });
+      $("#offer_gig_req_form").submit(function(e)
+      {
+          e.preventDefault();
+          o_gig_id =  $("#tbl_gig_id").val();
+          o_b_req_id =  $("#tbl_req_id").val();
+          o_user_id = '{{request.user.id}}'
+          o_text_desc = $("#text_offer_desc").val();
+          o_text_price = $("#text_offer_price").val();
+          o_text_del_time = $("#delivery_time").val();
+          o_text_no_revs = $("#no_revisions").val();
+          o_text_req_gig = $("#req_gig").val();
+          o_text_req_gig = '';
+          if($("#req_gig").is(':checked')){
+            o_text_req_gig = "true";
+         } else {
+            o_text_req_gig = "false";
+         }
+         o_extra_params = []
+         $("#offer_extra_li li").each(function (i, vt) {
+            if($(vt).find("input[type='checkbox']").is(':checked')){
+               if($(vt).attr("data-type")== "input")
+               {
+                  o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":$(vt).find(".js-extra-quantity").val()});
+               }
+               else
+               {
+                  o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":"true"});
+               }
+            }
+         });
+          $.ajax({
+            type:"POST",
+            url: "/post_offer_details/",
+            data: {'o_gig_id': o_gig_id,'o_b_req_id': o_b_req_id,"o_user_id":o_user_id,"o_text_desc":o_text_desc,"o_text_price":o_text_price,"o_text_del_time":o_text_del_time,"o_text_no_revs":o_text_no_revs,"o_text_req_gig":o_text_req_gig,"o_offer_type":"request","o_extra_params":JSON.stringify( o_extra_params )},
+            success: function(data) 
+            {  
+               $(".js-offers-left").text(data);
+               $("#tbl_buyer_req").find("#row"+ o_b_req_id).find("#o_txt_div"+o_b_req_id).html('<a class="btn-standard btn-gray-grad ">Offer Sent</a> ');
+               $("#modal_send_offer").modal("hide");
+               refresh_buyer_list('All Subcategories');
+               refresh_sent_offers();
+            }
+          });
+      });
+    });
+    function hoverhideaddclick(ev)
+    {
+        $(ev).prev().addClass("show_menu");
+        $(ev).hide();
+    }
+    function hoverhideremoveclick(ev)
+    {
+        setInterval(function () {
+            $(ev).prev().removeClass("show_menu");
+            $(ev).show();
+        }, 5000);
+       
+    }
+    function show_share_click(ev)
+    {
+      if(parseInt($(".js-offers-left").text()) > 0)
+      {
+         $.ajax({
+            type:"GET",
+            url: "/get_modal_show_request_details/",
+            data: {'buyer_request': ev, "user_id":'{{request.user.id}}'},
+            success: function(data)
+            {
+               jsonObject = JSON.parse(data);
+               $("#gig_user_img").attr("src",jsonObject.buyer_details[0].buyer_img);
+               $("#gig_user_mssg").text(jsonObject.buyer_details[0].buyer_mssg);
+               $("#model_gig_choose").show();
+               $("#gig_details").hide();
+               $("#gig_offer_scopes").hide();
+               $(".modal_footer").hide();
+               $("#gig_ul_li").empty();
+               $.each(jsonObject.user_gig_details, function(i, vvv2) {
+                  $("#gig_ul_li").append('<li class="sel"> <label class="fake-radio-black radio-text"> <input type="radio" name="offer[gig_id]" onclick="gig_onclick(this);" class="js-offered-gig" value="'+vvv2.gig_id+'" data-label="'+vvv2.gig_image+'" data-title="'+vvv2.gig_title+'"> <span class="gig-pict-74"><img src="'+vvv2.gig_image+'" class="" alt="'+vvv2.gig_title+'" data-reload="inprogress"></span> <p>'+vvv2.gig_title+'</p> </label> </li>');
+               });
+               $("#tbl_row_id").val("row"+ev);
+               $("#tbl_req_id").val(ev);
+               $("#modal_send_offer").modal("show");
+            }
+         }); 
+      }
+      else
+      {
+         alert("No offers left for today.")
+      }
+    }
+    function refresh_sent_offers()
+    {
+      $.ajax({
+         type:"GET",
+         url: "/get_sent_offers/",
+         data: { "user_id":'{{request.user.id}}'},
+         success: function(data)
+         {
+            JsonObj = JSON.parse(data);
+            $("#sent_offers").text(JsonObj.length);
+            $("#tbl_sent_offers tbody").empty();
+            $.each(JsonObj, function(i, v8) {
+               $("#tbl_sent_offers tbody").append(' <tr> <td class="text-wide"> <h4>'+v8.gig_title+'</h4> <span> '+v8.offer_desc+'</span> </td> <td class="text-simple "> <span>'+v8.duration+' Days</span> </td> <td class="text-simple "> <span>$ '+v8.price+'</span> </td> <td class="profile-sml"> <span class="user-pict-24"><img src="'+v8.buyer_img+'" alt="xringo" width="24" height="24"></span> <span></span> </td> <td class="text-simple "> <h4 class="txt-green">'+v8.buyer_name+'</h4> <span> '+v8.buyer_req_desc+'</span> <div> <div class="info-line">Delivery Time - '+v8.buyer_delivery_time+'</div> <div class="info-line">Budget - <span>$ '+v8.buyer_price+'</span></div> </div> </td> </tr> ');
+            });
+         }
+    });
+    }
+    function refresh_buyer_list(ev)
+    {
+      $.ajax({
+         type:"GET",
+         url: "/get_buyer_request/",
+         data: {'category_name': ev, "user_id":'{{request.user.id}}'},
+         success: function(data)
+         {
+            jsonObject = JSON.parse(data);
+            $("#active_req").text(jsonObject.length);
+            $("#tbl_buyer_req tbody").empty();
+            $.each(jsonObject, function(i, v) {
+               attach_url = ''
+               attachments = v.buyer_attachments.split(",");
+               $.each(attachments, function(ii, vv) {
+                  if(vv.trim().length != 0)
+                  {
+                     attach_url = attach_url + '  <a href="'+vv.trim()+'" download><i class="fa fa-arrow-circle-down" ></i>'+vv.split('/').pop()+'</a>';
+                  }
+               });
+               var offer_text = ''
+               if(v.Offer_status == "sent")
+               {
+                  offer_text = '<a class="btn-standard btn-gray-grad ">Offer Sent</a> ';
+               }
+               else{
+                  offer_text = '<a class="btn-standard btn-green-grad " onclick="show_share_click('+v.req_id+');" >Send Offer</a> ';
+               }
+               see_more_text = '';
+               var sentences =  v.buyer_mssg.split('.');
+               if(sentences.length > 4)
+               {
+                  see_more_text = '<div class="text-wrap see_less"> <span>'+ sentences[0]+ "." + sentences[1]+ "."+ sentences[2]+ "." + sentences[3] + '</span><a class="is-online btn-see-more js-see-more m-r-10" onclick="see_moreclick(this);">See more<i></i></a> </div><div class="text-wrap see_more"> <span> '+v.buyer_mssg+ ' </div>';
+               }
+               else{
+                  see_more_text = '<div class="text-wrap see_less"> <span> '+v.buyer_mssg+ ' </div>';
+               }
+               $("#tbl_buyer_req tbody").append('<tr id="row'+v.req_id+'"> <td class="date "> <span>'+moment(v.serv_date).format('MMM DD, YYYY')+'</span> </td> <td class="profile-40 height95"> <span class="user-pict-40"> <img class="missing-image-user " src="'+v.buyer_img+'"></img> </span> <span></span> </td> <td class="see-more"> '+see_more_text+' <span class="attachment">'+attach_url+' </span> </td> <td class="applications t-a-center"> <span>'+v.no_offers+'</span> </td> <td class="hidden-action t-a-center with-text"> <div class="hover-show"> <span class="duration">'+v.service_time+'</span> <a onclick="remove_request_click('+v.req_id+');" class="remove-request">Remove Request</a> </div> <div class="hover-hide" onmouseover="hoverhideaddclick(this);" onmouseout="hoverhideremoveclick(this);"> <span>'+v.service_time+'</span> </div> </td> <td class="hidden-action t-a-center with-text"> <div class="hover-show"> <span class="budget">$ '+v.service_price+'</span><div class="offer_txt_div" id="o_txt_div'+v.req_id+'">'+offer_text+'</div> </div> <div class="hover-hide" onmouseover="hoverhideaddclick(this);" onmouseout="hoverhideremoveclick(this);"> <span>$ '+v.service_price+'</span> </div> </td> </tr>');
+            });
+         }
+      });
+    }
+    function see_moreclick(ev)
+    {
+      $(ev).parent().hide();
+      $(ev).parent().next().show();
+    }
+    function gig_onclick(ev)
+    {
+      gig_id = $(ev).val();
+      $.ajax({
+         type:"GET",
+         url: "/get_gig_parameters/",
+         data: {'gig_id': gig_id, "user_id":'{{request.user.id}}'},
+         success: function(data)
+         {
+            var intRegex = /^\d+$/;
+            img_url = $(ev).attr("data-label");
+            gig_title = $(ev).attr("data-title");
+            $("#sel_gig_title").text(gig_title);
+            $("#sel_gig_img").attr("src",img_url);
+            jsonObject = JSON.parse(data);
+            json_parse1 =  eval(jsonObject[0]["data"]);
+            $("#offer_extra_li").empty();
+            $.each(json_parse1, function(i, v5) {
+               if(intRegex.test(v5.value.toString()))
+               {
+                  $("#offer_extra_li").append('<li class="js-extra-chkbox" data-type="input"> <label class="fake-check-black check-text"> <input type="checkbox" > <span class="chk-img"></span> <span class="extra-text"> <small>'+v5.name+'</small> </span> <input type="number" class="js-extra-quantity"  value="0"> </label> </li>');
+               }
+               else{
+                  $("#offer_extra_li").append(' <li class="js-extra-chkbox" data-type="boolean"> <label class="fake-check-black check-text"> <input type="checkbox" > <span class="chk-img"></span> <span class="extra-text"> <small>'+v5.name+'</small> </span> </label> </li>')
+               }
+            });
+            $("#model_gig_choose").hide();
+            $("#gig_details").show();
+            $("#gig_offer_scopes").show();
+            $(".modal_footer").show();
+            $("#text_offer_desc").val("");
+            $("#tbl_gig_id").val(gig_id);
+            $("#text_offer_price").val("");
+            $("#delivery_time").prop("selectedIndex", 0);
+            $("#no_revisions").val("");
+            $('#req_gig').prop('checked', true);
+         }
+      });
+    }
+    function gig_back_click()
+    {
+      $("#model_gig_choose").show();
+      $("#gig_details").hide();
+      $("#gig_offer_scopes").hide();
+      $(".modal_footer").hide();
+    }
+    function remove_request_click(ev)
+    {
+      req_id = ev;
+      $.ajax({
+         type:"POST",
+         url: "/post_remove_request/",
+         data: {'b_req_id': req_id, "user_id":'{{request.user.id}}'},
+         success: function(data)
+         {
+            if(data == "sucess")
+            {
+               refresh_buyer_list('All Subcategories');
+            }
+         }
+      });
+    }
+</script>
+{% endblock %}

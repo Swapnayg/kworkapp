@@ -1,0 +1,20 @@
+/* Optionally make the continue and save button look like primary */
+
+
+/* Hide the "Delete", "Add Another" and "Save" buttons, customize this to what you need  */
+ input[name="_addanother"],input[name="_continue"],.object-tools{
+    display: none;
+}
+#jazzy-actions .card
+{
+    margin-bottom: 0px;
+}
+#jazzy-actions .card-body
+{
+    padding-bottom: 0px;
+    padding: 0.15rem;
+}
+#jazzy-actions .card-body .form-group
+{
+    margin-bottom: 5px;
+}

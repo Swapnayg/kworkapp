@@ -1,0 +1,507 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Manage Orders</title>
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="manage_gigs">
+       <div class="col-11 text-center p-0 mt-3 mb-2">
+          <div class="card px-0 pt-4 pb-0 mb-3"  id="manage_gigs_card">
+             <div class="row">
+                <div class="col-md-12 db-manage-gigs pl-5">
+                    <h1 class="alt">Manage Orders</h1>
+                 </div>
+                <div class="col-md-12 mx-0 pl-5">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>{{active_orders|length}}</span></div></a></li>
+                        <li><a href="#deliveredtab" role="tab" data-toggle="tab">Delivered<div class="circle"><span>{{delivered_orders|length}}</span></div></a></li>
+                        <li><a href="#completedtab" role="tab" data-toggle="tab">Completed <div class="circle"><span>{{completed_orders|length}}</span></div></a></li>
+                        <li><a href="#cancelledtab" role="tab" data-toggle="tab">Cancelled <div class="circle"><span>{{cancelled_orders|length}}</span></div></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="activetab">
+                            <div class="db-new-main-table">
+                                <table>
+                                   <thead>
+                                      <tr class="header-filter">
+                                         <td colspan="8">Active Orders</td>
+                                      </tr>
+                                      <tr>
+                                         <td colspan="2"></td>
+                                         <td>Order Date</td>
+                                         <td>Due on</td>
+                                         <td>Total</td>
+                                         <td class="t-a-center" colspan="2">Status</td>
+                                      </tr>
+                                   </thead>
+                                   <tbody>
+                                    {% for ac_orders in active_orders %}
+                                      <tr>
+                                         <td class="gig-image-thumb"><img src="{{ac_orders.gig_image}}"></td>
+                                         <td class="ellipsis-wrap">
+                                            <div class="ellipsis"><a class="large-clickable-area" href="/gigs/{{ac_orders.gig_username}}/{{ac_orders.gig_title}}">{{ac_orders.gig_title}}</a></div>
+                                         </td>
+                                         <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
+                                         <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
+                                         <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
+                                         <td class="action-btn"><div class="order-status inprogress" >In Progress</div></td>
+                                      </tr>
+                                    {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                       
+                        <div class="tab-pane" id="deliveredtab">
+                            <div class="db-new-main-table">
+                                <table>
+                                   <thead>
+                                      <tr class="header-filter">
+                                         <td colspan="8">Delivered Orders</td>
+                                      </tr>
+                                      <tr>
+                                         <td colspan="2"></td>
+                                         <td>Order Date</td>
+                                         <td>Due on</td>
+                                         <td>Total</td>
+                                         <td class="t-a-center" colspan="2">Status</td>
+                                      </tr>
+                                   </thead>
+                                   <tbody>
+                                    {% for ac_orders in delivered_orders %}
+                                      <tr>
+                                         <td class="gig-image-thumb"><img src="{{ac_orders.gig_image}}"></td>
+                                         <td class="ellipsis-wrap">
+                                            <div class="ellipsis"><a class="large-clickable-area" href="/gigs/{{ac_orders.gig_username}}/{{ac_orders.gig_title}}">{{ac_orders.gig_title}}</a></div>
+                                         </td>
+                                         <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
+                                         <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
+                                         <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
+                                         <td class="action-btn"><div class="order-status delivered" >Delivered</div></td>
+                                      </tr>
+                                    {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="completedtab">
+                            <div class="db-new-main-table">
+                                <table>
+                                   <thead>
+                                      <tr class="header-filter">
+                                         <td colspan="8">Completed Orders</td>
+                                      </tr>
+                                      <tr>
+                                         <td colspan="2"></td>
+                                         <td>Order Date</td>
+                                         <td>Due on</td>
+                                         <td>Total</td>
+                                         <td class="t-a-center" colspan="2">Status</td>
+                                      </tr>
+                                   </thead>
+                                   <tbody>
+                                    {% for ac_orders in completed_orders %}
+                                      <tr>
+                                         <td class="gig-image-thumb"><img src="{{ac_orders.gig_image}}"></td>
+                                         <td class="ellipsis-wrap">
+                                            <div class="ellipsis"><a class="large-clickable-area" href="/gigs/{{ac_orders.gig_username}}/{{ac_orders.gig_title}}">{{ac_orders.gig_title}}</a></div>
+                                         </td>
+                                         <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
+                                         <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
+                                         <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
+                                         <td class="action-btn"><a href="/gigs/{{ac_orders.gig_username}}/{{ac_orders.gig_title}}" target="_blank" class="btn-standard btn-green-grad" data-order-id="FO6214787D2C8">Order Again</a></td>
+                                      </tr>
+                                    {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="cancelledtab">
+                            <div class="db-new-main-table">
+                                <table>
+                                   <thead>
+                                      <tr class="header-filter">
+                                         <td colspan="8">Cancelled Orders</td>
+                                      </tr>
+                                      <tr>
+                                         <td colspan="2"></td>
+                                         <td>Order Date</td>
+                                         <td>Due on</td>
+                                         <td>Total</td>
+                                         <td class="t-a-center" colspan="2">Status</td>
+                                      </tr>
+                                   </thead>
+                                   <tbody>
+                                    {% for ac_orders in cancelled_orders %}
+                                      <tr>
+                                         <td class="gig-image-thumb"><img src="{{ac_orders.gig_image}}"></td>
+                                         <td class="ellipsis-wrap">
+                                            <div class="ellipsis"><a class="large-clickable-area" href="/gigs/{{ac_orders.gig_username}}/{{ac_orders.gig_title}}">{{ac_orders.gig_title}}</a></div>
+                                         </td>
+                                         <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
+                                         <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
+                                         <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
+                                         <td class="action-btn"><div class="order-status cancelled" >Cancelled</div></td>
+                                      </tr>
+                                    {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                    </div>
+                </div>    
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% include  'Dashboard/base_buyer.html' %}
+<style>
+    .db-manage-gigs .db-new-filters .btn-create-gig {
+        position: absolute;
+        right: 0;
+        top: 10px;
+    }
+    .btn-standard.btn-green {
+        background-color: #2E5DC5;
+        font-weight: 700;
+        color: #fff!important;
+        border: 1px solid transparent;
+        padding: 8px;
+        border-radius: 5px;
+        float: right;
+    }
+     h1.alt, .text-display-1.alt {
+        font-weight: 600;
+        display: inline-block;
+        float: left;
+        font-size: 35px;
+        padding-bottom: 1%;
+    }
+    .db-new-header {
+        padding-bottom: 20px;
+    }
+    .cf:before, .cf:after {
+        content: " ";
+        display: table;
+    }
+    .db-manage-gigs header .accept-requests {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse;
+    }
+    .delivered
+    {
+        background: green;
+        border-color: green;
+        color: white;
+        text-align: center;
+        padding: 4px;
+        border-radius: 3px;
+    }
+    .cancelled
+    {
+        background: orangered;
+        border-color: orangered;
+        color: white;
+        text-align: center;
+        padding: 4px;
+        border-radius: 3px; 
+    }
+    .inprogress
+    {
+        background: #2953b0;
+        border-color: #2953b0;
+        color: white;
+        text-align: center;
+        padding: 4px;
+        border-radius: 3px;
+    }
+    .gig-image-thumb img{
+        height: 50px;
+        width: 100px;
+    }
+    .toggle-wrapper:first-child {
+        margin-left: 0;
+    }
+    .db-manage-gigs header .accept-briefs {
+        margin-right: 24px;
+    }
+    .toggle-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 30px;
+    }
+    .db-manage-gigs header .accept-requests .toggle-wrapper label {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .toggle-wrapper label {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #222325;
+        text-transform: capitalize;
+        cursor: pointer;
+    }
+    .hint--bottom-right:before, .hint--bottom-right:after {
+        top: 100%;
+        right: 50%;
+    }
+    .toggle-wrapper label input[type=checkbox] {
+        display: none;
+    }
+    .db-manage-gigs header .accept-requests .toggle-wrapper .fake-toggle {
+        margin: 0 8px;
+    }
+    .toggle-wrapper label .fake-toggle {
+        background-color: #fff;
+        width: 30px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 7px;
+        position: relative;
+        box-shadow: inset 0 0 0 1px #ccc;
+        border-radius: 15px;
+    }
+    .hint--bottom-right:before, .hint--bottom-right:after {
+        top: 100%;
+        right: 50%;
+    }
+    .toggle-wrapper label .fake-toggle:before, .toggle-wrapper label .fake-toggle:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 20px;
+        height: 20px;
+        border-radius: 15px;
+    }
+    .toggle-wrapper label .fake-toggle:before {
+        background-color: #2E5DC5;
+        -webkit-transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+        transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+    }
+    .db-manage-gigs header .accept-briefs .set-budget-cta {
+        background: 0 0;
+        border: none;
+        text-decoration: underline;
+        color: #404145;
+        margin-left: 4px;
+    }
+    .hint--top:before, .hint--top:after {
+        bottom: 100%;
+        left: 50%;
+    }
+    .hint--top:before {
+        margin-left: -5px;
+        margin-bottom: -12px;
+        border-top-color: #222325;
+    }
+    #manage_gigs .nav, .tab-content .tab-pane,#manage_gigs ul li a, #manage_gigs_card
+    {
+        background: #f7f7f7;
+        border: none;
+    }
+
+    #manage_gigs .nav-tabs {
+        border-bottom: 1px #ddd solid;
+        position: relative;
+        padding-bottom: 2%;
+    }
+    #manage_gigs
+    {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+    .circle
+    {
+        border-radius: 15px;
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        background-color: #bbb;
+        font-size: 11px;
+        font-weight: 700;
+        color: white;
+        margin-left: 6px;
+    }
+    .circle span{
+        line-height: 20px;
+        height: 20px;
+    }
+    #manage_gigs ul li a.active
+    {
+        color:#2E5DC5 ;
+    }
+    #manage_gigs ul li a
+    {
+        font-size: 14px;
+        color: #333;
+        font-weight: 600;
+        padding: 20px;
+        line-height: 30px;
+        height: 30px;
+        text-decoration: none;
+    }
+    .tab-content
+    {
+        padding-top: 2%;
+    }
+    .db-new-main-table table {
+        width: 100%;
+        border-collapse: collapse;
+        border-spacing: 0;
+        font-size: inherit;
+    }
+    .db-new-main-table table thead tr {
+        background-color: #fff;
+        border: 1px #e5e5e5 solid;
+    }
+    .db-new-main-table table td {
+        padding: 15px 15px 15px 0;
+        font-size: 14px;
+        line-height: 20px;
+        color: #555;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+    .db-new-main-table table thead td {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #999;
+        line-height: 33px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .db-new-main-table table td:first-child {
+        padding-left: 20px;
+    }
+    .db-new-main-table table td:last-child {
+        padding-right: 20px;
+    }
+    .db-new-main-table table thead tr.header-filter td {
+        font-size: 14px;
+        line-height: 17px;
+        padding-top: 15px;
+        padding-bottom: 15px;
+        color: #0e0e0f;
+    }
+    .db-new-main-table table thead td {
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        color: #999;
+        line-height: 33px;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+    .db-new-main-table table td.gig-image-thumb {
+        width: 50px;
+    }
+    .db-new-main-table table{
+        background:white;
+    }
+    .db-new-main-table table td.ellipsis-wrap {
+        white-space: normal;
+        max-width: 300px;
+        box-sizing: border-box;
+        width:40%;
+    }
+    .status-bar {
+        background: #ddd;
+        display: inline-block;
+        height: 18px;
+        font-size: 10px;
+        line-height: 18px;
+        font-weight: 700;
+        width: auto;
+        max-width: 120px;
+        padding: 0 8px;
+        text-align: center;
+        text-transform: uppercase;
+        border: 1px #ddd solid;
+        border-radius: 3px;
+    }
+    .status-bar.bar-inline {
+        float: left;
+        margin: 0 7px -1px 0;
+        width: auto;
+        padding: 0 6px;
+    }
+    .status-bar.blue-light {
+        color: #fff;
+        background-color: #78cdd2;
+        border-color: #78cdd2;
+    }
+    .db-new-main-table table td.ellipsis-wrap .ellipsis {
+        min-height: 20px;
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+    .db-new-main-table table td.date, .db-new-main-table table td.user-date {
+        width: 110px;
+        padding-right: 15px;
+    }
+    .db-new-main-table table td.amount {
+        width: 65px;
+        padding-right: 15px;
+        text-align: center;
+    }
+    .db-new-main-table table td.action-btn {
+        width: 120px;
+    }
+    .manage_orders .action-btn {
+        text-align: center;
+    }
+    .btn-standard {
+        background-color: #fff;
+        font-size: 12px;
+        line-height: 12px;
+        font-weight: 600;
+        display: inline-block;
+        letter-spacing: 0;
+        color: #777;
+        white-space: nowrap;
+        text-transform: uppercase;
+        border: 1px #ccc solid;
+        padding: 9px 20px 8px;
+        margin: 0;
+        cursor: pointer;
+        -webkit-transition: color .2s,background-color .2s,box-shadow .2s,border .2s;
+        transition: color .2s,background-color .2s,box-shadow .2s,border .2s;
+        border-radius: 3px;
+    }
+    .btn-standard.btn-green-grad {
+        background-image: none;
+        background-color: #2E5DC5;
+        font-weight: 700;
+        text-transform: none;
+        color: #fff!important;
+        border: 1px solid #2E5DC5;
+        padding-left: 10px;
+        padding-right: 10px;
+        text-shadow: 0 -1px 1px rgba(0,0,0,.2);
+        box-shadow: none;
+        text-decoration:none;
+    }
+    .db-new-main-table table td.action-btn .btn-standard.btn-green-grad {
+        background: #2E5DC5;
+    }
+</style>
+{% endblock %}

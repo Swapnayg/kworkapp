@@ -1,0 +1,248 @@
+{% load static %} {% block content %}
+<div id="app-footer"></div>
+<div class="footer footer--mobile footer--en">
+   <div class="kw-wrapper">
+      <div class="footer__columns">
+         <div class="footer__column footer__column--logo">
+            <a href="{% url 'index' %}" class="footer__logo">
+               <img class="footer__logo-image" src="{% static 'assets/images/logo.png' %}" alt="" width="110" height="23" />
+               <!-- <span class="footer__logo-text">Freelance marketplace</span> -->
+            </a>
+            <div class="footer__stats"></div>
+         </div>
+         <div class="footer__column footer__column--menu">
+            <div class="footer__menu">
+               <div class="footer__menu-column js-footer-menu-column">
+                  <div class="footer__menu-title js-footer-menu-title">
+                     About
+                     <svg class="footer__menu-title-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+                        <path d="M12 6L8 10L4 6" stroke="#177de5" stroke-width="1.6" stroke-linecap="round" />
+                     </svg>
+                  </div>
+                  <div class="footer__menu-links">
+                     <a href="{% url 'about' %}" target="_blank">About Letworkbedone</a>
+                     <a href="{% url 'buyer_protection' %}" target="_blank">Buyer Protection Program</a>
+                     <a class="nowrap" href="{% url 'term_service' %}" target="_blank">Terms of Service</a>
+                     <a href="{% url 'privacy' %}" target="_blank">Privacy Policy</a>
+                  </div>
+               </div>
+               <div class="footer__menu-column js-footer-menu-column">
+                  <div class="footer__menu-title js-footer-menu-title">
+                     Resources
+                     <svg class="footer__menu-title-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+                        <path d="M12 6L8 10L4 6" stroke="#177de5" stroke-width="1.6" stroke-linecap="round" />
+                     </svg>
+                  </div>
+                  <div class="footer__menu-links">
+                     <a href="{% url 'for_freelancer' %}" target="_blank">For Freelancers</a>
+                     <a href="{% url 'earn_letworkbdone' %}" target="_blank">How to Earn on Letworkbedone</a>
+                     <a href="{% url 'categories' %}" target="_blank">Categories</a>
+                     <a class="nowrap" href="{% url 'affiliate_program' %}" target="_blank">Affiliate Program</a> 
+                     <a href="{% url 'reviews' %}" class="nowrap" target="_blank">Letworkbedone Reviews</a>
+                  </div>
+               </div>
+               <div class="footer__menu-column js-footer-menu-column">
+                  <div class="footer__menu-title js-footer-menu-title">
+                     Help Center
+                     <svg class="footer__menu-title-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+                        <path d="M12 6L8 10L4 6" stroke="#177de5" stroke-width="1.6" stroke-linecap="round" />
+                     </svg>
+                  </div>
+                  <div class="footer__menu-links">
+                     <a class="nowrap" href="{% url 'prohibited_service' %}" target="_blank">Prohibited Services</a>
+                     <a class="nowrap" href="{% url 'approval_process' %}" target="_blank">Approval process for letworkbedone</a>
+                     <a class="nowrap" href="{% url 'faq' %}" target="_blank" >FAQ</a>
+                     <a class="nowrap" href="{% url 'contact_support' %}" target="_blank">Contact Support</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <!-- <div class="footer__column footer__column--mirafox">
+            <a class="footer__logo-mirafox" href="http://mirafox.com/en/" target="_blank" rel="noopener">
+                <svg class="footer__logo-mirafox-image" xmlns="http://www.w3.org/2000/svg" width="49" height="53" viewBox="0 0 49 53" fill="none">
+                    <path
+                        d="M35.052 27.03c0-.112-.11-.112-.138-.028-.664 3.49-3.624 21.244 5.838 22.388.055 0 .083-.056.055-.112-.885-.865-5.34-6.086-5.755-22.25zm13.668 1.815l-2.684-.95C45.843 17.008 41.14 8.298 27.416.007c-.055-.028-.11.028-.055.084 1.992 1.563 5.118 4.383 6.613 6.03 2.518 7.426-1.024 10.97-8.826 7.035-1.44-1.703-3.763-5.164-5.008-7.314-.028-.056-.11 0-.083.028 2.877 6.81 7.055 13.455 13.004 17.587-3.1 5.053-7.332 17.922-6.363 23.95-2.352-1.34-5.367-2.568-8.743-3.462-8.522-2.233-16.13-1.424-16.932 1.787-.553 2.122 1.992 4.746 6.253 6.95.138.084.22-.084.138-.167-2.38-1.647-3.486-3.545-3.043-5.053 1.162-3.88 12.533-3.797 24.652 2.568.138.084.25.028.22-.14-.775-7.146.996-19.262 4.178-26.24 3.652 2.456 7.664 3.88 11.98 4.718a45.48 45.48 0 0 1 .498 2.68c0 .056.11.056.11 0 .055-.865.055-1.73.055-2.568.885.167 1.77.28 2.656.42.055.028.083-.028 0-.056zM27.472 15.668c6.06 3.63 11.648.223 8.688-6.923 4.482 5.806 7.47 12.227 9.02 18.787-6.474-2.652-12.56-6.616-17.707-11.864z"
+                        fill="url(#MirafoxLogo)"
+                    />
+                    <defs>
+                        <linearGradient id="MirafoxLogo" x1="27" y1="0" x2="27" y2="75" gradientUnits="userSpaceOnUse">
+                            <stop offset="0" stop-color="#F57E1F" />
+                            <stop offset="1" stop-color="#ED1B23" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <svg class="footer__logo-mirafox-text" xmlns="http://www.w3.org/2000/svg" width="60" height="14" viewBox="0 0 60 14" fill="none">
+                    <path
+                        d="M51.003 9.165c0-2.893-1.198-4.945-3.806-4.945-2.512 0-3.787 1.68-3.787 4.945 0 3.205 1.256 4.808 3.787 4.808 2.24 0 3.806-1.055 3.806-4.808zm-3.7 4.046c-1.7 0-2.164-1.563-2.164-4.202 0-2.287.386-4.046 2.048-4.046 1.7 0 2.067 1.524 2.067 4.124 0 2.736-.386 4.124-1.95 4.124zm-26.573-.235c-1.14 0-1.488-.43-1.488-1.876V4.416H15.9v.762c.985.098 1.603.8 1.603 2.13v4.945c0 .997.444 1.485 1.333 1.485h1.97v-.762h-.077zM14.084 11.1V7.6c0-2.306-.232-3.4-2.125-3.4-2.53 0-3.323 2.326-3.323 2.326-.077-.762-.25-1.33-.56-1.72-.348-.4-.85-.606-1.565-.606-2.53 0-3.265 2.228-3.265 2.228V4.416H0v.762c1.043.078 1.526.938 1.526 2.306v6.235h1.72V8.9c0-3.518 3.7-5.746 3.7-1.407v4.827c0 1.153.483 1.427 1.256 1.427H9.99v-.762h-.06c-.908 0-1.275-.4-1.275-1.876V8.97c0-3.577 3.7-5.433 3.7-1.818v5.062c0 .958.386 1.564 1.333 1.564h1.874v-.762h-.058c-1.14-.04-1.43-.547-1.43-1.915zm12.693-6.9s-1.95-.098-2.705 2.365v-2.15h-1.758v7.74c.058 1.055.483 1.583 1.236 1.583h.522V9.262c0-2.228 1.082-4.085 2.087-3.557.097.06.773.567.908.43l.908-.9c.174-.176-.27-1.036-1.198-1.036zM39.2 2.793v1.642h-1.584v.762H39.2V11.1c0 1.33-.25 1.876-1.488 1.876h-.077v.762h1.97c1.005 0 1.352-.645 1.352-1.935V5.178h1.623v-.762h-1.623v-1.78c0-1.212.3-1.818 1.236-1.818h1.352v-.76h-.676c-2.55 0-3.67.84-3.67 2.736zm-2.493 10.183c-1.294 0-1.488-.645-1.488-1.876V7.64c0-1.212-.25-2.1-.734-2.62-.483-.547-1.314-.8-2.454-.8-1.74 0-3.13.704-3.4 1.857-.04.137-.058.156.04.235l.966.92c.328.332 1.082-.156 1.082-.977 0-.586.3-1.3 1.333-1.3 1.526 0 1.43 1.798 1.43 2.54v1.3c-3.574.098-5.352 1.094-5.352 3 0 .82.58 2.15 2.936 2.15 1.43 0 2.222-.704 2.55-1.075.155.508.483.88 1.217.88h1.95v-.762h-.077v-.02zm-3.207-1.3c-.386.82-1.16 1.505-2.028 1.505-.8 0-1.4-.684-1.4-1.74 0-1.954 3.42-1.974 3.42-1.974v2.208zm26.43-6.87c.27-.4-.3-.88-.638-.43L56.47 8.03 54.2 4.416h-2.898v.762h.386c.8 0 1.314.313 1.74.958l2.067 3.166-3.1 4.007c-.367.43.212.938.6.5l2.936-3.8 2.3 3.655c.6.92 1.816-.117 1.275-.938l-2.6-3.948L59.92 4.8zm-41.557-2.6c.598 0 1.082-.5 1.082-1.094S18.97.018 18.373.018s-1.082.5-1.082 1.094.484 1.094 1.082 1.094z"
+                        fill="#111"
+                    />
+                </svg>
+            </a>
+            </div> -->
+      </div>
+      <div class="footer__bottom">
+         <span class="footer__copyright"><span class="db mb8"> 2022 Letworkbedone ©</span>letworkbedone Ltd. 2022</span>
+         <div class="footer__apps">
+            <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-appstore-en.png' %}" alt="appstore" width="112" height="32" /></a>
+            <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-gplay-en.png' %}" alt="googleplay" width="112" height="32" /></a>
+         </div>
+      </div>
+   </div>
+</div>
+<div class="modal fade modal-fullscreen" id="ModalLogin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+   <div class="modal-dialog modal-lg">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h5 class="modal-title" id="LoginLabel"></h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div class="modal-body">
+         <div class="box-login mt-4">
+            <div class="py-5">
+              <h2 class="text-center mb-5">Login to Letworkbedone</h2>
+              <div class="col-8 mx-auto">
+                <a href="{% url 'social:begin' 'google-oauth2' %}" class="login_with google"><i class="fa fa-google lnlog google"></i><p> Login with Google</p></a>
+                <a href="{% url 'social:begin' 'facebook' %}" class="login_with linkedin"><i class="fa fa-facebook lnlog"></i><p>Login with Facebook</p></a>
+              </div>
+              <div class="clearfix"></div>
+              <div class="text-center pt-4 pb-2">Don’t letworkbedone account?</div>
+              <div class="text-center">
+               <a href="{% url 'register' %}" class="signupBtn">Sign up</a>
+           </div>
+            </div>
+        </div>
+       </div>
+     </div>
+   </div>
+ </div>
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script src="{% static 'assets/js/popper.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.inputmask.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.mb.browser.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.touchSwipe.min.js' %}"></script>
+<script src="{% static 'assets/js/slick.min.js' %}"></script>
+<script src="{% static 'assets/js/components/allAttributes.min.js' %}"></script>
+<script src="{% static 'assets/js/components/tooltipster-bundle.min.js' %}"></script>
+<script src="{% static 'assets/js/dist/favicon.js' %}"></script>
+<script src="{% static 'assets/js/dist/he.js' %}"></script>
+<script src="{% static 'assets/js/dist/image-load-error.js' %}"></script>
+<script src="{% static 'assets/js/dist/lodash.js' %}"></script>
+<script src="{% static 'assets/js/kb.js' %}"></script>
+<script src="{% static 'assets/js/content-tools.js' %}"></script>
+<script src="{% static 'assets/js/editor.js' %}"></script>
+<script src="{% static 'assets/js/summernote-bs4.min.js' %}"></script>
+<script src="{% static 'assets/js/select2.min.js' %}"></script>
+<script>
+   $(document).ready(function(){
+       var urls = ['http://127.0.0.1:8000/static/assets/images/users/banner-user-1.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-2.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-3.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-4.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-5.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-6.png',
+       'http://127.0.0.1:8000/static/assets/images/users/banner-user-7.png'];
+       var listItems = $("#swiper_slider .swiper-slide");
+       var names = ["Lily, ","Eugene, ","Tanya, ","Alex, ","Margarita, ","Dennis, ","Eugenia, "]
+       var prof = ["Web Developer","Voice Actor","Freelance Accountant","Front-end Developer","Graphic Designer","Web Designer","Freelance Poet"]
+       var count = 1;
+       $('#swiper-slide1').css('background-image', 'url("' + urls[0] + '")');
+       setInterval(function() {
+           $('#swiper-slide1').animate({opacity: 0}, 0).css("background-image", "url(" + urls[count]+ ")").animate({opacity: 1}, 2500);
+           $('#swiper-slide1').find(".banner-slider__text").html('<span class="banner-slider__name">' + names[count] + '</span><span class="banner-slider__profession">' + prof[count] + '</span>')
+           count == urls.length-1 ? count = 0 : count++;
+       }, 6000);	
+       $('#main-menu li ul').each(function(){
+     var count = parseInt(($(this).children('li').length) / 5);
+     $(this).css('width',(count*12)+'em');
+   });	
+   dataObj =  JSON.parse($("#sub_val_text").val());
+   var groupedData = _.groupBy(dataObj, function(d){return d.menu});
+   $.each(groupedData, function(i, v) {
+      menulist = $("#main1-menu").find("a:contains('" + v[0].menu + "')");
+      $(menulist).hasClass("intro");
+      avegrouplength = parseInt(groupedData[i].length /2);
+      group1append = '<div class="submenu-group-inner">'
+      group2append = '<div class="submenu-group-inner">'
+      if ($(menulist).hasClass("js-category-menu-item")) {
+         $.each(groupedData[i], function(j, vv) {
+            if(j <= avegrouplength -1)
+            {
+               group1append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
+            }
+            else if(j >= avegrouplength -1)
+            {
+               group2append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
+            }
+         });
+         group1append += '</div>'
+         group2append += '</div>'
+         $(menulist).next().find(".submenu-group-wrapper").append(group1append);
+         $(menulist).next().find(".submenu-group-wrapper").append(group2append);
+      }
+   });
+   $('#btn_search').click(function (e) {
+      window.open('/search/'+$("#input_search").val(), "_blank");
+      $("#input_search").val('');
+   });
+   $("#main1-menu li").hover(
+       function () {
+           m_length = $("#main1-menu li").length;
+           $("#main1-menu li").find(".menubox").css({"display":"none"});
+           if(parseInt($(this).index()) == 0)
+           {
+               $(this).find(".menubox").css({"display":"contents"});
+               left_val = 70 + "px !important";
+               $(this).find(".menulist").css({"left":left_val});
+               $("#main1-menu li")[0].find(".menulist").css({"left":"80px;"})
+           }
+           else if(parseInt($(this).index()) == (m_length-1))
+           {
+               conslength = $(this).find(".menubox").find(".submenu-group-inner").length;
+               reduceval = 0;
+               if(conslength == 1){
+                  reduceval = 50;
+               }
+               else if(conslength == 2){
+                  reduceval = 100;
+               }
+               $(this).find(".menubox").css({"display":"contents"});
+               left_val =  (parseInt(Math.ceil($(this).offset().left))) -reduceval + "px";
+               $(this).find(".menulist").css({"left":left_val});
+           }
+           else if(parseInt($(this).index()) == (m_length-2))
+           {
+               $(this).find(".menubox").css({"display":"contents"});
+               left_val =  (parseInt(Math.ceil($(this).offset().left))) -50 + "px";
+               $(this).find(".menulist").css({"left":left_val});
+           }
+           else{
+               $(this).find(".menubox").css({"display":"contents"});
+               left_val =  (parseInt(Math.ceil($(this).offset().left))) + "px";
+               $(this).find(".menulist").css({"left":left_val});
+           } 
+       }, 
+                
+       function () {
+           $(this).find(".menubox").css({"display":"none"});
+       }
+   );
+   user_value='{{request.user.username}}';
+   if(user_value.length !=0)
+   {        
+      $("#loginbtn").remove();
+      $("#registerbtn").remove();
+      $("#freelancerbtn").remove();
+   }
+});
+   function loginClick()
+   {
+      $("#ModalLogin").modal("show");
+   }
+</script>
+</body>
+</html>
+{% endblock %}

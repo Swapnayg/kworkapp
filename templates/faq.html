@@ -1,0 +1,475 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Frequently Asked Questions</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <script>window.workerHasOrderImportant=false;</script>
+   <div id="fox_notification_block"></div>
+   <div id="app">
+      <div class="kb support">
+         <div class="d-none">
+            <style> .article-icon-327 { background-image: url(/static/assets/images/files/5ba797304c7be.png); }  .article-icon-327:hover { background-image: url(/static/assets/images/files/5ba79730567fd.png); }  .article-icon-329 { background-image: url(/static/assets/images/files/5ba797c7237ec.png); }  .article-icon-329:hover { background-image: url(/static/assets/images/files/5ba797c72a318.png); }  .article-icon-330 { background-image: url(/static/assets/images/files/5ba797f8be2d2.png); }  .article-icon-330:hover { background-image: url(/static/assets/images/files/5ba797f8c4c64.png); }  .article-icon-331 { background-image: url(/static/assets/images/files/5ba7982578ed6.png); }  .article-icon-331:hover { background-image: url(/static/assets/images/files/5ba7982587aeb.png); }  .article-icon-332 { background-image: url(/static/assets/images/files/5bd815c1b75a0.png); }  .article-icon-332:hover { background-image: url(/static/assets/images/files/5bd815c1cb635.png); } </style>
+            <img src="{% static 'assets/images/files/5ba797304c7be.png' %}">  <img src="{% static 'assets/images/files/5ba79730567fd.png' %}">  <img src="{% static 'assets/images/files/5ba797c7237ec.png' %}">  <img src="{% static 'assets/images/files/5ba797c72a318.png' %}">  <img src="{% static 'assets/images/files/5ba797f8be2d2.png' %}">  <img src="{% static 'assets/images/files/5ba797f8c4c64.png' %}">  <img src="{% static 'assets/images/files/5ba7982578ed6.png' %}">  <img src="{% static 'assets/images/files/5ba7982587aeb.png' %}">  <img src="{% static 'assets/images/files/5bd815c1b75a0.png' %}">  <img src="{% static 'assets/images/files/5bd815c1cb635.png' %}"> 
+         </div>
+         <div class="bg-faq">
+            <div class="bg-faq-overlay"></div>
+            <div class="container-fluid kb-header py-5">
+               <div class="row">
+                  <div class="col-12 text-center"><span class="title">How can we help?</span></div>
+               </div>
+               <!----> 
+               <div class="row mt-4">
+                  <div class="col-12">
+                     <div class="custom-search">
+                        <input name="search_article_name" id="search_article_name" onkeydown="article_name_change(this);" type="text" placeholder="Search for an article" autocomplete="off" spellcheck="false" class="form-control"> <input type="text" name="username" class="hidden"> <!----> 
+                        <span class="search-button">
+                           <div><i class="fa fa-search fa-lg d-none d-md-inline-block"></i></div>
+                        </span>
+                        <div class="dropdown dropdown-suggestions" style="display: none;">
+                           <div class="suggestions" id="suggetions"></div>
+                           <div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="container-fluid breadcrumbs-wrapper">
+            <div class="row">
+               <div class="col-12">
+                  <div class="breadcrumbs" id="breadcrumbs_headers">
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="bg-white pb-5">
+            <h1 class="articles-title mt-5 mb-4">Frequently Asked Questions</h1>
+            <div class="tree tree-1 container-fluid" id="main_topics">
+               <div class="row no-gutters">
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Orders" data-parent="start">
+                       <div class="question-wrapper">
+                           <div class="article-icon article-icon-327"></div>
+                           <div class="question">
+                                 Orders
+                           </div>
+                       </div>
+                     <div class="goto-childs-icon hidden"></div>
+                   </div>
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Letworkbedone" data-parent="start">
+                       <div class="question-wrapper">
+                           <div class="article-icon article-icon-329"></div>
+                           <div class="question">
+                              Letworkbedone
+                           </div>
+                       </div>
+                     <div class="goto-childs-icon hidden"></div>
+                   </div>
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Account & Profile" data-parent="start">
+                       <div class="question-wrapper" >
+                           <div class="article-icon article-icon-330"></div>
+                           <div class="question">
+                              Account & Profile
+                           </div>
+                       </div>
+                     <div class="goto-childs-icon hidden"></div>
+                   </div>
+                   <div class="col-6 col-md-4 offset-md-2" onclick="articleHeader(this);" data-name="Payments" data-parent="start">
+                       <div class="question-wrapper">
+                           <div class="article-icon article-icon-331"></div>
+                           <div class="question">
+                              Payments
+                           </div>
+                       </div>
+                     <div class="goto-childs-icon hidden"></div>
+                   </div>
+                   <div class="col-6 col-md-4 offset-3 offset-md-0" onclick="articleHeader(this);" data-name="Affiliate Program" data-parent="start">
+                       <div class="question-wrapper">
+                           <div class="article-icon article-icon-332"></div>
+                           <div class="question">
+                                 Affiliate Program
+                           </div>
+                       </div>
+                       <div class="goto-childs-icon hidden"></div>
+                   </div>
+               </div>
+           </div>           
+            <div class="container-fluid" id="_subtopics">
+               <div class="back-button mx-auto mb-3" id="back_btn" data-label="" onclick="backclicked(this);">
+                  &lt; Go back
+               </div>
+               <div class="support-tree mx-auto" id="main_support">
+
+               </div>
+            </div>
+         </div>
+         <div class="bg-light py-4">
+            <div class="support">
+               <div class="row support-wrapper mx-auto">
+                  <div class="col-12 text-center text-md-left font-weight-bold col-md-6">
+                     <span>
+                     If you still need help,<br>contact our Support Team
+                     </span> <!---->
+                  </div>
+                  <div class="col-12 text-center text-md-right mt-3 mt-md-0 col-md-6">
+                     <a class="green-btn h50 w-100" onclick="contactbtnClickevnt();">
+                     Contact Support
+                     </a> <!---->
+                  </div>
+                  <!---->
+               </div>
+            </div>
+         </div>
+         <div id="support-form" class="support-form mx-auto bg-white pb-4">
+            <div class="container-fluid">
+               <!----> <!----> 
+               <div class="row">
+                  <div class="col-12">
+                     <div class="mb-3 fw600">Leave your message to Support Team</div>
+                     <div class="mb-3">
+                        If you have any questions or suggestions about the website, please feel free to contact us at:
+                        <a href="mailto:info@letworkbedone.com" target="_blank">info@letworkbedone.com</a>. <!---->
+                        Or send us a message using this form:
+                     </div>
+                     <form id="support_form">
+                        <div class="form-item">
+                           <input type="email" name="email" id="form_email" placeholder="Email" class="input-style w-100" required> 
+                           <div class="form-item__after-input form-item__error" style="display: none;"></div>
+                        </div>
+                        <div class="form-item mt15">
+                           <textarea rows="7" placeholder="Please enter your message here" id="form_message" class="textarea-style w-100" required></textarea>
+                           <div class="form-item__after-input">
+                              <div class="form-item__error" style="display: none;"></div>
+                              <div class="tcounter">0 of 4000 characters</div>
+                           </div>
+                        </div>
+                  </div>
+               </div>
+               <!----> 
+               <div class="row mt-3">
+                  <div class="col-12 col-md-6 offset-md-3 text-center">
+                     <button type="submit" class="green-btn GreenBtnStyle h50 w-100">
+                        Send
+                     </button>
+                  </div>
+               </div>
+            </form>
+            </div>
+         </div>
+         <div id="thank-form" class="support-form mx-auto bg-white pb-4">
+            <div class="container-fluid">
+               <div class="row mt-3">
+                  <div class="col-12" id="thanku"><span class="hint">
+                     Thank you for contacting the Support Team. We are happy we can be of assistance to you. 
+                     </span>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<style>
+   .green-btn
+   {
+      line-height: 45px;
+   }
+   .hint
+   {
+      color: green !important;
+   }
+</style>
+<script>
+   $(document).ready(function() {
+      value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+      $("#thank-form").hide();
+      $("#back_btn").attr("data-label","start");
+      $("#support_form").submit(function(e)
+      {
+          e.preventDefault();
+          email_address = $("#form_email").val();
+          form_message = $("#form_message").val();
+          $.ajax({
+            type:"GET",
+            url: "/post_contact_support/",
+            data: {'uemail_address': email_address,'uform_message': form_message},
+            success: function(data) 
+            {  
+               if(data == "success")
+               {
+                  $("#thank-form").show();
+                  $('#support_form')[0].reset(); 
+                  $('#support-form').hide();
+               }
+            }
+          });
+      });
+      $("#support-form").hide();
+      $("#_subtopics").hide();
+      $("#main_topics").show();
+   });
+   function articleHeader(ev)
+   {
+      actName = $(ev).attr("data-name");
+      parentName = $(ev).attr("data-parent");
+      child_element = $(ev).find(".goto-childs-icon");
+      $("#_subtopics").show();
+      $("#main_topics").hide();
+      if(child_element.length == 1)
+      {
+         $.ajax({
+            type:"GET",
+            url: "/get_menus/",
+            data: {'umenuname': actName},
+            success: function(data) 
+            {  
+               $("#main_support").empty();
+               $.each(data, function(i, v) {
+                  if(v.has_child == 1)
+                  {
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                  }
+                  else{
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                  }
+               });
+               parentNamefull =  $("#back_btn").attr("data-label");
+               if(parentName != "start")
+               {
+                  $("#back_btn").attr("data-label",parentNamefull + ", " + parentName);
+               }
+               $("#back_btn").show();
+               lbl_header_val = $("#back_btn").attr("data-label").split(",");
+               $("#breadcrumbs_headers").empty();
+               $.each(lbl_header_val, function(i, v) {
+                  acval = ''
+                  splitval =v.split("-");
+                  if(splitval.length == 1)
+                  {
+                     acval = v;
+                  }
+                  else if(splitval.length == 2){
+                     acval = splitval[1];
+                  }
+                  if(i == 0)
+                  {
+                     $("#breadcrumbs_headers").append('<span><span class="home-button">Help</span></span>');
+                  }
+                  else{
+                     $("#breadcrumbs_headers").append('<span class="breadcrumb"><div class="delimiter first"></div><span class="active">'+acval+'</span></span>');
+                  }
+               });
+               acfinval = ''
+               ac_splitval =actName.split("-");
+               if(ac_splitval.length == 1)
+               {
+                  acfinval = actName;
+               }
+               else if(ac_splitval.length == 2){
+                  acfinval = ac_splitval[1];
+               }
+               $("#breadcrumbs_headers").append('<span class="breadcrumb"><div class="delimiter first"></div><span class="inactive">'+acfinval+'</span></span>');
+            }
+         });
+      }
+      else{
+         parentNamefull =  $("#back_btn").attr("data-label").split("");
+         $.ajax({
+            type:"GET",
+            url: "/get_menus_data/",
+            data: {'umenuname': actName},
+            success: function(data) 
+            {  
+               $("#main_support").empty();
+               $("#main_support").append('<div class="articleDesc"><div class="question d-flex align-items-center justify-content-between"><div>'+data[0].title.toString()+'</div><div class="attention ml-3"><i class="ico-info"/></div></div><div class="answer fr-view"><p id="isPasted">'+data[0].contents.toString()+'</p></div></div>');
+               parentNamefull =  $("#back_btn").attr("data-label");
+               if(parentName != "start")
+               {
+                  $("#back_btn").attr("data-label",parentNamefull + ", " + parentName);
+               }
+               $("#back_btn").show();
+               lbl_header_val = $("#back_btn").attr("data-label").split(",");
+               $("#breadcrumbs_headers").empty();
+               $.each(lbl_header_val, function(i, v) {
+                  acval = ''
+                  splitval =v.split("-");
+                  if(splitval.length == 1)
+                  {
+                     acval = v;
+                  }
+                  else if(splitval.length == 2){
+                     acval = splitval[1];
+                  }
+                  if(i == 0)
+                  {
+                     $("#breadcrumbs_headers").append('<span><span class="home-button">Help</span></span>');
+                  }
+                  else{
+                     $("#breadcrumbs_headers").append('<span class="breadcrumb"><div class="delimiter first"></div><span class="active">'+acval+'</span></span>');
+                  }
+               });
+               acfinval = ''
+               ac_splitval =actName.split("-");
+               if(ac_splitval.length == 1)
+               {
+                  acfinval = actName;
+               }
+               else if(ac_splitval.length == 2){
+                  acfinval = ac_splitval[1];
+               }
+               $("#breadcrumbs_headers").append('<span class="breadcrumb"><div class="delimiter first"></div><span class="inactive">'+acfinval+'</span></span>');
+            }
+         });
+      }
+   }
+   function backclicked(ev)
+   {
+      parentName = $(ev).attr("data-label");
+      if(parentName == "start")
+      {
+         $("#_subtopics").hide();
+         $("#main_topics").show();
+         $("#breadcrumbs_headers").empty();
+      }
+      else{
+         var array = parentName.split(',');
+         actName = array[array.length - 1];
+         parentName = array[array.length - 2];
+         array.pop();
+         $.ajax({
+            type:"GET",
+            url: "/get_menus/",
+            data: {'umenuname': actName.trim()},
+            success: function(data) 
+            {  
+               $("#main_support").empty();
+               $.each(data, function(i, v) {
+                  if(v.has_child == 1)
+                  {
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                  }
+                  else{
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                  }
+               });
+            }
+         });
+         lbl_header_val = $("#back_btn").attr("data-label").split(",");
+         $("#breadcrumbs_headers").empty();
+         $.each(lbl_header_val, function(i, v) {
+            acval = ''
+            splitval =v.split("-");
+            if(splitval.length == 1)
+            {
+               acval = v;
+            }
+            else if(splitval.length == 2){
+               acval = splitval[1];
+            }
+            if(i == 0)
+            {
+               $("#breadcrumbs_headers").append('<span><span class="home-button">Help</span></span>');
+            }
+            else{
+               $("#breadcrumbs_headers").append('<span class="breadcrumb"><div class="delimiter first"></div><span class="active">'+acval+'</span></span>');
+            }
+         });
+         if(_.compact(array).length == 0)
+         {
+            $("#back_btn").attr("data-label","start");
+            $("#back_btn").hide();
+            $("#breadcrumbs_headers").empty();
+         }
+         else
+         {
+            $("#back_btn").show();
+            $("#back_btn").attr("data-label",array.toString()); 
+         }
+      }
+   }
+   function contactbtnClickevnt()
+   {
+      if($('#support-form').is(':visible')){
+         $("#support-form").hide();
+      }else{
+         $("#support-form").show();
+      }
+      $("#thank-form").hide();
+   }
+   function article_name_change(ev)
+   {
+      $.ajax({
+         type:"GET",
+         url: "/get_articles/",
+         data: {'article_name':ev.value.trim()},
+         success: function( data ) 
+         {  
+            $("#suggetions").empty();
+            $.each(data, function(i, v) {
+               $("#suggetions").append('<div class="suggestion d-flex justify-content-start"><div class="d-inline-block" data-label="'+data[i].title.toString()+'" onclick="searchClick(this);"><span>'+data[i].title.toString()+'</span></div></div>');
+            });
+            $(".dropdown-suggestions").show();
+         }
+      });
+   }
+   function searchClick(ev)
+   {
+      $("#main_topics").hide();
+      $("#_subtopics").show();
+      $("#breadcrumbs_headers").empty();
+      titleval = $(ev).attr("data-label");
+      $.ajax({
+         type:"GET",
+         url: "/get_menus_data/",
+         data: {'umenuname': titleval.trim()},
+         success: function(data) 
+         {  
+            $("#search_article_name").val("");
+            $("#main_support").empty();
+            $(".dropdown-suggestions").hide();
+            $("#main_support").append('<div class="articleDesc"><div class="question d-flex align-items-center justify-content-between"><div>'+data[0].title.toString()+'</div><div class="attention ml-3"><i class="ico-info"/></div></div><div class="answer fr-view"><p id="isPasted">'+data[0].contents.toString()+'</p></div></div>');
+            $("#back_btn").attr("data-label","start");
+            $("#back_btn").show();
+         }
+      });
+   }
+</script>
+
+{% endblock %}

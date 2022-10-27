@@ -1,0 +1,86 @@
+{% load static %}
+{% block contentarea%}
+{% include  'footer.html' %}
+<style>
+    .force-font--s14,.header .headertop-desktop .headeright ul li a
+    {
+        font-size: 17px;
+    }
+    #general-search ul
+    {
+        -webkit-box-align: center; 
+        -ms-flex-align: center;
+        -webkit-align-items: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        margin-right: -24px;
+        list-style: none;
+        list-style-image: none;
+    }
+    #general-search ul li.display-from-lg {
+        display: block;
+    }
+
+    #general-search .seller-joy-main-item {
+        border-radius: 4px;
+        color: #62646a;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        font-weight: 600;
+        height: 42px;
+        line-height: 42px;
+        padding: 0 16px;
+        text-decoration: none;
+        font-size: 15px;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        $(".subnav--new").remove();
+        $("#loginbtn").remove();
+        $("#registerbtn").remove();
+        $("#freelancerbtn").remove();
+        $("#favourite").remove();
+        $("#buyer_orders").remove();
+        $("#general-search").empty();
+        $("#general-search").append('<ul><li class="display-from-lg"><a href="/user/{{request.user.username}}/seller_dashboard" class="seller-joy-main-item">Dashboard</a></li><li class="display-from-lg"><a href="/user/{{request.user.username}}/manage_orders" class="seller-joy-main-item">Orders</a></li><li class="display-from-lg"><a href="/buyer_request" class="seller-joy-main-item">Buyer Requests</a></li><li class="display-from-lg"><a href="/user/{{request.user.username}}/manage_gigs" class="seller-joy-main-item">Gigs</a></li><li class="display-from-lg"><a href="/user/{{request.user.username}}/balance" class="seller-joy-main-item">Earnings</a></li></ul>');
+        $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+        $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+        $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+        $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-items mb-3"><div class="user-type"><div class="force-font force-font--s14 user-type-item user-type-item-payer js-user-type-select " id="buyer_link"><a href="/buyer"><span>Buyer</span></a></div><div class="user-type-divider"></div><div class="force-font force-font--s14 user-type-item user-type-item-worker js-user-type-select" id="seller_link" ><a href="/seller"><span>Seller</span></a></div></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+        value='{{ request.session.userpage }}';
+        if(value == "buyer")
+        {
+            $(".user-type").find("#seller_link").removeClass('active');
+            $(".user-type").find("#buyer_link").addClass('active');
+        }
+        else{
+            $(".user-type").find("#buyer_link").removeClass('active');
+            $(".user-type").find("#seller_link").addClass('active');
+        }
+        $('#help_not a').hover(function (e) {
+            $('#help_not .des').css({
+                left: e.offsetX,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+        $('#notification a').hover(function (e) {
+            $('#notification .des').css({
+                left: e.offsetX,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+        $('#messages a').hover(function (e) {
+            $('#messages .des').css({
+                left: e.offsetX,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+    });
+</script>
+{% endblock %}

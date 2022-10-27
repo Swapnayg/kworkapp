@@ -1,0 +1,945 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Billing History</title>
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="manage_gigs">
+       <div class="col-11 text-center p-0 mt-3 mb-2">
+          <div class="card px-0 pt-4 pb-0 mb-3"  id="manage_gigs_card">
+             <div class="row">
+                <div class="col-md-12 db-manage-gigs ">
+                    <h1 class="alt">Billing</h1>
+                </div>
+                <div class="col-md-12 mx-0">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li><a href="#billinghistorytab" role="tab" class="active" data-toggle="tab">Billing History </a></li>
+                        <li><a href="#balancestab" role="tab" data-toggle="tab">Balances </a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="billinghistorytab">
+                                <h4 class="m-t-40 m-b-40">Billing history</h4>
+                                <div class="table-main">
+                                   <div class="table-menubar">
+                                      <div class="table-menubar-controls">
+                                         <div class="table-menubar-filters-wrapper">
+                                            <div class="table-menubar-filter-wrapper">
+                                               <div class="W46fKfn cK9KPQl">
+                                                  <span class="_5-fo9i5">
+                                                     <div class="table-filter-button-wrapper">
+                                                        <button class="FW1syM7 NoXfjG8 co-grey-1000 table-filter-button DFk8oxc bg-co-white" onclick="date_select_click(this);" id="date_select">
+                                                           <span class="table-filter-button-text">Date range</span>
+                                                           <span class="XQskgrQ table-filter-button-chevron" aria-hidden="true" style="width: 10px; height: 10px;">
+                                                              <svg width="11" height="7" viewBox="0 0 11 7" xmlns="http://www.w3.org/2000/svg">
+                                                                 <path d="M5.4636 6.38899L0.839326 1.769C0.692474 1.62109 0.692474 1.38191 0.839326 1.23399L1.45798 0.61086C1.60483 0.462945 1.84229 0.462945 1.98915 0.61086L5.72919 4.34021L9.46923 0.61086C9.61608 0.462945 9.85354 0.462945 10.0004 0.61086L10.619 1.23399C10.7659 1.38191 10.7659 1.62109 10.619 1.769L5.99477 6.38899C5.84792 6.5369 5.61046 6.5369 5.4636 6.38899Z"></path>
+                                                              </svg>
+                                                           </span>
+                                                        </button>
+                                                        <div class="Gcze-fJ" id="date_range_div">
+                                                            <aside class="_77O-JH4"  data-position="top-left" style="min-width: 134.484px; left: 32px; top: 81.3906px; padding-bottom: 8px; padding-top: 8px;">
+                                                               <form id="date_range_form">
+                                                                <div class="_5KluhlZ">
+                                                                  <div class="table-filter table-filter-type-date">
+                                                                     <div class="table-filter-header">
+                                                                        <h6 class="co-text-darkest">Date range</h6>
+                                                                     </div>
+                                                                     <div class="table-filter-body">
+                                                                        <div class="flex">
+                                                                           <div class="m-r-12">
+                                                                              <h6 class="tbody-6 text-semi-bold m-b-8">From</h6>
+                                                                              <div class="W46fKfn cK9KPQl +cX12Jm">
+                                                                                 <span class="_5-fo9i5">
+                                                                                    <div class="WvIqLXU eXfr7qm">
+                                                                                       <div class="+T1b6wH"><input class="GD3asS+" type="date" id="date_from"  position="bottom-left"  value="" required></div>
+                                                                                    </div>
+                                                                                 </span>
+                                                                              </div>
+                                                                           </div>
+                                                                           <div class="m-l-12">
+                                                                              <h6 class="tbody-6 text-semi-bold m-b-8">To</h6>
+                                                                              <div class="W46fKfn cK9KPQl +cX12Jm">
+                                                                                 <span class="_5-fo9i5">
+                                                                                    <div class="WvIqLXU eXfr7qm">
+                                                                                       <div class="+T1b6wH"><input class="GD3asS+" type="date" id="date_to"   position="bottom-left" value="" required></div>
+                                                                                    </div>
+                                                                                 </span>
+                                                                              </div>
+                                                                           </div>
+                                                                        </div>
+                                                                     </div>
+                                                                     <div class="table-filter-footer">
+                                                                        <div class="table-filter-footer-button"></div>
+                                                                        <div class="table-filter-footer-button"><input type="submit" class="FW1syM7 L1yjt43 p9qU5Ka co-green-100 QsHAjag bg-co-green-300" value="Apply"></div>
+                                                                     </div>
+                                                                  </div>
+                                                               </div>
+                                                            </form>
+                                                            </aside>
+                                                         </div>
+                                                     </div>
+                                                  </span>
+                                               </div>
+                                            </div>
+                                            <div class="table-menubar-filter-wrapper">
+                                               <select id="category" onchange="categoryonChange(this)">
+                                                    <option> Select Category</option>
+                                                    {% for cat_list in cat_lists %}
+                                                        <option value="{{cat_list.cat_id}}">{{cat_list.cat_name}}</option>
+                                                    {% endfor %}
+                                               </select>
+                                            </div>
+                                         
+                                         </div>
+                                       
+                                      </div>
+                                   </div>
+                                   <div class="table-body table-body-border">
+                                      <table class="table table-selectable" id="tbl_balance">
+                                         <thead class="table-thead">
+                                            <tr class="table-tr">
+                                               <th class="table-th table-col" colspan="3">Date</th>
+                                               <th class="table-th table-col table-hide-sm" colspan="4">Transaction</th>
+                                               <th class="table-th table-col table-hide-md" colspan="5">Service</th>
+                                               <th class="table-th table-col table-hide-md" colspan="3">Order</th>
+                                               <th class="table-th table-col table-hide-sm table-align-right" colspan="2">Currency</th>
+                                               <th class="table-th table-col table-align-right" colspan="3">Total</th>
+                                            </tr>
+                                         </thead>
+                                         <tbody class="table-tbody">
+                                          
+                                         </tbody>
+                                      </table>
+                                   </div>
+                                  
+                                </div>
+                        </div>
+                        <div class="tab-pane" id="balancestab"> 
+                                <h4 class="m-t-40 m-b-40">Available balances</h4>
+                                <div class="billing-hidden lg-billing-visible">
+                                   <div class="nN3Nb0x RRjyLus">
+                                      <div class="fit-col-xs-6">
+                                         <h6 class="m-b-16 ">Letworkbedone Balance</h6>
+                                      </div>
+                                      <div class="fit-col-xs-6">
+                                         <h6 class="m-b-16 ">Letworkbedone Credits</h6>
+                                      </div>
+                                   </div>
+                                   <div class="nN3Nb0x RRjyLus">
+                                      <div class="fit-col-xs-6">
+                                         <dl class="flex bg-co-white QnNhENV flex-col p-l-24 p-r-24 SdWyMBk">
+                                            <div class="p-t-24 p-b-24 IiCJj-i b-0">
+                                               <div class="flex flex-row flex-between flex-items-start">
+                                                  <div class="flex flex-items-center earning_div" style="gap: 8px;">
+                                                     <dt class="co-grey-1000 text-semi-bold">Earnings</dt>
+                                                     <div class="W46fKfn k-kBZXW">
+                                                        <span class="_5-fo9i5">
+                                                           <span class="XQskgrQ k-kBZXW" aria-label="tooltip" role="img" style="width: 12px; height: 12px; fill: rgb(181, 182, 186);">
+                                                              <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentFill">
+                                                                 <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16ZM6.667 6.222c0-.228.075-.59.277-.87C7.112 5.12 7.4 4.89 8 4.89c.734 0 1.116.388 1.245.777.136.41.02.867-.405 1.15-.701.468-1.218.92-1.49 1.556-.24.56-.24 1.175-.239 1.752v.098H8.89c0-.728.015-.964.095-1.15.06-.142.21-.356.842-.777a2.751 2.751 0 0 0 1.106-3.19C10.558 3.978 9.488 3.111 8 3.111c-1.179 0-2.001.511-2.5 1.203a3.37 3.37 0 0 0-.611 1.908h1.778Zm2.222 6.667V11.11H7.11v1.778H8.89Z"></path>
+                                                              </svg>
+                                                           </span>
+                                                        </span>
+                                                     </div>
+                                                  </div>
+                                                  <div class="text-trunc earning_page" style="margin-top: 0px;"><a href="/earnings?source=balances" class="co-blue DlZb6gW" target="_blank" rel="noopener noreferrer">Your Earnings Page</a></div>
+                                               </div>
+                                               <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;"> $ {{earning_bal}}</dd>
+                                               <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Available for withdrawal or purchases.</dd>
+                                            </div>
+                                            <div class="p-t-24 p-b-24 IiCJj-i ">
+                                               <div class="flex flex-items-center" style="gap: 8px;">
+                                                  <dt class="co-grey-1000 text-semi-bold">From canceled orders</dt>
+                                                  <div class="W46fKfn k-kBZXW">
+                                                     <span class="_5-fo9i5">
+                                                        <span class="XQskgrQ k-kBZXW" aria-label="tooltip" role="img" style="width: 12px; height: 12px; fill: rgb(181, 182, 186);">
+                                                           <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentFill">
+                                                              <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16ZM6.667 6.222c0-.228.075-.59.277-.87C7.112 5.12 7.4 4.89 8 4.89c.734 0 1.116.388 1.245.777.136.41.02.867-.405 1.15-.701.468-1.218.92-1.49 1.556-.24.56-.24 1.175-.239 1.752v.098H8.89c0-.728.015-.964.095-1.15.06-.142.21-.356.842-.777a2.751 2.751 0 0 0 1.106-3.19C10.558 3.978 9.488 3.111 8 3.111c-1.179 0-2.001.511-2.5 1.203a3.37 3.37 0 0 0-.611 1.908h1.778Zm2.222 6.667V11.11H7.11v1.778H8.89Z"></path>
+                                                           </svg>
+                                                        </span>
+                                                     </span>
+                                                  </div>
+                                               </div>
+                                               <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{cancel_bal}}</dd>
+                                               <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Use for purchases.</dd>
+                                            </div>
+                                         </dl>
+                                      </div>
+                                      <div class="fit-col-xs-6">
+                                         <dl class="flex bg-co-white QnNhENV flex-col p-l-24 p-r-24 SdWyMBk">
+                                            <div class="p-t-24 p-b-24 IiCJj-i b-0">
+                                               <div class="flex flex-items-center" style="gap: 8px;">
+                                                  <dt class="co-grey-1000 text-semi-bold">Credits</dt>
+                                                  <div class="W46fKfn k-kBZXW">
+                                                     <span class="_5-fo9i5">
+                                                        <span class="XQskgrQ k-kBZXW" aria-label="tooltip" role="img" style="width: 12px; height: 12px; fill: rgb(181, 182, 186);">
+                                                           <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentFill">
+                                                              <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16ZM6.667 6.222c0-.228.075-.59.277-.87C7.112 5.12 7.4 4.89 8 4.89c.734 0 1.116.388 1.245.777.136.41.02.867-.405 1.15-.701.468-1.218.92-1.49 1.556-.24.56-.24 1.175-.239 1.752v.098H8.89c0-.728.015-.964.095-1.15.06-.142.21-.356.842-.777a2.751 2.751 0 0 0 1.106-3.19C10.558 3.978 9.488 3.111 8 3.111c-1.179 0-2.001.511-2.5 1.203a3.37 3.37 0 0 0-.611 1.908h1.778Zm2.222 6.667V11.11H7.11v1.778H8.89Z"></path>
+                                                           </svg>
+                                                        </span>
+                                                     </span>
+                                                  </div>
+                                               </div>
+                                               <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{avail_bal}}</dd>
+                                               <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Use for purchases.</dd>
+                                            </div>
+                                            <div class="p-t-24 p-b-24 IiCJj-i ">
+                                               <div class="conclude_div">
+                                                  <h5>Like to earn some credits?</h5>
+                                                  <p class="m-t-8">Refer people you know and everyone benefits!</p>
+                                                  <a class="FW1syM7 L1yjt43 co-white billing-w-full sm-billing-w-auto m-t-28 bg-co-green-700" target="_blank" rel="noreferrer" href="/affiliate_program">Earn Letworkbedone Credits</a>
+                                               </div>
+                                            </div>
+                                         </dl>
+                                      </div>
+                                   </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>     
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+ {% if request.session.userpage == "buyer" %}
+    {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+<style>
+    #manage_gigs
+    {
+        background:white !important;
+    }
+    .nav-tabs
+    {
+        border:none;
+    }
+    .nav-tabs li
+    {
+        width: 15%;
+    }
+    .nav-tabs li a.active{
+        color: #2E5DC5;
+        border-width: medium;
+        border-bottom: 3px solid #2E5DC5 !important;
+    }   
+
+    .db-manage-gigs .db-new-filters .btn-create-gig {
+        position: absolute;
+        right: 0;
+        top: 10px;
+    }
+    .btn-standard.btn-green {
+        background-color: #2E5DC5;
+        font-weight: 700;
+        color: #fff!important;
+        border: 1px solid transparent;
+        padding: 8px;
+        border-radius: 5px;
+        float: right;
+    }
+     h1.alt, .text-display-1.alt {
+        font-weight: 600;
+        display: inline-block;
+        float: left;
+        font-size: 35px;
+        padding-bottom: 1%;
+    }
+    .db-new-header {
+        padding-bottom: 20px;
+    }
+    .cf:before, .cf:after {
+        content: " ";
+        display: table;
+    }
+    .db-manage-gigs header .accept-requests {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+        flex-direction: row-reverse;
+    }
+    .toggle-wrapper:first-child {
+        margin-left: 0;
+    }
+    .db-manage-gigs header .accept-briefs {
+        margin-right: 24px;
+    }
+    .toggle-wrapper {
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 30px;
+    }
+    .db-manage-gigs header .accept-requests .toggle-wrapper label {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .toggle-wrapper label {
+        display: inline-block;
+        vertical-align: middle;
+        font-size: 14px;
+        color: #222325;
+        text-transform: capitalize;
+        cursor: pointer;
+    }
+    .hint--bottom-right:before, .hint--bottom-right:after {
+        top: 100%;
+        right: 50%;
+    }
+    .toggle-wrapper label input[type=checkbox] {
+        display: none;
+    }
+    .db-manage-gigs header .accept-requests .toggle-wrapper .fake-toggle {
+        margin: 0 8px;
+    }
+    .toggle-wrapper label .fake-toggle {
+        background-color: #fff;
+        width: 30px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-left: 7px;
+        position: relative;
+        box-shadow: inset 0 0 0 1px #ccc;
+        border-radius: 15px;
+    }
+    .hint--bottom-right:before, .hint--bottom-right:after {
+        top: 100%;
+        right: 50%;
+    }
+    .toggle-wrapper label .fake-toggle:before, .toggle-wrapper label .fake-toggle:after {
+        content: '';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        width: 20px;
+        height: 20px;
+        border-radius: 15px;
+    }
+    .toggle-wrapper label .fake-toggle:before {
+        background-color: #2E5DC5;
+        -webkit-transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+        transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+    }
+    .db-manage-gigs header .accept-briefs .set-budget-cta {
+        background: 0 0;
+        border: none;
+        text-decoration: underline;
+        color: #404145;
+        margin-left: 4px;
+    }
+    .hint--top:before, .hint--top:after {
+        bottom: 100%;
+        left: 50%;
+    }
+    .hint--top:before {
+        margin-left: -5px;
+        margin-bottom: -12px;
+        border-top-color: #222325;
+    }
+    #manage_gigs
+    {
+        margin-left: 2%;
+        margin-right: 2%;
+    }
+    #manage_gigs ul li a
+    {
+        font-size: 14px;
+        color: #333;
+        font-weight: 600;
+        padding: 20px;
+        line-height: 30px;
+        height: 30px;
+        text-decoration: none;
+    }
+    .tab-content
+    {
+        padding-top: 2%;
+    }
+    .m-b-40 {
+        margin-bottom: 40px;
+    }
+    .table-menubar-controls {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .table-menubar-filters-wrapper {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+    }
+    .table-menubar-filter-wrapper {
+        margin-right: 16px;
+    }
+    #billinghistorytab .m-b-40,#balancestab .m-b-40
+    {
+        text-align: left;
+        font-size: 20px;
+        font-weight: 700;
+        margin-top:2%;
+        padding-left:2%;
+    }
+
+    .W46fKfn, .W46fKfn ._5-fo9i5 {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+    }
+    .W46fKfn.cK9KPQl>._5-fo9i5 {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .FW1syM7 {
+        display: inline-block;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+        padding: 12px 24px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 100%;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+        -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+        transition: 70ms cubic-bezier(.75,0,.25,1);
+    }
+    .table-filter-button-wrapper .table-filter-button {
+        border-radius: 4px;
+        border: 1px solid #dadbdd;
+        padding-left: 25px;
+        padding-right: 25px;
+        background-color: #fff;
+        white-space: nowrap;
+    }
+    .table-menubar-filter-wrapper select
+    {
+        padding: 6%;
+        background: white;
+        border: 1px solid #dadbdd;
+        color: black;
+        font-size: 15px;
+        font-weight: 600;
+    }
+    .earning_div
+    {
+        width:70%;
+    }
+    .table-body {
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .table-body-border {
+        border: 1px solid #dadbdd;
+    }
+    .table-body+.table-pagination, .table-menubar+.table-body, .table-menubar+.table-status, .table-status+.table-body {
+        margin-top: 24px;
+    }
+    .table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        color: #404145;
+        font-size: 14px;
+    }
+    .table-thead {
+        background-color: #fafafa;
+    }
+    .table-td, .table-th {
+        font-size: 14px;
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        text-align: left;
+        vertical-align: middle;
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+    .table-th {
+        height: 44px;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    
+    .-SSRhMt {
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        color: #404145;
+    }
+    .-SSRhMt input[type=checkbox] {
+        height: 0;
+        width: 0;
+        opacity: 0;
+    }
+    .FO1WDvp {
+        background-color: #fff;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        display: -webkit-inline-box;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        position: relative;
+        width: 18px;
+        min-width: 18px;
+        height: 18px;
+        border: 1px solid #c5c6c9;
+        border-radius: 2px;
+        margin-right: 8px;
+        cursor: pointer;
+    }
+    #date_range_div
+    {
+        display:none;
+    }
+    #date_range_div h6{
+        text-align:left;
+    }
+    #date_range_div .flex
+    {
+        padding:5%;
+    }
+    .FO1WDvp, .L8UwSlD {
+        -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+        -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+        transition: 70ms cubic-bezier(.75,0,.25,1);
+    }
+    .table .table-checkbox span {
+        margin-right: 0;
+    }
+    .L8UwSlD {
+        -webkit-transform: scale(.5);
+        transform: scale(.5);
+        -webkit-transform-origin: 50% 50%;
+        transform-origin: 50% 50%;
+        display: inline-block;
+        font-weight: inherit;
+        font-style: inherit;
+        opacity: 0;
+        pointer-events: none;
+        fill: #62646a;
+    }
+    .XQskgrQ {
+        fill: #74767e;
+        background: none;
+        border: none;
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+    }
+    .table .table-checkbox span {
+        margin-right: 0;
+    }
+    .XQskgrQ svg {
+        float: left;
+        height: 100%;
+        width: 100%;
+    }
+
+    .nN3Nb0x {
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex: 0 1 auto;
+        flex: 0 1 auto;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-flow: row wrap;
+        flex-flow: row wrap;
+        margin-left: -6px;
+        margin-right: -6px;
+    }
+    .nN3Nb0x.RRjyLus {
+        margin-left: -16px;
+        margin-right: -16px;
+    }
+    .conclude_div h5{
+        color: #404145;
+        font-family: Macan,Helvetica Neue,Helvetica,Arial,sans-serif;
+        font-weight: 700;
+        line-height: 140%;
+        font-size: 20px;
+    }
+    .m-t-8 {
+        margin-top: 8px;
+    }
+    .bg-co-green-700 {
+        background-color: rgb(41, 83, 176);
+    }
+    .co-white {
+        color: #fff;
+    }
+    .FW1syM7 {
+        display: inline-block;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+        padding: 12px 24px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 100%;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+        -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+        transition: 70ms cubic-bezier(.75,0,.25,1);
+        text-decoration:none;
+    }
+    .FW1syM7:hover
+    {
+        color:white;
+        text-decoration:none;
+    }
+    .m-t-28 {
+        margin-top: 28px;
+    }
+    .nN3Nb0x>[class*=fit-col-] {
+        -ms-flex: 0 0 auto;
+        flex: 0 0 auto;
+        -ms-flex-preferred-size: 100%;
+        flex-basis: 100%;
+        max-width: 100%;
+        padding: 0 6px;
+    }
+    .nN3Nb0x.RRjyLus>.fit-col-xs-6 {
+        -ms-flex-preferred-size: 50%;
+        flex-basis: 50%;
+        max-width: 50%;
+    }
+    .nN3Nb0x.RRjyLus>[class*=fit-col-] {
+        padding: 0 16px;
+    }
+    .m-b-16 {
+        margin-bottom: 16px;
+    }
+    .billing-hidden
+    {
+        text-align:left;
+        padding-left: 4%;
+    }
+    .flex-col {
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+    }
+    .QnNhENV {
+        border: 1px solid #e4e5e7;
+        border-radius: 4px;
+    }
+    .SdWyMBk {
+        height: 100%;
+    }
+    .SdWyMBk {
+        padding-right: 32px;
+        padding-left: 32px;
+    }
+    .W46fKfn, .W46fKfn ._5-fo9i5 {
+        display: -webkit-inline-box;
+        display: -webkit-inline-flex;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+    }
+    .flex, .flex-center {
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        position:relative;
+    }
+    .flex-row
+    {
+        width:100%;
+        margin-top:3%;
+    }
+    .W46fKfn ._5-fo9i5  {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    #balancestab  .W46fKfn ._5-fo9i5 
+    {
+        position:absolute;
+        top:6px;
+    }
+    .text-trunc {
+        overflow: hidden;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .DlZb6gW {
+        font-size: 16px;
+        line-height: 24px;
+    }
+    .text-display-0, .text-display-1, .text-display-2, .text-display-3, .text-display-4, .text-display-5, .text-display-6, .text-display-7 {
+        color: #404145;
+        font-family: Macan,Helvetica Neue,Helvetica,Arial,sans-serif;
+        font-weight: 700;
+    }
+    .text-display-3 {
+        font-size: 24px;
+        line-height: 130%;
+    }
+    .text-display-3 {
+        font-size: 28px;
+    }
+    .text-bold {
+        font-weight: 700;
+    }
+    .tbody-6, .text-body-2 {
+        font-size: 14px;
+        line-height: 21px;
+    }
+    .co-grey-1000 {
+        color: #62646a;
+    }
+
+    .IiCJj-i {
+        border-top: 1px solid #e4e5e7;
+    }
+    .p-b-24 {
+        padding-bottom: 24px;
+    }
+    .p-t-24 {
+        padding-top: 24px;
+    }
+    .Gcze-fJ {
+        left: -22px;
+        position: absolute;
+        top: -43px;
+        width: 100%;
+        z-index: 1;
+    }
+    .lg-billing-visible .fit-col-xs-6 h6
+    {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .table-main
+    {
+        padding:2%;
+    }
+    ._77O-JH4 {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        position: absolute;
+        z-index: 10000;
+    }
+    ._5KluhlZ {
+        background-color: #fff;
+        border: 1px solid #e4e5e7;
+        border-radius: 4px;
+        -webkit-box-shadow: 0 0 5px 1px rgba(0,0,0,.05);
+        box-shadow: 0 0 5px 1px rgba(0,0,0,.05);
+        position: relative;
+    }
+    .table-filter {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        background-color: #fff;
+        border-radius: 4px;
+        min-width: 240px;
+    }
+    .table-filter-type-date {
+        width: 420px;
+    }
+    .table-filter-header {
+        padding: 24px 24px 0;
+    }
+    .co-text-darkest {
+        color: #222325;
+        font-size: 18px;
+        line-height: 140%;
+        font-weight:600;
+    }
+    .m-r-12 {
+        margin-right: 12px;
+    }
+    .text-semi-bold {
+        font-weight: 600;
+    }
+    .W46fKfn.\+cX12Jm {
+        position: relative;
+    }
+    .W46fKfn.cK9KPQl>._5-fo9i5 {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+    .WvIqLXU {
+        display: inline-block;
+        position: relative;
+    }
+    .W46fKfn.cK9KPQl>._5-fo9i5 {
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        position: relative;
+    }
+    input.GD3asS\+ {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #c5c6c9;
+        border-radius: 4px;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        font: inherit;
+        color: #404145;
+        -webkit-transition: .15s ease-in-out;
+        -o-transition: .15s ease-in-out;
+        transition: .15s ease-in-out;
+    }
+
+    .table-filter-footer {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        padding: 12px 24px;
+        border-top: 1px solid #efeff0;
+    }
+    .bg-co-green-300 {
+        background-color: rgb(46, 93, 197);
+    }
+
+    .FW1syM7 {
+        display: inline-block;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        position: relative;
+        padding: 12px 24px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 16px;
+        line-height: 100%;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+        -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+        -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+        transition: 70ms cubic-bezier(.75,0,.25,1);
+        color:white;
+    }
+    .FW1syM7.p9qU5Ka {
+        padding: 10px 16px;
+        font-size: 14px;
+    }
+    #date_select
+    {
+        color:black;
+    }
+
+</style>
+
+<script>
+    $(document).ready(function(){
+        $.ajax({
+            type:"GET",
+            url: "/get_date_range_data/",
+            data: {'userid':'{{request.user.id}}','date_from':"",'date_to':"","data_all":"all","category":"","cat_active":"no"},
+            success: function(data) 
+            {  
+                $("#tbl_balance tbody").empty();
+                $.each(data, function(i, v) {
+                    $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                });
+            }
+        });
+        $("#date_range_form").submit(function(e)
+        {
+            e.preventDefault();
+            date_from = $("#date_from").val();
+            date_to = $("#date_to").val();
+            $.ajax({
+                type:"GET",
+                url: "/get_date_range_data/",
+                data: {'userid':'{{request.user.id}}','date_from':date_from,'date_to':date_to,"data_all":"","category":"","cat_active":"no"},
+                success: function(data) 
+                {  
+                    $("#tbl_balance tbody").empty();
+                    $.each(data, function(i, v) {
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                    });
+                    $("#date_range_div").toggle();
+                }
+            });
+        });
+    });
+    function date_select_click(ev)
+    {
+        $("#date_range_div").toggle();
+    }
+    function categoryonChange(ev)
+    {
+        if(ev.value.trim().length != 0)
+        {
+            $.ajax({
+                type:"GET",
+                url: "/get_date_range_data/",
+                data: {'userid':'{{request.user.id}}','date_from':"",'date_to':"","data_all":"","category":$("#category option:selected").text(),"cat_active":"yes"},
+                success: function(data) 
+                {  
+                    $("#tbl_balance tbody").empty();
+                    $.each(data, function(i, v) {
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                    });
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% include  'base.html' %}
+{% load static %}
+{% load humanize %}
+{% block contentarea%}
+<title>Letworkbedone - Reviews</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="testimonials">
+      <div class="landing-category__portfolio">
+         <div class="kw-wrapper">
+            <div class="landing-category__portfolio-wrapper">
+               <div class="landing-category__portfolio-wrap">
+                  <div class="landing-category__portfolio-description">
+                     <h3 class="landing-category__portfolio-title">What <span class="landing-category__portfolio-title-colored" style="color: rgb(4, 183, 10);">our clients</span> have to say</h3>
+                     <div class="landing-category__portfolio-rating">
+                        <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="m15 9 3.576 6.986L26 17.404l-5.214 5.735L21.798 31 15 27.558 8.202 31l1.012-7.862L4 17.403l7.424-1.416L15 9Z" fill="#FFA800"></path>
+                        </svg>
+                        <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="m15 9 3.576 6.986L26 17.404l-5.214 5.735L21.798 31 15 27.558 8.202 31l1.012-7.862L4 17.403l7.424-1.416L15 9Z" fill="#FFA800"></path>
+                        </svg>
+                        <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="m15 9 3.576 6.986L26 17.404l-5.214 5.735L21.798 31 15 27.558 8.202 31l1.012-7.862L4 17.403l7.424-1.416L15 9Z" fill="#FFA800"></path>
+                        </svg>
+                        <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="m15 9 3.576 6.986L26 17.404l-5.214 5.735L21.798 31 15 27.558 8.202 31l1.012-7.862L4 17.403l7.424-1.416L15 9Z" fill="#FFA800"></path>
+                        </svg>
+                        <svg width="30" height="40" viewBox="0 0 30 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                           <path d="m15 9 3.576 6.986L26 17.404l-5.214 5.735L21.798 31 15 27.558 8.202 31l1.012-7.862L4 17.403l7.424-1.416L15 9Z" fill="#FFA800"></path>
+                        </svg>
+                     </div>
+                     <div class="landing-category__portfolio-rating-text">{{aver_count}} out of 5 based on {{no_reviews|intcomma }} ratings</div>
+                  </div>
+                  <div class="landing-category__portfolio-slider">
+                     <div class="swiper js-landing-portfolio-slider swiper-fade swiper-initialized swiper-horizontal swiper-pointer-events swiper-backface-hidden">
+                        <div class="swiper-wrapper" style="transition-duration: 0ms;">
+                           <div class="swiper-slide swiper-slide-duplicate" data-color="#C418E0" data-profile="TomaSar" data-profile-link="/user/tomasar" data-swiper-slide-index="4" style="width: 506px; opacity: 0; transform: translate3d(0px, 0px, 0px); transition-duration: 0ms;">
+                              <picture><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-5.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide" data-color="#32BBEC" data-profile="Xdga" data-profile-link="/user/xdga" data-swiper-slide-index="0" style="width: 506px; opacity: 0; transform: translate3d(-506px, 0px, 0px); transition-duration: 0ms;">
+                              <picture><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-1.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide swiper-slide-prev" data-color="#C70101" data-profile="shahguseinov" data-profile-link="/user/shahguseinov" data-swiper-slide-index="1" style="width: 506px; opacity: 0; transform: translate3d(-1012px, 0px, 0px); transition-duration: 0ms;">
+                              <picture class="js-lazy-load-image lazy-load_initialized"><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/second.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide swiper-slide-visible swiper-slide-active" data-color="#04B70A" data-profile="koroblev" data-profile-link="/user/koroblev" data-swiper-slide-index="2" style="width: 506px; opacity: 1; transform: translate3d(-1518px, 0px, 0px); transition-duration: 0ms;">
+                              <picture class="js-lazy-load-image lazy-load_initialized"><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-3.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide swiper-slide-next" data-color="#ED2F38" data-profile="Vadim_Porsh" data-profile-link="/user/vadim_porsh" data-swiper-slide-index="3" style="width: 506px; opacity: 0; transform: translate3d(-2024px, 0px, 0px); transition-duration: 0ms;">
+                              <picture><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-4.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide" data-color="#C418E0" data-profile="TomaSar" data-profile-link="/user/tomasar" data-swiper-slide-index="4" style="width: 506px; opacity: 0; transform: translate3d(-2530px, 0px, 0px); transition-duration: 0ms;">
+                              <picture><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-5.webp' %}" alt=""></picture>
+                           </div>
+                           <div class="swiper-slide swiper-slide-duplicate" data-color="#32BBEC" data-profile="Xdga" data-profile-link="/user/xdga" data-swiper-slide-index="0" style="width: 506px; opacity: 0; transform: translate3d(-3036px, 0px, 0px); transition-duration: 0ms;">
+                              <picture><img class="landing-category__portfolio-slider-image" src="{% static 'assets/images/portfolio/slide-1.webp' %}" alt=""></picture>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="landing-category__portfolio-footer">
+                        <p class="landing-category__portfolio-profile">By <a href="/user/koroblev" target="_blank" class="landing-category__portfolio-profile-link">koroblev</a>, freelance designer</p>
+                        <div class="js-portfolio-slider-pagination landing-category__portfolio-pagination swiper-pagination-clickable swiper-pagination-bullets swiper-pagination-horizontal"><span class="landing-category__slider-pagination-bullet"></span><span class="landing-category__slider-pagination-bullet"></span><span class="landing-category__slider-pagination-bullet landing-category__slider-pagination-bullet--active"></span><span class="landing-category__slider-pagination-bullet"></span><span class="landing-category__slider-pagination-bullet"></span></div>
+                     </div>
+                  </div>
+               </div>
+               <div class="landing-category__portfolio-advantages">Over 444,306 individuals and companies have chosen Kwork for their freelance needs, from custom logo design to website development and so much more. Read what they think about placing orders on Kwork.</div>
+            </div>
+         </div>
+         <div id="app-youtube-modal">
+            <youtube-modal ref="youtubeModal" video-id="xALqtDLtIWw"></youtube-modal>
+         </div>
+      </div>
+      <div class="kw-wrapper">
+         <div id="app-testimonials">
+            <div class="testimonials__wrapper">
+               <div class="testimonials__filter">
+                  <div class="testimonials__filter-items">
+                     <div class="testimonials__filter-item">
+                        <div class="testimonials__filter-item-header">Category</div>
+                        <div class="chosen-style">
+                           <select data-placeholder="All categories" id="all_category" onchange="categoryOnchange(this);">
+                              <option class="result-default" value="0">
+                                 All categories
+                              </option>
+                              {% for cat in categories %}
+                              <option class="result-default" value="{{cat.id}}">
+                                 {{cat.category_Name}}
+                              </option>
+                              {% endfor %}
+                           </select>
+                        
+                        </div>
+                     </div>
+                     <div class="testimonials__filter-item">
+                        <div class="testimonials__filter-item-header">Service</div>
+                        <div class="chosen-style">
+                           <select data-placeholder="All services" id="sub_category" onchange="sub_categoryOnchange(this);">
+                              <!----> 
+                              <option class="result-default" value="0">
+                                 All services
+                              </option>
+
+                           </select>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <div data-preloader-class="testimonials__preloader" class="testimonials__items-wrapper">
+                  <div class="testimonials__count">70 Reviews</div>
+                  <!----> 
+                  <div class="testimonials__items" id="testimonials">
+                                                
+                  </div>
+               </div>       
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<script>
+   $(document).ready(function(){
+      $("#all_category").prop("selectedIndex", 1).val();
+      $("#all_category").trigger("change");
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+
+
+function categoryOnchange(ev)
+{
+   $.ajax({
+      type:"GET",
+      url: "/post_sub_category_details/",
+      data: {'userid': '{{request.user.id}}',"select_id":$("#all_category").val().toString()},
+      success: function(data)
+      {  
+         $("#sub_category").empty();
+         $("#sub_category").append("<option value=''>All Services</option>");
+         $.each(data, function(i, v) {
+            $("#sub_category").append("<option value='"+v.cat_id+"'>"+v.cat_name+"</option>");
+         });
+         $("#sub_category").prop("selectedIndex", 1).val();
+         $("#sub_category").trigger("change");
+      }       
+   });
+   
+}
+
+function sub_categoryOnchange(ev)
+{
+   $.ajax({
+      type:"GET",
+      url: "/get_buyer_reviews/",
+      data: {'sub_category': $('#sub_category').find(":selected").text()},
+      success: function(data) 
+      {  
+         $(".testimonials__count").text(data.length+ " Reviews");
+         $("#testimonials").empty();
+         $(data).each(function(i, ev) {  
+            $("#testimonials").append('<div class="testimonials__item"> <div class="testimonials__item-left"> <div class="testimonials__item-user-avatar"><a href="/user/profile/'+ev.rev_username+'"><span class="user-avatar t-user-avatar"><img src="'+ev.user_profile+'"></img></span></a></div> <div class="testimonials__item-user-info"> <div class="testimonials__item-rating"> <div class="testimonials__item-rating-star"> <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="m8 1 2.275 4.446L15 6.348l-3.318 3.649.644 5.003L8 12.81 3.674 15l.644-5.003L1 6.347l4.725-.901L8 1Z" fill="#FFA800"></path> </svg> </div> <div class="testimonials__item-rating-star"> <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="m8 1 2.275 4.446L15 6.348l-3.318 3.649.644 5.003L8 12.81 3.674 15l.644-5.003L1 6.347l4.725-.901L8 1Z" fill="#FFA800"></path> </svg> </div> <div class="testimonials__item-rating-star"> <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="m8 1 2.275 4.446L15 6.348l-3.318 3.649.644 5.003L8 12.81 3.674 15l.644-5.003L1 6.347l4.725-.901L8 1Z" fill="#FFA800"></path> </svg> </div> <div class="testimonials__item-rating-star"> <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="m8 1 2.275 4.446L15 6.348l-3.318 3.649.644 5.003L8 12.81 3.674 15l.644-5.003L1 6.347l4.725-.901L8 1Z" fill="#FFA800"></path> </svg> </div> <div class="testimonials__item-rating-star"> <svg width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="m8 1 2.275 4.446L15 6.348l-3.318 3.649.644 5.003L8 12.81 3.674 15l.644-5.003L1 6.347l4.725-.901L8 1Z" fill="#FFA800"></path> </svg> </div> </div> <div class="testimonials__item-time">'+ev.review_date+'</div> <div class="testimonials__item-user-name"><a href="/user/profile/'+ev.rev_username+'">'+ev.rev_username+'</a></div> </div> </div> <div class="testimonials__item-right"> <div class="testimonials__review"> <div class="testimonials__review-preview"> <div class="testimonials__review-text clipped">'+ev.message+' </div> </div> </div> </div> </div> </div> </div>')
+        });
+      }
+   });
+}
+</script>
+{% endblock %}

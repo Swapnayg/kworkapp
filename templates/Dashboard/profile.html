@@ -1,0 +1,994 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>{{request.user.username | title}} |{{profile_Details.main_category.category_Name}} ,  {{profile_Details.sub_category.sub_category_Name}} | Letworkbedone </title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/profile.css' %}" type="text/css" />
+
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-5 mb-5" id="profile_view">
+        <div class="col-md-12 mx-0">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="SellerCard-component">
+                        <div class="seller-card seller_card-package" data-reactroot="">
+                            <div style="position: absolute; right: 0px; height: 20px; left: 0px;">
+                                {% if userDetails.username != request.user.username %}
+                                <input type="hidden" value="{{user_avail|length}}">
+                                    {% if user_avail|length == 0 %}
+                                        <div class="user-online-indicator is-online " data-user-id="109558113">
+                                            <i class="dot"></i>Online
+                                        </div>
+                                    {% else %}
+                                        <div class="user-online-indicator is-online offline " data-user-id="109558113">
+                                            <i class="dot"></i>Not Available
+                                        </div>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                           <div class="user-profile-info">
+                              <div>
+                                 <div class="user-profile-image">
+                                    <label class="profile-pict editable" style="width:150px;height:150px;font-size:3em" for="profile_image_4785022353223">
+                                       <div class="camera-icon-wrapper">
+                                          <span class="lFICM06 camera-input-icon" style="width:50px;height:50px;fill:white" aria-hidden="true">
+                                             <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M8 5.8182C6.29294 5.8182 4.90909 7.20205 4.90909 8.90911C4.90909 10.6162 6.29294 12 8 12C9.70706 12 11.0909 10.6162 11.0909 8.90911C11.0909 7.20205 9.70706 5.8182 8 5.8182Z"></path>
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M1.45455 15.2727C1.06878 15.2727 0.698807 15.1195 0.426027 14.8467C0.153246 14.5739 0 14.204 0 13.8182V4.36366C0 3.97789 0.153246 3.60792 0.426027 3.33514C0.698807 3.06236 1.06878 2.90911 1.45455 2.90911H4.36364L5.81818 0.727295H10.1818L11.6364 2.90911H14.5455C14.9312 2.90911 15.3012 3.06236 15.574 3.33514C15.8468 3.60792 16 3.97789 16 4.36366V13.8182C16 14.204 15.8468 14.5739 15.574 14.8467C15.3012 15.1195 14.9312 15.2727 14.5455 15.2727H1.45455ZM3.81818 8.90911C3.81818 6.59956 5.69045 4.72729 8 4.72729C10.3096 4.72729 12.1818 6.59956 12.1818 8.90911C12.1818 11.2187 10.3096 13.0909 8 13.0909C5.69045 13.0909 3.81818 11.2187 3.81818 8.90911ZM2.90909 5.09093C2.90909 5.49259 2.58348 5.8182 2.18182 5.8182C1.78016 5.8182 1.45455 5.49259 1.45455 5.09093C1.45455 4.68927 1.78016 4.36366 2.18182 4.36366C2.58348 4.36366 2.90909 4.68927 2.90909 5.09093Z"></path>
+                                             </svg>
+                                          </span>
+                                       </div>
+                                       <input type="file" accept="image/png,image/jpeg" id="profile_image_4785022353223" class="hidden" name="profile[image]"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90">
+                                    </label>
+                                 </div>
+                              </div>
+                              <div class="user-profile-label">
+                                 <div class="username-line"><b class="seller-link">{{userDetails.username}}</b>  
+                                    <div class="liner-and-pen">
+                                        <a href="/account_settings" target="_blank">
+                                            <span class="fa fa-pencil"></span>
+                                        </a>
+                                    </div>
+                                </div>
+                                 <div class="oneliner-wrapper">
+                                   
+                                    <div class="ratings-wrapper">
+                                       <span class="rating-stars" data-user-rating="4.6" data-user-ratings-count="10"></span>
+                                       <div class="rating-text">
+                                          {% comment %} <div class="orca-rating color-yellow tbody-6">
+                                             <div class="stars">
+                                                Stars
+                                             </div>
+                                             <b class="rating-score rating-num">4.6</b>
+                                             <span class="ratings-count rating-count">
+                                                (<!-- -->10 reviews<!-- -->)
+                                             </span>
+                                          </div> {% endcomment %}
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           {% if userDetails.username != request.user.username %}
+                                <div class="buttons-wrapper">
+                                    <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" href="/inbox/{{request.user.username}}">Contact Me</a>
+                                    <button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" onclick="getquoteclick();" id="get_quote_btn">Get a Quote</button>
+                                <div id="react-first-message-popup"></div>
+                                </div>
+                           {% endif %}
+                           <div class="user-stats-desc">
+                              <ul class="user-stats with-border-top">
+                                 <li class="location">
+                                    <span>
+                                       <span class="lFICM06 user-stats-icon" style="width:13px;height:13px;fill:#62646A" aria-hidden="true">
+                                          <svg width="12" height="16" viewBox="0 0 12 16" xmlns="http://www.w3.org/2000/svg">
+                                             <g clip-path="url(#clip0)">
+                                                <path d="M5.38338 15.6772C0.842813 9.09472 0 8.41916 0 6C0 2.68628 2.68628 0 6 0C9.31372 0 12 2.68628 12 6C12 8.41916 11.1572 9.09472 6.61662 15.6772C6.31866 16.1076 5.68131 16.1076 5.38338 15.6772ZM6 8.5C7.38072 8.5 8.5 7.38072 8.5 6C8.5 4.61928 7.38072 3.5 6 3.5C4.61928 3.5 3.5 4.61928 3.5 6C3.5 7.38072 4.61928 8.5 6 8.5Z"></path>
+                                             </g>
+                                             <defs>
+                                                <clipPath id="clip0">
+                                                   <rect width="12" height="16"></rect>
+                                                </clipPath>
+                                             </defs>
+                                          </svg>
+                                       </span>
+                                       From
+                                    </span>
+                                    <b>{{userDetails.country.name}}</b>
+                                 </li>
+                                 <li class="member-since">
+                                    <span>
+                                       <span class="lFICM06 user-stats-icon" style="width:13px;height:13px;fill:#62646A" aria-hidden="true">
+                                          <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                             <path d="M7 8C9.20938 8 11 6.20937 11 4C11 1.79063 9.20938 0 7 0C4.79063 0 3 1.79063 3 4C3 6.20937 4.79063 8 7 8ZM9.8 9H9.27812C8.58437 9.31875 7.8125 9.5 7 9.5C6.1875 9.5 5.41875 9.31875 4.72188 9H4.2C1.88125 9 0 10.8813 0 13.2V14.5C0 15.3281 0.671875 16 1.5 16H12.5C13.3281 16 14 15.3281 14 14.5V13.2C14 10.8813 12.1187 9 9.8 9Z"></path>
+                                          </svg>
+                                       </span>
+                                       Member since
+                                    </span>
+                                    <b> {{ userDetails.created_at|date:"M Y" }}</b>
+                                 </li>
+                                 <li class="response-time">
+                                    <span>
+                                       <span class="lFICM06 user-stats-icon" style="width:13px;height:13px;fill:#62646A" aria-hidden="true">
+                                          <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                             <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                             <path d="M9 4H7v5h5V7H9V4z"></path>
+                                          </svg>
+                                       </span>
+                                       Avg. Response Time
+                                    </span>
+                                    <b>{{ userDetails.avg_respons}} hour</b>
+                                 </li>
+                                 <li class="recent-delivery">
+                                    <span>
+                                       <span class="lFICM06 user-stats-icon" style="width:13px;height:13px;fill:#62646A" aria-hidden="true">
+                                          <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                             <g clip-path="url(#clip0)">
+                                                <path d="M3.60004 9.60012V14.5001C3.60004 15.2001 4.40004 15.5001 4.90004 15.0001L7.20004 12.3001L11.9 15.8001C12.3 16.1001 12.9 15.9001 13 15.4001L16 0.900122C16.1 0.300122 15.6 -0.0998784 15 0.100122L0.500041 5.90012C4.0561e-05 6.10012 -0.0999594 6.80012 0.300041 7.20012L1.90004 8.40012L6.50004 6.20012C6.90004 6.00012 7.20004 6.50012 6.90004 6.70012L3.60004 9.60012Z"></path>
+                                             </g>
+                                             <defs>
+                                                <clipPath id="clip0">
+                                                   <rect width="16" height="16" fill="white"></rect>
+                                                </clipPath>
+                                             </defs>
+                                          </svg>
+                                       </span>
+                                       Last Delivery
+                                    </span>
+                                    <strong>
+                                        {{ userDetails.avg_respons}}months
+                                    </strong>
+                                 </li>
+                                 {% if userDetails.username == request.user.username %}
+                                 <input type="hidden" value="{{user_avail|length}}" id="user_availhidd">
+                                    {% if user_avail|length != 0 %}
+                                       <li class="new-vacation"><span class="availability-status"><i class="fa fa-calendar-o"></i>UnAvailable</span><button class="ORLWF8p _5K4hKRK L9EM07f i6NB5Ls co-grey-1000" onclick="show_availaible_modal();">Deactivate</button></li>
+                                    {% else %}
+                                       <li class="new-vacation"><span class="availability-status"><i class="fa fa-calendar-o"></i>Available</span><button class="ORLWF8p _5K4hKRK L9EM07f i6NB5Ls co-grey-1000" onclick="show_availaible_modal();">Set Availability</button></li>
+                                    {% endif %}
+                                 {% endif %}
+                              </ul>
+                           </div>
+                        </div>
+                     </div>
+                    <section id="user-segmentation" class="segmentation js-segmentation">
+                        <div data-reactroot="" class="mp-seller-profile">
+                            <section class="form-thin">
+                                <article>
+                                        <div class="inner-row description">
+                                           <aside>
+                                              <h3 class="alt hint--top" data-hint="Tell us more about yourself. Buyers are also interested in learning about you as a person.">
+                                                 <!-- react-text: 8 -->Description<!-- /react-text --><a href="/account_settings" target="_blank" class="add">Edit Description</a>
+                                              </h3>
+                                           </aside>
+                                           <section>
+                                              {{profile_Details.profess_overview|safe}}
+                                           </section>
+                                        </div>
+                                        <div class="inner-row languages">
+                                           <aside>
+                                              <h3 class="alt hint--top" data-hint="You can make up to four selections.">
+                                                Languages<a href="/account_settings" target="_blank" class="add">Add New</a>
+                                              </h3>
+                                              <div class="question">What languages do you speak?</div>
+                                           </aside>
+                                           <section>
+                                              <ul class="items-list">
+                                                {% for lang in userlanguages %}
+                                                <li>
+                                                    <span class="title">
+                                                      {{lang.name}}
+                                                    </span>
+                                                    <span class="sub-title">- {{lang.proficiency}}</span>
+                                                 </li>
+                                                {% endfor %}
+                                              </ul>
+                                           </section>
+                                        </div>
+                                     </form>
+                                </article>
+                            </section>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-lg-1" id="column-filter-mid">
+
+                </div>
+                <div class="col-lg-7">
+                    <div id="react-seller-gigs">
+                        {% if userDetails.username == request.user.username %}
+                        {% if user_avail|length != '0' %}
+                        <div class="out-of-office" data-reactroot="">
+                            <div class="banner-available new-seller">
+                              <input type="hidden" value="{{user_avail.0.available_from}}" id="user_avail_list">
+                               <div class="content new-seller seller-view">
+                                  <div><i class="icn-calender"></i></div>
+                                  <div>
+                                     <p class="start-time-status">You'll be unavailable starting of {{user_avail.0.available_from| date:"M d, Y"}}</p>
+                                     <p class="end-time-status">You won't be able to receive new orders or messages until  <b>{{user_avail.0.available_to}}.</b></p>
+                                     <q class="buyer-message">{{user_avail.0.available_mssg | title}}</q>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                         {% endif %}
+                         {% endif %}
+                         <section data-reactroot="" class="seller-gigs cf">
+                        <ul class="status-filter-bar mb-4">
+                            <li class="selected-filter" onclick="tabonclick(this);">ACTIVE GIGS</li>
+                            <li class="" onclick="tabonclick(this);">DRAFTS</li>
+                         </ul>
+                         <div style="width:100%;">
+                            <div id="active_div">
+                                {% for active in active_gigs %}
+                                <div class="gig-card-base seller-gig-card mt-3"  >
+                                    <span>
+                                       <div class="btn-share-container" onclick="share_click('{{active.gig_id}}', '{{active.gig_Name}}')" >
+                                          <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                             <path d="M9.42857 8.75C8.823 8.75 8.26642 8.9638 7.82705 9.32135L5.08189 7.56987C5.16319 7.19448 5.16319 6.80549 5.08189 6.4301L7.82705 4.67863C8.26642 5.0362 8.823 5.25 9.42857 5.25C10.8487 5.25 12 4.07474 12 2.625C12 1.17526 10.8487 0 9.42857 0C8.00842 0 6.85714 1.17526 6.85714 2.625C6.85714 2.82073 6.8783 3.01137 6.91811 3.19487L4.17295 4.94635C3.73358 4.5888 3.177 4.375 2.57143 4.375C1.15128 4.375 0 5.55026 0 7C0 8.44974 1.15128 9.625 2.57143 9.625C3.177 9.625 3.73358 9.4112 4.17295 9.05365L6.91811 10.8051C6.87753 10.9923 6.85709 11.1833 6.85714 11.375C6.85714 12.8247 8.00842 14 9.42857 14C10.8487 14 12 12.8247 12 11.375C12 9.92526 10.8487 8.75 9.42857 8.75Z" fill="#1DBF73"></path>
+                                          </svg>
+                                       </div>
+                                       <ul class="gig-menu">
+                                          <li><a href="/gigs/{{request.user.username}}/{{active.gig_Name}}"  target="_blank" class="preview" target="_blank">Preview</a></li>
+                                          <li><a href="/user/{{request.user.username}}/edit_gig/{{active.gig_id}}" target="_blank"  class="edit" target="_blank">Edit</a></li>
+                                          <li><a onclick="paused_click('{{active.gig_id}}')" class="pause">Pause</a></li>
+                                       </ul>
+                                       <div class="header-gig-card">
+                                          <a href="/gigs/{{request.user.username}}/{{active.gig_Name}}">
+                                             <div>
+                                                <figure><img src="{{active.gig_Image}}" alt="{{active.gig_Name}}"></figure>
+                                             </div>
+                                             <h3>{{active.gig_Name | title}}</h3>
+                                          </a>
+                                       </div>
+                                       <a onclick="show_menu(this)" class="btn-gig-menu hint--top" data-hint="Gig Actions">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="10" viewBox="0 0 42 10">
+                                             <path fill="#C6C6C6" d="M5 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm16 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm16 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z"></path>
+                                          </svg>
+                                       </a>
+                                       <a href="/gigs/{{request.user.username}}/{{active.gig_Name}}" class="gig-price">
+                                          <small>Starting at</small><!-- react-text: 34 -->{{active.start_price}}<!-- /react-text -->
+                                       </a>
+                                    </span>
+                                    </div>
+                                    {% endfor %}
+                            </div>
+                            <div id="drafts_div">
+                                {% for draft in draft_gigs %}
+                                <div class="gig-card-base seller-gig-card mt-3"  >
+                                    <span>
+                                        <div class="btn-share-container" onclick="share_click('{{draft.gig_id}}', '{{draft.gig_Name}}')" >
+                                            <svg width="12" height="14" viewBox="0 0 12 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M9.42857 8.75C8.823 8.75 8.26642 8.9638 7.82705 9.32135L5.08189 7.56987C5.16319 7.19448 5.16319 6.80549 5.08189 6.4301L7.82705 4.67863C8.26642 5.0362 8.823 5.25 9.42857 5.25C10.8487 5.25 12 4.07474 12 2.625C12 1.17526 10.8487 0 9.42857 0C8.00842 0 6.85714 1.17526 6.85714 2.625C6.85714 2.82073 6.8783 3.01137 6.91811 3.19487L4.17295 4.94635C3.73358 4.5888 3.177 4.375 2.57143 4.375C1.15128 4.375 0 5.55026 0 7C0 8.44974 1.15128 9.625 2.57143 9.625C3.177 9.625 3.73358 9.4112 4.17295 9.05365L6.91811 10.8051C6.87753 10.9923 6.85709 11.1833 6.85714 11.375C6.85714 12.8247 8.00842 14 9.42857 14C10.8487 14 12 12.8247 12 11.375C12 9.92526 10.8487 8.75 9.42857 8.75Z" fill="#1DBF73"></path>
+                                            </svg>
+                                         </div>
+                                       <ul class="gig-menu">
+                                         
+                                          <li><a href="/user/{{request.user.username}}/edit_gig/{{draft.gig_id}}" target="_blank"  class="edit" target="_blank">Edit</a></li>
+                                          <li><a onclick="delete_click('{{draft.gig_id}}')" class="delete">Delete</a></li>
+                                       </ul>
+                                       <div class="header-gig-card">
+                                          <a href="/gigs/{{request.user.username}}/{{draft.gig_Name}}">
+                                             <div>
+                                                <figure><img src="{{draft.gig_Image}}" alt="{{draft.gig_Name}}"></figure>
+                                             </div>
+                                             <h3>{{draft.gig_Name | title}}</h3>
+                                          </a>
+                                       </div>
+                                       <a onclick="show_menu(this)" class="btn-gig-menu hint--top" data-hint="Gig Actions">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="23" height="10" viewBox="0 0 42 10">
+                                             <path fill="#C6C6C6" d="M5 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm16 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm16 0c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5z"></path>
+                                          </svg>
+                                       </a>
+                                       <a href="/gigs/{{request.user.username}}/{{draft.gig_Name}}" class="gig-price">
+                                          <small>Starting at</small><!-- react-text: 34 -->{{draft.start_price}}<!-- /react-text -->
+                                       </a>
+                                    </span>
+                                    </div>
+                                    {% endfor %}
+
+                                    <a class="gig-card-base add-new-gig" onclick="create_gig_onclick();" >Create a new Gig</a>
+                            </div>
+                         </div>
+                        </section>
+
+                        <div id="UserPageReviews-component" >
+                            <div class="user-page-reviews-package user_page_reviews-package">
+                                <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
+                                    <header class="reviews-header">
+                                        <div class="details">
+                                            <h2 class="text-display-5">Reviews as Seller<small class="review-rating"><span class="review-star rate-9 show-one"></span><span><span class="total-rating-out-five header-average-rating" data-impression-collected="true">{{seller_count}}</span></span><span><span class="total-rating header-total-rating" data-impression-collected="true">({{seller_reviews|length}})</span></span></small></h2>
+                                            <span class="fit-icon reviews-collapser" style="width: 16px; height: 16px;">
+                                               <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                  <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                               </svg>
+                                            </span>
+                                         </div>
+                                         <span>
+                                          
+                                         </span>
+                                         <div class="summary">
+                                            <ul class="header-stars">
+                                               <li>Seller communication level<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{comm_count}}</span></small></li>
+                                               <li>Recommend to a friend<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{recc_count}}</span></small></li>
+                                               <li>Service as described<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{serv_count}}</span></small></li>
+                                            </ul>
+                                         </div>
+                                    </header>
+                                    <div class="reviews-wrap">
+                                        <ul class="review-list" >
+                                            {% for s_review in seller_reviews %}
+                                            <li class="review-item review-country">
+                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_7131450655997" style="width: 32px; height: 32px; font-size: 1em;"><img class="missing-profile-image flex-center" src="{{s_review.sender.avatar}}"></img></label></div>
+                                                <header>
+                                                   <div class="reviewer-details">
+                                                      <h5></h5>
+                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{s_review.review}}</span></small>
+                                                   </div>
+                                                   <div class="country">
+                                                      <img class="country-flag" src="{{s_review.country_flag}}" alt="1f1fa-1f1f8.png">
+                                                      <div class="country-name font-accent">{{s_review.sender.country.name}}</div>
+                                                   </div>
+                                                </header>
+                                                <div class="review-description">
+                                                   <p class="text-body-2"> {{s_review.message}}</p>
+                                                </div>
+                                                <span class="summarize">
+                                                   <time class="text-body-2">Published {{s_review.review_date}} ago</time>
+                                                   <span class="translate-btn-wrapper visibility-hidden">
+                                                      <span class="separator"> | </span>
+                                                      <div class="machine-translation-package machine_translation-package machine-translation-button">
+                                                         <div class="lean-toggled-translation-button">
+                                                            <span class="fit-icon translation-icon" style="width: 22px; height: 22px;">
+                                                               <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+                                                                  <path d="M19.2002 5.2002H15.0002C14.1002 5.2002 13.4002 5.5002 12.7002 6.0002H5.00025C3.80025 6.0002 2.60025 7.0002 2.30025 8.2002L1.00025 14.9002C0.800246 16.1002 1.60025 17.1002 2.90025 17.1002H7.70025C8.70024 17.1002 9.70024 16.7002 10.4002 15.9002H17.1002C18.3002 15.9002 19.5002 14.9002 19.7002 13.7002L21.0002 7.3002C21.2002 6.1002 20.4002 5.2002 19.2002 5.2002ZM10.3002 14.2002C10.1002 15.4002 9.00024 16.3002 7.70025 16.3002H2.90025C2.60025 16.3002 2.30025 16.2002 2.10025 16.0002C1.90025 15.8002 1.90025 15.5002 1.90025 15.2002L3.20025 8.5002C3.40025 7.7002 4.20025 7.0002 5.00025 7.0002H11.7002L10.3002 14.2002ZM17.5002 13.4002L16.6002 11.4002H14.3002L13.4002 13.4002H12.4002L15.0002 7.4002H15.9002L18.5002 13.4002H17.5002Z"></path>
+                                                                  <path d="M14.7002 10.5002H16.2002L15.4002 8.7002L14.7002 10.5002Z"></path>
+                                                                  <path d="M3.90039 10.2H8.20039C8.00039 10.7 7.50039 11.7 6.80039 12.5C6.10039 11.6 5.80039 10.6 5.80039 10.6L5.00039 10.8C5.00039 10.8 5.30039 12 6.10039 13.1C5.60039 13.5 5.00039 13.8 4.30039 13.8V14.6C5.20039 14.6 5.90039 14.2 6.60039 13.7C7.00039 14.1 7.50039 14.5 8.20039 14.7L8.60039 14C8.10039 13.8 7.70039 13.5 7.30039 13.2C8.40039 11.9 9.00039 10.3 9.00039 10.2H10.0004V9.4H7.30039V8.5H6.50039V9.4H3.90039V10.2Z"></path>
+                                                                  <path d="M12.7 18.8002C11.6 19.7002 10.5 20.3002 8.5 19.3002C10.1 22.5002 12.9 20.8002 13.8 20.1002L15.1 22.0002L16.2 17.3002L11.3 17.2002L12.7 18.8002Z"></path>
+                                                                  <path d="M10.3998 3.2C11.4998 2.3 12.5998 1.7 14.5998 2.7C12.9998 -0.5 10.1998 1.2 9.2998 1.9L7.8998 0L6.7998 4.7L11.6998 4.8L10.3998 3.2Z"></path>
+                                                               </svg>
+                                                            </span>
+                                                          
+                                                         </div>
+                                                      </div>
+                                                   </span>
+                                                </span>
+                                             </li> 
+                                             {% endfor %}
+                                            </ul>
+                                    </div>
+                                </div>
+
+                                <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
+                                    <header class="reviews-header">
+                                        <div class="details">
+                                            <h2 class="text-display-5">Reviews as Buyer<small class="review-rating"><span class="review-star rate-9 show-one"></span><span><span class="total-rating-out-five header-average-rating" data-impression-collected="true">{{buyer_count}}</span></span><span><span class="total-rating header-total-rating" data-impression-collected="true">({{buyer_reviews|length}})</span></span></small></h2>
+                                            <span class="fit-icon reviews-collapser" style="width: 16px; height: 16px;">
+                                               <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                  <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                               </svg>
+                                            </span>
+                                         </div>
+                                         <span>                
+                                         </span>
+                                    </header>
+                                    <div class="reviews-wrap">
+                                        <ul class="review-list" >
+                                            {% for b_review in buyer_reviews %}
+                                            <li class="review-item review-country">
+                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_7131450655997" style="width: 32px; height: 32px; font-size: 1em;"><img class="missing-profile-image flex-center" src="{{b_review.sender.avatar}}"></img></label></div>
+                                                <header>
+                                                   <div class="reviewer-details">
+                                                      <h5></h5>
+                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{b_review.review}}</span></small>
+                                                   </div>
+                                                   <div class="country">
+                                                      <img class="country-flag" src="{{b_review.country_flag}}" alt="1f1fa-1f1f8.png">
+                                                      <div class="country-name font-accent">{{b_review.sender.country.name}}</div>
+                                                   </div>
+                                                </header>
+                                                <div class="review-description">
+                                                   <p class="text-body-2"> {{b_review.message}}</p>
+                                                </div>
+                                                <span class="summarize">
+                                                   <time class="text-body-2">Published {{b_review.review_date}} ago</time>
+                                                   <span class="translate-btn-wrapper visibility-hidden">
+                                                      <span class="separator"> | </span>
+                                                      <div class="machine-translation-package machine_translation-package machine-translation-button">
+                                                         <div class="lean-toggled-translation-button">
+                                                            <span class="fit-icon translation-icon" style="width: 22px; height: 22px;">
+                                                               <svg width="22" height="22" viewBox="0 0 22 22" xmlns="http://www.w3.org/2000/svg">
+                                                                  <path d="M19.2002 5.2002H15.0002C14.1002 5.2002 13.4002 5.5002 12.7002 6.0002H5.00025C3.80025 6.0002 2.60025 7.0002 2.30025 8.2002L1.00025 14.9002C0.800246 16.1002 1.60025 17.1002 2.90025 17.1002H7.70025C8.70024 17.1002 9.70024 16.7002 10.4002 15.9002H17.1002C18.3002 15.9002 19.5002 14.9002 19.7002 13.7002L21.0002 7.3002C21.2002 6.1002 20.4002 5.2002 19.2002 5.2002ZM10.3002 14.2002C10.1002 15.4002 9.00024 16.3002 7.70025 16.3002H2.90025C2.60025 16.3002 2.30025 16.2002 2.10025 16.0002C1.90025 15.8002 1.90025 15.5002 1.90025 15.2002L3.20025 8.5002C3.40025 7.7002 4.20025 7.0002 5.00025 7.0002H11.7002L10.3002 14.2002ZM17.5002 13.4002L16.6002 11.4002H14.3002L13.4002 13.4002H12.4002L15.0002 7.4002H15.9002L18.5002 13.4002H17.5002Z"></path>
+                                                                  <path d="M14.7002 10.5002H16.2002L15.4002 8.7002L14.7002 10.5002Z"></path>
+                                                                  <path d="M3.90039 10.2H8.20039C8.00039 10.7 7.50039 11.7 6.80039 12.5C6.10039 11.6 5.80039 10.6 5.80039 10.6L5.00039 10.8C5.00039 10.8 5.30039 12 6.10039 13.1C5.60039 13.5 5.00039 13.8 4.30039 13.8V14.6C5.20039 14.6 5.90039 14.2 6.60039 13.7C7.00039 14.1 7.50039 14.5 8.20039 14.7L8.60039 14C8.10039 13.8 7.70039 13.5 7.30039 13.2C8.40039 11.9 9.00039 10.3 9.00039 10.2H10.0004V9.4H7.30039V8.5H6.50039V9.4H3.90039V10.2Z"></path>
+                                                                  <path d="M12.7 18.8002C11.6 19.7002 10.5 20.3002 8.5 19.3002C10.1 22.5002 12.9 20.8002 13.8 20.1002L15.1 22.0002L16.2 17.3002L11.3 17.2002L12.7 18.8002Z"></path>
+                                                                  <path d="M10.3998 3.2C11.4998 2.3 12.5998 1.7 14.5998 2.7C12.9998 -0.5 10.1998 1.2 9.2998 1.9L7.8998 0L6.7998 4.7L11.6998 4.8L10.3998 3.2Z"></path>
+                                                               </svg>
+                                                            </span>
+                                                          
+                                                         </div>
+                                                      </div>
+                                                   </span>
+                                                </span>
+                                             </li> 
+                                             {% endfor %}    
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                           
+                        </div> 
+                    </div>
+                  
+                </div>
+            </div>
+        </div>
+    </div>  
+</div>
+{% if request.session.userpage == "buyer" %}
+   {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+
+<div class="modal" id="modal_share" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1></h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="row tab1" id="publish_social_div">
+             <div class="col-lg-1">
+             </div>
+             <div class="col-lg-10">
+                <div class="">
+                   <input type="hidden" id="share_gig_id">
+                   <input type="hidden" id="share_gig_name">
+                   <div class="share-text">
+                    <h2 class="sharing-title">Boost Your Traffic</h2>
+                    <div class="sharing-description"><p>Share your Gig to grow your audience</p><p>engage with potential buyers and earn more trust.</p></div>
+                   </div>
+                   <div class="share-buttons-container">
+                      <div class="share-list">
+                        <!-- FACEBOOK -->
+                        <a class="fb-h" onclick="return fbs_click()" target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/facebook-f.png">
+                        </a>
+                    
+                        <!-- TWITTER -->
+                        <a class="tw-h" onclick="return tbs_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/twitter-squared.png">
+                        </a>
+                    
+                        <!-- LINKEDIN -->
+                        <a class="li-h" onclick="return lbs_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/linkedin.png">
+                        </a>
+                    
+                         <!-- LINKEDIN -->
+                        <a class="wa-h" onclick="return was_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/whatsapp.png">
+                        </a>
+                        
+                        <a class="co-h" onclick="return cos_click()"  target="_blank">
+                          <img src="https://i.ibb.co/kBTbdHG/chain-link-icon-free-vector.jpg">
+                        </a>
+                      </div>
+                    </div>
+                </div>
+             </div>
+             <div class="col-lg-1">   
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="modal " id="modal_availability" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1 class="avail_header"> Set Availability</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="save_availability">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <span>When unavailable, you won't be able to receive new orders.</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <input type="hidden" id="unavailable_id" value="">
+                        <label>Unavailable from</label>
+                        <input type="date" value="" id="unavailable_from" required>
+                    </div>
+                    <div class="col-sm-12">
+                        <label>Unavailable to</label>
+                        <input type="date" value="" id="unavailable_to" required>
+                    </div>
+
+                    <div class="col-sm-12">
+                        <label>You're unavailable because... (Optional)</label>
+                        <select id="unavailable_reas" required>
+                            <option value="">Select a reason</option>
+                            <option value="vacation">I'm going on vacation</option>
+                            <option value="overbooked">I'm overbooked</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-12">
+                        <label>Add a message (Optional)</label>
+                        <span>Buyers will see your message when visiting your Gig or profile page.</span>
+                        <textarea maxlength="{{character_avail}}" id="textarea_message" onkeyup="textarea_messageonkeyup(this);">Hey, I’m currently unavailable, but please visit soon! Looking forward to working with you.</textarea>
+                        <span class="textarea_message_span">0 / {{character_avail}} max</span>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square">
+                            <input type="checkbox"  id="accept_new_mssg">
+                            <span class="checkmark-box">
+                               <span class="fit-icon check-icon" style="width: 10px; height: 10px;">
+                                  <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg">
+                                     <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path>
+                                  </svg>
+                               </span>
+                            </span>
+                            <span>Enable new buyers on Let to contact me</span>
+                         </label>
+                         <span>Maintain your response rate by making sure you can respond.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" onclick="btn_deactivate_click();" id="btn_deactivate">Deactivate</button>
+                <input type="submit" class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" id="btn_save" value="Save changes">
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal " id="modal_quote" tabindex="-1" role="dialog"  data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1> Request Quote</h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <form id="quote_form">
+            <div class="modal-body">
+                <section class="seller-info">
+                    <div class="uy3dNJC" style="border-radius: 50%;">
+                       <figure class="imghRPs seller-profile-image" title="{{userDetails.username}}" style="font-size: 50px; background-color: rgb(155, 105, 40);">
+                          <figcaption class="-nS+a5p">o</figcaption>
+                          <img class="_2Um2N63" src="{{userDetails.avatar}}" alt="{{userDetails.username}}" loading="lazy">
+                       </figure>
+                    </div>
+                    <div class="seller-content">
+                       <b>{{request.user.username}}</b>
+                       <p>Hi, please provide your request details below and I’ll get back to you.</p>
+                    </div>
+                 </section>
+                 <div class="custom-order-package">
+                    <div class="_2g7EPin custom-order-package-tooltip">
+                       <span class="_1iCafnp custom-order-package-tooltip-content">
+                          <section class="request-description">
+                             <p class="title">Describe the service you're looking to purchase - please be as detailed as possible:</p>
+                             <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{character_post_request}}" onkeyup="textarea_post_reqonkeyup(this);" id="textarea_post_req" required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN" id="textarea_post_span">0/{{character_post_request}}</span></div>
+                             <div class="description-footer">
+                                <div class="_2g7EPin fJuccPM file-uploader-tooltip">
+                                   <span class="_1iCafnp file-uploader-tooltip-content" >
+                                      <input type="file" hidden="" multiple="" id="upload_post_req"  onchange="upload_post_reqimgChange(this)" >
+                                      <label class="FKiIhUG _1cZWUFp co-grey-1100 upload-button bg-co-grey-300" for="upload_post_req">
+                                         <p class="upload-button-title">Attach Files</p>
+                                         <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
+                                            <svg width="13" height="14" viewBox="0 0 13 14" xmlns="http://www.w3.org/2000/svg">
+                                               <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23276 12.7969C0.691092 12.2865 0.326868 11.6803 0.140086 10.9785C-0.0466954 10.2767 -0.0466954 9.57943 0.140086 8.88672C0.326868 8.19401 0.691092 7.59245 1.23276 7.08203L7.53664 0.902344C7.92888 0.519531 8.4005 0.255208 8.95151 0.109375C9.50251 -0.0364583 10.0535 -0.0364583 10.6045 0.109375C11.1555 0.255208 11.6365 0.524089 12.0474 0.916016C12.4583 1.30794 12.7385 1.77279 12.8879 2.31055C13.0374 2.84831 13.0374 3.38607 12.8879 3.92383C12.7385 4.46159 12.4583 4.93099 12.0474 5.33203L6.75216 10.5273C6.30388 10.9466 5.77155 11.1562 5.15517 11.1562C4.53879 11.1562 4.00647 10.9421 3.55819 10.5137C3.10991 10.0853 2.88578 9.57031 2.88578 8.96875C2.88578 8.36719 3.10991 7.84766 3.55819 7.41016L8.06897 3.00781C8.125 2.95312 8.19971 2.92578 8.2931 2.92578C8.38649 2.92578 8.46121 2.95312 8.51724 3.00781L8.99354 3.47266C9.06825 3.54557 9.1056 3.6276 9.1056 3.71875C9.1056 3.8099 9.06825 3.88281 8.99354 3.9375L4.51078 8.33984C4.32399 8.50391 4.2306 8.70898 4.2306 8.95508C4.2306 9.20117 4.32399 9.41081 4.51078 9.58398C4.69756 9.75716 4.91703 9.84375 5.16918 9.84375C5.42134 9.84375 5.63147 9.76172 5.79957 9.59766L11.1228 4.40234C11.4777 4.05599 11.6552 3.63216 11.6552 3.13086C11.6552 2.62956 11.4731 2.20117 11.1088 1.8457C10.7446 1.49023 10.3057 1.3125 9.79203 1.3125C9.27838 1.3125 8.83477 1.48568 8.46121 1.83203L2.15733 7.98438C1.61566 8.53125 1.34483 9.18294 1.34483 9.93945C1.34483 10.696 1.62033 11.3431 2.17134 11.8809C2.72234 12.4186 3.38542 12.6875 4.16056 12.6875C4.9357 12.6875 5.60345 12.4141 6.16379 11.8672L11.6272 6.50781C11.7019 6.45312 11.7859 6.42578 11.8793 6.42578C11.9727 6.42578 12.0474 6.45312 12.1034 6.50781L12.5797 6.97266C12.6545 7.04557 12.6918 7.1276 12.6918 7.21875C12.6918 7.3099 12.6545 7.38281 12.5797 7.4375L7.11638 12.7969C6.57471 13.3255 5.94899 13.681 5.23922 13.8633C4.52945 14.0456 3.81501 14.0456 3.09591 13.8633C2.3768 13.681 1.75575 13.3255 1.23276 12.7969Z"></path>
+                                            </svg>
+                                         </span>
+                                        </label>
+                                   </span>
+                                </div>
+                             </div>
+                          </section>
+                       </span>
+                    </div>
+                    <div class="_2g7EPin custom-order-package-tooltip" id="image_list">
+
+                    </div>    
+                    <div class="_2g7EPin custom-order-package-tooltip">
+                       <span class="_1iCafnp custom-order-package-tooltip-content">
+                          <section class="choose-categories-wrapper">
+                             <h3>Choose a category:</h3>
+                             <div class="choose-categories">
+                                <div class="categories-wrapper">
+                                   <div class="_2g7EPin _2SsU-73 _1dJ3UV8 categories-select">
+                                      <select id="post_category" required>
+                                         <option value="">Select Category</option>
+                                         {% for cat in categories %}
+                                            <option value="{{cat.id}}">{{cat.category_Name}}</option>
+                                        {% endfor %}
+                                      </select>
+                                   </div>
+                                </div>
+                                <div class="categories-wrapper">
+                                   <div class="_2g7EPin _2SsU-73 _1dJ3UV8 categories-select _2FV4hzr">
+                                      <select id="post_sub_category" required>
+                                         <option value="">Select Sub-Category</option>
+                                         <option value="1"> Options 1</option>
+                                      </select>
+                                   </div>
+                                </div>
+                             </div>
+                          </section>
+                       </span>
+                    </div>
+                    <div class="_2g7EPin custom-order-package-tooltip">
+                       <span class="_1iCafnp custom-order-package-tooltip-content">
+                          <section class="delivery-time-wrapper">
+                             <h3>Once you place your order, when would you like your service delivered?</h3>
+                             <div class="delivery-time">
+                                <div class="FKiIhUG _1cZWUFp _2txg6PD H69bvrM co-grey-1100">
+                                    <input type="radio" name="post_time" required class="post_time" value="24hours" id="24_post_time">
+                                    <label for="24_post_time">24 Hours</label>
+                                </div>
+                                <div class="FKiIhUG _1cZWUFp _2txg6PD H69bvrM co-grey-1100">
+                                    <input type="radio" name="post_time" required class="post_time" value="3days" id="3_post_time">
+                                    <label for="3_post_time">3 Days</label>
+                                </div>
+                                <div class="FKiIhUG _1cZWUFp _2txg6PD H69bvrM co-grey-1100">
+                                    <input type="radio" name="post_time" required class="post_time"  value="7days"  id="7_post_time">
+                                    <label  for="7_post_time">7 Days</label>
+                                </div>
+                                <div class="FKiIhUG _1cZWUFp _2txg6PD H69bvrM co-grey-1100">
+                                    <input type="radio" name="post_time" required class="post_time" value="other"  id="other_post_time">
+                                    <label  for="other_post_time">Other</label>
+                                </div>
+                             <div class="error-message"></div>
+                          </section>
+                       </span>
+                    </div>
+                    <div class="_2g7EPin custom-order-package-tooltip">
+                       <span class="_1iCafnp custom-order-package-tooltip-content">
+                          <section class="budget-wrapper">
+                             <h3>What is your budget for this service?</h3>
+                             <div class="budget-input">
+                                <small class="currency-symbol">$</small>
+                                <div class="_2XlT5rY D6s0wIv">
+                                   <div class="_3SnSqB3"><input class="_2DtRW7Q" type="number" id="service_price" value="" required></div>
+                                </div>
+                             </div>
+                          </section>
+                       </span>
+                    </div>
+                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" data-dismiss="modal">Cancel</button>
+                <input type="submit" class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" id="btn_save_quote" value="Save changes">
+            </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $(".status-filter-bar").find("li:first").trigger("click");
+        $("#save_availability").submit(function(e)
+        {
+            new_message = ''
+            if($("#accept_new_mssg").is(":checked"))
+            {
+                new_message = "True";
+            }
+            else
+            {
+                new_message = "False";
+            }
+            e.preventDefault();
+            $.ajax({
+                type:"POST",
+                url: "/post_availability/",
+                data: {'userid':'{{request.user.id}}','unva_from':$("#unavailable_from").val(),'unva_to':$("#unavailable_to").val(),'reason':$("#unavailable_reas").val(),'avail_message':$("#textarea_message").val(),'checked_new':new_message},
+                success: function(data) 
+                {  
+                    if(data == "sucess")
+                    {
+                        $("#modal_availability").modal('hide');
+                    }
+                }   
+            });
+        });
+        $("#quote_form").submit(function(e)
+        {
+            e.preventDefault();
+            post_req_desc= $("#textarea_post_req").val();
+            imgList= ''
+            $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
+                imgList = imgList +", "+  $(this).find('img').attr("src");
+            });
+            post_category = $("#post_category").val();
+            post_sub_category = $("#post_sub_category").val();
+            service_time = $("input[type='radio'][name='post_time']:checked").val();
+            service_price = $("#service_price").val();
+            $.ajax({
+                type:"POST",
+                url: "/post_service_request/",
+                data: {'userid':'{{request.user.id}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"individual",'send_to': window.location.pathname.split("/")[3]},
+                success: function(data) 
+                {  
+                    if(data == "sucess")
+                    {
+                        $("#modal_quote").modal('hide');
+                    }
+                }   
+            });
+        });
+        $('#post_category').change(function() {
+            this_txt = $("#post_category option:selected").text().trim();
+            this_val = $("#post_category").val();
+            if(this_txt != "Select Category")
+            {
+               $.ajax({
+                  type:"GET",
+                  url: "/get_sub_categories/",
+                  data: {"sub_category":this_txt},
+                  success: function(data) 
+                  {
+                     $("#post_sub_category").empty();
+                     $("#post_sub_category").append('<option value="" selected=""> Select Sub-Category </option>')
+                     $.each(data, function(i, v) {
+                           $("#post_sub_category").append('<option value="'+v.sub_cat_id+'"> '+v.sub_cat_name+' </option>');
+                     });
+                  }
+               });
+            }
+         });      
+    });
+    function paused_click(gig_id)
+    {
+      $.ajax({
+         type:"GET",
+         url: "/post_pause_gig/",
+         data: {'userid':'{{request.user.id}}',"gig_id":gig_id},
+         success: function(data)
+         {  
+            if(data == "sucess")
+            {
+               window.location.reload();
+            }
+         }
+      });
+    }
+
+    function tabonclick(ev)
+    {
+        indepos = $(ev).index();
+        $(".status-filter-bar li").removeClass("selected-filter");
+        $(ev).addClass("selected-filter");
+        if(indepos == 0)
+        {
+            $("#active_div").show();
+            $("#drafts_div").hide();
+        }
+        else if(indepos == 1)
+        {
+            $("#active_div").hide();
+            $("#drafts_div").show();
+        }
+    }
+
+    function share_click(gig_id,gig_name)
+    {
+      $("#modal_share").modal('show');
+      $("#share_gig_id").val(gig_id);
+      $("#share_gig_name").val(gig_name);
+    }
+    function getquoteclick(gig_id,gig_name)
+    {
+        $('#quote_form')[0].reset(); 
+        $("#image_list").empty();
+        $("#modal_quote").modal('show');
+    }
+    function show_menu(ev)
+    {
+        $(ev).prev().prev().addClass("visible");
+        setTimeout(function(){
+            $(ev).prev().prev().removeClass("visible");
+          },10000)
+    }
+
+    function fbs_click() { 
+        var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+        var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+        pageLink = pageLink + $("#share_gig_name").val();
+        window.open(`http://www.facebook.com/sharer.php?u=${pageLink}&quote=${pageTitle}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+           
+     function tbs_click() { 
+        var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+        var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+        pageLink = pageLink + $("#share_gig_name").val();
+        window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+     
+     function lbs_click() { 
+        var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+        var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+        pageLink = pageLink + $("#share_gig_name").val();
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+     
+     function was_click() { 
+        var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+        var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+        pageLink = pageLink + $("#share_gig_name").val();
+        window.open(`https://api.whatsapp.com/send?text=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+     
+     function cos_click() { 
+        var pageLink1 = window.location.origin + "/gigs/{{request.user.username}}/";
+        pageLink1 = pageLink1 + $("#share_gig_name").val();
+           navigator.clipboard.writeText(pageLink1).then(
+             function() {
+               window.alert('Url Copied!') 
+             }, 
+             function() {
+               window.alert('Opps! Your browser does not support the Clipboard API')
+             }
+           )
+        return false; }
+
+        function delete_click(gig_id)
+        {
+          $.ajax({
+             type:"GET",
+             url: "/post_delete_gig/",
+             data: {'userid':'{{request.user.id}}',"gig_id":gig_id},
+             success: function(data)
+             {  
+                if(data == "sucess")
+                {
+                   window.location.reload();
+                }
+             }
+          });
+        }
+        function create_gig_onclick()
+        {
+            $.ajax({
+                type:"GET",
+                url: "/post_create_gig/",
+                data: {},
+                success: function(data) 
+                {  
+                    if(data != "error" && data != 0)
+                    {
+                        window.open('/user/{{request.user.username}}/create_gig/'+ data, "_blank");
+                    }
+                    else{
+                        window.open('/user/{{request.user.username}}/manage_gigs', "_blank");
+                    }
+                }
+              });
+        }
+    function show_availaible_modal()
+    {
+        $.ajax({
+            type:"GET",
+            url: "/get_availability/",
+            data: {'userid': '{{request.user.id}}'},
+            success: function(data)
+            {  
+                jsonload = JSON.parse(data);
+                if(jsonload.length!= 0)
+                {
+                    $("#unavailable_from").val(jsonload[0].fields["available_from"]);
+                    $("#unavailable_to").val(jsonload[0].fields["available_to"]);
+                    $("#unavailable_reas").val(jsonload[0].fields["available_types"]);
+                    $("#textarea_message").val(jsonload[0].fields["available_mssg"]);
+                    $("#unavailable_id").val(jsonload[0].pk);
+                    if(jsonload[0].fields["available_for_new"] == true)
+                    {
+                        $("#accept_new_mssg").prop('checked', true);
+                    }
+                    else{
+                        $("#accept_new_mssg").prop('checked', false);
+                    }
+                    $(".avail_header").text("Update/Remove Availability");
+                }
+                else{
+                    $("#unavailable_from").val('');
+                    $("#unavailable_to").val('');
+                    $("#unavailable_reas").val('');
+                    $("#textarea_message").val('');
+                    $("#unavailable_id").val('');
+                    $("#accept_new_mssg").prop('checked', false);
+                    $(".avail_header").text("Set Availability");
+                }
+                $("#modal_availability").modal('show');
+            }
+        });
+    }
+    function textarea_messageonkeyup(ev)
+    {
+        var thisChars = $(ev).val().replace(/{.*}/g, '').length; 
+        var maxlength = $(ev).attr("maxlength");
+        if(thisChars > maxlength) 
+        {
+            var CharsToDel = (thisChars-maxlength); 
+            $(ev).val(this.value.substring(0,$(ev).val().length-CharsToDel)); 
+        }else{
+            $(".textarea_message_span").text( maxlength - thisChars + " /"+maxlength); 
+        }
+    }
+
+
+    function textarea_post_reqonkeyup(ev)
+    {
+        var thisChars = $(ev).val().replace(/{.*}/g, '').length; 
+        var maxlength = $(ev).attr("maxlength");
+        if(thisChars > maxlength) 
+        {
+            var CharsToDel = (thisChars-maxlength); 
+            $(ev).val(this.value.substring(0,$(ev).val().length-CharsToDel)); 
+        }else{
+            $("#textarea_post_span").text( maxlength - thisChars + " /"+maxlength); 
+        }
+    }
+
+    function btn_deactivate_click()
+    {
+        $.ajax({
+            type:"GET",
+            url: "/post_avail_delete/",
+            data: {'userid': '{{request.user.id}}','avail_id':$("#unavailable_id").val()},
+            success: function(data)
+            { 
+                if(data == "sucess")
+                {
+                    $("#modal_availability").modal('hide');
+                }
+            }
+        });
+    }
+
+    function upload_post_reqimgChange(ev)
+    {
+        id="upload_post_req";
+		var fd = new FormData();
+        var files = $("#upload_post_req").get(0).files;
+		if(files.length > 0 ){
+            for (var i = 0; i < files.length; i++) {
+                fd.append("files", files[i]);
+            }
+			var xhr=new XMLHttpRequest();
+			xhr.open("POST","/post_request_image_upload/",true);
+			xhr.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					var data=xhr.responseText;
+                    data1 = JSON.parse(data);
+                    $.each(data1, function (key, value) {
+                        $.each(value, function (key1, value1){
+                            $("#image_list").append('<div class="img'+(key1+1)+' imagediv"><img src='+value1+' id="img'+(key1+1)+'"><i class="fa fa-trash" onclick="post_img_delete(this);"></i></img></div>');
+                        });
+                    });
+				}};
+			xhr.send(fd);
+		}
+		else{
+			alert("Please select a file.");
+		 }
+    }
+
+    function post_img_delete(ev)
+    {
+        $(ev).parent().remove();
+    }
+</script>
+{% endblock %}

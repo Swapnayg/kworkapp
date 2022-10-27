@@ -1,0 +1,704 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Gigs</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/manage_gig.css' %}" type="text/css" />
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="manage_gigs">
+       <div class="col-11 text-center p-0 mt-3 mb-2">
+          <div class="card px-0 pt-4 pb-0 mb-3"  id="manage_gigs_card">
+             <div class="row">
+                <div class="col-md-12 db-manage-gigs ">
+                    <h1 class="alt">Gigs</h1>
+                </div>
+                <div class="col-md-12 db-manage-gigs">
+                    <a class="btn-standard btn-green btn-create-gig  " onclick="create_gig_onclick();" id="btn-create-gig">Create a New Gig</a>
+                </div>
+                <div class="col-md-12 mx-0">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>{{active_gigs|length}}</span></div></a></li>
+                        <li><a href="#pendingtab" role="tab" data-toggle="tab">Pending <div class="circle"><span>{{pending_gigs|length}}</span></div></a></li>
+                        <li><a href="#modificationtab" role="tab" data-toggle="tab">Requires Modification<div class="circle"><span>{{require_modif|length}}</span></div></a></li>
+                        <li><a href="#drafttab" role="tab" data-toggle="tab">Draft <div class="circle"><span>{{draft_gigs|length}}</span></div></a></li>
+                        <li><a href="#deniedtab" role="tab" data-toggle="tab">Denied <div class="circle"><span>{{denied_gigs|length}}</span></div></a></li>
+                        <li><a href="#pausedtab" role="tab" data-toggle="tab">Paused <div class="circle"><span>{{paused_gigs|length}}</span></div></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="activetab">
+                            <div class="db-new-main-table js-db-table">
+                                <table>
+                                   <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Active Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                      <tr>
+                                         <td colspan="2">GIG</td>
+                                         <td>
+                                         </td>
+                                         <td></td>
+                                         <td><span class="hint--top-right" >Impressions</span></td>
+                                         <td><span class="hint--top-right">Orders</span></td>
+                                         <td><span class="hint--top-right" >Cancellations</span></td>
+                                         <td colspan="2"></td>
+                                      </tr>
+                                   </thead>
+                                   <tbody>
+                                    {% for gig in active_gigs %}
+                                    <tr data-id="228160561">
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Preview">
+                                                      <span class="text-inner">Preview</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                       <a class="anchor_actions" onclick="paused_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                          <span class="text-inner">Pause</span>
+                                                       </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions"  onclick="share_click('{{gig.gig_id}}', '{{gig.gig_Name}}')"  class="js-gtm-event-auto js-btn-gig-share-dropdown" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Share">
+                                                      <span class="text-inner">Share</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="pendingtab">
+                           <div class="db-new-main-table js-db-table">
+                              <table>
+                                 <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Pending Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                      
+                                       <td colspan="2">GIG</td>
+                                       <td>
+                                       </td>
+                                       <td></td>
+                                       <td><span class="hint--top-right" title="Total number of impressions this Gig received on Letworkbedone in the last 30 days">Impressions</span></td>
+                                       <td><span class="hint--top-right" title="Total number of orders from this Gig in the last 30 days">Orders</span></td>
+                                       <td><span class="hint--top-right" title="Cancellation rate: Number of cancelled orders divided by the number of orders from this Gig in the last 30 days">Cancellations</span></td>
+                                       <td colspan="2"></td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for gig in pending_gigs %}
+                                    <tr data-id="228160561">
+                                      
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                        <div class="tab-pane" id="modificationtab">
+                           <div class="db-new-main-table js-db-table">
+                              <table>
+                                 <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Modifications Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                     
+                                       <td colspan="2">GIG</td>
+                                       <td>
+                                       </td>
+                                       <td></td>
+                                       <td><span class="hint--top-right" title="Total number of impressions this Gig received on Letworkbedone in the last 30 days">Impressions</span></td>
+                                       <td><span class="hint--top-right" title="Total number of orders from this Gig in the last 30 days">Orders</span></td>
+                                       <td><span class="hint--top-right" title="Cancellation rate: Number of cancelled orders divided by the number of orders from this Gig in the last 30 days">Cancellations</span></td>
+                                       <td colspan="2"></td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for gig in require_modif %}
+                                    <tr data-id="228160561">
+                                      
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                        <div class="tab-pane" id="drafttab">
+                           <div class="db-new-main-table js-db-table">
+                              <table>
+                                 <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Draf Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                      
+                                       <td colspan="2">GIG</td>
+                                       <td>
+                                       </td>
+                                       <td></td>
+                                       <td><span class="hint--top-right" title="Total number of impressions this Gig received on Letworkbedone in the last 30 days">Impressions</span></td>
+                                       <td><span class="hint--top-right" title="Total number of orders from this Gig in the last 30 days">Orders</span></td>
+                                       <td><span class="hint--top-right" title="Cancellation rate: Number of cancelled orders divided by the number of orders from this Gig in the last 30 days">Cancellations</span></td>
+                                       <td colspan="2"></td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for gig in draft_gigs %}
+                                    <tr data-id="228160561">
+                                       
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                        <div class="tab-pane" id="deniedtab">
+                           <div class="db-new-main-table js-db-table">
+                              <table>
+                                 <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Denied Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          <label class="fake-check-black">
+                                          <input type="checkbox" class="js-cbx-all-gigs">
+                                          <span class="chk-img"></span>
+                                          </label>
+                                       </td>
+                                       <td colspan="2">GIG</td>
+                                       <td>
+                                       </td>
+                                       <td></td>
+                                       <td><span class="hint--top-right" title="Total number of impressions this Gig received on Letworkbedone in the last 30 days">Impressions</span></td>
+                                       <td><span class="hint--top-right" title="Total number of orders from this Gig in the last 30 days">Orders</span></td>
+                                       <td><span class="hint--top-right" title="Cancellation rate: Number of cancelled orders divided by the number of orders from this Gig in the last 30 days">Cancellations</span></td>
+                                       <td colspan="2"></td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for gig in denied_gigs %}
+                                    <tr data-id="228160561">
+                                     
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                        <div class="tab-pane" id="pausedtab">
+                           <div class="db-new-main-table js-db-table">
+                              <table>
+                                 <thead>
+                                    <tr class="header-filter">
+                                       <td colspan="6" class="js-filter-title">Paused Gigs</td>
+                                       <td colspan="6">
+                                         
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                      
+                                       <td colspan="2">GIG</td>
+                                       <td>
+                                       </td>
+                                       <td></td>
+                                       <td><span class="hint--top-right" title="Total number of impressions this Gig received on Letworkbedone in the last 30 days">Impressions</span></td>
+                                       <td><span class="hint--top-right" title="Total number of orders from this Gig in the last 30 days">Orders</span></td>
+                                       <td><span class="hint--top-right" title="Cancellation rate: Number of cancelled orders divided by the number of orders from this Gig in the last 30 days">Cancellations</span></td>
+                                       <td colspan="2"></td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+                                    {% for gig in paused_gigs %}
+                                    <tr data-id="228160561">
+                                      
+                                       <td class="gig-image-small js-toggle-gig-stats">
+                                          <span class="gig-pict-45">
+                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          </span>
+                                       </td>
+                                       <td class="title js-toggle-gig-stats ">
+                                          <div class="ellipsis">
+                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
+                                                {{gig.gig_Name}}
+                                             </a>
+                                          </div>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_impressions}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_orders}}
+                                          <i class="fa "></i>
+                                       </td>
+                                       <td>
+                                          {{gig.gig_cancel_rate}}
+                                          %
+                                       </td>
+                                       <td class="t-a-right">
+                                          <div class="filter-select cf " style="margin-top: 5px;">
+                                             <div class="fake-dropdown" style="visibility: visible;">
+                                                <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
+                                                <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
+                                                   <li>
+                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Edit</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="activate_click('{{gig.gig_id}}')"  class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <span class="text-inner">Activate</span>
+                                                      </a>
+                                                   </li>
+                                                   <li>
+                                                      <a class="anchor_actions" onclick="delete_click('{{gig.gig_id}}')" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                       <span class="text-inner">Delete</span>
+                                                    </a>
+                                                   </li>
+                                                </ul>
+                                             </div>
+                                          </div>
+                                       </td>
+                                    </tr>
+                                    {% endfor %}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                    </div>
+                </div>     
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+
+ 
+{% include  'Dashboard/base_seller.html' %}
+
+<div class="modal fade" id="modal_share" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       </div>
+       <div class="modal-body">
+         <div class="row tab1" id="publish_social_div">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-9">
+               <div class="">
+                  <input type="hidden" id="share_gig_id">
+                  <input type="hidden" id="share_gig_name">
+                  <div class="share-buttons-container">
+                     <div class="share-list">
+                       <!-- FACEBOOK -->
+                       <a class="fb-h" onclick="return fbs_click()" target="_blank">
+                         <img src="https://img.icons8.com/material-rounded/96/000000/facebook-f.png">
+                       </a>
+                   
+                       <!-- TWITTER -->
+                       <a class="tw-h" onclick="return tbs_click()"  target="_blank">
+                         <img src="https://img.icons8.com/material-rounded/96/000000/twitter-squared.png">
+                       </a>
+                   
+                       <!-- LINKEDIN -->
+                       <a class="li-h" onclick="return lbs_click()"  target="_blank">
+                         <img src="https://img.icons8.com/material-rounded/96/000000/linkedin.png">
+                       </a>
+                   
+                        <!-- LINKEDIN -->
+                       <a class="wa-h" onclick="return was_click()"  target="_blank">
+                         <img src="https://img.icons8.com/material-rounded/96/000000/whatsapp.png">
+                       </a>
+                       
+                       <a class="co-h" onclick="return cos_click()"  target="_blank">
+                         <img src="https://i.ibb.co/kBTbdHG/chain-link-icon-free-vector.jpg">
+                       </a>
+                     </div>
+                   </div>
+               </div>
+            </div>
+            <div class="col-lg-1">   
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+<script>
+    $(document).ready(function(){
+    });
+    function create_gig_onclick()
+    {
+        $.ajax({
+            type:"GET",
+            url: "/post_create_gig/",
+            data: {},
+            success: function(data) 
+            {  
+                if(data != "error" && data != 0)
+                {
+                     location_href =  $(location).attr('href').split("/");
+                     window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/create_gig/'+ data, "_blank");
+                }
+            }
+          });
+    }
+
+    function dropdownclick(ev)
+    {
+      $(".dropdown-menu").hide();
+      $(ev).next().toggle();
+    }
+
+    function paused_click(gig_id)
+    {
+      $.ajax({
+         type:"GET",
+         url: "/post_pause_gig/",
+         data: {'userid':'{{request.user.id}}',"gig_id":gig_id},
+         success: function(data)
+         {  
+            if(data == "sucess")
+            {
+               window.location.reload();
+            }
+         }
+      });
+    }
+
+    function activate_click(gig_id)
+    {
+      $.ajax({
+         type:"GET",
+         url: "/post_activate_gig/",
+         data: {'userid':'{{request.user.id}}',"gig_id":gig_id},
+         success: function(data)
+         {  
+            if(data == "sucess")
+            {
+               window.location.reload();
+            }
+         }
+      });
+    }
+    function delete_click(gig_id)
+    {
+      $.ajax({
+         type:"GET",
+         url: "/post_delete_gig/",
+         data: {'userid':'{{request.user.id}}',"gig_id":gig_id},
+         success: function(data)
+         {  
+            if(data == "sucess")
+            {
+               window.location.reload();
+            }
+         }
+      });
+    }
+    function share_click(gig_id,gig_name)
+    {
+      $("#modal_share").modal('show');
+      $("#share_gig_id").val(gig_id);
+      $("#share_gig_name").val(gig_name);
+    }
+
+
+    function fbs_click() { 
+      var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+      pageLink = pageLink + $("#textarea_iwill").val();
+      window.open(`http://www.facebook.com/sharer.php?u=${pageLink}&quote=${pageTitle}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+         
+   function tbs_click() { 
+      var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+      pageLink = pageLink + $("#share_gig_name").val();
+      window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+   
+   function lbs_click() { 
+      var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+      pageLink = pageLink + $("#share_gig_name").val();
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+   
+   function was_click() { 
+      var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
+      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
+      pageLink = pageLink + $("#share_gig_name").val();
+      window.open(`https://api.whatsapp.com/send?text=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+   
+   function cos_click() { 
+      var pageLink1 = window.location.origin + "/gigs/{{request.user.username}}/";
+      pageLink1 = pageLink1 + $("#share_gig_name").val();
+         navigator.clipboard.writeText(pageLink1).then(
+           function() {
+             window.alert('Url Copied!') 
+           }, 
+           function() {
+             window.alert('Opps! Your browser does not support the Clipboard API')
+           }
+         )
+      return false; }
+   
+</script>
+{% endblock %}

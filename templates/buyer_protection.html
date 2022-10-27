@@ -1,0 +1,148 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>
+ Letworkbedone - Buyer Protection
+</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="protection__bg" data-editable-demo="" data-name="page__heading6">
+      
+   <h1 class="page__heading6 protection__title ce-element ce-element--type-text ce-element--focused" contenteditable="">Buyer Protection gh Program</h1></div>
+   <div class="protection__content" data-editable-demo="" data-name="page__heading5"><p class="page__heading5 protection__content-text">
+    letworkbedone’s top priority is buyer satisfaction, which is why we strive to provide you with the best freelance services available.
+</p>
+<p class="protection__content-text">
+    Here are the Five Principles we follow at letworkbedone to protect the interests of our buyers:
+</p>
+<div class="mb49"></div></div>
+   <div class="protection__content-block protection__content-block--work" data-editable-demo="" data-name="page__heading6"><p class="page__heading6 protection__content-block-title">
+    <b>Buyer</b> Obsession gjf
+</p>
+<ul class="protection__content-block-list">
+    <li class="protection__content-block-list-item">
+        letworkbedone  hghg strives to provide you uncompromising quality at the lowest prices on the market.
+    </li>
+    <li class="protection__content-block-list-item">
+        letworkbedone sellers are required to handle orders ghgfh in g6756  full accordance with letworkbedone’s terms. Those terms include: following the job description, order requirements, and any agreed terms via the letworkbedone chat on your order page.
+    </li>
+    <li class="protection__content-block-list-item">
+        Any disputes or disagreements about a letworkbedone hgfhf99879 description or any communications between you and sellers will be resolved in your favor.
+    </li>
+</ul></div>
+<div class="protection__content-block protection__content-block--quality" data-editable-demo="" data-name="page__heading7"><p class="page__heading7 protection__content-block-title">
+    Premium Quality
+</p>
+<ul class="protection__content-block-list">
+    <li class="protection__content-block-list-item">
+        You are entitled to a complete and fully functioning product free of errors, bugs, or any defects that may prevent its full intended use.
+    </li>
+    <li class="protection__content-block-list-item">
+        Work delivered to you must be as good as or better than the work displayed in the seller’s portfolio.
+    </li>
+</ul></div>
+
+
+<div class="protection__content-block protection__content-block--time" data-editable-demo="" data-name="page__heading8"><p class="page__heading8 protection__content-block-title">
+    On the Dot
+</p>
+<ul class="protection__content-block-list">
+    <li class="protection__content-block-list-item">
+        You can cancel an order within 20 minutes of placing it—no questions asked.
+    </li>
+    <li class="protection__content-block-list-item">
+        letworkbedone guarantees you a full and automatic refund if a seller does not accept an order within 24 hours.
+    </li>
+    <li class="protection__content-block-list-item">
+        Sellers must complete orders on time. If a seller misses a deadline, you can cancel the order and instantly receive a full refund.
+    </li>
+</ul></div>
+
+<div class="protection__content-block protection__content-block--arbitrage" data-editable-demo="" data-name="page__heading9"><p class="page__heading9 protection__content-block-title">
+    Always on Your Side
+</p>
+<ul class="protection__content-block-list">
+    <li class="protection__content-block-list-item">
+        You can send any submitted work back for revision until it meets the order requirements.
+    </li>
+    <li class="protection__content-block-list-item">
+        If you are not satisfied with the delivery even after multiple revisions, you can initiate arbitration for a full refund under letworkbedone’s Money-back Guarantee.
+    </li>
+    <li class="protection__content-block-list-item">
+        If a seller delivers incomplete work or if the work does not reflect the standards displayed in their portfolio, the order will be canceled immediately. You can choose to receive a full refund, in which case the product rights remain with the seller, or a partial refund, in which case the product rights are transferred to you.
+    </li>
+</ul></div>
+
+<div class="protection__content-block protection__content-block--rating" data-editable-demo="" data-name="page__heading10"><p class="page__heading10 protection__content-block-title">
+    Trust Is Earned
+</p>
+<ul class="protection__content-block-list">
+    <li class="protection__content-block-list-item">
+        You have the right to leave a review for each order, except after requesting additional services without paying for them.
+    </li>
+    <li class="protection__content-block-list-item">
+        Cancelations initiated by sellers result in negative reviews.
+    </li>
+    <li class="protection__content-block-list-item">
+        Positive reviews increase a letworkbedone’s ratings, while negative reviews reduce them. letworkbedones with strong ratings rank higher in the Marketplace, whereas letworkbedones with lower ratings are pushed down the listings. This ensures that the letworkbedones you see are always fulfilled by top-notch, vetted sellers.
+    </li>
+    <li class="protection__content-block-list-item">
+        Once you leave a negative review, the seller cannot contact you directly or on the order page without your consent.
+    </li>
+</ul></div>
+
+<div class="protection__content-footer" data-editable-demo="" data-name="page__heading11"><p class="page__heading11 protection__content-footer-text mb-2">
+    Have any questions? Get in touch!
+</p>
+<a class="protection__content-footer-btn" href="{% url 'contact_support' %}" target="_blank">Contact Support</a></div>
+</div>
+{% include  'footer.html' %}
+<style>
+
+    .protection__content-footer-btn:hover
+    {
+        color:white;
+    }
+</style>
+<script>
+    $(document).ready(function(){
+     value_user = '{{request.user.username}}'
+     if(value_user.length != 0)
+     {
+        $("#loginbtn").remove();
+        $("#registerbtn").remove();
+        $("#freelancerbtn").remove();
+        $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+        $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+        $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+        $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+        $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+        $('#help_not a').hover(function (e) {
+            $('#help_not .des').css({
+                left: e.offsetX + 80,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+        $('#notification a').hover(function (e) {
+            $('#notification .des').css({
+                left: e.offsetX + 40,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+        $('#messages a').hover(function (e) {
+            $('#messages .des').css({
+                left: e.offsetX + 40,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+        $('#favourite a').hover(function (e) {
+            $('#favourite .des').css({
+                left: e.offsetX + 60,
+                top: e.offsetY + 40
+            }).toggle();
+        });
+     }
+    });
+ </script>
+{% endblock %}

@@ -1,0 +1,37 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - My Favourites</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/index1.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'assets/css/frontend/gig_favourite.css' %}" type="text/css" />
+<div class="all_page page-flex__content header-new-nav is_index">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="payer-banner">
+
+    </div>
+    <div class="popular-rubrics lg-centerwrap centerwrap mt20 m-m0">
+       <h1 class="t-align-l pt20 m-fs22">My Favorite Gigs</h1>
+       <div class="popular-rubrics__items">
+         {% for f_gig in favourite_lists %}
+          <div class="popular-rubrics__item">
+             <a href="/gigs/{{request.user.username}}/{{f_gig.gig_title}}" target="_blank" class="popular-rubrics__link">
+                <picture>
+                   <img src="{{f_gig.gig_image}}" alt="{{f_gig.gig_title}}">
+                </picture>
+                <span>{{f_gig.gig_title}}</span>
+             </a>
+          </div>
+          {% endfor %}
+       </div>
+    </div>
+ </div>
+{% include  'Dashboard/base_buyer.html' %}
+<style>
+   .popular-rubrics__link img
+   {
+      height:150px;
+   }
+</style>
+
+{% endblock %}

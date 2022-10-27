@@ -1,0 +1,220 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Affiliate Program</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="referral-program">
+      <div class="referral-program__header">
+         <div class="referral-program__container">
+            <div class="referral-program__header-container" data-editable-demo="" data-name="page__heading1">
+               <h1 class="kw-header--h1 referral-program__header-title">Boost your earnings by inviting new users to Letworkbedone!</h1>
+               <p class="kw-text--16 referral-program__header-text">Share your affiliate link and receive a reward for every transaction your referrals make. It's that simple.</p>
+               <a href="{% url 'earn_letworkbdone' %}" target="_blank" class="kw-button kw-button--green referral-program__header-button">Start Learning Today</a>
+            </div>
+         </div>
+      </div>
+      <div class="referral-program__action referral-program__action--unauthorized">
+         <div class="referral-program__container">
+            <div class="referral-program__action-container">
+               <div class="referral-program__action-columns">
+                  <div class="referral-program__action-generate" data-editable-demo="" data-name="page__heading1">
+                     <p class="kw-header--h4">Your Affiliate Link</p>
+                     <div id="referral-program-link" class="referral-program__action-form-wrapper">
+                        <div class="referral-program__action-form">
+                           <input type="text" placeholder="Paste URL" id="affiliate_link" class="referral-program__action-form-field" disabled value="{{ url}}/{{userDetails.affiliate_code}} "> <button class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__action-form-button" onclick="return cos_click()">
+                           Copy
+                           </button> <!---->
+                        </div>
+                     </div>
+                  </div>
+                  <div class="referral-program__action-generate mt-4" data-editable-demo="" data-name="page__heading1">
+                     <p class="kw-header--h4">My Referrals</p>
+                     <div class="referral-program__action-referrals-stats">{{referral_count}} Referral<span class="referral-program__action-referrals-stats-separator"><span class="m-hidden"> / </span></span>Earnings: <span class="nowrap"><span class="funds-currency">$</span>{{userDetails.referrals_earnings}}</span></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="referral-program__steps">
+         <div class="referral-program__container" data-editable-demo="" data-name="page__heading1">
+            <p class="kw-header--h2 referral-program__steps-title">3 Simple Steps to Start Earning</p>
+            <ul class="referral-program__steps-list">
+               <li class="referral-program__steps-list-item">
+                  <img class="referral-program__steps-list-icon" src="{% static 'assets/images/referral-program/icon-link.svg' %}"width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__steps-list-title">Get an Affiliate Link</div>
+                  <div class="kw-text--16">Generate an affiliate link to send to your friends, share on social media, or post on your personal site or blog.</div>
+               </li>
+               <li class="referral-program__steps-list-item">
+                  <img class="referral-program__steps-list-icon" src="{% static 'assets/images/referral-program/icon-promotion.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__steps-list-title">Promote Letworkbedone</div>
+                  <div class="kw-text--16">Attract our target audience by sharing your affiliate link and our free promo materials.</div>
+               </li>
+               <li class="referral-program__steps-list-item">
+                  <img class="referral-program__steps-list-icon" src="{% static 'assets/images/referral-program/icon-money-bag-en.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__steps-list-title">Reap Your Rewards</div>
+                  <div class="kw-text--16">You'll earn up to 6% per transaction! Learn more about our <a href="{% url 'partners' %}">affiliate program terms</a>.</div>
+               </li>
+            </ul>
+         </div>
+      </div>
+      <div class="referral-program__promote">
+         <div class="referral-program__container">
+            <div class="referral-program__promote-container" data-editable-demo="" data-name="page__heading1">
+               <p class="kw-header--h2 referral-program__promote-title">What exactly can I promote?</p>
+               <p class="kw-text--16 referral-program__promote-text">It's up to you! There are no limits to the pages you can promote on Letworkbedone.com. That includes links to your own Letworkbedones, your profile, or any one of our site's pages.</p>
+            </div>
+         </div>
+      </div>
+      <div class="referral-program__benefits">
+         <div class="referral-program__container">
+            <div class="referral-program__benefits-container" data-editable-demo="" data-name="page__heading1">
+               <p class="kw-header--h2 referral-program__benefits-title">The Advantages of Being a Letworkbedone Affiliate</p>
+               <ul class="referral-program__benefits-list">
+                  <li class="referral-program__benefits-list-item">
+                     <div class="kw-header--h4 referral-program__benefits-list-title">Unlimited Earning Potential</div>
+                     <p class="kw-text--16">The more buyers you attract, the more you earn. We set no limits.</p>
+                     <p class="kw-text--16">Major webmasters receive bonuses, promotions, and a lot more!</p>
+                  </li>
+                  <li class="referral-program__benefits-list-item">
+                     <div class="kw-header--h4 referral-program__benefits-list-title">Global User Base</div>
+                     <p class="kw-text--16">Millions of people from over 160 countries can use Letworkbedone for their personal and business projects.</p>
+                  </li>
+                  <li class="referral-program__benefits-list-item">
+                     <div class="kw-header--h4 referral-program__benefits-list-title">More Sources, More Traffic</div>
+                     <p class="kw-text--16">You can promote Letworkbedone via targeted ads, social media, email, blogs, articles, reviews, and other sources.</p>
+                     <p class="kw-text--16">Drive traffic from display ads, mobile sites, or apps—there are no restrictions.</p>
+                  </li>
+                  <li class="referral-program__benefits-list-item">
+                     <div class="kw-header--h4 referral-program__benefits-list-title">Free Promotional Materials</div>
+                     <div class="kw-text--16">We make it easy to earn. Check out our free promotional materials <a href="{% url 'partners' %}">here</a>.</div>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="referral-program__promote referral-program__promote--bottom">
+         <div class="referral-program__container">
+            <div class="referral-program__promote-container">
+               <div data-editable-demo="" data-name="page__heading1">
+                  <p class="kw-header--h2 referral-program__promote-title">Explaining Letworkbedone to New Users</p>
+               </div> 
+               <div class="kw-text--16 referral-program__promote-text"  data-editable-demo="" data-name="page__heading2">
+                  <p class="page__heading2">Nobody likes to waste time. That's why Letworkbedone empowers entrepreneurs to connect with pros who can help them achieve more in less time.</p>
+                  <p class="page__heading2">You've already learned how freelance services can boost your efficiency. Through our affiliate program, you can now share your knowledge and earn for every referral who signs up and places an order.</p>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="referral-program__utp">
+         <div class="referral-program__container" data-editable-demo="" data-name="page__heading1">
+            <p class="kw-header--h3 t-align-c">With Letworkbedone, you're getting:</p>
+            <ul class="referral-program__utp-list">
+               <li class="referral-program__utp-list-item">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-crown.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Efficiency</div>
+                  <div class="kw-text--16">Save time, money, and stress with services tailored for your personal or business projects</div>
+               </li>
+               <li class="referral-program__utp-list-item">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-stars.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Popularity</div>
+                  <div class="kw-text--16">Companies like IKEA, Leroy Merlin, and Norgold all work with Letworkbedone</div>
+               </li>
+               <li class="referral-program__utp-list-item">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-strongbox.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Safety</div>
+                  <div class="kw-text--16">Secure payments and our money-back guarantee</div>
+               </li>
+               <li class="referral-program__utp-list-item referral-program__utp-list-item--short-text">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-sale.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Affordability</div>
+                  <div class="kw-text--16">Services start at just $10</div>
+               </li>
+               <li class="referral-program__utp-list-item">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-responsive.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Accessibility</div>
+                  <div class="kw-text--16">Our dedicated app, desktop and mobile site have you covered</div>
+               </li>
+               <li class="referral-program__utp-list-item">
+                  <img class="referral-program__utp-list-icon" src="{% static 'assets/images/referral-program/icon-tap.svg' %}" width="50" height="50" alt="">
+                  <div class="kw-header--h4 referral-program__utp-list-title">Scale</div>
+                  <div class="kw-text--16">Letworkbedone contains 200+ service categories and 500,000+ services</div>
+               </li>
+            </ul>
+            <p class="referral-program__utp-footer"  data-editable-demo="" data-name="page__heading1">Introduce your friends to the easiest and fastest way to get things done!</p>
+         </div>
+      </div>
+      <div class="referral-program__footer">
+         <div class="referral-program__container" data-editable-demo="" data-name="page__heading1">
+            <p class="referral-program__footer-text">Join the Letworkbedone Affiliate Program and start earning today!</p>
+            <a href="{% url 'faq' %}" target="_blank" class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__footer-button">Know More About Letworkbedone</a>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+
+<script>
+   $(document).ready(function(){
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+
+   function cos_click() { 
+      var pageLink1 = $("#affiliate_link").val();
+         navigator.clipboard.writeText(pageLink1).then(
+           function() {
+             window.alert('Url Copied!') 
+           }, 
+           function() {
+             window.alert('Opps! Your browser does not support the Clipboard API')
+           }
+         )
+      return false; }
+</script>
+<style>
+   .kw-button--green, .kw-button--green:hover
+   {
+      color:white;
+   }
+   body.en-lang .referral-program__footer-button
+   {
+      width: 250px;
+   }
+</style>
+{% endblock %}

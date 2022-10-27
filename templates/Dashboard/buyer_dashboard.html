@@ -1,0 +1,183 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Freelance Service MarketPlace</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/index1.css' %}" type="text/css" />
+<link rel="stylesheet" href="{% static 'assets/css/frontend/buyer_dashboard.css' %}" type="text/css" />
+<div class="all_page page-flex__content header-new-nav is_index">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="payer-banner">
+       <div class="kw-wrapper" data-editable-demo="" data-name="page__heading1" >
+          <h1 class="kw-header--h1 t-align-c mb0">Buy affordable freelance services on the go</h1>
+          <div class="payer-banner__text kw-header--h4 t-align-c">Shop with confidence protected by our 100% Money Back Guarantee</div>
+          <div class="payer-banner__search">
+             <div id="app">
+                <div class="custom-search general-search-index">
+                  <select id="buyer_query_type"  required class="js-index-search-input js-static-search form-control" >
+                     <option></option>   
+                  </select>
+                </div>
+             </div>
+             <div class="payer-banner__search-sample">Some ideas to try: 
+               <input type="hidden" value="{{cat_list_json}}" id="buyer_catlist_hidden">
+               {% for cat in cat_list|slice:":3" %}
+                  <a class="payer-banner__search-link" href="/categories/{{cat.cat_name}}/{{cat.subcat_name}}/{{cat.subsubcat_name}}/" target="_blank">{{cat.subsubcat_name}}</a>,
+               {% endfor %}
+            </div>
+          </div>
+       </div>
+    </div>
+    <div class="popular-rubrics lg-centerwrap centerwrap mt20 m-m0">
+       <h1 class="t-align-l pt20 m-fs22 mb-2">Popular Categories</h1>
+       <div class="popular-rubrics__items">
+         {% for p_cat in P_gig_details %}
+          <div class="popular-rubrics__item">
+             <a href="/gigs/{{request.user.username}}/{{p_cat.gig_Name}}" target="_blank" class="popular-rubrics__link">
+                <picture>
+                   <img src="{{p_cat.gig_Image}}" alt="{{p_cat.gig_Name}}">
+                </picture>
+                <span>{{p_cat.gig_Name}}</span>
+             </a>
+          </div>
+          {% endfor %}
+       </div>
+    </div>
+    {% if impression_gigs|length != 0 %}
+    <div class="js-hidden-parent-block">
+       <div id="app-carousels">
+          <div class="kwork-card-carousel-block-bg viewed-kwork-carousel" style="">
+             <div class="kwork-card-carousel-block centerwrap lg-centerwrap mt20 m-m0 authorized-kwork-block clearfix">
+                <h2 class="kwork-card-carousel-block-title m-fs22 t-align-l">Inspired by Your Browsing Activity</h2>
+                <div class="kwork-card-carousel kwork-detail-carousel cusongslist_big_5_column">
+                   <div class="kwork-carousel-main-container has-nav">
+                      <div class="kwork-carousel-nav"><a class="kwork-carousel-prev kwork-carousel-nav-button"><span class="kwork-carousel-nav-button-inner"><i class="kwork-carousel-nav-button-icon"></i></span></a> <a class="kwork-carousel-next kwork-carousel-nav-button"><span class="kwork-carousel-nav-button-inner"><i class="kwork-carousel-nav-button-icon"></i></span></a></div>
+                      <div class="kwork-carousel-list-block">
+                        <div class="has-nav kwork-card-carousel__card-list">
+                           {% for imp_gigs in impression_gigs|slice:":8" %} 
+                            <div data-id="19082363" class="kwork-card cusongsblock js-kwork-card cards-layout-item kwork-card-item cusongsblock--group-price">
+                               <!----> 
+                               <div class="kwork-card-item__wrapper">
+                                  <div class="songperson cusongsblock__content kwork-card-item__left">
+                                     <a href="/gigs/{{imp_gigs.gig_username}}/{{imp_gigs.gig_title}}" class="ispinner-container">
+                                        <picture>
+                                            <img src="{{imp_gigs.gig_img_url}}" alt="{{imp_gigs.gig_title}}">
+                                         </picture>
+                                     </a>
+                                  </div>
+                                  <div class="ta-left padding-content">
+                                     <p><a href="/gigs/{{imp_gigs.gig_username}}/{{imp_gigs.gig_title}}">{{imp_gigs.gig_title|title}}</span></a></p>
+                                     <div class="cusongsblock__panel">
+                                        <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10875374" class="js-user-online-block dot-user-status track--item__title-status dot-user-online"></i> <a href="user/profile/{{imp_gigs.gig_username}}" title="{{imp_gigs.gig_username}}" class="dark-link">{{imp_gigs.gig_username}}</a></div>
+                                        <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
+                                           <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
+                                              <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
+                                              <li class="rating-block__rating-item--number fw600 v-align-m">{{imp_gigs.seller_count}}</li>
+                                           </ul>
+                                           <span class="rating-block__count rating-block__count-star">({{imp_gigs.review_count}})</span>
+                                        </div>
+                                     </div> 
+                                     <div class="price nowrap pull-right m-pull-right">
+                                       <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{imp_gigs.start_price}}</span></div>
+                                    </div>              
+                                  </div>
+                               </div>
+                               <!---->
+                            </div> 
+                            {% endfor %}
+                         </div>
+                      </div>
+                      <div class="clear"></div>
+                   </div>
+                   <!---->
+                </div>
+                <!----> <!---->
+             </div>
+          </div>
+          {% endif %}
+          {% if search_data|length != 0 %}
+          <div class="kwork-card-carousel-block-bg viewed-kwork-carousel" style="">
+             <div class="kwork-card-carousel-block centerwrap lg-centerwrap mt20 m-m0 authorized-kwork-block clearfix">
+                <h2 class="kwork-card-carousel-block-title m-fs22 t-align-l mb-2">Pick Up Where You Left Off</h2>
+                <div class="kwork-card-carousel kwork-detail-carousel cusongslist_big_5_column">
+                   <div class="kwork-carousel-main-container has-nav">
+                      <!----> 
+                      <div class="kwork-carousel-list-block">
+                        <div class="has-nav kwork-card-carousel__card-list">
+                           {% for sea_gig in search_data|slice:":8" %} 
+                           <div data-id="19082363" class="kwork-card cusongsblock js-kwork-card cards-layout-item kwork-card-item cusongsblock--group-price">
+                              <!----> 
+                              <div class="kwork-card-item__wrapper">
+                                 <div class="songperson cusongsblock__content kwork-card-item__left">
+                                    <a href="/gigs/{{sea_gig.gig_username}}/{{sea_gig.gig_title}}" class="ispinner-container">
+                                       <picture>
+                                           <img src="{{sea_gig.gig_img_url}}" alt="{{sea_gig.gig_title}}">
+                                        </picture>
+                                    </a>
+                                 </div>
+                                 <div class="ta-left padding-content">
+                                    <p><a href="/gigs/{{sea_gig.gig_username}}/{{sea_gig.gig_title}}">{{sea_gig.gig_title|title}}</span></a></p>
+                                    <div class="cusongsblock__panel">
+                                       <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10875374" class="js-user-online-block dot-user-status track--item__title-status dot-user-online"></i> <a href="user/profile/{{sea_gig.gig_username}}" title="{{sea_gig.gig_username}}" class="dark-link">{{sea_gig.gig_username}}</a></div>
+                                       <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
+                                          <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
+                                             <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
+                                             <li class="rating-block__rating-item--number fw600 v-align-m">{{sea_gig.seller_count}}</li>
+                                          </ul>
+                                          <span class="rating-block__count rating-block__count-star">({{sea_gig.review_count}})</span>
+                                       </div>
+                                    </div> 
+                                    <div class="price nowrap pull-right m-pull-right">
+                                      <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{sea_gig.start_price}}</span></div>
+                                   </div>              
+                                 </div>
+                              </div>
+                              <!---->
+                           </div> 
+                            {% endfor %}
+                         </div>
+                      </div>
+                      <div class="clear"></div>
+                   </div>
+                   <!---->
+                </div>
+                <!----> <!---->
+             </div>
+          </div>
+          {% endif %}
+       </div>
+    </div>
+    <div id="app-modal">
+       <div>
+          <!---->
+       </div>
+    </div>
+ </div>
+{% include  'Dashboard/base_buyer.html' %}
+<script>
+   hidden_val = eval(JSON.parse(JSON.stringify($("#buyer_catlist_hidden").val())));
+      var array = [];
+      $(hidden_val).each(function(i, li) {  
+         array.push({id: li.cat_name,text: li.subsubcat_name});
+     });
+     var configParamsObj = {
+      data: array,
+      placeholder: 'Try "social media design"', 
+      minimumResultsForSearch: 3,
+      tags: true
+   };
+  $("#buyer_query_type").select2(configParamsObj);
+  $("#buyer_query_type").change(function () {
+   $.ajax({
+      type:"POST",
+      url: "/post_search_key/",
+      data: {'keyword':$('#buyer_query_type').find(":selected").text(),"keyword_type":"keyword"},
+      success: function(data) 
+      {  
+         value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#buyer_query_type').find(":selected").text();});
+         window.open('/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
+      }
+   });
+});
+</script>
+{% endblock %}

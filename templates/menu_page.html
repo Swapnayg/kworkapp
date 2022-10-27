@@ -1,0 +1,45 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>{{details.category_Name}} freelance services starting at $10 | Letworkbedone Freelance Marketplace</title>
+<div class="all_page page-flex__content pt0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="page-parent-category">
+       <div class="page-parent-category__header">
+          <h1>{{details.category_Name|title}}</h1>
+          <div>{{details.category_quote}}</div>
+       </div>
+       <div class="lg-centerwrap clearfix centerwrap">
+          <div class="subcategories-wrapper">
+             <div class="subcategories-list m-hidden">
+                <div class="subcategories-list__title">{{details.category_Name|title}}</div>
+                <span class="subcategories-list__subtitle">{{details.category_Name|title}}</span>
+                {% for sd in sub_details %} 
+                  <a class="subcategories-list__link" href="/categories/{{sd.category_Name}}/{{sd.sub_category_Name}}">{{sd.sub_category_Name|title}}</a>
+                {% endfor %}
+             </div>
+             <div class="subcategories-collage">
+                <div class="collageSubcategories subcategories-18">
+                  {% for sd in sub_details %} 
+                     <div class="collageSubcategories-col cards-layout-item">
+                        <a href="/categories/{{sd.category_Name}}/{{sd.sub_category_Name}}" class="collageSubcategories-item">
+                           <picture>
+                              <source src="/media/{{sd.image}}" type="image/jpeg">
+                              <img src="/media/{{sd.image}}" alt="{{sd.sub_category_Name}}">
+                           </picture>
+                           <div class="text_div">
+                              <span>{{sd.sub_category_Name|title}}</span>
+                           </div>
+                        </a>
+                     </div>
+                  {% endfor %}
+                </div>
+             </div>
+          </div>
+       </div>
+       <br><br>
+    </div>
+ </div>
+{% include  'footer.html' %}
+{% endblock %}

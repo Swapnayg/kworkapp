@@ -1,0 +1,205 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - For Freelancers</title>
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="for-sellers">
+      <div class="for-sellers__header">
+         <div id="js-for-sellers-header-video" class="for-sellers__header-video-wrapper">
+            <video class="for-sellers__header-video" loop="" autoplay="" muted="" preload="metadata">
+               <source src="{% static 'assets/images/for-sellers/header.webm' %}" type="video/webm">
+               <source src="{% static 'assets/images/for-sellers/header.mp4' %}" type="video/mp4">
+            </video>
+         </div>
+         <div class="for-sellers__header-content">
+            <div class="kw-wrapper" data-editable-demo="" data-name="page__heading1">
+               <h1 class="for-sellers__header-title">Do Work You Enjoy</h1>
+               <p class="for-sellers__header-subtitle">Thousands of buyers are ready to pay for your skills</p>
+               <p class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__header-button signup-js worker js-follow-url" ><a href="{% url 'register' %}" target="_blank">Start Earning</a></p>
+            </div>
+         </div>
+         <div class="for-sellers__header-stats">
+            <div class="kw-wrapper" data-editable-demo="" data-name="page__heading2">
+               <ul class="for-sellers__header-stats-list for-sellers__header-stats-list--not-ru">
+                  <li class="for-sellers__header-stats-list-item">A letworkbedone is purchased <span class="for-sellers__header-stats-list-amount">every 60 seconds</span></li>
+                  <li class="for-sellers__header-stats-list-item">Average earnings <span class="kw-tooltip for-sellers__header-stats-tooltip tooltipster" data-tooltip-text="Among active freelancers on letworkbedone" data-tooltip-class="tooltipster-for-sellers-header" data-tooltip-width="302"></span><span class="for-sellers__header-stats-list-amount">$520 a month</span></li>
+               </ul>
+            </div>
+         </div>
+      </div>
+      <div class="for-sellers__people">
+         <div class="kw-wrapper for-sellers__people-inner">
+            <div class="for-sellers__title for-sellers__people-title" data-editable-demo="" data-name="page__heading3"><p class="page__heading3">Join Our Evergrowing Freelance Community</p></div>
+            <div class="for-sellers__people-list hover js-for-sellers-people-slider">
+               {% for user in user_details %}
+                  <div class="for-sellers__people-list-item js-for-sellers-people-list-item">
+                  <div class="for-sellers__people-list-profession js-for-sellers-modal-link" data-id="0">
+                     <a href="/user/profile/{{user.username}}" target="_blank">
+                     <picture class="for-sellers__people-list-image">
+                        <img src="{{user.profile_img}}" alt="">
+                     </picture>
+                     <div class="for-sellers__people-list-profession-title for-sellers__people-list-profession-title--nowrap">I'm a <span>{{user.profession}}</span></div>
+                  </a>
+                  </div>
+                  <div class="t-align-c for-sellers__people-modal-link js-for-sellers-modal-mobile-link js-for-sellers-modal-mobile-link-open">See more</div>
+                  <div class="for-sellers__people-stats-wrapper js-for-sellers-modal-mobile">
+                     <div class="for-sellers__people-stats">
+                        <div class="for-sellers__people-stats-content">
+                           Joined
+                           <div class="for-sellers__people-stats-date">  April 18, 2017</div>
+                           <div class="for-sellers__people-stats-rating"><img class="for-sellers__people-stats-rating-icon" src="{% static 'assets/images/for-sellers/star.svg' %}" width="20" height="20" alt="">5.0</div>
+                           <div class="for-sellers__people-stats-user-type">Professional <br> Seller</div>
+                           Completed Orders
+                           <div class="for-sellers__people-stats-orders">7128</div>
+                           <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__people-stats-button signup-js worker js-follow-url" data-href="{% url 'index' %}">Start Earning</div>
+                        </div>
+                        <div class="for-sellers__people-stats-close js-for-sellers-modal-mobile-link"></div>
+                     </div>
+                  </div>
+                  </div>
+               {% endfor %}
+               <div class="for-sellers__people-list-item">
+                  <div class="for-sellers__people-list-action">
+                     <img class="for-sellers__people-list-icon" src="{% static 'assets/images/for-sellers/heart.svg' %}" width="48" height="44" alt="">
+                     <div class="for-sellers__title for-sellers__people-list-title">What's <br> Your Skill?</div>
+                     <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__people-list-button signup-js worker js-follow-url" ><a href="{% url 'register' %}" target="_blank">Start Earning</a></div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="for-sellers__steps">
+         <div class="kw-wrapper">
+            <div class="for-sellers__title for-sellers__steps-title">How to sell your services in the Marketplace</div>
+            <div class="for-sellers__steps-subtitle">List your services for free and start earning today</div>
+            <div class="for-sellers__steps-list js-for-sellers-steps-slider">
+               <div class="for-sellers__steps-list-item">
+                  <img class="for-sellers__steps-list-image" src="https://cdn.kwork.com/images/for-sellers/kwork-step-1.svg" width="88" height="88" alt="">
+                  <div class="for-sellers__steps-list-content" data-editable-demo="" data-name="page__heading9">
+                     <p class="page__heading9 for-sellers__steps-list-title">1. Create a letworkbedone</p>
+                     <p class="page__heading9 for-sellers__steps-list-text">Get started by signing up <br>and listing your services <br>in under 5 minutes.</p>
+                  </div>
+               </div>
+               <div class="for-sellers__steps-list-item">
+                  <img class="for-sellers__steps-list-image" src="https://cdn.kwork.com/images/for-sellers/kwork-step-2.svg" width="88" height="88" alt="">
+                  <div class="for-sellers__steps-list-content" data-editable-demo="" data-name="page__heading10">
+                     <p class="page__heading10 for-sellers__steps-list-title">2. Receive your first order</p>
+                     <p class="page__heading10 for-sellers__steps-list-text">Get instantly notified <br>when a buyer orders your letworkbedone.</p>
+                  </div>
+               </div>
+               <div class="for-sellers__steps-list-item">
+                  <img class="for-sellers__steps-list-image" src="https://cdn.kwork.com/images/for-sellers/kwork-step-3-en.svg" width="88" height="88" alt="">
+                  <div class="for-sellers__steps-list-content" data-editable-demo="" data-name="page__heading11">
+                     <p class="page__heading11 for-sellers__steps-list-title">3. Deliver and get paid</p>
+                     <p class="page__heading11 for-sellers__steps-list-text">Complete and deliver the order <br> before the deadline. We guarantee timely payments <br> for every successful order.</p>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="for-sellers__lessons">
+         <div class="kw-wrapper">
+            <div class="for-sellers__lessons-inner">
+               <div class="for-sellers__lessons-content" data-editable-demo="" data-name="page__heading12">
+                  <p class="page__heading12 for-sellers__lessons-subtitle">A free get-started course for freelancers</p>
+                  <p class="page__heading12 for-sellers__lessons-title">Reach Your Full Earning Potential<br> on letworkbedone</p>
+                  <p class="page__heading12 for-sellers__lessons-text">Learn how to become a top seller on letworkbedone. We'll cover how to create top-selling letworkbedones, custom offers that buyers can't resist, and so much more.</p>
+                  <a class="kw-button kw-button--green for-sellers__button for-sellers__lessons-button" href="{% url 'earn_letworkbdone' %}" target="_blank">Start the Course Today</a>
+               </div>
+            </div>
+         </div>
+      </div>
+    
+     
+      <div class="for-sellers__footer">
+         <div class="kw-wrapper"  data-editable-demo="" data-name="page__heading18">
+            <p class="for-sellers__title"><span class="page__heading18 d-none d-md-inline">Start Your Freelance Journey on letworkbedone Today</span><span class="page__heading18 m-visible">Try letworkbedone Today</span></p>
+            <div class="kw-button kw-button--green for-sellers__button for-sellers__footer-button signup-js worker"><a href="{% url 'register' %}" target="_blank" id="join_anchor">Join for Free</a></div>
+         </div>
+      </div>
+      <div class="modal fade for-sellers__modal js-for-sellers-modal" role="dialog" data-backdrop="true" data-keyboard="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+               <div class="modal-body">
+                  <div class="for-sellers__modal-columns">
+                     <div class="for-sellers__modal-image-wrapper">
+                        <div class="js-for-sellers-modal-image"></div>
+                        <div class="for-sellers__modal-review">
+                           <div class="for-sellers__modal-review-text js-for-sellers-modal-text"></div>
+                           <div class="for-sellers__modal-review-author hidden js-for-sellers-modal-author"></div>
+                        </div>
+                     </div>
+                     <div class="for-sellers__modal-content">
+                        <div class="for-sellers__modal-date js-for-sellers-modal-date-text"><span class="hidden" data-gender="female">Joined</span><span class="hidden" data-gender="male">Joined</span> <span class="js-for-sellers-modal-date"></span></div>
+                        <div class="for-sellers__modal-stats">
+                           <div class="for-sellers__modal-stats-item">
+                              <div class="for-sellers__modal-stats-rating js-for-sellers-modal-rating"></div>
+                              <div class="for-sellers__modal-stats-text js-for-sellers-modal-status"></div>
+                           </div>
+                           <div class="for-sellers__modal-stats-item js-for-sellers-modal-orders"></div>
+                        </div>
+                        <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__modal-button signup-js worker js-follow-url" data-href="{% url 'index' %}">Start Earning</div>
+                        <div class="for-sellers__modal-close" data-dismiss="modal">
+                           <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M24.1414 7.85855C23.6728 7.38992 22.913 7.38992 22.4443 7.85855L16 14.3029L9.55561 7.85855C9.08698 7.38992 8.32718 7.38992 7.85855 7.85855C7.38992 8.32718 7.38992 9.08698 7.85855 9.55561L14.3029 16L7.85855 22.4443C7.38992 22.913 7.38992 23.6728 7.85855 24.1414C8.32718 24.61 9.08698 24.61 9.55561 24.1414L16 17.697L22.4443 24.1414C22.913 24.61 23.6728 24.61 24.1414 24.1414C24.61 23.6728 24.61 22.913 24.1414 22.4443L17.697 16L24.1414 9.55561C24.61 9.08698 24.61 8.32718 24.1414 7.85855Z"></path>
+                           </svg>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<style>
+   .js-follow-url a,.js-follow-url a:hover,.for-sellers__lessons-button,.for-sellers__lessons-button:hover,#join_anchor,#join_anchor:hover
+   {
+      color:white;
+      text-decoration:none;
+   }
+</style>
+<script>
+   $(document).ready(function(){
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+</script>
+{% endblock %}

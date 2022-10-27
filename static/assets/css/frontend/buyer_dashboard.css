@@ -1,0 +1,190 @@
+.nav-tabs li
+{
+    width: 15%;
+}
+.nav-tabs li a.active{
+    color: #2E5DC5;
+    border-width: medium;
+    border-bottom: 3px solid #2E5DC5 !important;
+}   
+
+.db-manage-gigs .db-new-filters .btn-create-gig {
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+.btn-standard.btn-green {
+    background-color: #2E5DC5;
+    font-weight: 700;
+    color: #fff!important;
+    border: 1px solid transparent;
+    padding: 8px;
+    border-radius: 5px;
+    float: right;
+}
+ h1.alt, .text-display-1.alt {
+    font-weight: 600;
+    display: inline-block;
+    float: left;
+    font-size: 35px;
+    padding-bottom: 1%;
+}
+.db-new-header {
+    padding-bottom: 20px;
+}
+.cf:before, .cf:after {
+    content: " ";
+    display: table;
+}
+.db-manage-gigs header .accept-requests {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+    -ms-flex-direction: row-reverse;
+    flex-direction: row-reverse;
+}
+.toggle-wrapper:first-child {
+    margin-left: 0;
+}
+.db-manage-gigs header .accept-briefs {
+    margin-right: 24px;
+}
+.toggle-wrapper {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 30px;
+}
+.db-manage-gigs header .accept-requests .toggle-wrapper label {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+}
+.toggle-wrapper label {
+    display: inline-block;
+    vertical-align: middle;
+    font-size: 14px;
+    color: #222325;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+.hint--bottom-right:before, .hint--bottom-right:after {
+    top: 100%;
+    right: 50%;
+}
+.toggle-wrapper label input[type=checkbox] {
+    display: none;
+}
+.db-manage-gigs header .accept-requests .toggle-wrapper .fake-toggle {
+    margin: 0 8px;
+}
+.toggle-wrapper label .fake-toggle {
+    background-color: #fff;
+    width: 30px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 7px;
+    position: relative;
+    box-shadow: inset 0 0 0 1px #ccc;
+    border-radius: 15px;
+}
+.hint--bottom-right:before, .hint--bottom-right:after {
+    top: 100%;
+    right: 50%;
+}
+.toggle-wrapper label .fake-toggle:before, .toggle-wrapper label .fake-toggle:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 20px;
+    height: 20px;
+    border-radius: 15px;
+}
+.toggle-wrapper label .fake-toggle:before {
+    background-color: #2E5DC5;
+    -webkit-transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+    transition: width .2s ease-in-out,border-radius .2s ease-in-out;
+}
+.db-manage-gigs header .accept-briefs .set-budget-cta {
+    background: 0 0;
+    border: none;
+    text-decoration: underline;
+    color: #404145;
+    margin-left: 4px;
+}
+.hint--top:before, .hint--top:after {
+    bottom: 100%;
+    left: 50%;
+}
+.hint--top:before {
+    margin-left: -5px;
+    margin-bottom: -12px;
+    border-top-color: #222325;
+}
+#manage_gigs, .nav, .tab-content .tab-pane,#manage_gigs ul li a, #manage_gigs_card
+{
+    background: #f7f7f7;
+    border: none;
+}
+#manage_gigs
+{
+    margin-left: 2%;
+    margin-right: 2%;
+}
+#manage_gigs ul li a
+{
+    font-size: 14px;
+    color: #333;
+    font-weight: 600;
+    padding: 20px;
+    line-height: 30px;
+    height: 30px;
+    text-decoration: none;
+}
+.tab-content
+{
+    padding-top: 2%;
+}
+.search-button button
+{
+  background-color:#2E5DC5 !important;
+}
+
+.kwork-card-carousel.kwork-detail-carousel.cusongslist_big_5_column .kwork-card-carousel__card-list
+{
+    justify-content: start;
+}
+.select2-container .select2-selection--single
+{
+    height: 45px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow
+{
+    display: none;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #444;
+    line-height: 45px !important;
+    padding-left: 8%;
+    font-size: 17px;
+}
+
+.popular-rubrics__link img,.cusongsblock__content img
+{
+    height: 150px;
+}
+.popular-rubrics__link, .popular-rubrics__link:hover{
+    color: #404145;
+    text-align: center;
+}
+.popular-rubrics__link span{
+    color: #404145;
+}

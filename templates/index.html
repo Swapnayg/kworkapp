@@ -1,0 +1,414 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Home</title>
+<input type="hidden" value="" class="user-payment-method" /><input type="hidden" value="" class="user-payment-saved" />
+<div class="all_page page-flex__content pt0 is_index">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="banner-market">
+      <div class="banner-slider__outer">
+         <div class="banner-slider__inner">
+            <div class="banner-slider m-hidden js-banner-slider swiper">
+               <div class="banner-slider__container swiper-wrapper">
+                  <div class="swiper-slide banner-slider__item banner-slider__item--7">
+                     <div class="kw-wrapper">
+                        <div class="swiper-container banner-slider__image">
+                           <div class="swiper-wrapper" id="swiper_slider">
+                              <div class="swiper-slide" id="swiper-slide1">
+                                 <div class="banner-slider__strip">
+                                    <div class="kw-wrapper">
+                                       <div class="banner-slider__inner">
+                                          <div class="banner-slider__content">
+                                             <div class="banner-slider__stars">
+                                                <i class="icon icon-star active"></i>
+                                                <i class="icon icon-star active"></i>
+                                                <i class="icon icon-star active"></i>
+                                                <i class="icon icon-star active"></i>
+                                                <i class="icon icon-star active"></i>
+                                             </div>
+                                             <div class="banner-slider__text"><span class="banner-slider__name">Tanya 1, </span><span class="banner-slider__profession">Freelance Accountant</span></div>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="kw-wrapper">
+         <div class="banner-market__inner" data-editable-demo="" data-name="page__heading1">
+            <h1 class="page__heading1 kw-header--h1 p0">
+               Buy affordable freelance services <br />
+               on the go
+            </h1>
+            <div id="index-banner-search">
+               <form action="/search" method="GET" class="custom-search general-search-index js-index-search">
+                  <select id="query_type"  required class="js-index-search-input js-static-search form-control" >
+                     <option></option>   
+                  </select>
+                  <span class="js-clear-button clear-button hidden bg-none-important">
+                     <svg class="pointer-en" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
+                        <path d="M24.14 7.858a1.2 1.2 0 0 0-1.697 0L16 14.303 9.556 7.858a1.2 1.2 0 0 0-1.697 1.697L14.303 16 7.86 22.444a1.2 1.2 0 0 0 1.697 1.697L16 17.697l6.444 6.444a1.2 1.2 0 1 0 1.697-1.697L17.697 16l6.444-6.444a1.2 1.2 0 0 0 0-1.697z" fill="#a3a3a3"/>
+                     </svg>
+                  </span>
+                  {% comment %} <span class="search-button"><button class="button button-success">Search</button></span> {% endcomment %}
+               </form>
+               <general-search-index></general-search-index>
+            </div>
+            <div class="banner-market__popular mt16">
+               <div class="banner-market__popular-header kw-color--gray">Popular:</div>
+               <input type="hidden" value="{{cat_list_json}}" id="catlist_hidden">
+               <div class="banner-market__popular-links">
+                  {% for cat in cat_list|slice:":4" %}
+                     <a class="banner-market__popular-link" href="/categories/{{cat.cat_name}}/{{cat.subcat_name}}/{{cat.subsubcat_name}}/" target="_blank"><span>{{cat.subsubcat_name}}</span></a>
+                  {% endfor %}
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="partners partners--en">
+      <div class="kw-wrapper partners__wrapper partners__wrapper--en js-partners-slider">
+         <div class="partners__items partners__items--en swiper-wrapper">
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--ikea" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/ikea.svg' %}" alt="" width="84" height="29" />
+            </div>
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--apple" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/apple.svg' %}" alt="" width="84" height="29" />
+            </div>
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--danone" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/danone.svg' %}" alt="" width="84" height="29" />
+            </div>
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--leroy-merlin" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/leroy-merlin.svg' %}" alt="" width="84" height="29" />
+            </div>
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--bp" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/bp.svg' %}" alt="" width="84" height="29" />
+            </div>
+            <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--philips" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
+               <img class="js-lazy-load-image" data-inviewport-right="-80" src="{% static 'assets/images/partners/philips.svg' %}" alt="" width="84" height="29" />
+            </div>
+         </div>
+         <div class="hidden">
+            <div id="partners-hint" class="partners__hint">
+               Top companies use Letworkbedone <br />
+               to get things done
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="rubrics">
+      <div class="kw-wrapper" data-editable-demo="" data-name="page__heading2">
+         <h2 class="page__heading2 kw-header--h2 p0">Explore Letworkbedone's Evergrowing Marketplace</h2>
+         <div class="rubrics__items">
+            {% for ml in main_menu %}
+               <div class="rubrics__item">
+                  <a class="rubrics__link menu_cats" href="/categories/{{ml.name}}" >
+                  <img src="/media/{{ml.image}}" alt="{{ml.name}}" width="307" height="211" onerror="imageLoadError(this)"/>
+                     <div class="text_div">
+                        <span>{{ml.name|title}}</span>
+                     </div>
+                  </a>
+               </div>
+            {% endfor %}
+         </div>
+      </div>
+   </div>
+   <div class="numbers m-hidden">
+      <div class="kw-wrapper">
+         <div class="numbers__items">
+            <div class="numbers__item">
+               <div class="numbers__logo"><img class="js-lazy-load-image" src="{% static 'assets/images/logo.png' %}" alt="" /></div>
+               <div class="numbers__text numbers__text--hint d-flex align-content-center justify-content-center">
+                  Freelance Marketplace <i class="icon-help--grey tooltipster ml5" data-tooltip-side="bottom" data-tooltip-content="#numbers-hint" data-tooltip-distance="5"></i>
+               </div>
+               <div class="hidden">
+                  <div id="numbers-hint" class="numbers__hint">
+                     Letworkbedone is the new platform taking the freelancing world by storm. <br />
+                     Shop with confidence with our 100% Money Back Guarantee and smart freelancer rating system. Get started for free on Letworkbedone now: <br />
+                     shopping for freelance services has never been easier.
+                  </div>
+               </div>
+            </div>
+            <div class="numbers__item" data-editable-demo="" data-name="page__heading3">
+               <p class="page__heading3 numbers__title js-animation-count" data-count="65716">{{active_orders}}</p>
+               <p class="page__heading3numbers__text">active Works</p>
+            </div>
+            <div class="numbers__item"  data-editable-demo="" data-name="page__heading4">
+               <p class="page__heading4 numbers__title js-animation-count" data-count="1440" data-delay="200">{{buyer_reqyests}}</p>
+               <p class="page__heading4 numbers__text">
+                  new Works <br />
+                  this week
+               </p>
+            </div>
+            <div class="numbers__item" data-editable-demo="" data-name="page__heading5">
+               <p class="page__heading5 numbers__title js-animation-count" data-count="791" data-delay="400">{{new_buyers}}</p>
+               <p class="page__heading5 numbers__text">
+                  new buyers <br />
+                  this week
+               </p>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="steps m-hidden js-animation-steps">
+      <div class="kw-wrapper">
+         <div class="steps__header" data-editable-demo="" data-name="page__heading6">
+            <h2 class="page__heading6 kw-header--h2 p0">Discover how easy it is to get things done</h2>
+            <p class=" page__heading6 steps__header-text">Perfect for your personal and business goals!</p>
+         </div>
+         <div class="steps__items">
+            <div class="steps__item js-animation-step">
+               <div class="steps__item-inner steps__item--choose">
+                  <div class="steps__image"><img class="js-lazy-load-image" src="{% static 'assets/images/steps-choose.svg' %}" alt="" /></div>
+                  <div class="steps__item-right" data-editable-demo="" data-name="page__heading7">
+                     <h4 class="page__heading7 steps__title kw-header--h4">Find a freelancer</h4>
+                     <p class="page__heading7 steps__text kw-text--14">
+                        Explore thousands of professional services for every budget, or post a custom buyer request <br />
+                        in the Exchange.
+                     </p>
+                  </div>
+                  <div class="steps__arrow steps__arrow--choose js-animation-arrow js-animation-arrow-choose">
+                     <img class="js-lazy-load-image" src="{% static 'assets/images/steps-choose-arrow.svg' %}" alt="" />
+                  </div>
+               </div>
+            </div>
+            <div class="steps__item js-animation-step">
+               <div class="steps__item-inner steps__item--pay">
+                  <div class="steps__image"><img class="js-lazy-load-image" src="{% static 'assets/images/steps-pay-en.svg' %}" alt="" /></div>
+                  <div class="steps__item-right" data-editable-demo="" data-name="page__heading8">
+                     <h4 class="page__heading8 steps__title kw-header--h4">Shop with confidence</h4>
+                     <p class="page__heading8 steps__text kw-text--14">
+                        Always know prices and deadlines upfront. <br />
+                        Your payment isn't released until you approve the work.
+                     </p>
+                  </div>
+                  <div class="steps__arrow steps__arrow--pay js-animation-arrow js-animation-arrow-pay"><img class="js-lazy-load-image" src="{% static 'assets/images/steps-pay-arrow.svg' %}" alt="" /></div>
+               </div>
+            </div>
+            <div class="steps__item js-animation-step">
+               <div class="steps__item-inner steps__item--result">
+                  <div class="steps__image"><img class="js-lazy-load-image" src="{% static 'assets/images/steps-result.svg' %}" alt="" /></div>
+                  <div class="steps__item-right" data-editable-demo="" data-name="page__heading9">
+                     <h4 class="steps__title kw-header--h4">Get quality results</h4>
+                     <p class="page__heading9 steps__text kw-text--14">
+                        Our 100% Money Back Guarantee ensures<br />
+                        top-quality work delivered on time <br />
+                        or your money back.
+                     </p>
+                  </div>
+                  <div class="steps__arrow steps__arrow--result js-animation-arrow js-animation-arrow-result">
+                     <img class="js-lazy-load-image" src="{% static 'assets/images/steps-result-arrow.svg' %}" alt="" />
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="inspire m-hidden">
+      <div class="kw-wrapper" data-editable-demo="" data-name="page__heading9">
+         <h2 class="page__heading9 kw-header--h2 p0">Get inspired with projects created by our freelancers</h2>
+         <div class="inspire__slider-wrapper">
+            <div class="swiper inspire__slider js-inspire-slider" id="marketplace">
+               <div class="swiper-wrapper inspire__items">
+                  {% for gig in gig_details %}
+                  <div class="swiper-slide inspire__item">
+                     <div class="inspire__item-inner">
+                        <div class="inspire__image">
+                           <a href="/gigs/{{gig.gig_user.username}}/{{gig.gig_Name}}" class="inspire__image-link" target="_blank" title="{{gig.gig_user.username |title}}">
+                           <img class="js-lazy-load-image" alt="" data-inviewport-right="-300" onerror="imageLoadError(this)" src="{{gig.gig_Image}}" />
+                           </a>
+                        </div>
+                        <div class="inspire__bottom">
+                           <a href="/user/profile/{{gig.gig_user.username}}" class="inspire__user-avatar" title="{{gig.gig_user.username |title}}">
+                           <img src="{{gig.gig_user.avatar}}" class="js-lazy-load-image" alt="" />
+                           </a>
+                           <span class="inspire__user-author">Freelancer: <a href="#" title="{{gig.gig_user.username |title}}">{{gig.gig_user.username |title}}</a></span>
+                        </div>
+                     </div>
+                  </div>
+                  {% endfor %}
+               </div>
+            </div>
+            <div class="inspire__slider-arrow inspire__slider-arrow--prev js-inspire-slider-arrow-prev"><img src="{% static 'assets/images/slider-arrow-left.svg' %}"  alt="" /></div>
+            <div class="inspire__slider-arrow inspire__slider-arrow--next js-inspire-slider-arrow-next"><img src="{% static 'assets/images/slider-arrow-right.svg' %}"  alt="" /></div>
+         </div>
+      </div>
+   </div>
+   <div class="help-buisness">
+      <div class="kw-wrapper">
+         <div class="help-buisness__inner">
+            <div class="help-buisness__content help-buisness__content--wide"  data-editable-demo="" data-name="page__heading10">
+               <h2 class="page__heading10 kw-header--h2 p0">Intelligent business solutions for entrepreneurs</h2>
+               <p class="help-buisness__items">
+                  <p class="help-buisness__item help-buisness__item--rows">
+                     <p class="page__heading10 help-buisness__title">Scaling Made Easy</p>
+                     <p class="page__heading10 help-buisness__text">Find professional talent to boost your conversion, sales, and traffic.</p>
+                  </p>
+                  <p class="help-buisness__item help-buisness__item--rows">
+                     <p class="page__heading10 help-buisness__title">Outsource & Save (up to 87%!)</p>
+                     <p class="page__heading10 help-buisness__text">Dramatically reduce your expenses with fixed-price freelance services for every budget.</p>
+                  </p>
+                  <p class="help-buisness__item help-buisness__item--rows">
+                     <p class="page__heading10 help-buisness__title">Focus on Priorities</p>
+                     <p class="page__heading10 help-buisness__text">Spend up to 75% less time on business tasks and focus on what really matters for growth.</p>
+                  </p>
+               </p>
+            </div>
+            <div class="promo-video js-youtube-modal-open"  data-editable-demo="" data-name="page__heading13">
+               <img class="page__heading13 js-lazy-load-image" src="{% static 'assets/images/youtube-bg-min-en.jpg' %}" data-inviewport-bottom="-600"alt=""/>
+            </div>
+         </div>
+      </div>
+   </div>
+   <div class="banner-bottom js-animation-banner">
+      <div class="kw-wrapper">
+         <div class="banner-bottom__bg js-bg-banner optimize m-hidden" data-style="background-image: url(/static/assets/images/banner-bg-bottom.jpg);"></div>
+         <div
+            class="banner-bottom__bg banner-bottom__bg--mobile js-lazy-load-image js-lazy-load-image-bg optimize m-visible"
+            data-style="background-image: url(/static/assets/images/portfolio/banner-bg-bottom-mobile.jpg );"
+            ></div>
+         <div class="banner-bottom__inner" data-editable-demo="" data-name="page__heading11">
+            <h2 class="page__heading11 kw-header--h2 p0">Start saving with freelance services today</h2>
+            <p class="banner-bottom__text">Speed, quality, and affordability: you can have it all!</p>
+            <a class="banner-bottom__link kw-button kw-button--green signup-js" href="{% url 'register' %}">Sign up for Free</a>
+         </div>
+      </div>
+   </div>
+   <div class="bottom-text m-hidden">
+      <div class="kw-wrapper">
+         <div class="bottom-text__header">
+            <div class="bottom-text__header-image" data-editable-demo="" data-name="page__heading15">
+               <p class="page__heading15">Freelance Marketplace</p>
+            </div>
+            <div data-editable-demo="" data-name="page__heading16">
+               <p class="page__heading16 bottom-text__header-sub">Getting things done has never been easier.</p>
+            </div>
+            
+         </div>
+         <div class="bottom-text__items">
+            <div class="bottom-text__item" data-editable-demo="" data-name="page__heading17">
+               <p><b>Want to save time and money without compromising on quality?</b> That's what we’re here for.</p>
+               <p>We built Letworkbedone to help independent and results-oriented entrepreneurs like you find talented freelancers for all your business needs.</p>
+               <p>
+                  On Letworkbedone, thousands of talented freelancers compete for your business by listing their services in the Marketplace. These services are sold like convenient grab-and-go items in a real store. On our platform,
+                  there are no confusing and costly hourly rates.
+               </p>
+               <p>There's also no more haggling over price and deadlines. Prices, deadlines, and services included are specified in advance, saving you time, money, and energy.</p>
+               <p>
+                  You can shop freelance services with confidence on Letworkbedone. If anything ever goes wrong, you're protected by our <b>100% Money Back Guarantee</b>, one-of-a-kind <b>Buyer Protection Program</b>, and incredible
+                  Support Team.
+               </p>
+               <p>Why wait? Get things done today!</p>
+            </div>
+            <div class="bottom-text__item" data-editable-demo="" data-name="page__heading18">
+               <p><b>Have a unique job, or too busy to browse for freelancers?</b> Post a buyer request in our tailor-made Exchange section!</p>
+               <p>Just provide a description, delivery time, and budget. letworkbedone's seasoned freelancers will send in bespoke offers customized to your task. Best suited for complex or large projects.</p>
+               <p>
+                  The quality of offers on Letworkbedone is unique. Thanks to a proprietary feature on our platform, you don't need to sift through a sea of generic offers you might receive on other freelance platforms. Since Letworkbedone
+                  professionals are rewarded for putting special thought and effort into every offer, you get to choose from the <i>crème de la crème</i>.
+               </p>
+               <p>Have a project you need to check off? Post your request today!</p>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% include  'footer.html' %}
+<style>
+   .banner-bottom__link:hover
+   {
+      color:white;
+   }
+   .select2-container .select2-selection--single
+   {
+      height:48px;
+      width:101%;
+      z-index:-1;
+   }
+   .select2-container--default .select2-selection--single .select2-selection__placeholder
+   {
+      padding-left: 8%;
+      line-height: 45px;
+      font-size: 20px;
+   }
+   .select2-container--default .select2-selection--single .select2-selection__arrow
+   {
+      display:none;
+   }
+   .search-button
+   {
+      z-index:100000;
+   }
+</style>
+<script>
+   $(document).ready(function(){
+      hidden_val = eval(JSON.parse(JSON.stringify($("#catlist_hidden").val())));
+      var array = [];
+      $(hidden_val).each(function(i, li) {  
+         array.push({id: li.cat_name,text: li.subsubcat_name});
+     });
+     var configParamsObj = {
+      data: array,
+      placeholder: 'Try "social media design"', 
+      minimumResultsForSearch: 3,
+      tags: true
+   };
+  $("#query_type").select2(configParamsObj);
+  $("#query_type").change(function () {
+   $.ajax({
+      type:"POST",
+      url: "/post_search_key/",
+      data: {'keyword':$('#query_type').find(":selected").text(),"keyword_type":"keyword"},
+      success: function(data) 
+      {  
+         value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#query_type').find(":selected").text();});
+         window.open('/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
+      }
+   });
+});
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+</script>
+{% endblock %}

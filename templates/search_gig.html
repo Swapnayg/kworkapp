@@ -1,0 +1,106 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - {{keyword}}| Gig</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/search_gig.css' %}" type="text/css" />
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="popular-rubrics lg-centerwrap centerwrap mt20 m-m0">
+    <h1 class="t-align-l pt20 m-fs22">Results for "{{keyword}}"</h1>
+    <div class="or-in-line mb-5">
+        <p>OR</p>
+     </div>
+     <a href="/search/user/{{keyword}}" class="username-search ">
+        <span class="fa-stack">
+           <span class="XQskgrQ icon" aria-hidden="true" style="width: 16px; height: 16px;">
+              <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                 <path d="M7 8C9.20938 8 11 6.20937 11 4C11 1.79063 9.20938 0 7 0C4.79063 0 3 1.79063 3 4C3 6.20937 4.79063 8 7 8ZM9.8 9H9.27812C8.58437 9.31875 7.8125 9.5 7 9.5C6.1875 9.5 5.41875 9.31875 4.72188 9H4.2C1.88125 9 0 10.8813 0 13.2V14.5C0 15.3281 0.671875 16 1.5 16H12.5C13.3281 16 14 15.3281 14 14.5V13.2C14 10.8813 12.1187 9 9.8 9Z"></path>
+              </svg>
+           </span>
+        </span>
+        Search usernames for: '{{keyword}}'
+     </a>
+    
+    {% if active_gigs|length != 0 %}
+    {% for gig in active_gigs %}
+    <div class="popular-rubrics__item">
+        <a href="/gigs/{{gig.gig_user.username}}/{{gig.gig_Name}}" class="popular-rubrics__link">
+           <picture>
+              <img src="{{gig.gig_Image}}" >
+           </picture>
+           <span> {{gig.gig_Name}}</span>
+        </a>
+     </div>
+     {% endfor %}
+     {% else %}
+     <div class="search_perseus">
+        <div class="listings-perseus">
+           <div class="search-page top-filters">
+              <div class="UsV1pzf error-page empty-search-results">
+                 <div class="error-image"><img src="{% static 'assets/images/empty-search-results.229c0d3.png' %}" alt="empty result image"><small><span>Made on Letworkbedone<br>by</span> <b>techdivaa</b></small></div>
+                 <h2>No Services Found For Your Search</h2>
+                 <p>Try a new search or get a free quote for your project from our community of freelancers.</p>
+                 <div class="or-in-line">
+                    <p>OR</p>
+                 </div>
+                 <a href="/search/user/{{keyword}}" class="username-search">
+                    <span class="fa-stack">
+                       <span class="XQskgrQ icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                          <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M7 8C9.20938 8 11 6.20937 11 4C11 1.79063 9.20938 0 7 0C4.79063 0 3 1.79063 3 4C3 6.20937 4.79063 8 7 8ZM9.8 9H9.27812C8.58437 9.31875 7.8125 9.5 7 9.5C6.1875 9.5 5.41875 9.31875 4.72188 9H4.2C1.88125 9 0 10.8813 0 13.2V14.5C0 15.3281 0.671875 16 1.5 16H12.5C13.3281 16 14 15.3281 14 14.5V13.2C14 10.8813 12.1187 9 9.8 9Z"></path>
+                          </svg>
+                       </span>
+                    </span>
+                    Search usernames for: '{{keyword}}'
+                 </a>
+              </div>
+           </div>
+        </div>
+     </div>
+     {% endif %}
+ </div>
+</div>
+{% include  'footer.html' %}
+
+<script>
+   $(document).ready(function(){
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+</script>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Register</title>
+<div class="all_page page-flex__content pt0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="static-page__block">
+        <div class="white-bg-block centerwrap m-pt10 m-bt10 centerwrap-mid">
+            <div class="box-login mt-4">
+                <div class="py-5">
+                  <h1 class="text-center mb-5">Get Your Free Account</h1>
+                  <div class="col-8 mx-auto">
+                    <a href="{% url 'social:begin' 'google-oauth2' %}" class="login_with google"><i class="fa fa-google lnlog google"></i><p> Sign up with Google</p></a>
+                    <a href="{% url 'social:begin' 'facebook' %}" class="login_with linkedin"><i class="fa fa-facebook lnlog"></i><p> Sign up with Facebook</p></a>
+                  </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% include  'footer.html' %}
+
+<script>
+  $(document).ready(function(){
+    if(window.location.pathname.split("/")[1] == "ref")
+    {
+      $.ajax({
+        type:"GET",
+        url: "/add_referral_link/",
+        data: {'affiliate_code':window.location.pathname.split("/")[2]},
+        success: function(data)
+        {
+          if(data=="sucess")
+          {
+
+          }
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}

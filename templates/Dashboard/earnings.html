@@ -1,0 +1,821 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - {{request.user.username}} / Revenues</title>
+<div class="all_page page-flex__content pt0 m0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="row justify-content-center mt-0" id="manage_earning">
+      <article class="db-new-content js-db-cont">
+         <header class="db-new-header">
+            <h1 class="alt">
+               Earnings
+               <span class="money-expected">
+               Expected earnings: <b class="js-active-orders">$112.50</b>
+               </span>
+               <span class="money-expected india-seller-taxes-gst" hidden="">
+               TCS under GST: <b class="js-india-gst-taxes">$0</b>
+               <span class="hint--top tooltip" data-hint="Per India tax regulations, this is a 1% tax collected at source (TCS).">
+               <i class="fa fa-question-circle"></i>
+               </span>
+               </span>
+            </h1>
+         </header>
+         <div class="db-stats-standard cf js-db-stats ">
+            <span><small>Net Income</small>$546.36</span>
+            <a href="/users/swap_soln_90/balance/sales?filter=withdrawn"><small>Withdrawn</small>$546.36</a>
+            <a href="/users/swap_soln_90/balance/sales?filter=revenue_purchases"><small>Used for Purchases</small>$0</a>
+            <a href="/users/swap_soln_90/balance/sales?filter=pending_clearance"><small>Pending Clearance</small>$0</a>
+            <span><small>Available for Withdrawal</small>$0</span>
+         </div>
+         <div class="revenues-actions js-revenues-actions p-b-10 cf">
+            <label>WITHDRAW</label>
+            <script>
+               window.initialData = window.initialData || {};
+               window.initialData['Earnings'] = {"withdrawalCurrencies":{"paypal":"USD","local_bank_transfer":"USD","revenue_card":null,"direct_deposit":null},"withdrawalMethods":[{"type":"paypal","title":"PayPal Account","tooltip":"No Earnings to Withdraw","accountId":"","disabled":true,"unregistered":true,"registrationUrl":null,"withdrawalUrl":null,"currencies":[{"name":"USD","symbol":"$","amount":0,"amountWithSymbol":"$0","selected":true},{"name":"EUR","symbol":"€","amount":0,"amountWithSymbol":"€0","selected":false},{"name":"GBP","symbol":"£","amount":0,"amountWithSymbol":"£0","selected":false},{"name":"AUD","symbol":"A$","amount":0,"amountWithSymbol":"A$0","selected":false},{"name":"CAD","symbol":"C$","amount":0,"amountWithSymbol":"C$0","selected":false},{"name":"ILS","symbol":"₪","amount":0,"amountWithSymbol":"₪0","selected":false},{"name":"CHF","symbol":"CHF","amount":0,"amountWithSymbol":"0 CHF","selected":false},{"name":"NZD","symbol":"NZ$","amount":0,"amountWithSymbol":"NZ$0","selected":false},{"name":"SEK","symbol":"kr","amount":0,"amountWithSymbol":"0 kr","selected":false},{"name":"SGD","symbol":"S$","amount":0,"amountWithSymbol":"S$0","selected":false},{"name":"HKD","symbol":"HK$","amount":0,"amountWithSymbol":"HK$0","selected":false},{"name":"THB","symbol":"฿","amount":0,"amountWithSymbol":"฿0","selected":false},{"name":"MXN","symbol":"$","amount":0,"amountWithSymbol":"$0 MXN","selected":false}],"showCurrencySettings":false},{"type":"local_bank_transfer","title":"Bank Transfer","tooltip":"Cash can only be withdrawn in USD. The minimum amount is $20","accountId":null,"disabled":true,"unregistered":false,"registrationUrl":null,"withdrawalUrl":null,"currencies":[{"name":"USD","symbol":"$","amount":0,"amountWithSymbol":"$0","selected":true}],"showCurrencySettings":false}],"fullBalance":0,"suggestedCurrency":"USD","seller":{"userId":109558113,"username":"swap_soln_90"},"authToken":"1665651170.ewr3SlqYE02RqB7AJe6XbQ/fmDvOTPk0ayqVLx9ugyA=","entryPopup":null,"cashAdvance":{"available":false,"data":{}},"maxWithdrawalAmount":5000,"inWolvesStatementOfEarningsRollout":true,"inWithdrawalWizardPage":null,"locale":"en-US"};
+            </script>
+            <div id="Earnings-component">
+               <div class="earnings-package" data-reactroot="">
+                  <section class="withdraw-buttons-list"><button data-hint="No Earnings to Withdraw" class="withdraw-button paypal hint--top disabled btn-standard" disabled=""><i></i>Paypal Account</button><button data-hint="Cash can only be withdrawn in USD. The minimum amount is $20" class="withdraw-button local_bank_transfer hint--top disabled" disabled=""><i></i>Bank Transfer</button></section>
+                  <section><button class="FW1syM7 L1yjt43 p9qU5Ka co-white m-l-8 bg-co-green-700" style="float:right">Get Statement of Earnings</button></section>
+               </div>
+            </div>
+         </div>
+         <div class="revenues-actions cf">
+            <label>SHOW</label>
+            <div class="dd-wrap js-ddown-transactions">
+               <div class="filter-select cf ">
+                  <div class="fake-dropdown" style="visibility: visible;">
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="137" data-min-width="137" style="width: 137px;">EVERYTHING</a>
+                     <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 180px;">
+                        <li>
+                           <a data-type="transactions" data-val="all">
+                           <span class="text-inner">EVERYTHING</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="transactions" data-val="withdrawn">
+                           <span class="text-inner">WITHDRAWN</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="transactions" data-val="pending_clearance">
+                           <span class="text-inner">PENDING CLEARANCE</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="transactions" data-val="cancelled_revenues">
+                           <span class="text-inner">CANCELLED REVENUES</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="transactions" data-val="cleared">
+                           <span class="text-inner">CLEARED</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="transactions" data-val="revenue_purchases">
+                           <span class="text-inner">USED FOR PURCHASES</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <div class="dd-wrap js-ddown-years">
+               <div class="filter-select cf ">
+                  <div class="fake-dropdown" style="visibility: visible;">
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="32" data-min-width="32" style="width: 32px;">2022</a>
+                     <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 72px;">
+                        <li>
+                           <a data-type="years" data-val="2022">
+                           <span class="text-inner">2022</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="years" data-val="2021">
+                           <span class="text-inner">2021</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+            <div class="dd-wrap js-ddown-months">
+               <div class="filter-select cf ">
+                  <div class="fake-dropdown" style="visibility: visible;">
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="77" data-min-width="77" style="width: 77px;">All months</a>
+                     <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 120px;">
+                        <li>
+                           <a data-type="months" data-val="13">
+                           <span class="text-inner">All months</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="1">
+                           <span class="text-inner">January</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="2">
+                           <span class="text-inner">February</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="3">
+                           <span class="text-inner">March</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="4">
+                           <span class="text-inner">April</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="5">
+                           <span class="text-inner">May</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="6">
+                           <span class="text-inner">June</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="7">
+                           <span class="text-inner">July</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="8">
+                           <span class="text-inner">August</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="9">
+                           <span class="text-inner">September</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="10">
+                           <span class="text-inner">October</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="11">
+                           <span class="text-inner">November</span>
+                           </a>
+                        </li>
+                        <li>
+                           <a data-type="months" data-val="12">
+                           <span class="text-inner">December</span>
+                           </a>
+                        </li>
+                     </ul>
+                  </div>
+               </div>
+            </div>
+
+            <div class="sync-workspace-intro-popover js-sync-workspace-intro-popover hidden">
+               <a href="#" class="sync-to-workspace js-revenues-sync-to-workspace">
+               </a>
+               <header><a href="#" class="sync-to-workspace js-revenues-sync-to-workspace">
+                  </a><a href="#" class="btn-close js-btn-close">×</a>
+               </header>
+               <div class="popup-content">
+                  <div class="new-badge">NEW</div>
+                  <h2 class="tbody-2 co-grey-1200 m-b-12">Get the full picture</h2>
+                  <p class="tbody-4 co-gray-1100">Track your business performance in one place—from your Letworkbedone earnings to invoices to your offline income.</p>
+                  <div class="intro-img"></div>
+               </div>
+            </div>
+            <a href="#" class="csv-export js-revenues-csv-export">Export to CSV</a>
+            <div class="csv-export-notif hidden"></div>
+         </div>
+         <div class="db-new-main-table js-db-table">
+            <table>
+               <thead>
+                  <tr>
+                     <td>DATE</td>
+                     <td>FOR</td>
+                     <td class="t-a-right">AMOUNT</td>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr class="hidden-action-link" data-id="TR8429CC1F5C4">
+                     <td class="date  ">
+                        <span>Sep 10, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Cancelled Payment Refunded to Buyer <a href="/users/swap_soln_90/balance/order?tran_id=TR8429CC1F5C4">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-out">
+                        <span>-$37.50</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR531F59178E4">
+                     <td class="date  ">
+                        <span>Sep 10, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax refund <a href="/users/swap_soln_90/balance/order?tran_id=TR531F59178E4">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$2.50</span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR43D0FB1CEB7">
+                     <td class="date  ">
+                        <span>Sep 10, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Cancelled Payment Refunded to Buyer <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-out">
+                        <span>-$18.75</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR858D102A208">
+                     <td class="date  ">
+                        <span>Sep 10, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax refund <a href="/users/swap_soln_90/balance/order?tran_id=TR858D102A208">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$1.25</span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR4212B5B9F42">
+                     <td class="date  ">
+                        <span>Aug 25, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR4212B5B9F42">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$18.75</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR126B2958F96">
+                     <td class="date  ">
+                        <span>Aug 25, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR126B2958F96">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$1.25</span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR5269C0F3392">
+                     <td class="date  ">
+                        <span>Aug 16, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR5269C0F3392">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$37.50</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR3269C0F3474">
+                     <td class="date  ">
+                        <span>Aug 16, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR3269C0F3474">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$2.50</span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR531A3BD2E64">
+                     <td class="date  ">
+                        <span>Aug 16, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Withdrawal Completed Successfully </span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$60</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR83727B5A0A2">
+                     <td class="date  ">
+                        <span>Aug 16, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Withdrawal Initiated </span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-out">
+                        <span>-$60</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR21B91D796D3">
+                     <td class="date  ">
+                        <span>Aug 15, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Funds Cleared <a href="/users/swap_soln_90/balance/order?tran_id=TR21B91D796D3">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$60</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR5479D7EA868">
+                     <td class="date  ">
+                        <span>Aug 11, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR5479D7EA868">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$112.50</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR531946B6204">
+                     <td class="date  ">
+                        <span>Aug 11, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR531946B6204">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$7.50</span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR52A5E6D4203">
+                     <td class="date  ">
+                        <span>Mar 17, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Withdrawal Completed Successfully </span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$26.25</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR83A41D60AA3">
+                     <td class="date  ">
+                        <span>Mar 17, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Withdrawal Initiated </span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-out">
+                        <span>-$26.25</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR22511272775">
+                     <td class="date  ">
+                        <span>Mar 16, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Funds Cleared <a href="/users/swap_soln_90/balance/order?tran_id=TR22511272775">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$26.25</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR434AA46D786">
+                     <td class="date  ">
+                        <span>Feb 25, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR434AA46D786">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span class="money-in">
+                        <span>$26.25</span>
+                        </span>
+                     </td>
+                  </tr>
+                  <tr class="hidden-action-link" data-id="TR84EFF6A4437">
+                     <td class="date  ">
+                        <span>Feb 25, 22</span>
+                     </td>
+                     <td class="ellipsis-wrap  ">
+                        <div class="ellipsis">
+                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR84EFF6A4437">(view order)</a></span>
+                        </div>
+                     </td>
+                     <td class="amount">
+                        <span>$1.75</span>
+                     </td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </article>
+   </div>
+</div>
+{% include  'Dashboard/base_seller.html' %}
+<style>
+    #manage_earning
+    {
+        margin-right:2%;
+    }
+   .db-new-content {
+   min-height: 800px;
+   margin-top: 30px;
+   position: relative;
+   box-sizing: border-box;
+   width:80%;
+   }
+   article, aside, figure, footer, header, hgroup, nav, section, main {
+   display: block;
+   }
+   .db-new-header {
+   padding-bottom: 20px;
+   }
+   .db-new-header h1 {
+   font-weight: 300;
+   }
+   h1.alt, .text-display-1.alt {
+   font-weight: 600;
+   }
+   h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text-display-3, .text-display-4, .text-display-5, .text-display-6, .text-display-7 {
+   font-family: macan,helvetica neue,Helvetica,Arial,sans-serif;
+   font-weight: 700;
+   color: #404145;
+   }
+   .db-new-header h1 .money-expected {
+   float: right;
+   font-size: 14px;
+   line-height: 14px;
+   color: #555;
+   margin-top: 20px;
+   margin-left: 16px;
+   }
+   .db-new-header h1 .money-expected.separator {
+   color: #dadbdd;
+   }
+   .db-new-header h1 .money-expected .tooltip {
+   color: #95979d;
+   }
+   .hint--top:before, .hint--top:after {
+   bottom: 100%;
+   left: 50%;
+   }
+   .fa {
+   display: inline-block;
+   font: normal normal normal 14px/1 FontAwesome;
+   font-size: inherit;
+   text-rendering: auto;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   }
+   .hint--top:before, .hint--top:after {
+   bottom: 100%;
+   left: 50%;
+   }
+   .hint--top:before {
+   margin-left: -5px;
+   margin-bottom: -12px;
+   border-top-color: #222325;
+   }
+   .fa-question-circle:before {
+   content: "\f059";
+   }
+   .db-new-header h1 .money-expected .tooltip:after {
+   width: 230px;
+   white-space: pre-wrap;
+   }
+   .db-stats-standard {
+    background-color: #fff;
+    padding: 25px 10px;
+    margin-bottom: 30px;
+    display: table;
+    width: 100%;
+    border: 1px #e5e5e5 solid;
+    overflow: visible;
+    box-sizing: border-box;
+}
+.cf {
+    zoom: 1;
+}
+.cf:before, .cf:after {
+    content: " ";
+    display: table;
+}
+.db-stats-standard a:first-child, .db-stats-standard>span:first-child {
+    border: none;
+}
+
+.db-stats-standard a, .db-stats-standard>span {
+    display: table-cell;
+    font-size: 27px;
+    line-height: 27px;
+    font-weight: 400;
+    color: #303030;
+    text-decoration: none;
+    padding: 0 5px;
+    text-align: center;
+    vertical-align: top;
+    border-left: 1px solid #ddd;
+}
+.db-stats-standard a small, .db-stats-standard>span small {
+    display: block;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 18px;
+    color: #999;
+    text-align: center;
+    padding: 0 0 15px;
+    min-width: 125px;
+}
+.db-stats-standard a, .db-stats-standard>span {
+    display: table-cell;
+    font-size: 28px;
+    line-height: 27px;
+    font-weight: 400;
+    color: #303030;
+    text-decoration: none;
+    padding: 0 5px;
+    text-align: center;
+    vertical-align: top;
+    border-left: 1px solid #ddd;
+}
+.revenues-actions {
+    padding: 0 0 20px 90px;
+}
+
+.revenues-actions label {
+    line-height: 31px;
+    margin-left: -90px;
+    float: left;
+}
+.earnings-package .withdraw-buttons-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    float: left;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button.disabled {
+    border-color: #c5c6c9;
+    color: #b5b6ba;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button {
+    background: #fff;
+    height: 36px;
+    border: 1px solid #b5b6ba;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 100%;
+    font-weight: 500;
+    text-transform: none;
+    color: #62646a;
+    padding: 9px 10px 9px 30px;
+    margin-right: 5px;
+    position: relative;
+}
+
+.hint--top:before {
+    margin-left: -5px;
+    margin-bottom: -12px;
+    border-top-color: #222325;
+}
+.hint--top:before, .hint--top:after {
+    bottom: 100%;
+    left: 50%;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button.paypal.disabled i {
+    background-position: -36px -5px;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button:after {
+    width: 100%;
+    max-width: 250px;
+    white-space: normal;
+    text-align: left;
+}
+
+.FW1syM7 {
+    display: inline-block;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+    padding: 12px 24px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 100%;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+    -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+    transition: 70ms cubic-bezier(.75,0,.25,1);
+    color:white;
+}
+
+.FW1syM7.p9qU5Ka {
+    padding: 10px 16px;
+    font-size: 14px;
+}
+.bg-co-green-700 {
+    background-color: #2E5DC5;
+}
+
+.revenues-actions {
+    padding: 0 0 20px 90px;
+}
+.revenues-actions label {
+    line-height: 31px;
+    margin-left: -90px;
+    float: left;
+}
+.revenues-actions .dd-wrap {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.cf {
+    zoom: 1;
+}
+.cf:before, .cf:after {
+    content: " ";
+    display: table;
+}
+.fake-dropdown {
+    position: relative;
+    visibility: hidden;
+}
+.cf:after {
+    clear: both;
+}
+.fake-dropdown .dropdown-toggle.max-width {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fake-dropdown .dropdown-toggle:after {
+    content: '';
+    color: #999;
+    font-size: 19px;
+    line-height: 16px;
+    position: absolute;
+    z-index: 1;
+    display: block;
+    top: 13px;
+    right: 7px;
+}
+.fake-dropdown .dropdown-menu {
+    min-width: 0;
+}
+.dropdown-menu {
+    background-color: #fff;
+    background-clip: padding-box;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    list-style: none;
+    border: 1px #ccc solid;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.1);
+}
+.revenues-actions .dd-wrap li {
+    cursor: pointer;
+}
+
+.fake-dropdown .dropdown-toggle.max-width {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.fake-dropdown .dropdown-toggle {
+    background-color: #fff;
+    display: inline-block;
+    position: relative;
+    font: 400 12px macan,helvetica neue,Helvetica,Arial,sans-serif;
+    color: #777;
+    text-decoration: none;
+    text-align: left;
+    border: 1px #b2b2b2 solid;
+    padding: 7px 30px 7px 10px;
+    text-transform: uppercase;
+    margin: 0;
+    white-space: nowrap;
+    cursor: pointer;
+    border-radius: 3px;
+    width: 140px !important;
+}
+
+.revenues-actions .csv-export, .revenues-actions .sync-to-workspace, .revenues-actions .stop-sync-to-workspace {
+    float: right;
+    line-height: 31px;
+    color: #4a73e8;
+    margin-left: 32px;
+}
+
+.db-new-main-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: inherit;
+    font: 100%;
+}
+.db-new-main-table table thead tr {
+    background-color: #fff;
+    border: 1px #e5e5e5 solid;
+}
+.db-new-main-table table td:first-child {
+    padding-left: 20px;
+}
+.db-new-main-table table thead td {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #999;
+    line-height: 33px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.db-new-main-table table td:last-child {
+    padding-right: 20px;
+}
+
+.db-new-main-table table td {
+    padding: 15px 15px 15px 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #555;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.t-a-right {
+    text-align: right!important;
+}
+.db-new-main-table table tbody tr {
+    background-color: #fff;
+    border: 1px #e5e5e5 solid;
+}
+.db-new-main-table table td.ellipsis-wrap .ellipsis a {
+    color: #555;
+}
+</style>
+{% endblock %}

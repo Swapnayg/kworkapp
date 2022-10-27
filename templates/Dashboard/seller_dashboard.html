@@ -1,0 +1,1072 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Seller Dashboard</title>
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-5 mb-5" id="profile_view">
+        <div class="col-md-12 mx-0">
+
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="seller-performance-wrapper dashboard-box">
+                        <div class="inner">
+                           <div class="profile-progresses-wrapper">
+                              <div class="profile-details-wrapper">
+                                 <div class="img-wrapper">
+                                    <div class="profile-img-wrapper">
+                                       <div class="user-profile-image"><label class="profile-pict" for="profile_image_0911931740123" style="width: 60px; height: 60px; font-size: 1.2em;"><img src="{{request.user.avatar}}" class="profile-pict-img" alt="swap_soln_90"></label></div>
+                                    </div>
+                                 </div>
+                                 <div class="user-details-text-wrapper">
+                                    <div class="user-details">
+                                       <a href="/user/profile/{{request.user.username}}" target="blank" class="username-link text-display-6">{{request.user.username}}</a>
+                                       <div class="ratings-details flex flex-items-center help hint--top" data-hint="Maintain a rating of 4.7 or more, over the course of 60 days"></div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <ul class="progresses-wrapper">
+                             
+                                 <li class="kpi-bar-ir-wrapper">
+                                    <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
+                                       <span class="FPMjOVo kpi-bar-tooltip-content">
+                                          <a rel="noreferrer" class="_1DtaAoI kpi-bar-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-bar-tooltip-content">
+                                             <h6 class="text-body-1">Inbox response time</h6>
+                                             <div class="progress-container">
+                                                <div class="grade green">{{resp_time}} Hour</div>
+                                             </div>
+                                          </a>
+                                       </span>
+                                    </div>
+                                 </li>
+                                 <li class="kpi-bar-ir-wrapper">
+                                    <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
+                                       <span class="FPMjOVo kpi-bar-tooltip-content">
+                                          <a rel="noreferrer" class="_1DtaAoI kpi-bar-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-bar-tooltip-content">
+                                             <h6 class="text-body-1">Order response rate</h6>
+                                             <div class="progress-container">
+                                                <div class="progress-bar-wrapper ignored">
+                                                   <div class="T2t2hZx">
+                                                      <div class="+8ZeAtI"><span class="EwNCrd9" style="width: {{active_per}}%;"></span></div>
+                                                   </div>
+                                                </div>
+                                                <div class="percent-text font-accent"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)">{{active_per}}%</div>
+                                             </div>
+                                          </a>
+                                       </span>
+                                       <div class="help_div"> 
+                                            <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">
+                                                This is how often you answered order messages and revision requests within 24h in the last 60 days.
+                                            </div> 
+                                            
+                                        </div>
+                                    </div>
+                                 </li>
+                                 <li class="kpi-bar-ir-wrapper">
+                                    <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
+                                       <span class="FPMjOVo kpi-bar-tooltip-content">
+                                          <a  rel="noreferrer" class="_1DtaAoI kpi-bar-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-bar-tooltip-content">
+                                             <h6 class="text-body-1">Delivered on time</h6>
+                                             <div class="progress-container">
+                                                <div class="progress-bar-wrapper">
+                                                   <div class="T2t2hZx">
+                                                      <div class="+8ZeAtI"><span class="EwNCrd9" style="width: {{delivered_per}}%;"></span></div>
+                                                   </div>
+                                                </div>
+                                                <div class="percent-text font-accent"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)">{{delivered_per}}%</div>
+                                             </div>
+                                          </a>
+                                       </span>
+                                       <div class="help_div"> 
+                                            <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">
+                                                Deliver at least 90% of your orders on time for 60 days to maintain your level or qualify for the next one.
+                                            </div> 
+                                            
+                                        </div>
+                                    </div>
+                                 </li>
+                                 <li class="kpi-bar-ir-wrapper">
+                                    <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
+                                       <span class="FPMjOVo kpi-bar-tooltip-content">
+                                          <a rel="noreferrer" class="_1DtaAoI kpi-bar-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-bar-tooltip-content">
+                                             <h6 class="text-body-1">Order completion</h6>
+                                             <div class="progress-container">
+                                                <div class="progress-bar-wrapper warning">
+                                                   <div class="T2t2hZx">
+                                                      <div class="+8ZeAtI"><span class="EwNCrd9" style="width: {{completed_per}}%;"></span></div>
+                                                   </div>
+                                                </div>
+                                                <div class="percent-text font-accent"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)">{{completed_per}}%</div>
+                                             </div>
+                                          </a>
+                                       </span>
+                                       <div class="help_div"> 
+                                            <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">
+                                                Complete at least 90% of your orders for 60 days to maintain your level or qualify for the next one.
+                                            </div> 
+                                            
+                                        </div>
+                                    </div>
+                                 </li>
+                              </ul>
+                           </div>
+                           <ol class="earnings-wrapper">
+                              <li class="kpi-text-ir-wrapper">
+                                 <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-text-tooltip specific-z-index">
+                                    <span class="FPMjOVo kpi-text-tooltip-content">
+                                       <a class="_1DtaAoI kpi-text-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-text-tooltip-content">
+                                          <div class="kpi-data-inner">
+                                             <h6>Earned in September</h6>
+                                             <span class="grade ">$ {{this_earning}}</span>
+                                          </div>
+                                       </a>
+                                    </span>
+                                    <div class="help_div"> 
+                                        <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">
+                                            Total earnings and pending clearance in September.
+                                        </div> 
+                                    </div>
+                                 </div>
+                              </li>
+                           </ol>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="active-orders-wrapper">
+                        <div class="filter-wrapper cf">
+                            <div class="title-wrapper">
+                                <input type="hidden" value="{{Active_earning}}" id="active_earning">
+                                <input type="hidden" value="{{active_orders|length}}" id="active_orders">
+                                <input type="hidden" value="{{completed_orders|length}}" id="compl_orders">
+                                <input type="hidden" value="{{cancelled_orders|length}}" id="cancelled_orders">
+                                <input type="hidden" value="{{delivered_orders|length}}" id="delivered_orders">
+                                <h3 class="font-accent order_text">Active orders<span> -  {{active_orders|length}}(${{Active_earning}})</span></h3>
+                            </div> 
+                            <div class="e4rLWCQ DQP4pgk tcJTQWy statuses-select _3imrn2i">
+                                <select id="sort_options" onchange="sortoptionsOnchange(this);">
+                                    <option value="active" selected>Active orders ({{active_orders|length}})</option>
+                                    <option value="delivered">Delivered ({{delivered_orders|length}})</option>
+                                    <option value="complete">Complete ({{completed_orders|length}})</option>
+                                    <option value="cancelled">Canceled ({{cancelled_orders|length}})</option>
+                               </select>
+                            </div>
+                        </div>
+
+                        <div class="order-cards-wrapper" id= "active_orders_div"> 
+                            <ul>
+                                {% for ac_order in active_orders %}
+                                <li class="order-card-wrapper">
+                                   <div class="card-inner late">
+                                      <div class="badges"></div>
+                                      <div class="order-card">
+                                        <ul class="order-data">
+                                            <li class="user">
+                                                <div class="gig-image-wrapper" style="background-image: url('{{ac_order.gig_image_url}}');"></div>
+                                            </li>
+                                            <li class="user">
+                                               <figure class="profile-picture-wrapper">
+                                                  <figcaption class="font-accent" style="background-image: url('{{ac_order.buyer_img}}'); color: transparent;"></figcaption>
+                                               </figure>
+                                               <a title="beinganaatiidu1" class="font-accent buyer-username">{{ac_order.buyer_username | title}}</a>
+                                            </li>
+                                            <li class="price">
+                                               <h6>Price</h6>
+                                               <span>$ {{ac_order.order_price}}</span>
+                                            </li>
+                                            <li class="delivery-time">
+                                               <h6>Delivery Time</h6>
+                                               <span class="time-wrapper late">
+                                                {% if ac_order.del_satus == "late" %}
+                                                    <span class="lFICM06 icn-clock" aria-hidden="true" style="width: 13px; height: 13px; fill: rgb(247, 64, 64);">
+                                                        <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                            <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                        </svg>
+                                                    </span>
+                                                {% else %}
+                                                    <span class="lFICM06 icn-clock" aria-hidden="true" style="width: 13px; height: 13px; fill: rgb(0, 102, 140);">
+                                                        <svg width="12" height="12" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                            <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                            <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                        </svg>
+                                                    </span>
+                                                {% endif %}
+                                                  <span>{{ac_order.delivery_time}}</span>
+                                               </span>
+                                            </li>
+                                            <li class="status">
+                                               <h6>Status</h6>
+                                                {% if ac_order.del_satus == "late" %}
+                                                    <span class="status late" style="background: rgb(250, 31, 41);">{{ac_order.del_satus|upper }}</span>
+                                                {% else %}
+                                                    <span class="status late" style="background: rgb(0, 102, 140);">{{ac_order.del_satus|upper }}</span>
+                                                {% endif %}
+                                            </li>
+                                            <li class="cta-wrapper"><a class="font-accent" href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id}}/activities" target="_blank">View</a></li>
+                                         </ul>
+                                    </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                         </div>
+                         <div class="order-cards-wrapper" id= "delivered_orders_div"> 
+                            <ul>
+                                {% for ac_order in delivered_orders %}
+                                <li class="order-card-wrapper">
+                                   <div class="card-inner late">
+                                      <div class="badges"></div>
+                                      <div class="order-card">
+                                        <ul class="order-data">
+                                            <li class="user">
+                                                <div class="gig-image-wrapper" style="background-image: url('{{ac_order.gig_image_url}}');"></div>
+                                            </li>
+                                            <li class="user">
+                                               <figure class="profile-picture-wrapper">
+                                                  <figcaption class="font-accent" style="background-image: url('{{ac_order.buyer_img}}'); color: transparent;"></figcaption>
+                                               </figure>
+                                               <a title="beinganaatiidu1" class="font-accent buyer-username">{{ac_order.buyer_username | title}}</a>
+                                            </li>
+                                            <li class="price">
+                                               <h6>Price</h6>
+                                               <span>$ {{ac_order.order_price}}</span>
+                                            </li>
+                                            <li class="status">
+                                               <h6>Status</h6>
+                                                <span class="status late" style="background: rgb(0, 204, 102);">{{ac_order.del_satus|upper }}</span>
+                                            </li>
+                                            <li class="cta-wrapper"><a class="font-accent" href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id}}/activities" target="_blank">View</a></li>
+                                         </ul>
+                                    </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                         </div>
+
+                         <div class="order-cards-wrapper" id= "completed_orders_div"> 
+                            <ul>
+                                {% for ac_order in completed_orders %}
+                                <li class="order-card-wrapper">
+                                   <div class="card-inner late">
+                                      <div class="badges"></div>
+                                      <div class="order-card">
+                                        <ul class="order-data">
+                                            <li class="user">
+                                                <div class="gig-image-wrapper" style="background-image: url('{{ac_order.gig_image_url}}');"></div>
+                                            </li>
+                                            <li class="user">
+                                               <figure class="profile-picture-wrapper">
+                                                  <figcaption class="font-accent" style="background-image: url('{{ac_order.buyer_img}}'); color: transparent;"></figcaption>
+                                               </figure>
+                                               <a title="beinganaatiidu1" class="font-accent buyer-username">{{ac_order.buyer_username | title}}</a>
+                                            </li>
+                                            <li class="price">
+                                               <h6>Price</h6>
+                                               <span>$ {{ac_order.order_price}}</span>
+                                            </li>
+                                            <li class="status">
+                                               <h6>Status</h6>
+                                                <span class="status late" style="background: rgb(128, 128, 128);">{{ac_order.del_satus|upper }}</span>
+                                            </li>
+                                            <li class="cta-wrapper"><a class="font-accent" href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id}}/activities" target="_blank">View</a></li>
+                                         </ul>
+                                    </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                         </div>
+
+
+                         <div class="order-cards-wrapper" id= "cancelled_orders_div"> 
+                            <ul>
+                                {% for ac_order in cancelled_orders %}
+                                <li class="order-card-wrapper">
+                                   <div class="card-inner late">
+                                      <div class="badges"></div>
+                                      <div class="order-card">
+                                        <ul class="order-data">
+                                            <li class="user">
+                                                <div class="gig-image-wrapper" style="background-image: url('{{ac_order.gig_image_url}}');"></div>
+                                            </li>
+                                            <li class="user">
+                                               <figure class="profile-picture-wrapper">
+                                                  <figcaption class="font-accent" style="background-image: url('{{ac_order.buyer_img}}'); color: transparent;"></figcaption>
+                                               </figure>
+                                               <a title="beinganaatiidu1" class="font-accent buyer-username">{{ac_order.buyer_username | title}}</a>
+                                            </li>
+                                            <li class="price">
+                                               <h6>Price</h6>
+                                               <span>$ {{ac_order.order_price}}</span>
+                                            </li>
+                                            <li class="status">
+                                               <h6>Status</h6>
+                                                <span class="status late" style="background: rgb(255, 51, 51);">{{ac_order.del_satus|upper }}</span>
+                                            </li>
+                                            <li class="cta-wrapper"><a class="font-accent" href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id}}/activities" target="_blank">View</a></li>
+                                         </ul>
+                                    </div>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                         </div>
+                    </div>
+                </div> 
+            </div> 
+        </div> 
+    </div> 
+</div> 
+<style>
+    .active-orders-wrapper
+    {
+        background: white;
+        width: 100%;
+        padding: 10px;
+    }
+    .order-cards-wrapper {
+        padding: 0;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .order-card-wrapper .card-inner {
+        width: 100%;
+        max-width: none;
+        padding: 20px;
+
+    }
+    .order-cards-wrapper {
+        width: 100%;
+    }
+    .order-card-wrapper .card-inner.late {
+        border-left: 4px solid #f74040;
+        border-top: none;
+        padding: 20px;
+    }
+
+    .order-card-wrapper .card-inner {
+            width: 100%;
+        max-width: none;
+        padding: 20px;
+    }
+
+    .order-card-wrapper .card-inner {
+        background: #fff;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #dadbdd;
+        position: relative;
+        width: 100%;
+        margin: 20px auto;
+    }
+    .order-card-wrapper .order-card .order-data li.status span.late {
+        background-color: #f74040;
+    }
+
+    .order-card-wrapper .order-card .order-data li.cta-wrapper a {
+    display: block;
+    font-size: 14px;
+    line-height: 12px;
+    font-weight: 600;
+    padding: 15px;
+    width: 100%;
+    height: 42px;
+    border-radius: 3px;
+    text-align: center;
+    color: #2E5DC5;
+    font-weight: 600;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width:100%;
+}
+    .order-card-wrapper .order-card .order-data li.status span {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .05em;
+    line-height: 1;
+    height: 18px;
+}
+    .price,.delivery-time,.status
+    {
+        display: block !important;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+    .order-card-wrapper .badges {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        margin-bottom: 4px;
+        margin-top: -8px;
+    }
+
+    .order-card-wrapper .order-card {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .order-card-wrapper .order-card {
+        width: 100%;
+        position: relative;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        text-align: left;
+    }
+    .order-card-wrapper .order-card, .profile-picture-wrapper figcaption {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        display: inline-block;
+    }
+
+    .order-card-wrapper .order-card .gig-image-wrapper {
+        position: relative;
+        display: inline-block;
+        border-radius: 3px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: top;
+        padding-bottom: 60%;
+        max-width: 100%;
+        width: 295px;
+        margin: 0 auto;
+    }
+
+    .order-card-wrapper .order-card .gig-image-wrapper {
+        width: 77px;
+        height: 46px;
+        margin: 0;
+        padding: 0;
+    }
+    .order-card-wrapper .order-card .order-data li {
+        margin-bottom: 0;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        height: 38px;
+    }
+
+    .order-card-wrapper .order-card .order-data li {
+        margin-bottom: 10px;
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+    }
+    .order-card-wrapper .order-card .order-data li:last-of-type {
+        border: none;
+        padding-bottom: 0;
+    }
+
+    .order-card-wrapper .badges {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        margin-bottom: 4px;
+        margin-top: -8px;
+    }
+
+    .order-card-wrapper .order-card .order-data {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: inline-flex;
+        -webkit-box-flex: 1;
+        -ms-flex: 1 1 auto;
+        flex: 1 1 auto;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 0;
+        width:100%;
+    }
+
+    .profile-picture-wrapper {
+        width: 38px;
+        height: 38px;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        position: relative;
+        margin: 0 0 0.5rem;
+    }
+    .profile-picture-wrapper:before {
+        background-color: #74767e;
+        content: "";
+        position: absolute;
+        z-index: 1;
+        top: 70%;
+        right: 0;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        width: 10px;
+        height: 10px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .profile-picture-wrapper {
+        width: 38px;
+        height: 38px;
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        position: relative;
+    }
+
+    .profile-picture-wrapper figcaption {
+        height: 100%;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        -ms-flex-pack: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 100%;
+        background-size: contain;
+        border-radius: 50%;
+        color: #fff;
+    }
+    .order-card-wrapper .order-card, .profile-picture-wrapper figcaption {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .order-card-wrapper .order-card .buyer-username {
+        display: inline-block;
+        vertical-align: top;
+        margin-top: 0;
+    }
+    .order-card-wrapper .order-card .buyer-username {
+        font-size: 16px;
+        font-weight: 600;
+        color: #222325;
+        display: block;
+        text-transform: capitalize;
+        width: 150px;
+        position: relative;
+        padding: 0 10px 0 15px;
+        margin-top: 0px;
+    }
+
+    .order-card-wrapper .order-card .order-data li h6 {
+        font-size: 14px;
+        line-height: 22px;
+        font-weight: 400;
+        color: #95979d;
+        -webkit-box-flex: 1;
+        -ms-flex: 1;
+        flex: 1 1;
+    }
+
+    .order-card-wrapper .order-card .order-data li>span {
+        font-size: 16px;
+        font-weight: 400;
+    }
+    
+
+
+
+    .order-card-wrapper .order-card .order-data li.user {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        margin-left: 16px;
+    }
+
+    .active-orders-wrapper .filter-wrapper h3 {
+        font-size: 18px;
+        display: inline-block;
+        color: #222325;
+        font-weight: 800;
+    }
+    .active-orders-wrapper .filter-wrapper {
+        text-align: right;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+    }
+    .cf:after, .cf:before {
+        content: " ";
+        display: table;
+    }
+
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .seller-performance-wrapper {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 340px;
+        flex: 0 0 340px;
+    }
+    .active-orders-wrapper .filter-wrapper h3 {
+        line-height: 42px;
+        float: left;
+    }
+    .active-orders-wrapper .filter-wrapper h3 span {
+            color: #95979d;
+        line-height: 24px;
+    }
+
+
+    select {
+        height: 40px;
+        border: 1px solid #c5c6c9;
+        border-radius: 3px;
+        padding: 8px;
+        font-size: 16px !important;
+        border-radius: 3px;
+        font-weight: 500;
+    }
+    .tooltipchar
+    {
+        display: none;
+    }
+    .seller-performance-wrapper {
+        -webkit-box-flex: 0;
+        -ms-flex: 0 0 280px;
+        flex: 0 0 280px;
+        margin: 20px 0 auto 20px;
+        border-right: 1px solid #e4e5e7;
+    }
+    .seller-performance-wrapper {
+        background: #fff;
+        padding: 1px 20px 5px;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        border-bottom: 1px solid #e4e5e7;
+    }
+    .grade {
+        float: right;
+        font-weight: 700;
+        color: #62646a;
+    }
+    .grade.green {
+        color: #2E5DC5;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    ol, ul {
+        list-style: none;
+        list-style-image: none;
+        margin: 0;
+        padding: 0;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .profile-details-wrapper {
+        padding-top: 24px;
+        position: relative;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+    .seller-performance-wrapper .profile-progresses-wrapper .progresses-wrapper {
+        margin-top: 26px;
+        padding-top: 18px;
+        border-bottom: 1px solid #e4e5e7;
+        border-top: 1px solid #e4e5e7;
+        padding-bottom: 4px;
+    }
+
+    .profile-details-wrapper .img-wrapper {
+        height: 60px;
+        width: 60px;
+        margin-right: 20px;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .user-profile-image {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+    }
+    .profile-details-wrapper .profile-pict {
+        cursor: pointer;
+    }
+
+    .user-profile-image .profile-pict {
+        position: relative;
+    }
+
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .user-profile-image .profile-pict .profile-pict-img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        border-radius: 50%;
+    }
+    .profile-details-wrapper .user-details-text-wrapper {
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper .user-details {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper .username-link {
+        max-width: 150px;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper .user-details .ratings-details {
+        font-size: 15px;
+        color: #ffb33e;
+        padding-left: 6px;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper .user-details .seller-rating {
+        max-width: 18px;
+        vertical-align: text-top;
+    }
+
+    .profile-details-wrapper .user-details-text-wrapper .user-details .ratings-details .star-value {
+        font-weight: 700;
+        padding-left: 4px;
+    }
+    .profile-details-wrapper .user-details-text-wrapper .user-details .ratings-details .star-value.not-available {
+        color: #62646a;
+        font-weight: 400;
+    }
+    
+    .profile-details-wrapper .user-details-text-wrapper .username-link {
+        max-width: 105px;
+        overflow: hidden;
+        white-space: nowrap;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+    }
+    .profile-details-wrapper .user-details-text-wrapper .username-link {
+        color: #62646a;
+        display: block;
+        text-align: center;
+        font-size: 15px;
+        font-weight: 700;
+    }
+    .seller-performance-wrapper .profile-progresses-wrapper .progresses-wrapper {
+        margin-top: 26px;
+        padding-top: 18px;
+        border-bottom: 1px solid #e4e5e7;
+        border-top: 1px solid #e4e5e7;
+        padding-bottom: 4px;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper {
+        display: block;
+        padding-bottom: 12px;
+    }
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper .kpi-bar-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+    .e4rLWCQ._5tFuFhP {
+        position: relative;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper .kpi-bar-tooltip.specific-z-index .kpi-bar-tooltip-content {
+        width: inherit;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper .kpi-bar-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper .kpi-bar-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a {
+        color: #62646a;
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+        font-size: 15px;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a h6 {
+        font-weight: 400;
+        display: inline-block;
+        font-size: 16px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a h6:hover {
+        text-decoration: none;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper .kpi-bar-tooltip.specific-z-index:hover
+    {
+        text-decoration: none;
+    }
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a .progress-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a .progress-container .progress-bar-wrapper {
+        position: relative;
+        width: 60px;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a .progress-container .percent-text {
+        padding-left: 12px;
+        font-weight: 500;
+        font-size: 14px;
+        width: 45px;
+        text-align: right;
+    }
+
+    .dashboard-wrapper * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+
+    .T2t2hZx {
+        display: -webkit-box;
+        display: -ms-flexbox;
+            display: flex;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+    }
+
+    .T2t2hZx .\+8ZeAtI {
+        position: relative;
+        height: 8px;
+        background: #e4e5e7;
+        -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        border-radius: 999px;
+    }
+    
+    .T2t2hZx .EwNCrd9 {
+        background: #2E5DC5;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        z-index: 1;
+        border-radius: 999px;
+    }
+
+    .seller-performance-wrapper .kpi-bar-ir-wrapper a .progress-container .percent-text {
+        padding-left: 12px;
+        font-weight: 500;
+        font-size: 14px;
+        width: 45px;
+        text-align: right;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper .kpi-text-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper .kpi-text-tooltip.specific-z-index .kpi-text-tooltip-content {
+        width: inherit;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper h6 {
+        font-size: 16px;
+        font-weight: 400;
+        display: inline-block;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper .grade.green {
+        color: #2E5DC5;
+    }
+    .seller-performance-wrapper .earnings-wrapper {
+        margin: 16px 0 24px;
+    }
+    .seller-performance-wrapper .kpi-text-ir-wrapper {
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+    .seller-performance-wrapper .kpi-text-ir-wrapper .kpi-text-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+    .seller-performance-wrapper .kpi-text-ir-wrapper .kpi-text-tooltip.specific-z-index .kpi-text-tooltip-content {
+        width: inherit;
+    }
+    .seller-performance-wrapper .kpi-text-ir-wrapper .kpi-text-tooltip.specific-z-index {
+        width: 100%;
+        z-index: 20;
+    }
+    .seller-performance-wrapper .earnings-wrapper a {
+        color: #222325;
+    }
+    .seller-performance-wrapper .earnings-wrapper h6 {
+        color: #62646a;
+        font-weight: 600;
+    }
+
+    .seller-performance-wrapper .kpi-text-ir-wrapper .grade {
+        float: right;
+        font-weight: 700;
+        color: #62646a;
+    }
+
+    .help_div
+    {
+       position: absolute;
+       right: 5px;
+       bottom: 0; 
+    }
+    .helptext_desc
+    {
+    font-size: 12px;
+    width: 300px;
+    }    
+    #profile_view
+    {
+        margin-right: 1%;
+        margin-left: 1%;
+        background: #fafafa;
+    }
+    #column-filter-mid
+    {
+        max-width: 5px;
+    }
+</style>
+{% include  'Dashboard/base_seller.html' %}
+
+<script>
+    $(document).ready(function(){
+        $(".order-cards-wrapper").hide();
+        $("#active_orders_div").show();
+    });
+    function sortoptionsOnchange(ev)
+    {
+        $(".order-cards-wrapper").hide();
+        sel_val  = $("#sort_options").val();
+        if(sel_val == "active")
+        {
+            $(".order_text").html('Active orders<span> -  {{active_orders|length}}(${{Active_earning}})</span>');
+            $("#active_orders_div").show();
+        }
+        else if(sel_val == "delivered")
+        {
+            $(".order_text").html('Delivered orders<span> -  {{delivered_orders|length}}</span>');
+            $("#delivered_orders_div").show();
+        }
+        else if(sel_val == "complete")
+        {
+            $(".order_text").html('Completed orders<span> -  {{completed_orders|length}}</span>');
+            $("#completed_orders_div").show();
+        }
+        else if(sel_val == "cancelled")
+        {
+            $(".order_text").html('cancelled orders<span> -  {{cancelled_orders|length}}</span>');
+            $("#cancelled_orders_div").show();
+        }
+    }
+    function helptextOnhover(ev)
+    {
+        parentdiv= $(ev).parent().parent().parent().parent();
+        $(parentdiv).find('.helptext_desc').css({}).toggle();
+    }
+</script>
+{% endblock %}

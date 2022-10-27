@@ -1,0 +1,315 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - {{request.user.username}} / Gig Suggestions</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/manage_request.css' %}" type="text/css" />
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="manage_gigs">
+       <div class="col-11 text-center p-0 mt-3 mb-2">
+          <div class="card px-0 pt-4 pb-0 mb-3"  id="manage_gigs_card">
+             <div class="row">
+                <div class="col-md-12 db-manage-gigs ">
+                    <h1 class="alt">Manage Requests</h1>
+                </div>
+                <div class="col-md-12 db-manage-gigs">
+                    <a class="btn-standard btn-green btn-create-gig  " href="/user/{{request.user.username}}/post_request" id="btn-create-gig">Post a Request</a>
+                </div>
+                <div class="col-md-12 mx-0">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>{{active_request|length}}</span></div></a></li>
+                        <li><a href="#pausedtab" role="tab" data-toggle="tab">Paused <div class="circle"><span>{{paused_request|length}}</span></div></a></li>
+                        <li><a href="#pendingtab" role="tab" data-toggle="tab">Pending<div class="circle"><span>{{pending_request|length}}</span></div></a></li>
+                        <li><a href="#unapprovedtab" role="tab" data-toggle="tab">UnApproved <div class="circle"><span>{{rejected_request|length}}</span></div></a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="activetab">
+                            <div class="db-new-main-table js-db-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td>Request</td>
+                                            <td class="p-l-15">
+                                                    Offers
+                                            </td>
+                                            <td class="t-a-right">Action</td>
+                                        </tr>
+                                    </thead>
+                                   <tbody>
+                                    {% for a_req in active_request %}
+                                    <tr data-id="62f7395fed8cc60012e1559e">
+                                        <td class="date  height95">
+                                           <span> {{a_req.service_date|date:"M d, Y"}}</span>
+                                        </td>
+                                        <td class="text-wide">
+                                           <span>{{a_req.service_desc}}.</span>
+                                           <div>
+                                            <div class="info-line">Delivery Time - {{a_req.service_time}}<s/div>
+                                              <div class="info-line">Budget - <span>$ {{a_req.service_budget}} </span></div>
+                                           </div>
+                                        </td>
+                                        <td class="applications ">
+                                           <a href="/users/{{request.user.username}}/manage_requests/{{a_req.buyer_req_id}}" target="_blank" class="btn-standard "><em>
+                                           <span>{{a_req.offers_count}}</span>
+                                           </em> Review Offers</a>
+                                        </td>
+                                        <td class="dropdown">
+                                           <div class="js-manage-request-actions">
+                                              <div class="filter-select  ">
+                                                 <div class="fake-dropdown" style="visibility: visible;">
+                                                    <a class="dropdown-toggle no-content no-uppercase" onclick="dropdownclick(this);"></a>
+                                                    <ul class="dropdown-menu no-uppercase pull-right " role="menu" style="top: -2px;">
+                                                       <li>
+                                                          <a class="anchor_actions" onclick="pause_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Pause</span>
+                                                          </a>
+                                                       </li>
+                                                       <li>
+                                                          <a class="anchor_actions" onclick="delete_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Delete</span>
+                                                          </a>
+                                                       </li>
+                                                    </ul>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <span></span>
+                                        </td>
+                                     </tr>
+                                     {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                        </div>
+                        <div class="tab-pane" id="pausedtab">
+                            <div class="db-new-main-table js-db-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td>Request</td>
+                                            <td class="p-l-15">
+                                                    Offers
+                                            </td>
+                                            <td class="t-a-right">Action</td>
+                                        </tr>
+                                    </thead>
+                                   <tbody>
+                                    {% for a_req in paused_request %}
+                                    <tr data-id="62f7395fed8cc60012e1559e">
+                                        <td class="date  height95">
+                                           <span> {{a_req.service_date|date:"M d, Y"}}</span>
+                                        </td>
+                                        <td class="text-wide">
+                                           <span>{{a_req.service_desc}}.</span>
+                                           <div>
+                                            <div class="info-line">Delivery Time - {{a_req.service_time}}<s/div>
+                                              <div class="info-line">Budget - <span>$ {{a_req.service_budget}} </span></div>
+                                           </div>
+                                        </td>
+                                        <td class="applications ">
+                                           <a href="/users/{{request.user.username}}/manage_requests/{{a_req.buyer_req_id}}" target="_blank" class="btn-standard "><em>
+                                           <span>{{a_req.offers_count}}</span>
+                                           </em> Review Offers</a>
+                                        </td>
+                                        <td class="dropdown">
+                                           <div class="js-manage-request-actions">
+                                              <div class="filter-select  ">
+                                                 <div class="fake-dropdown" style="visibility: visible;">
+                                                    <a class="dropdown-toggle no-content no-uppercase" onclick="dropdownclick(this);"></a>
+                                                    <ul class="dropdown-menu no-uppercase pull-right " role="menu" style="top: -2px;">
+                                                       <li>
+                                                          <a class="anchor_actions"  onclick="active_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Active</span>
+                                                          </a>
+                                                       </li>
+                                                       <li>
+                                                          <a class="anchor_actions"  onclick="delete_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Delete</span>
+                                                          </a>
+                                                       </li>
+                                                    </ul>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <span></span>
+                                        </td>
+                                     </tr>
+                                     {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                           </div>
+                        <div class="tab-pane" id="pendingtab">
+                            <div class="db-new-main-table js-db-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td>Request</td>
+                                            <td class="p-l-15">
+                                                    Offers
+                                            </td>
+                                            <td class="t-a-right">Action</td>
+                                        </tr>
+                                    </thead>
+                                   <tbody>
+                                    {% for a_req in pending_request %}
+                                    <tr data-id="62f7395fed8cc60012e1559e">
+                                        <td class="date  height95">
+                                           <span> {{a_req.service_date|date:"M d, Y"}}</span>
+                                        </td>
+                                        <td class="text-wide">
+                                           <span>{{a_req.service_desc}}.</span>
+                                           <div>
+                                            <div class="info-line">Delivery Time - {{a_req.service_time}}<s/div>
+                                              <div class="info-line">Budget - <span>$ {{a_req.service_budget}} </span></div>
+                                           </div>
+                                        </td>
+                                        <td class="applications ">
+                                           <a href="/users/{{request.user.username}}/manage_requests/{{a_req.buyer_req_id}}" target="_blank" class="btn-standard "><em>
+                                           <span>{{a_req.offers_count}}</span>
+                                           </em> Review Offers</a>
+                                        </td>
+                                        <td class="dropdown">
+                                           <div class="js-manage-request-actions">
+                                              <div class="filter-select  ">
+                                                 <div class="fake-dropdown" style="visibility: visible;">
+                                                    <a class="dropdown-toggle no-content no-uppercase" onclick="dropdownclick(this);"></a>
+                                                    <ul class="dropdown-menu no-uppercase pull-right " role="menu" style="top: -2px;">
+                                                       <li>
+                                                          <a class="anchor_actions"  onclick="delete_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Delete</span>
+                                                          </a>
+                                                       </li>
+                                                    </ul>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <span></span>
+                                        </td>
+                                     </tr>
+                                     {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                           </div>
+                        <div class="tab-pane" id="unapprovedtab">
+                            <div class="db-new-main-table js-db-table">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <td>Date</td>
+                                            <td>Request</td>
+                                            <td class="p-l-15">
+                                                    Offers
+                                            </td>
+                                            <td class="t-a-right">Action</td>
+                                        </tr>
+                                    </thead>
+                                   <tbody>
+                                    {% for a_req in rejected_request %}
+                                    <tr data-id="62f7395fed8cc60012e1559e">
+                                        <td class="date  height95">
+                                           <span> {{a_req.service_date|date:"M d, Y"}}</span>
+                                        </td>
+                                        <td class="text-wide">
+                                           <span>{{a_req.service_desc}}.</span>
+                                           <div>
+                                            <div class="info-line">Delivery Time - {{a_req.service_time}}<s/div>
+                                              <div class="info-line">Budget - <span>$ {{a_req.service_budget}} </span></div>
+                                           </div>
+                                        </td>
+                                        <td class="applications ">
+                                           <a href="/users/{{request.user.username}}/manage_requests/{{a_req.buyer_req_id}}" target="_blank" class="btn-standard "><em>
+                                           <span>{{a_req.offers_count}}</span>
+                                           </em> Review Offers</a>
+                                        </td>
+                                        <td class="dropdown">
+                                           <div class="js-manage-request-actions">
+                                              <div class="filter-select  ">
+                                                 <div class="fake-dropdown" style="visibility: visible;">
+                                                    <a class="dropdown-toggle no-content no-uppercase" onclick="dropdownclick(this);"></a>
+                                                    <ul class="dropdown-menu no-uppercase pull-right " role="menu" style="top: -2px;">
+                                                       <li>
+                                                          <a class="anchor_actions" onclick="delete_request('{{a_req.req_id}}');">
+                                                          <span class="text-inner">Delete</span>
+                                                          </a>
+                                                       </li>
+                                                    </ul>
+                                                 </div>
+                                              </div>
+                                           </div>
+                                           <span></span>
+                                        </td>
+                                     </tr>
+                                     {% endfor %}
+                                   </tbody>
+                                </table>
+                             </div>
+                           </div>
+                    </div>
+                </div>     
+             </div>
+          </div>
+       </div>
+    </div>
+ </div>
+{% include  'Dashboard/base_buyer.html' %}
+
+<script>
+    function dropdownclick(ev)
+    {
+      $(".dropdown-menu").hide();
+      $(ev).next().toggle();
+    }
+
+    function pause_request(ev)
+    {
+        $.ajax({
+            type:"POST",
+            url: "/post_pause_request/",
+            data: {'request_id': ev},
+            success: function(data)
+            {  
+                if(data== "sucess")
+                {
+                    location.reload();
+                }
+            }
+        });
+    }
+    function active_request(ev)
+    {
+        $.ajax({
+            type:"POST",
+            url: "/post_active_request/",
+            data: {'request_id': ev},
+            success: function(data)
+            {  
+                if(data== "sucess")
+                {
+                    location.reload();
+                }
+            }
+        });
+    }
+    function delete_request(ev)
+    {
+        $.ajax({
+            type:"POST",
+            url: "/post_delete_request/",
+            data: {'request_id': ev},
+            success: function(data)
+            {  
+                if(data== "sucess")
+                {
+                    location.reload();
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

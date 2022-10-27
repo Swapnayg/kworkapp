@@ -1,0 +1,667 @@
+{% load static %} {% block content %}
+<html lang="en" class="html-is-blur">
+   <head>
+      <meta name="description" content="Order the service you need, provide your requirements and start saving!<br> Results are guaranteed and payments secure. And if something goes wrong, you're protected by our 100% Money Back Guarantee."/>
+      <meta name="viewport" id="viewport" content="width=1024" />
+      <link rel="canonical" href="https://www.letworkbedone.com" />
+      <link rel="stylesheet" href="{% static 'assets/css/frontend/letwork_com_main_page.css' %}" type="text/css" />
+      <style>
+         .banner-slider__strip
+         {
+         background: none !important;
+         padding-left: 16%;
+         text-align: center;
+         margin: 0;
+         border: none;
+         text-transform: capitalize;
+         }
+         .fa,.kwork-icon {
+         visibility: hidden;
+         }
+         .rubrics__items .swiper-wrapper,.partners__items--en
+         {
+         height: 2% !important;
+         }
+         .swiper-container
+         {
+         margin: 0 10% !important;
+         z-index: -1 !important;
+         }
+         .swiper-button-next,
+         .swiper-button-next {
+         display: none;
+         }
+         #marketplace .swiper-wrapper
+         {
+         height: 8% !important;
+         }
+         .partners .kw-wrapper 
+         {
+         margin-bottom: 1%;
+         }
+         .partners .swiper-slide
+         {
+         width: 15%;
+         }
+         #marketplace .swiper-wrapper .swiper-slide
+         {
+         width: auto;
+         }
+      </style>
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/bootstrap.min.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/font-awesome.min.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/fonts.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/footer.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/fox-styles.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/general-search.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/header.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/icon.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/index.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/letwork-set-icon.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/layout-market.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/layout-market-footer.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/slick.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/slick-theme.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/tooltipster.bundle.min.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/tooltipster.themes.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/unauthorized.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/header.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/protection.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/referral-program.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/general-styles.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/categories-main.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/kb.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/parent-category.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/for-sellers.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/education.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/info-table.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/terms-of-service.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-bs4.min.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/user.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/testimonials.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/content-tools.css' %}" />
+      <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/categories.css' %}" />
+
+      <link rel="stylesheet" href="{% static 'assets/css/frontend/select2.min.css' %}">
+      <link class="js-theme-favicon" rel="icon" type="image/png" href="{% static 'assets/images/icons/favicon-64x64.png' %}" />
+      <link class="js-theme-favicon" rel="shortcut icon" type="image/png" href="{% static 'assets/images/icons/favicon-32x32.png' %}" />
+      <link class="js-theme-favicon" rel="apple-touch-icon" sizes="57x57" href="{% static 'assets/images/icons/favicon-57x57.png' %}" />
+      <link class="js-theme-favicon" rel="apple-touch-icon-precomposed" href="{% static 'assets/images/icons/favicon-48x48.png' %}" />
+      <link class="js-theme-favicon" rel="icon" type="image/png" sizes="32x32" href="{% static 'assets/images/icons/favicon-32x32.png' %}" />
+      <link class="js-theme-favicon" rel="icon" type="image/png" sizes="192x192" href="{% static 'assets/images/icons/favicon-24x24.png' %}" />
+      <link class="js-theme-favicon" rel="icon" type="image/png" sizes="16x16" href="{% static 'assets/images/icons/favicon-16x16.png' %}" />
+   </head>
+   <body id="body" class="d-flex flex-column--only en-lang is-desktop">
+      <svg class="garland-defs absolute" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <defs>
+            <filter id="filter0_if" x="2.71282" y="4.16516" width="8.70706" height="13.7786" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+               <feFlood flood-opacity="0" result="BackgroundImageFix" />
+               <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+               <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+               <feOffset dy="6.22558" />
+               <feGaussianBlur stdDeviation="3.11279" />
+               <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+               <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+               <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+               <feGaussianBlur stdDeviation="0.778197" result="effect2_foregroundBlur" />
+            </filter>
+            <filter id="filter1_if" x="29.7332" y="6.00255" width="8.81988" height="14.099" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+               <feFlood flood-opacity="0" result="BackgroundImageFix" />
+               <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+               <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+               <feOffset dy="6.47441" />
+               <feGaussianBlur stdDeviation="3.23721" />
+               <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+               <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+               <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+               <feGaussianBlur stdDeviation="0.809301" result="effect2_foregroundBlur" />
+            </filter>
+            <filter id="filter2_if" x="56.8604" y="4.31396" width="7.58196" height="11.0065" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+               <feFlood flood-opacity="0" result="BackgroundImageFix" />
+               <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+               <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+               <feOffset dy="4" />
+               <feGaussianBlur stdDeviation="2" />
+               <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+               <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+               <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+               <feGaussianBlur stdDeviation="0.5" result="effect2_foregroundBlur" />
+            </filter>
+            <filter id="filter3_if" x="83.3024" y="6.74854" width="7.59594" height="10.9952" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+               <feFlood flood-opacity="0" result="BackgroundImageFix" />
+               <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+               <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+               <feOffset dy="4" />
+               <feGaussianBlur stdDeviation="2" />
+               <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+               <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+               <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+               <feGaussianBlur stdDeviation="0.5" result="effect2_foregroundBlur" />
+            </filter>
+            <filter id="filter4_if" x="106.948" y="4.21277" width="7.60068" height="10.9912" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+               <feFlood flood-opacity="0" result="BackgroundImageFix" />
+               <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape" />
+               <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+               <feOffset dy="4" />
+               <feGaussianBlur stdDeviation="2" />
+               <feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1" />
+               <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+               <feBlend mode="normal" in2="shape" result="effect1_innerShadow" />
+               <feGaussianBlur stdDeviation="0.5" result="effect2_foregroundBlur" />
+            </filter>
+         </defs>
+      </svg>
+      <div id="app-header">
+         <bill-form-modal></bill-form-modal>
+      </div>
+      <div id="loadme"></div>
+      <div class="js-mobile-nav mobile-nav mobile-nav--modern hidden">
+         <div class="js-mobile-nav-overlay mobile-nav__overlay"></div>
+         <div class="js-mobile-nav-list mobile-nav__list header-new-nav unauthorized">
+            <div class="mobile-menu unauthorized">
+               <div class="mobile-nav__header">
+                  <div class="mobile-nav__header-close js-show-mobile-nav-link"></div>
+                  <a class="mobile-nav__header-logo" href="{% url 'index' %}">
+                  <img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="22" width="105" alt="mobile logo"/>
+                  </a>
+               </div>
+               <a class="kw-button kw-button--green kw-button--size-40 kw-button--width-fixed mobile-nav__signup-button signup-js">Sign Up</a>
+               <div class="mobile-menu__items">
+                  <div class="mobile-menu__item">
+                     <a class="mobile-menu__item-link login-js cur">
+                        <span class="mobile-menu__item-icon">
+                           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                 d="M8.09234 6.3L6.48524 4.6942L7.47897 3.7058L10.7816 7.0063L7.47757 10.2956L6.48594 9.3044L8.09795 7.7L1.0276e-06 7.7C0.353001 11.2315 3.34894 14 6.9821 14C10.8518 14 14 10.8591 14 7C14 3.1409 10.8518 2.0161e-07 6.98211 -1.36687e-07C3.34894 -4.54308e-07 0.353002 2.7678 1.14999e-06 6.3L8.09234 6.3Z"
+                                 fill="#333"
+                                 />
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">Sign In</span>
+                     </a>
+                  </div>
+                  <div class="mobile-menu__item">
+                     <a href="https://www.letworkbedone.com/" class="mobile-menu__item-link">
+                        <span class="mobile-menu__item-icon mt-1">
+                           <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path
+                                 d="M0 7.18637C0 7.39134 0.0715241 7.55787 0.214572 7.68597C0.35762 7.81408 0.533762 7.87813 0.742996 7.87813C0.862558 7.87813 0.972513 7.85464 1.07286 7.80767C1.17321 7.7607 1.26395 7.69665 1.34508 7.61552L7.82067 1.69716C7.87618 1.64592 7.93596 1.6203 8.00002 1.6203C8.06834 1.6203 8.13025 1.64592 8.18576 1.69716L14.6549 7.61552C14.7403 7.69665 14.8332 7.7607 14.9336 7.80767C15.0339 7.85464 15.1417 7.87813 15.257 7.87813C15.4663 7.87813 15.6424 7.81408 15.7855 7.68597C15.9285 7.55787 16 7.39134 16 7.18637C16 7.07535 15.9808 6.9718 15.9424 6.87572C15.9039 6.77965 15.8314 6.68464 15.7246 6.59069L13.3355 4.40655V0.480202C13.3355 0.335019 13.2917 0.218659 13.2042 0.131122C13.1166 0.0435853 13.0003 -0.000183105 12.8551 -0.000183105H11.6637C11.5186 -0.000183105 11.4011 0.0435853 11.3115 0.131122C11.2218 0.218659 11.177 0.335019 11.177 0.480202V2.44018L9.01843 0.467392C8.71525 0.189837 8.37578 0.0510603 8.00001 0.0510603C7.62851 0.0510603 7.29118 0.189837 6.988 0.467392L0.275424 6.59071C0.168672 6.68465 0.0960804 6.77966 0.0576494 6.87574C0.0192186 6.97182 3.26967e-06 7.07537 3.26967e-06 7.18639L0 7.18637ZM2.21618 12.5923C2.21618 13.0663 2.36029 13.4399 2.64852 13.7132C2.93676 13.9865 3.32854 14.1231 3.82387 14.1231H6.32187V9.44738C6.32187 9.29793 6.36777 9.1773 6.45958 9.08549C6.55139 8.99368 6.67202 8.94778 6.82147 8.94778H9.18497C9.33869 8.94778 9.46039 8.99368 9.55006 9.08549C9.63973 9.1773 9.68457 9.29793 9.68457 9.44738V14.1231H12.1826C12.6779 14.1231 13.0697 13.9865 13.3579 13.7132C13.6461 13.4399 13.7903 13.0663 13.7903 12.5923V7.9678L8.17296 2.87571C8.11744 2.82447 8.05766 2.79885 7.99361 2.79885C7.92956 2.79885 7.86978 2.82661 7.81427 2.88212L2.21619 7.99341L2.21618 12.5923Z"
+                                 fill="#333"
+                                 />
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">To Homepage</span>
+                     </a>
+                  </div>
+                  <div class="mobile-menu__item">
+                     <a href="#" class="mobile-menu__item-link js-mobile-menu-open-sublist">
+                        <span class="mobile-menu__item-icon">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+                              <path
+                                 d="M0 2a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm0 9a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-3zm9-9a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V2zm0 9a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2v-3z"
+                                 fill="#333"
+                                 />
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">Browse Categories</span>
+                        <svg class="mobile-menu__item-arrow" xmlns="http://www.w3.org/2000/svg" width="7" height="10" fill="none">
+                           <path d="M1 1L5 5L1 9" stroke="#333" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                     </a>
+                     <div id="mobile-catalog" class="mobile-menu__sublist">
+                        <div class="js-mobile-menu-placeholder">
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                           <div class="mobile-menu__item mobile-menu__item--placeholder pointer-en"><span class="mobile-menu__link"></span></div>
+                        </div>
+                        <mobile-catalog ref="mobile-catalog"></mobile-catalog>
+                     </div>
+                  </div>
+                  <div class="mobile-menu__item">
+                     <a href="#" class="mobile-menu__item-link js-mobile-menu-open-sublist">
+                        <span class="mobile-menu__item-icon">
+                           <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M7.56794 0.741795C7.76081 0.410661 8.23919 0.410661 8.43206 0.741794L10.4754 4.24993C10.546 4.37123 10.6644 4.45725 10.8016 4.48696L14.7695 5.34618C15.144 5.42728 15.2918 5.88225 15.0365 6.168L12.3315 9.19537C12.2379 9.30005 12.1927 9.43922 12.2068 9.57889L12.6158 13.6181C12.6544 13.9993 12.2674 14.2805 11.9167 14.126L8.20162 12.4888C8.07317 12.4322 7.92683 12.4322 7.79838 12.4888L4.08327 14.126C3.73261 14.2805 3.34559 13.9993 3.38419 13.6181L3.79316 9.57889C3.8073 9.43923 3.76208 9.30005 3.66855 9.19537L0.963524 6.168C0.708197 5.88225 0.856022 5.42728 1.23055 5.34618L5.1984 4.48696C5.3356 4.45725 5.45399 4.37123 5.52464 4.24993L7.56794 0.741795Z" fill="#333333" />
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">Explore</span>
+                        <svg class="mobile-menu__item-arrow" xmlns="http://www.w3.org/2000/svg" width="7" height="10" fill="none">
+                           <path d="M1 1L5 5L1 9" stroke="#333" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                     </a>
+                     <div class="mobile-menu__sublist">
+                        <div class="mobile-menu__item-back">
+                           <a class="mobile-menu__link-back mobile-menu__item-link-back">
+                              <svg class="mobile-menu__arrow-back" xmlns="http://www.w3.org/2000/svg" width="22" height="15" fill="none">
+                                 <path d="M2 7h13a6 6 0 0 1 6 6v1M2 7l6-6M2 7l6 6" stroke="#b8b8b8" stroke-width="1.6" stroke-linecap="round" />
+                              </svg>
+                              <div class="mobile-menu__item-title">Explore</div>
+                           </a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">For Freelancers</span></a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">How to Earn on Letworkbedone</span></a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">Get the Letworkbedone App</span></a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">Affiliate Program</span></a>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="mobile-menu__item">
+                     <a href="#" class="mobile-menu__item-link js-mobile-menu-open-sublist">
+                        <span class="mobile-menu__item-icon">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none">
+                              <path fill-rule="evenodd" d="M14 7a7.01 7.01 0 0 0-7-7C3.14 0 0 3.12 0 7s3.14 7 7 7a7.01 7.01 0 0 0 7-7zM6.223 9.75c.03-.042.064-.082.1-.12l.005-.005c.324-.31.847-.31 1.168.005.155.15.24.355.24.568.004.103-.013.207-.05.304-.075.2-.24.36-.446.432a.8.8 0 0 1-.628 0c-.208-.073-.37-.23-.446-.432-.046-.095-.07-.2-.066-.304a1.05 1.05 0 0 1 0-.16.5.5 0 0 1 .05-.144.6.6 0 0 1 .074-.144zM4.76 4.2C5.203 3.457 6.022 3 6.91 3c1.036.008 1.958.638 2.31 1.58.467 1.246-.198 2.622-1.485 3.074V7.8c0 .442-.37.8-.826.8s-.826-.358-.826-.8V7c0-.442.37-.8.826-.8s.826-.358.826-.8-.37-.8-.826-.8a.83.83 0 0 0-.719.4l-.035.058c-.245.373-.755.483-1.14.246s-.5-.73-.254-1.104z" fill="#333"/>
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">Help</span>
+                        <svg class="mobile-menu__item-arrow" xmlns="http://www.w3.org/2000/svg" width="7" height="10" fill="none">
+                           <path d="M1 1L5 5L1 9" stroke="#333" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                     </a>
+                     <div class="mobile-menu__sublist">
+                        <div class="mobile-menu__item-back">
+                           <a class="mobile-menu__link-back mobile-menu__item-link-back">
+                              <svg class="mobile-menu__arrow-back" xmlns="http://www.w3.org/2000/svg" width="22" height="15" fill="none">
+                                 <path d="M2 7h13a6 6 0 0 1 6 6v1M2 7l6-6M2 7l6 6" stroke="#b8b8b8" stroke-width="1.6" stroke-linecap="round" />
+                              </svg>
+                              <div class="mobile-menu__item-title">Help</div>
+                           </a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">FAQ</span></a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">Contact Support</span></a>
+                        </div>
+                        <div class="mobile-menu__item">
+                           <a class="mobile-menu__link" href="#"><span class="mobile-menu__title">Terms of Service</span></a>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="mobile-menu__item">
+                     <a class="mobile-menu__item-link js-render-desktop cur">
+                        <span class="mobile-menu__item-icon">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="12" fill="#333">
+                              <path d="M0 9.5h16a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2z" />
+                              <path fill-rule="evenodd" d="M3 0a1 1 0 0 0-1 1v8h12V1a1 1 0 0 0-1-1H3zm9.5 1.5h-9v6h9v-6z" />
+                           </svg>
+                        </span>
+                        <span class="mobile-menu__item-title">Switch to Desktop Version</span>
+                     </a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="header relative header-new js-header-new js-header-mobile is_index out-3 header-unauthorized header-unfixed" data-out="3">
+         <div class="recommendation-app js-recommendation-app">
+            <div class="recommendation-app__close js-recommendation-app-close"></div>
+            <div class="recommendation-app__content">
+               <div class="recommendation-app__logo"></div>
+               <div class="recommendation-app__info">
+                  <div class="recommendation-app__title">Letworkbedone for <span>Android</span></div>
+                  <div>
+                     <div class="recommendation-app__rating recommendation-app__rating--half"></div>
+                     <span class="recommendation-app__counter">7.9k</span>
+                  </div>
+               </div>
+               <div class="recommendation-app__bottom">
+                  <div class="kw-button kw-button--green kw-button--size-40">Install</div>
+               </div>
+               <a class="recommendation-app__link" href="#"></a>
+            </div>
+         </div>
+         <div class="header_top">
+            <div class="centerwrap lg-centerwrap relative">
+               <div class="headertop">
+                  <div class="headertop-mobile m-visible">
+                     <div class="foxmenubutton">
+                        <div class="foxmenubutton__button js-show-mobile-nav-link">
+                           <span></span>
+                           <span></span>
+                           <span></span>
+                        </div>
+                     </div>
+                     <div class="header__logo">
+                        <a href="{% url 'index' %}"><img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="22" width="105" alt="mobile logo"/></a>
+                     </div>
+                     <a class="menu-category menu-category_login login-js">Sign In</a>
+                  </div>
+                  <div class="headertop-desktop m-hidden">
+                     <div class="brand-image">
+                        <a href="{% url 'index' %}">
+                           <img src="{% static 'assets/images/logo.png' %}" alt=""/>
+                           <!-- <div class="logo_subtext">Freelance marketplace</div> -->
+                        </a>
+                     </div>
+                     <div class="search">
+                        <div id="general-search">
+                           <div class="js-onload-search custom-search general-search">
+                              <input name="query" type="text" id="input_search" placeholder="Find Services"  spellcheck="false" class="js-header-search js-static-search header-search form-control" value="" />
+                              <span class="js-clear-button clear-button hidden">
+                                 <svg class="ico-clear-button pointer-en" xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none">
+                                    <path d="M11 1L6 6m0 0l5 5M6 6L1 1m5 5l-5 5" stroke="#8a8a8a" stroke-width="1.2" stroke-linecap="round" />
+                                 </svg>
+                              </span>
+                              <span class="search-button">
+                                 <button class="kw-button kw-button--green" id="btn_search">Search</button>
+                                 <div class="ico-search-button"></div>
+                              </span>
+                           </div>
+                           <general-search default-search-encoded=""></general-search>
+                        </div>
+                     </div>
+                     <div class="headeright">
+                        <ul id="app-header-select" class="clearfix">
+                           <li id="loginbtn"><a onclick="loginClick();" class="login-js" id="loginanchor">Sign In</a></li>
+                           <li id="registerbtn" ><a href="{% url 'register' %}" class="signup-js register-link button_create_task">Sign Up</a></li>
+                           <li id="freelancerbtn"><a href="{% url 'for_freelancer' %}" class="pr0">Are you a freelancer?</a></li>
+                           <li id="notification"></li>
+                           <li id="messages"></li>
+                           <li id="favourite"></li>
+                           <li id="buyer_orders"></li>
+                           <li id="help_not"></li>
+                           <li id="profile_btn"></li>
+                        </ul>
+                     </div>
+                  </div>
+                  <div class="clear"></div>
+               </div>
+            </div>
+            <div class="subnav subnav--new">
+               <div class="centerwrap lg-centerwrap category-menu overflow-hidden category-menu--new">
+                  <ul class="js-category-menu-list js-cat-menu-thin category-menu__list subnav__category-menu cat-menu-thin sub-menu-parent" id="main-menu">
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item ">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Design</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Design</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Logo Design</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Brand Identity</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Business Cards</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Infographics</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Presentations</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Art &amp; Illustrations</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Print Design</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Pre-Made Templates &amp; Pictures</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Web &amp; Mobile Design</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Web Banners &amp; Icons</span></a>
+                                          <a class="submenu-item" href="#">
+                                          <span class="submenu-item__text js-menu-item">E-commerce &amp; Social Media Design</span>
+                                          <span class="submenu-item__wrap-mark submenu-item__wrap-mark--new"><span class="submenu-item__mark submenu-item__mark--new">New</span></span>
+                                          </a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Vector Tracing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Photo Processing &amp; Editing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">3D Graphics</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Interior &amp; Exterior</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Industrial &amp; Product Design</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Outdoor Advertising</span></a>
+                                          <a class="submenu-item" href="#">
+                                          <span class="submenu-item__text js-menu-item">NFT Art</span>
+                                          <span class="submenu-item__wrap-mark submenu-item__wrap-mark--new"><span class="submenu-item__mark submenu-item__mark--new">New</span></span>
+                                          </a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1135">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Development &amp; IT</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Development &amp; IT</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">HTML Services</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Website Revision &amp; Maintenance</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Website Development</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Scripts &amp; Parsers</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Usability &amp; QA</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Mobile Apps</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Desktop Programming</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Digital Games</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">System Administration</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Chatbots</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Domains &amp; Hosting</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">IT Support</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1177">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Writing &amp; Translations</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Writing &amp; Translations</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Articles</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Business &amp; Marketing Copywriting</span></a>
+                                          <a class="submenu-item" href="#">
+                                          <span class="submenu-item__text js-menu-item">Business Names &amp; Slogans</span>
+                                          </a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Website Content Posting</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Creative Writing</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Scriptwriting</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Proofreading &amp; Editing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Transcripts</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Translations</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Resumes &amp; Job Ads</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1237">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">SEO &amp; Web Traffic</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">SEO &amp; Web Traffic</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Backlinks</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">On-Page SEO</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Keyword Research</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">SEO Audit &amp; Consulting</span></a>
+                                       </div>
+                                       <div class
+                                       ="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Web Traffic</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Statistics &amp; Analytics</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Website Promotion to Top</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1213">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Digital Marketing &amp; SMM</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Digital Marketing &amp; SMM</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Social Media &amp; SMM</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Search &amp; Display Marketing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Client Databases</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Email &amp; SMS Marketing</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">E-commerce &amp; Classifieds Marketing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Ads &amp; PR</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Music Promotion</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1297">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Audio &amp; Video</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Audio &amp; Video</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Recording &amp; Voice Over</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Music &amp; Songs</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Audio Editing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Intros &amp; Logo Animation</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Promo Videos</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Videos</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Videography &amp; Editing</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Scriptwriting</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                     <li class="js-cat-menu-thin-item">
+                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item" data-category-id="1264">
+                        <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Business &amp; Lifestyle</span>
+                        </a>
+                        <div class="menubox">
+                           <div class="menulist">
+                              <div class="submenu submenu--new">
+                                 <div class="submenu-column submenu-column--cols-1">
+                                    <div class="menutitle"><span class="js-menu-item">Business &amp; Lifestyle</span></div>
+                                    <div class="submenu-group-wrapper">
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Virtual Assistant</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Financial Consulting</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Legal Consulting</span></a>
+                                       </div>
+                                       <div class="submenu-group-inner">
+                                          <a class="submenu-item" href=#"><span class="submenu-item__text js-menu-item">Training &amp; Consulting</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Architecture &amp; Construction</span></a>
+                                          <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">Interior &amp; Exterior</span></a>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                  </ul>
+                  <ul class="js-category-menu-list category-menu__list cat-menu-wide sub-menu-parent" id="main1-menu">
+                     {% for ml in main_menu|slice:"0:6" %}
+                        <li class="">
+                           <a href="/categories/{{ml.name}}" class="js-category-menu-item category-menu__list_item" data-category-id="1078">
+                              <span class="category-menu__list__inner category-menu__list__inner--new">{{ml.name |title}}</span>
+                           </a>
+                           <div class="menubox">
+                              <div class="menulist">
+                                 <div class="submenu submenu--new">
+                                    <div class="submenu-column submenu-column--cols-1">
+                                       <div class="menutitle"><span class="js-menu-item">{{ml.name |title}}</span></div>
+                                       <div class="submenu-group-wrapper">
+                                          
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </li>
+                     {% endfor %}
+                     {% if main_menu|length > 6 %} 
+                        <li class="">
+                           <a href="#" class="js-category-menu-item category-menu__list_item" data-category-id="1264">
+                           <span class="category-menu__list__inner category-menu__list__inner--new">More</span>
+                           </a>
+                           <div class="menubox">
+                              <div class="menulist">
+                                 <div class="submenu submenu--new">
+                                    <div class="submenu-column submenu-column--cols-1">
+                                       <div class="submenu-group-wrapper">
+                                          {% if main_menu|length <= 12 %}
+                                             <div class="submenu-group-inner">
+                                                {% for ml in main_menu|slice:"6:12" %}                                           
+                                                   {% if forloop.counter <= 8 %}
+                                                      <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">{{ml.name}}</span></a>
+                                                   {% endif %}
+                                                {% endfor %}
+                                          {% endif %}
+                                          {% if main_menu|length > 12 %}
+                                             <div class="submenu-group-inner">
+                                                {% for ml in main_menu|slice:"12:18" %}                                           
+                                                   {% if forloop.counter <= 8 %}
+                                                      <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">{{ml.name}}</span></a>
+                                                   {% endif %}
+                                                {% endfor %}
+                                          {% endif %}
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </li>
+                     {% endif %}
+                  </ul>
+                  <input type="hidden" id="sub_val_text" value="{{sub_menu}}" >
+               </div>
+               <div class="js-test-item-menu"></div>
+            </div>
+         </div>
+      </div>
+      {% block contentarea%}
+      {% endblock %}
+      {% endblock %}

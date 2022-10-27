@@ -1,0 +1,1099 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Account Settings</title>
+<div class="all_page page-flex__content pt0 m0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="row justify-content-center mt-0" id="main_contents">
+      <div class="col-11 text-center p-0 mt-3 mb-2">
+         <div class="card px-0 pt-4 pb-0 mb-3">
+            <div class="row">
+               <div class="col-md-12 mx-0">
+                  <form id="msform">
+                     <!-- progressbar -->
+                     <ul id="progressbar">
+                        <li class="active" id="account"><strong>Create Account</strong></li>
+                        <li id="category"><strong>Category</strong></li>
+                        <li id="language"><strong>Language</strong></li>
+                        <li id="overview"><strong>Overview</strong></li>
+                        <li id="prof_image"><strong>Profile Image</strong></li>
+                        <li id="create_gig"><strong>Create A Gig</strong></li>
+                     </ul>
+                     <!-- fieldsets -->
+                     <fieldset>
+                        <div class="form-card" id="account_profile">
+                           <h1>Complete your free account setup</h1>
+                           <input type="hidden" id="userprimaryval" value="{{UserDetails.id}}">
+                           <input type="hidden" id="useremailval" value="{{UserDetails.email}}">
+                           {% if UserDetails.email == None %}
+                              <div class="d-flex email justify-content-center align-items-center">
+                                 <img class="mr-2" src="{{UserDetails.avatar}}" alt="profile image" onerror="imageLoadError(this)">
+                                 <input type="email" id="useremail" placeholder="Enter Email Address" required>
+                              </div>
+                           {% else %}
+                              <div class="d-flex email justify-content-center align-items-center">
+                                 <img class="mr-2" src="{{UserDetails.avatar}}" alt="profile image" onerror="imageLoadError(this)">
+                                 <span>{{UserDetails.email}}</span>
+                              </div>
+                           {% endif %}
+                        
+                           {% if UserDetails.country|length != 0 %}
+                              <select name="" class="form-control" disabled="" id="country_user" required>
+                                 <option value="">Select Country</option>
+                                 <option value="{{UserDetails.country.code}}" selected>{{UserDetails.country.name}}</option>
+                              </select>
+                           {% else %}
+                              <select name="" class="form-control" id="country_user" required>
+                                 <option value="">Select Country</option>
+                                 {% for country in Countrylist %}
+                                    <option value="{{country.code}}">{{country.name}}</option>
+                                 {% endfor %}
+                              </select>
+                           {% endif %}
+                           <p class="mt-3">I Want to:</p>
+                           <div class="roll mb-2">
+                              {% if UserDetails.profile_type|length == 0 %}
+                                 <label for="buyer_btn" class="form-control buyer_btn">
+                                 <input type="radio" id="buyer_btn" class="roll_input" value="Buyer" name="roll">
+                                 <span>Hire for a project</span>
+                                 </label>
+                                 <label for="seller_btn" class="form-control seller_btn">
+                                 <input type="radio" id="seller_btn" class="roll_input" value="Seller" name="roll">
+                                 <span>Work as a seller</span>
+                                 </label>
+                              {% elif  UserDetails.profile_type == "Buyer" %}
+                                 <label for="buyer_btn" class="form-control buyer_btn active_roll">
+                                 <input type="radio" id="buyer_btn" class="roll_input" value="Buyer" name="roll" checked>
+                                 <span>Hire for a project</span>
+                                 </label>
+                                 <label for="seller_btn" class="form-control seller_btn">
+                                 <input type="radio" id="seller_btn" class="roll_input" value="Seller" name="roll">
+                                 <span>Work as a seller</span>
+                                 </label>
+                              {% elif  UserDetails.profile_type == "Seller" %}
+                                 <label for="buyer_btn" class="form-control buyer_btn">
+                                 <input type="radio" id="buyer_btn" class="roll_input" value="Buyer" name="roll">
+                                 <span>Hire for a project</span>
+                                 </label>
+                                 <label for="seller_btn" class="form-control seller_btn active_roll">
+                                 <input type="radio" id="seller_btn" class="roll_input" value="Seller" name="roll" checked>
+                                 <span>Work as a seller</span>
+                                 </label>
+                              {% endif %}
+                           </div>
+                           <label for="priv" class="m-0 mb-3 row">
+                              <div class="col-1 p-0 pl-1 pt-2">
+                                 {% if UserDetails.terms == True %}
+                                    <input type="checkbox" name="agree_trms" value="yes" id="priv" checked>
+                                 {% else %}
+                                    <input type="checkbox" name="agree_trms" value="yes" id="priv" >
+                                 {% endif %}
+                              </div>
+                              <div class="col-11 p-0 mt-1 text-left" id="terms">
+                                 <span>Yes. I understand and agree to the
+                                    <a href="{% url 'term_service' %}" class="text_theme" target="_blank">Letworkbedone Terms of service.</a>
+                                       including the and
+                                    <a href="{% url 'privacy' %}" class="text_theme" target="_blank"> Privacy Policy.</a></span>
+                              </div>
+                           </label>
+                           <label id="create_error" class="error_mssg"></label>
+                           </div>
+                           <input type="button" name="next" class="next action-button" id="create_account" value="Create an account"/>
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="category_form">
+                           <div class="header pb-4">
+                              <h5>Which category are you specializing In</h5>
+                              <span class="text-muted">2 of 6</span>
+                           </div>
+                           <div class="body mt-4 mb-4 pb-4">
+                              <h5 class="mb-3">Tell us about the work you do</h5>
+                              <h6 class="mb-3">What is the main service you offer?</h6>
+                              <div class="input-group row mx-0 mb-3">
+                                 <div class="col-6 pl-0 pr-2">
+                                    <label>Category</label>
+                                    <select class="form-control" id="main_category" required name="main_category">
+                                       <option value="" selected=""> Select Category </option>
+                                       {% for category in Categories %}
+                                          {% if profile_Details.main_category.category_Name.strip == category.category_Name.strip %}
+                                             <option value="{{category.id}}" selected>{{category.category_Name}}</option>
+                                          {% else %}
+                                             <option value="{{category.id}}">{{category.category_Name}}</option>
+                                          {% endif %}
+                                       {% endfor %}
+                                    </select>
+                                 </div>
+                                 <div class="col-6 pr-0 pl-2">
+                                    <label>Sub Category</label>
+                                    <input type="hidden" id="sub_category_val" value="{{profile_Details.sub_category.sub_category_Name}}">
+                                    <select class="form-control" id="child_category" name="seller_child_category">
+                                       <option value="" selected=""> Select Sub Category </option>
+                                    </select>
+                                 </div>
+                              </div>
+                              <label id="category_error" class="error_mssg"></label>
+                           </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="next" class="next action-button" value="Next Step"id="create_category" />
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="language_form">
+                           <div class="header pb-4">
+                              <h5>Select your languages</h5>
+                              <span class="text-muted">3 of 6</span>
+                           </div>
+                           <div class="body mt-4 mb-4 pb-4">
+                              <h6 class="mb-3">What is your English proficiency?</h6>
+                              <div class="row m-0 mb-3">
+                                 <div class="form-check p-0 col-md-10">
+                                    <select class="form-control" name="englishLevel" required id="english_level">
+                                          {% if english_prof == "Basic" %}
+                                             <option value="Basic" selected="">Basic</option>
+                                          {% else %}
+                                             <option value="Basic">Basic</option>
+                                          {% endif %}
+                                          {% if english_prof == "Fluent" %}
+                                             <option value="Fluent" selected="">Fluent</option>
+                                          {% else %}
+                                             <option value="Fluent">Fluent</option>
+                                          {% endif %}
+                                          {% if english_prof == "Conversational" %}
+                                             <option value="Conversational" selected="">Conversational</option>
+                                          {% else %}
+                                             <option value="Conversational">Conversational</option>
+                                          {% endif %}
+                                    </select>
+                                 </div>
+                              </div>
+                              <h6 class="mb-2">What other languages do you speak?</h6>
+                              <input type="hidden" id="user_lang_val" value="{{userlangs}}">
+                              <div class="row mb-2 m-0" id="label_div">
+                              <div class="col-7 p-0">
+                                 <label>Select your languages</label>
+                              </div>
+                              <div class="col-5 p-0">
+                                 <label>Proficiency</label>
+                              </div>
+                              </div>
+                              <div id="user_languages_div">
+                                 
+                              </div>
+                              <div id="select_div" style="display:none;">
+                                 <div class="newLaguage" >
+                                    <div class="row m-0 mb-4">
+                                       <div class="col-7 p-0 pr-2">
+                                          <select name="language_id[]" class="form-control" required>
+                                             <option value=""> Select Language </option>
+                                             {% for lang in languages %}
+                                                <option value="{{lang.lng_slug}}"> {{lang.lng_Name}} </option>
+                                             {% endfor %}
+                                          </select>
+                                       </div>
+                                       <div class="col-5 p-0">
+                                          <select name="language_level[]" class="form-control" required="">
+                                             <option value="">Select Level</option>
+                                             <option value="Basic">Basic</option>
+                                             <option value="Fluent">Fluent</option>
+                                             <option value="Conversational">Conversational</option>
+                                          </select>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                              <div class="row m-0 mb-4">
+                                 <div class="col-7 p-0 pr-2">
+                                    <label id="language_error" class="error_mssg"></label>
+                                 </div>
+                              </div>                             
+                              <a class="addLang text_theme" id="addLanguage" onclick="addLanguageClick();">+ Add Languages</a>
+                           </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="make_payment" class="next action-button" id="create_language" value="Confirm"/>
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="overview_form">
+                           <div class="header pb-4">
+                              <h5>Your Profile Title & Overview</h5>
+                              <span class="text-muted">4 of 6</span>
+                           </div>
+                           <div class="body mt-4">
+                              <div class="form-group">
+                                 <label for="ttl">
+                                    <h6 class="mb-1">Title </h6>
+                                 </label>
+                                 <input type="text" id="seller_headline" maxlength="{{title_char}}" minlength="0" value="{{profile_Details.profile_title}}" onkeyup="accnt_headline_onchange(this);" placeholder="Title" value="" required="" class="form-control">
+                                 <p class="text-muted text-right"><span class="countTitle">{{title_char}}</span> characters left</p>
+                              </div>
+                              <div class="form-group">
+                                 <label for="sellerDesc">
+                                    <h6>Professional Overview</h6>
+                                 </label>
+                                 <input type="hidden" value="{{profile_Details.profess_overview}}" id="seller_about_hidd">
+                                 <textarea id="seller_about" minlength="0" maxlength="{{overview_char}}" cols="30" rows="6"  placeholder="Overview" class="form-control" required=""></textarea>
+                                 <input type="hidden" value="{{overview_char}}" id="seller_about_hidden">
+                                 <p class="text-muted text-right"><span class="countDesc">{{overview_char}}</span> characters left</p>
+                              </div>
+                           </div>
+                           <label id="overview_error" class="error_mssg"></label>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="make_payment" class="next action-button" id="create_overview" value="Confirm"/>
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="profile_form">
+                           <div class="header pb-4">
+                              <h5>Upload your profile photo</h5>
+                              <span class="text-muted">5 of 6</span>
+                           </div>
+                           <div class="body mt-4">
+                              <p class="b_p_1">Please upload a professional portrait that clearly shows your face.</p>
+                              <div class="row mb-5 mt-3">
+                                 <div class="col-md-6 text-center">
+                                    <div class="image">
+                                       <img id="output" src="{{UserDetails.avatar}}" alt="profile pic" onerror="imageLoadError(this)">
+                                    </div>
+                                    <input id="pro_img" type="file" onchange="profileimgChange(this)" class="addProfile">
+                                    <label class="addLang text_theme" for="pro_img">+ Add Profile Photo </label>
+                                 </div>
+                              </div>
+                           </div>
+                           <label id="profile_img_error" class="error_mssg"></label>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="make_payment" class="next action-button" value="Confirm" id="create_profile_img"/>
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="created_form">
+                           <div class="body mt-4 mb-4 pb-4">
+                              <h2 class="mb-5">Your account is created successfully</h2>
+                              <a  onclick="create_gig_onclick();" class="btn outline_theme">Create A Gig</a>
+                           </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                     </fieldset>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+{% if request.session.userpage == "buyer" %}
+   {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+<style>
+   .useremail
+   {
+      line-height: 50px;
+   }
+   .error_mssg
+   {
+      color: red !important;
+      font-size: 12px !important;
+   }
+    #main_contents
+    {
+        margin-left: 5%;
+        margin-right: 5%;
+    }
+    .outline_theme {
+        border: 1px solid  #2E5DC5;
+        color: #2E5DC5;
+        border-radius: 2rem;
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    #created_form h2
+    {
+        font-size: 40px;
+        line-height: 40px;
+        text-align: center;
+        color: black;
+        font-weight: 600;
+    }
+    #created_form .body 
+    {
+        width: 90%;
+        margin: auto;
+        text-align: center;
+    }
+    #category_form .header h5,#category_form .body h5,#language_form .header h5,#overview_form .header h5,#profile_form .header h5{
+        color: black;
+        font-size: 22px;
+        font-weight: 600;
+    }
+    a.addLang, label.addLang {
+        padding: 8px 1rem;
+        border: 1px solid #2E5DC5;
+        display: inline-block;
+        border-radius: 2rem;
+        font-size: 16px;
+        color: black;
+        float: left;
+    }
+    #category_form .body h6,#language_form .body h6,#overview_form .form-group h6,#profile_form .body p{
+        color: black;
+        font-size: 17px;
+        font-weight: 600;
+    }
+    .image {
+        margin: auto;
+    }
+    .addProfile {
+        opacity: 0;
+        visibility: hidden;
+    }
+    .image img {
+        width: 100%;
+    }
+    #category_form .input-group label,#language_form label{
+        color: black;
+        font-size: 16px;
+    }
+    #category_form .header span,#language_form .header span,#overview_form .header span,#profile_form .header span{
+        font-size: 18px;
+    }
+    #overview_form input, #overview_form textarea{
+        border-color: black;
+    }
+   #country_user
+   {
+      margin-bottom: 2%;
+   }
+   #main_category:hover,#main_category:focus,#child_category:hover,#child_category:focus,#language_form select:hover,#language_form select:focus,#overview_form input:hover,#overview_form input:focus,#country_user:hover, #country_user:focus,#seller_about:hover, #seller_about:focus{
+    color: black;
+    background-color: white;
+    border-color: black;
+    border-radius: 5px;
+    outline: black;
+    box-shadow: none;
+   }
+   .email img {
+   width: 50px;
+   height: 50px;
+   border-radius: 100%;
+   object-fit: cover;
+   object-position: center;
+   }
+   #terms span{
+   color: black;
+   font-size: 15px;
+   }
+   .email{
+   margin-bottom: 2%;
+   }
+   .email span{
+   color: black;
+   font-size: 20px;
+   }
+   #account_profile
+   {
+   text-align: center;
+   }
+   #account_profile h1{
+   font-size: 40px;
+   flex-wrap: nowrap;
+   word-break: keep-all;
+   line-height: 45px;
+   text-align: center;
+   margin: auto;
+   margin-bottom: 12px;
+   }
+   #account_profile p{
+   font-size: 18px;
+   color: black;
+   text-align: center;
+   margin-bottom: 3%;
+   }
+   .roll {
+   display: flex;
+   justify-content: center;
+   }
+   .buyer_btn {
+   border-radius: 0.25rem 0rem 0rem 0.25rem;
+   text-align: center;
+   }
+   .seller_btn {
+   border-radius: 0rem 0.25rem 0.25rem 0rem;
+   text-align: center;
+   }
+   .active_roll {
+   background: #2E5DC5;
+   color: #ffffff;
+   }
+   .roll_input {
+   visibility: hidden;
+   position: absolute;
+   }
+   #msform {
+   text-align: center;
+   position: relative;
+   }
+   #msform fieldset .form-card {
+   background: white;
+   border: 0 none;
+   border-radius: 0px;
+   box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+   padding: 20px 40px 30px 40px;
+   box-sizing: border-box;
+   width: 94%;
+   margin: 0 3% 20px 3%;
+   /*stacking fieldsets above each other*/
+   position: relative;
+   }
+   #msform fieldset {
+   background: white;
+   border: 15px none;
+   border-radius: 0.5rem;
+   box-sizing: border-box;
+   width: 50%;
+   margin: auto;
+   padding-bottom: 20px;
+   position: relative;
+   margin-top: 5%;
+   }
+   .all_page 
+   {
+   margin: auto !important;
+   width: 98%;
+   }
+   /*Hide all except first fieldset*/
+   #msform fieldset:not(:first-of-type) {
+   display: none;
+   }
+   #msform fieldset .form-card {
+   text-align: left;
+   color: #9E9E9E;
+   }
+   #msform input, #msform textarea {
+   padding: 0px 8px 4px 8px;
+   border: none;
+   border-bottom: 1px solid #2E5DC5;
+   border-radius: 0px;
+   margin-bottom: 25px;
+   margin-top: 2px;
+   width: 100%;
+   box-sizing: border-box;
+   font-family: montserrat;
+   color: #2C3E50;
+   font-size: 16px;
+   letter-spacing: 1px;
+   }
+   #msform input:focus, #msform textarea:focus {
+   -moz-box-shadow: none !important;
+   -webkit-box-shadow: none !important;
+   box-shadow: none !important;
+   border: none;
+   font-weight: bold;
+   border-bottom: 2px solid #2E5DC5;
+   outline-width: 0;
+   }
+   /*Blue Buttons*/
+   #msform .action-button {
+   width: 35%;
+   background: #2E5DC5;
+   font-weight: bold;
+   color: white;
+   border: 0 none;
+   border-radius: 5px;
+   cursor: pointer;
+   padding: 10px 5px;
+   margin: 10px 5px;
+   font-size: 18px;
+   }
+   #msform .action-button:hover, #msform .action-button:focus {
+   box-shadow: 0 0 0 2px white, 0 0 0 3px #2E5DC5;
+   }
+   /*Previous Buttons*/
+   #msform .action-button-previous {
+   width: 100px;
+   background: #616161;
+   font-weight: bold;
+   color: white;
+   border: 0 none;
+   border-radius: 5px;
+   cursor: pointer;
+   padding: 10px 5px;
+   margin: 10px 5px;
+   }
+   #msform .action-button-previous:hover, #msform .action-button-previous:focus {
+   box-shadow: 0 0 0 2px white, 0 0 0 3px #616161;
+   }
+   /*Dropdown List Exp Date*/
+   select.list-dt {
+   border: none;
+   outline: 0;
+   border-bottom: 1px solid #ccc;
+   padding: 2px 5px 3px 5px;
+   margin: 2px;
+   }
+   select.list-dt:focus {
+   border-bottom: 2px solid #2E5DC5;
+   }
+   /*The background card*/
+   .card {
+   z-index: 0;
+   border: none;
+   border-radius: 0.5rem;
+   position: relative;
+   }
+   /*FieldSet headings*/
+   .fs-title {
+   font-size: 25px;
+   color: #2C3E50;
+   margin-bottom: 10px;
+   font-weight: bold;
+   text-align: left;
+   }
+   /*progressbar*/
+   #progressbar {
+   overflow: hidden;
+   color: lightgrey;
+   }
+   #progressbar .active {
+   color: #000000;
+   }
+   #progressbar li {
+   list-style-type: none;
+   font-size: 12px;
+   width: 16%;
+   float: left;
+   position: relative;
+   }
+   #progressbar #account:before {
+   font-family: FontAwesome;
+   content: "\f007";
+   }
+   #progressbar #category:before {
+   font-family: FontAwesome;
+   content: "\f022";
+   }
+   #progressbar #expertise:before {
+   font-family: FontAwesome;
+   content: "\f275";
+   }
+   #progressbar #language:before {
+   font-family: FontAwesome;
+   content: "\f1ab";
+   }
+   #progressbar #overview:before {
+   font-family: FontAwesome;
+   content: "\f07c";
+   }
+   #progressbar #prof_image:before {
+   font-family: FontAwesome;
+   content: "\f03e";
+   }
+   #progressbar #create_gig:before {
+   font-family: FontAwesome;
+   content: "\f055";
+   }
+   /*ProgressBar before any progress*/
+   #progressbar li:before {
+   width: 50px;
+   height: 50px;
+   line-height: 45px;
+   display: block;
+   font-size: 18px;
+   color: #ffffff;
+   background: lightgray;
+   border-radius: 50%;
+   margin: 0 auto 10px auto;
+   padding: 2px;
+   }
+   /*ProgressBar connectors*/
+   #progressbar li:after {
+   content: '';
+   width: 100%;
+   height: 2px;
+   background: lightgray;
+   position: absolute;
+   left: 0;
+   top: 25px;
+   z-index: -1;
+   }
+   /*Color number of the step and the connector before it*/
+   #progressbar li.active:before, #progressbar li.active:after {
+   background: #2E5DC5;
+   }
+   /*Imaged Radio Buttons*/
+   .radio-group {
+   position: relative;
+   margin-bottom: 25px;
+   }
+   .radio {
+   display:inline-block;
+   width: 204;
+   height: 104;
+   border-radius: 0;
+   background: lightblue;
+   box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+   box-sizing: border-box;
+   cursor:pointer;
+   margin: 8px 2px; 
+   }
+   .radio:hover {
+   box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+   }
+   .radio.selected {
+   box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+   }
+   /*Fit image in bootstrap div*/
+   .fit-image{
+   width: 100%;
+   object-fit: cover;
+   }
+</style>
+<script>
+
+   function extractContent(html) {
+      return new DOMParser()
+          .parseFromString(html, "text/html")
+          .documentElement.textContent;
+  }
+    
+   $(document).ready(function(){
+      $('#seller_headline').trigger('keyup');
+      $("#seller_about").summernote({
+        placeholder: "Write your content here",
+        height: 200,
+        toolbar: [
+        [ 'style', [ 'style' ] ],
+        [ 'font', [  'strikethrough', 'superscript', 'subscript', 'clear'] ],
+        [ 'fontname', [ 'fontname' ] ],
+        [ 'fontsize', [ 'fontsize' ] ],
+        [ 'table', [ 'table' ] ],
+        [ 'insert', [ 'link'] ],
+        [ 'view', [ 'undo', 'redo', 'fullscreen', 'codeview', 'help' ] ]
+      ],
+        callbacks: {
+         onChange: function(e) {
+            var textval = $(this).summernote('code').toString();
+            var thisChars =  extractContent(textval).length; 
+            var maxlength = $("#seller_about_hidden").val();
+            if(thisChars > maxlength) 
+            {
+               var CharsToDel = (thisChars-maxlength); 
+               this.value = this.value.substring(0,this.value.length-CharsToDel); 
+            }else{
+               $(".countDesc").text( maxlength - thisChars ); 
+            }  
+         }
+       }
+      });
+      $("#seller_about").summernote('code',$("#seller_about_hidd").val());
+      $("#seller_about").trigger('summernote.change'); 
+      $(".user-type").hide();
+      $(".error_mssg").hide();
+       var current_fs, next_fs, previous_fs; 
+       var opacity;
+       $('#account_profile input[type="radio"]').on('click change', function(e) {
+           $("#account_profile input[type='radio']").parent().removeClass("active_roll");
+           $(this).parent().addClass("active_roll");
+       });
+       $(".previous").click(function(){
+           current_fs = $(this).parent();
+           previous_fs = $(this).parent().prev();
+           $("#progressbar li").eq($("fieldset").index(current_fs)).removeClass("active");
+           previous_fs.show();
+           current_fs.animate({opacity: 0}, {
+               step: function(now) {
+                   opacity = 1 - now;
+                   current_fs.css({
+                       'display': 'none',
+                       'position': 'relative'
+                   });
+                   previous_fs.css({'opacity': opacity});
+           }, 
+           duration: 600
+       });
+   });
+   $(".next").click(function(){
+      current_fs = $(this).parent();
+      next_fs = $(this).parent().next();
+      if($(this).attr("id") == "create_account")
+      {
+         var country_txt = $("#country_user option:selected").text().trim();
+         var country_val = $("#country_user").val();
+         var user_roll = $("input[name='roll']:checked");
+         var user_terms = $("input[name='agree_trms']:checked");
+         var user_roll_val = $("input[name='roll']:checked").val();
+         var user_terms_val = '';
+         if(user_terms.length == 0)
+         {
+            user_terms_val = false;
+         }
+         else{
+            user_terms_val = true;
+         }
+         if(country_val.length != 0 && user_roll.length != 0 && user_terms.length != 0)
+         {
+            $("#create_error").hide();
+            if($("#useremailval").val() == "None")
+            {
+               var user_email = $("#useremail").val();
+               if(user_email.length == 0)
+               {
+                  $("#create_error").show();
+                  $("#create_error").text("error please fill all fields!");
+               }
+               else{
+                  emailval = isEmail(user_email);
+                  if(emailval == true)
+                  {
+                     $("#create_error").hide();
+                     $.ajax({
+                        type:"GET",
+                        url: "/post_useremail_Details/",
+                        data: {'userid': $("#userprimaryval").val(),'useremail': user_email,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
+                        success: function(data)
+                        {  
+                           if(data== "success")
+                           {
+                              if(user_roll_val == "Buyer")
+                              {
+                                 window.location = "/buyer"
+                              }else{
+                                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                                    next_fs.show(); 
+                                 current_fs.animate({opacity: 0}, {
+                                 step: function(now) {
+                                 opacity = 1 - now;
+                                 current_fs.css({
+                                    'display': 'none',
+                                    'position': 'relative'
+                                 });
+                                 next_fs.css({'opacity': opacity});
+                              }, 
+                              duration: 600
+                              });
+                           }   
+                        }       
+		               }
+	               });
+               }
+               else{
+                  $("#create_error").show();
+                  $("#create_error").text("error please valid email!");
+               }
+               }
+            }
+            else{
+               $("#create_error").hide();
+               $.ajax({
+                  type:"GET",
+                  url: "/post_user_Details/",
+                  data: {'userid': $("#userprimaryval").val(),'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
+                  success: function(data)
+                  {  
+                     if(data== "success")
+                     {
+                        if(user_roll_val == "Buyer")
+                        {
+                           window.location = "/buyer"
+                        }else{
+                              $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                              next_fs.show(); 
+                              current_fs.animate({opacity: 0}, {
+                              step: function(now) {
+                              opacity = 1 - now;
+                              current_fs.css({
+                                 'display': 'none',
+                                 'position': 'relative'
+                              });
+                              next_fs.css({'opacity': opacity});
+                           }, 
+                           duration: 600
+                           });
+                        }   
+                     }       
+		            }
+	            });
+            }
+         }
+         else{
+            $("#create_error").show();
+            $("#create_error").text("error please fill all fields!");
+         }
+      }
+      else if($(this).attr("id") == "create_category")
+      {
+         var category_txt = $("#main_category option:selected").text().trim();
+         var category_val = $("#main_category").val();
+         var subctegory_txt = $("#child_category option:selected").text().trim();
+         var subcategory_val = $("#child_category").val();
+         if(category_val.length != 0 && subcategory_val.length != 0)
+         { 
+            $.ajax({
+               type:"GET",
+               url: "/post_user_category/",
+               data: {'userid': $("#userprimaryval").val(),'ucategory': category_val,'usubcategory': subcategory_val},
+               success: function(data)
+               {  
+                  if(data == "success")
+                  {
+                     $("#category_error").hide();
+                     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                     next_fs.show(); 
+                     current_fs.animate({opacity: 0}, {
+                     step: function(now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                           'display': 'none',
+                           'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                     }, 
+                     duration: 600
+                     });
+                  }
+				   }
+				});
+         }
+         else{
+            $("#category_error").show();
+            $("#category_error").text(" error please fill all fields!");
+         }
+      }
+      else if($(this).attr("id") == "create_language")
+      {
+         let valid = true;
+         $("#user_languages_div").find('[required]').each(function() {
+            if ($(this).is(':invalid') || !$(this).val()) valid = false;
+         })
+         if (!valid)
+         {
+            $("#language_error").show();
+            $("#language_error").text(" error please fill all fields!");
+         } 
+         else
+         {
+            arraylist = []
+            item1 = {}
+            item1["name"] = "english"
+            item1["value"] = $("#english_level").val();
+            arraylist.push(item1)
+            $("#user_languages_div").find('.newLaguage').each(function(i, v) {
+               item2 = {}
+               item2["name"] = $(v).find("select[name='language_id[]']").val();
+               item2["value"] = $(v).find("select[name='language_level[]']").val();
+               arraylist.push(item2)
+            });
+            $.ajax({
+               type:"POST",
+               url: "/post_user_languages/",
+               data: {'userid': $("#userprimaryval").val(),'ulanguages':JSON.stringify(arraylist)},
+               success: function(data)
+               {  
+                  if(data == "success")
+                  {
+                     $("#language_error").hide();
+                     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                     next_fs.show(); 
+                     current_fs.animate({opacity: 0}, {
+                     step: function(now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                           'display': 'none',
+                           'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                     }, 
+                     duration: 600
+                     });
+                  }
+				   }
+				});
+         }
+      }
+      else if($(this).attr("id") == "create_overview")
+      {
+         var title_val = $("#seller_headline").val();
+         var overview_val = $("#seller_about").val();
+         if(title_val.length != 0 && overview_val.length != 0)
+         {
+            $.ajax({
+               type:"GET",
+               url: "/post_user_overview/",
+               data: {'userid': $("#userprimaryval").val(),'utitle':title_val,'uoverview':overview_val},
+               success: function(data)
+               {  
+                  if(data == "success")
+                  {
+                     $("#overview_error").hide();
+                     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                     next_fs.show(); 
+                     current_fs.animate({opacity: 0}, {
+                     step: function(now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                           'display': 'none',
+                           'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                     }, 
+                     duration: 600
+                     });
+                  }
+				   }
+				});
+         }
+         else{
+            $("#overview_error").show();
+            $("#overview_error").text(" error please fill all fields!");
+         }
+      }
+      else if($(this).attr("id") == "create_profile_img")
+      {
+         var img_url = $("#output").attr("src");
+         if(img_url.length != 0)
+         {
+            $("#profile_img_error").hide();
+            $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+            next_fs.show(); 
+            current_fs.animate({opacity: 0}, {
+               step: function(now) {
+                  opacity = 1 - now;
+                  current_fs.css({
+                     'display': 'none',
+                     'position': 'relative'
+                  });
+                  next_fs.css({'opacity': opacity});
+               }, 
+               duration: 600
+            });
+         }
+         else{
+            $("#profile_img_error").show();
+            $("#profile_img_error").text(" error please fill all fields!");
+         }
+      }
+   });
+   $('.radio-group .radio').click(function(){
+       $(this).parent().find('.radio').removeClass('selected');
+       $(this).addClass('selected');
+   });
+   $(".submit").click(function(){
+       return false;
+   });
+   $('#main_category').change(function() {
+      this_txt = $("#main_category option:selected").text().trim();
+      this_val = $("#main_category").val();
+      if(this_txt != "Select Category")
+      {
+         $.ajax({
+            type:"GET",
+            url: "/get_sub_categories/",
+            data: {"sub_category":this_txt},
+            success: function(data) 
+            {
+               sub_categoryval= $("#sub_category_val").val();
+               $("#child_category").empty();
+               $("#child_category").append('<option value="" selected=""> Select Sub-Category </option>')
+               $.each(data, function(i, v) {
+                  if(v.sub_cat_name == sub_categoryval)
+                  {
+                     $("#child_category").append('<option value="'+v.sub_cat_id+'" selected=""> '+v.sub_cat_name+' </option>');
+                  }
+                  else{
+                     $("#child_category").append('<option value="'+v.sub_cat_id+'"> '+v.sub_cat_name+' </option>');
+                  }
+               });
+            }
+         });
+      }
+   });
+   
+   $('#main_category').trigger("change");
+   userlanguages = JSON.parse($("#user_lang_val").val());
+   $.each(userlanguages, function(i, v) {
+      if(v.name != "English")
+      {
+         lengthcurrlang = $("#user_languages_div").find(".newLaguage").length;
+         div_html = $("#select_div").find(".newLaguage").clone().prop('id', 'newlang'+(lengthcurrlang+1));
+         $("#user_languages_div").append(div_html);
+         $("#user_languages_div").find("select[name='language_id[]']").find("option:contains(" + v.name.trim() + ")").attr('selected', 'selected');
+         $("#user_languages_div").find("select[name='language_level[]']").find("option:contains(" + v.proficiency.trim() + ")").attr('selected', 'selected');
+      }
+   });
+   lengthcurrlang = $("#user_languages_div").find(".newLaguage").length;
+   if(lengthcurrlang==0)
+   {
+      div_html = $("#select_div").find(".newLaguage").clone().prop('id', 'newlang1');
+      $("#user_languages_div").append(div_html);
+   }
+});
+
+function accnt_headline_onchange(ev)
+{
+   var thisChars = ev.value.replace(/{.*}/g, '').length; 
+      var maxlength = $(ev).attr("maxlength");
+      if(thisChars > maxlength) 
+      {
+         var CharsToDel = (thisChars-maxlength); 
+         this.value = this.value.substring(0,this.value.length-CharsToDel); 
+      }else{
+         $(".countTitle").text( maxlength - thisChars ); 
+      }
+}
+function addLanguageClick()
+{
+   lengthcurrlang = $("#user_languages_div").find(".newLaguage").length;
+   div_html = $("#select_div").find(".newLaguage").clone().prop('id', 'newlang'+(lengthcurrlang+1));
+   $("#user_languages_div").append(div_html);
+}
+
+function profileimgChange(e)
+{    
+	filename = e.files[0];
+	var fd = new FormData();
+   var files = $("#pro_img").get(0).files;
+	if(files.length > 0 ){
+      for (var i = 0; i < files.length; i++) {
+         fd.append("files", files[i]);
+      }
+      fd.append("user_id", $("#userprimaryval").val());
+      var xhr=new XMLHttpRequest();
+		xhr.open("POST","/Prof_image_upload/",true);
+		xhr.onreadystatechange = function() {
+		if (this.readyState == 4 && this.status == 200) {
+		   var data=xhr.responseText;
+         data1 = JSON.parse(data);
+         $("#output").attr("src",data1.data[0]);
+		}};
+		xhr.send(fd);
+	}
+	else{
+		alert("Please select a file.");
+	}
+}
+
+function isEmail(email) {
+  var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+  return regex.test(email);
+}
+
+function create_gig_onclick()
+{
+    $.ajax({
+        type:"GET",
+        url: "/post_create_gig/",
+        data: {},
+        success: function(data) 
+        {  
+            if(data != "error" && data != 0)
+            {
+                window.location = '/user/{{request.user.username}}/create_gig/'+ data;
+            }
+        }
+      });
+}
+
+</script>
+{% endblock %}

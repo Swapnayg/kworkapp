@@ -1,0 +1,143 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Earn on Letworkbedone</title>
+<link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/bootstrap4-modal-fullscreen.min.css' %}" />
+<div class="all_page page-flex__content pt0">
+   <div id="event_list" class="event-list js-event-list"></div>
+   <div id="fox_notification_block"></div>
+   <div class="education">
+      <div class="education__header">
+         <h1 class="education__title education__header-title education__header-title_big">Reach Your Full Earning Potential on letworkbedone</h1>
+         <span class="education__title education__header-title">A free get-started course for freelancers!</span>
+      </div>
+      <div class="education__content">
+         <div class="education__title">Start learning and earning today!</div>
+         <p class="education__subtitle">Topics covered:</p>
+         <ul class="education__list">
+            {% for t in topics %} 
+               <li class="education__list-item">{{t|title}}</li>
+            {% endfor %}
+         </ul>
+         <ul class="education__lessons">
+            {% for td in topics_Details %} 
+               <li class="education__lessons-item js-education-lessons-item">
+                  <div class="education__lessons-content-wrapper">
+                     <div class="education__lessons-img-wrap">
+                        <img class="education__lessons-img" src="/media/{{td.image}}" alt="Lesson 1: letworkbedone Fundamentals">
+                        <p class="education__lessons-img-title">{{td.image_Text|title}}</p>
+                     </div>
+                     <div class="education__lessons-content">
+                        <div class="education__lessons-title">{{td.topic_Name|title}}<span class="education__lessons-label js-education-lessons-label"><i class="fa fa-check-circle mr5"></i>Completed</span></div>
+                        <div class="education__lessons-time">{{td.timeof_read_in_minute}}</div>
+                        <div class="education__lessons-text">{{td.topic_description|title}}</div>
+                     </div>
+                  </div>
+                  <div class="education__download education__lessons-download js-education-download" data-lesson-num="1" data-count="186846">
+                     <div  class="kw-button kw-button--green kw-button--size-32 education__download-button js-education-download-button" onclick="startLessonClick(this);" data-id="{{td.id}}" data-label="{{td.video_url}}">Start Lesson</div>
+                     <div class="education__download-counter js-education-download-counter">Completed by <span class="count_val">{{td.num_counts}}</span> freelancers</div>
+                  </div>
+               </li>
+            {% endfor %}
+         </ul>
+      </div>
+   </div>
+   <div class="modal fade modal-fullscreen" id="ModalPdfViewer" tabindex="-1" aria-labelledby="exampleModalLabel" data-keyboard="false" data-backdrop="static" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalPdfViewerLabel"></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <iframe src="" id="url_iframe"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% include  'footer.html' %}
+<style>
+   #ModalPdfViewer .modal-content
+   {
+      background: #111c !important;
+   }
+   #ModalPdfViewer .modal-body
+   {   
+      color: white;
+      width: 70%;
+      margin: auto;
+   }
+   #ModalPdfViewer .modal-body iframe
+   {
+      width: 100%;
+      height: 100%;
+   }
+   #ModalPdfViewer .modal-header .close
+   {
+      margin: 25px;
+      padding: 0;
+      color: white;
+      font-size: 40px;
+   }
+</style>
+<script>
+      $(document).ready(function(){
+    value_user = '{{request.user.username}}'
+    if(value_user.length != 0)
+    {
+       $("#loginbtn").remove();
+       $("#registerbtn").remove();
+       $("#freelancerbtn").remove();
+       $("#notification").append('<div class="des">Notifications</div><a href="#" class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+       $("#messages").append('<div class="des">Messages</div><a href="#" class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" href="/user/profile/{{request.user.username}}"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+       $('#help_not a').hover(function (e) {
+           $('#help_not .des').css({
+               left: e.offsetX + 80,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#notification a').hover(function (e) {
+           $('#notification .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#messages a').hover(function (e) {
+           $('#messages .des').css({
+               left: e.offsetX + 40,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+       $('#favourite a').hover(function (e) {
+           $('#favourite .des').css({
+               left: e.offsetX + 60,
+               top: e.offsetY + 40
+           }).toggle();
+       });
+    }
+   });
+function startLessonClick(ev)
+{
+   video_url = $(ev).attr("data-label");
+   lesson_id = $(ev).attr("data-id");
+   $.ajax({
+      type:"GET",
+      url: "/post_increase_count/",
+      data: {'ulesson_id': lesson_id},
+      success: function(data) 
+      {  
+         $(ev).next().find(".count_val").text(data);
+         $("#url_iframe").attr("src",video_url);
+         $("#ModalPdfViewer").modal("show");
+      }
+   });
+}
+</script>
+
+{% endblock %}

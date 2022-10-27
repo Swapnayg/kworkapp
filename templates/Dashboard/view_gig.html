@@ -1,0 +1,915 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title> Gig Title | Letworkbedone </title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/view_gig.css' %}" type="text/css" />
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-5 mb-5" id="profile_view">
+        <div class="col-md-12 mx-0">
+            <div class="row gig-page-wrapper">
+                <div class="top-nav">
+                    <nav class="max-width-container">
+                       <ul>                          
+                           <li class="nav-overview selected"><a href="#overview">Overview</a></li>
+                           <li class="nav-description"><a href="#description">Description</a></li>
+                           <li class="nav-faq"><a href="#faq">FAQ</a></li>
+                           <li class="nav-reviews"><a href="#reviews">Reviews</a></li>
+                           <li class="nav-aboutSeller"><a href="#aboutSeller">About the seller</a></li>
+                           {% if gig_package_Details|length > 1 %}
+                              <li class="nav-packagesTable"><a href="#packagesTable">Compare packages</a></li>
+                           {% endif %}
+                           <li class="nav-recommendations"><a href="#recommendations">Recommendations</a></li>
+                       </ul>
+                       <aside class="actions">
+                          <div class="collect-wrapper">
+                             <div class="collect-package nav-collect">
+                                <div class="tmELUJj P_h9XGC">
+                                   <span class="vpfXdaJ" id="fav_btn">
+                                    {% if current_user_fav == 'yes' %}
+                                      <button class="icn-heart" delay="120"  position="top" boxclassname="X305f1z" boxcontentclassname="VP4T2Vr" onclick="unfavClick(this);" containerclassname="collect-package-tooltip gig-page-nav-collect tooltip">
+                                         <span class="nFghBOe heart-icon red_heart" style="width:16px;height:16px" aria-hidden="true">
+                                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                               <path d="M14.4469 1.95625C12.7344 0.496875 10.1875 0.759375 8.61561 2.38125L7.99999 3.01562L7.38436 2.38125C5.81561 0.759375 3.26561 0.496875 1.55311 1.95625C-0.409388 3.63125 -0.512513 6.6375 1.24374 8.45312L7.29061 14.6969C7.68124 15.1 8.31561 15.1 8.70624 14.6969L14.7531 8.45312C16.5125 6.6375 16.4094 3.63125 14.4469 1.95625Z"></path>
+                                            </svg>
+                                         </span>
+                                      </button>
+                                    {% else %}
+                                    <button class="icn-heart" delay="120" content="[object Object]" position="top" boxclassname="X305f1z" boxcontentclassname="VP4T2Vr" onclick="favClick(this);" containerclassname="collect-package-tooltip gig-page-nav-collect tooltip">
+                                        <span class="nFghBOe heart-icon" style="width:16px;height:16px" aria-hidden="true">
+                                           <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M14.4469 1.95625C12.7344 0.496875 10.1875 0.759375 8.61561 2.38125L7.99999 3.01562L7.38436 2.38125C5.81561 0.759375 3.26561 0.496875 1.55311 1.95625C-0.409388 3.63125 -0.512513 6.6375 1.24374 8.45312L7.29061 14.6969C7.68124 15.1 8.31561 15.1 8.70624 14.6969L14.7531 8.45312C16.5125 6.6375 16.4094 3.63125 14.4469 1.95625Z"></path>
+                                           </svg>
+                                        </span>
+                                     </button>
+                                    {% endif %}
+                                   </span>
+                                </div>
+                             </div>
+                             <span class="collect-count">{{fav_count}}</span>
+                          </div>
+                          <div class="tmELUJj P_h9XGC sharing-link-tooltip">
+                             <span class="vpfXdaJ">
+                                <button class="ZQi_S8t AOOSxop MHWZydm co-white btn-sharing-link sharing-icon bg-co-green-700" onclick="shareonclick();">
+                                   <span class="nFghBOe share-icon" style="width:16px;height:16px" aria-hidden="true">
+                                      <svg width="14" height="16" viewBox="0 0 14 16" xmlns="http://www.w3.org/2000/svg">
+                                         <path d="M11 10C10.2935 10 9.64416 10.2443 9.13156 10.653L5.92887 8.65128C6.02372 8.22226 6.02372 7.77771 5.92887 7.34869L9.13156 5.347C9.64416 5.75566 10.2935 6 11 6C12.6568 6 14 4.65684 14 3C14 1.34316 12.6568 0 11 0C9.34316 0 8 1.34316 8 3C8 3.22369 8.02469 3.44156 8.07113 3.65128L4.86844 5.65297C4.35584 5.24434 3.7065 5 3 5C1.34316 5 0 6.34316 0 8C0 9.65684 1.34316 11 3 11C3.7065 11 4.35584 10.7557 4.86844 10.347L8.07113 12.3487C8.02379 12.5626 7.99994 12.781 8 13C8 14.6568 9.34316 16 11 16C12.6568 16 14 14.6568 14 13C14 11.3432 12.6568 10 11 10Z"></path>
+                                      </svg>
+                                   </span>
+                                </button>
+                             </span>
+                          </div>
+                       </aside>
+                    </nav>
+                 </div>
+            </div>
+            <div class="row gig-page-wrapper mt-5">
+               <div class="col-lg-7 mx-0 ">
+                  <div class="gig-overview" id="overview">
+                     <nav class="Zv9aftN fUdgV0k categories-breadcrumbs">
+                        <ul>
+                           <li>
+                              <span class="ii3cK9G category-breadcrumbs "><a href="/categories/{{gig_details.gig_sub_category.category_Name}}">{{gig_details.gig_sub_category.category_Name}}</a></span>
+                              <span class="nFghBOe hHj5hL_ H1E92Nx" style="width:12px;height:12px" aria-hidden="true">
+                                 <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                 </svg>
+                              </span>
+                           </li>
+                           <li>
+                              <span class="ii3cK9G category-breadcrumbs "><a href="/categories/{{gig_details.gig_sub_category.category_Name}}/{{gig_details.gig_sub_category.sub_category_Name}}">{{gig_details.gig_sub_category.sub_category_Name}}</a></span>
+                              <span class="nFghBOe hHj5hL_ H1E92Nx" style="width:12px;height:12px" aria-hidden="true">
+                                 <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                 </svg>
+                              </span>
+                           </li>
+                           <li><span class="ii3cK9G category-breadcrumbs "><a href="/categories/{{gig_details.gig_sub_category.category_Name}}/{{gig_details.gig_sub_category.sub_category_Name}}/{{gig_details.gig_sub_category.sub_sub_category_Name}}">{{gig_details.gig_sub_category.sub_sub_category_Name}}</a></span></li>
+                        </ul>
+                     </nav>
+                     <h1 class="text-display-3">I will {{gig_details.gig_title|title}}</h1>
+                     <div class="seller-overview">
+                        <div class="ALWjgIt">
+                           <div class="vN3S32e LIRcnrb" style="border-radius:50%">
+                              <figure style="font-size:30px;background-color:#9B6928" class="_nIXZEm" title="obaidrehman290">
+                                 <figcaption class="Y1BXLWZ">o</figcaption>
+                                 <img class="ziXAPIc" src="{{userDetails.avatar}}" alt="obaidrehman290" loading="lazy">
+                              </figure>
+                           </div>
+                           <div class="AL1ZOr7">
+                              <div class="LBuVtkY">{{userDetails.username}}</div>
+                              <div class="tmELUJj P_h9XGC user-profile-image n2BDwY8">
+                                 <span class="vpfXdaJ">
+                                    <div class="d4fHuVP">{{seller_level}}</div>
+                                 </span>
+                              </div>
+                              <div class="orca-rating SwtJyda color-yellow tbody-6">
+                                 <div class="stars">
+                                    <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                       </svg>
+                                    </span>
+                                    <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                       </svg>
+                                    </span>
+                                    <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                       </svg>
+                                    </span>
+                                    <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                       </svg>
+                                    </span>
+                                    <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                       </svg>
+                                    </span>
+                                 </div>
+                                 <b class="rating-score">{{seller_count}}</b>
+                                 <span class="ratings-count">
+                                    (<!-- -->{{gig_reviews|length}}<!-- -->)
+                                 </span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <section class="gig-gallery-component" tabindex="-1">
+                     <div class="gallery-slideshow mt-3">
+                        <div class="sample1">
+                            <div class="carousel">
+                              <ul>
+                                {% for img in gig_image_Details %}
+                                    <li> <img src="{{img.gig_image}}" > </li>
+                                {% endfor %}
+                              </ul>
+                              <div class="controls">
+                                <div class="prev"></div>
+                                <div class="next"></div>
+                              </div>
+                            </div>
+                            <div class="thumbnails">
+                              <ul>
+                                {% for img in gig_image_Details %}
+                                    <li> <img src="{{img.gig_image}}" > </li>
+                                {% endfor %}
+                              </ul>
+                            </div>
+                          </div>
+                     </div>
+                     <div class="gig-description mt-4" id="description">
+                        <header>
+                            <h2 class="section-title">About This Gig</h2>
+                        </header>
+                        <div class="description-wrapper" id="faq">
+                            <span style="font-size:0"></span>
+                            <div class="description-content">
+                                {{gig_details.gig_description| safe}}
+                            </div>
+                            <ul class="metadata">
+                                <li class="metadata-attribute">
+                                   <p>Platform</p>
+                                   <ul>
+                                      <li>{{gig_details.gig_sub_category.category_Name}}</li>
+                                   </ul>
+                                </li>
+                                <li class="metadata-attribute">
+                                   <p>Specialization</p>
+                                   <ul>
+                                      <li>{{gig_details.gig_sub_category.sub_category_Name}}</li>
+                                      <li>{{gig_details.gig_sub_category.sub_sub_category_Name}}</li>
+                                   </ul>
+                                </li>
+                             </ul>
+                        </div>
+                        <h2 class="section-title about-the-seller">About The Seller</h2>
+                        <div class="profile-card" id="aboutSeller">
+                            <div class="seller-card">
+                               <div class="profile-info">
+                                  <div class="user-profile-image"><label class="profile-pict" style="width:110px;height:110px;font-size:2.2em" for="profile_image_6216230256862"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90"></label></div>
+                                  <div class="user-profile-label">
+                                     <div class="username-line"><a href="/user/profile/{{userDetails.username}}" class="seller-link">{{userDetails.username|title}}</a></div>
+                                     <div class="one-liner-rating-wrapper">
+                                        <div class="orca-rating seller-rating color-yellow tbody-6">
+                                           <div class="stars">
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M11.4056 8.74291L13.8772 6.37996L10.4535 5.88847L9.81872 5.79395L9.53021 5.22684L8.00107 2.18336V11.2854L8.56849 11.5785L11.6268 13.1664L11.0497 9.81096L10.9343 9.18715L11.4056 8.74291ZM15.7525 6.26654L12.2615 9.61248L13.0886 14.3384C13.1559 14.7543 13.002 15 12.7039 15C12.5981 15 12.4635 14.9622 12.3192 14.8866L8.00107 12.656L3.68295 14.8866C3.53869 14.9622 3.40405 15 3.29826 15C3.00013 15 2.84625 14.7543 2.91357 14.3384L3.74065 9.61248L0.239988 6.26654C-0.173552 5.86011 -0.0389107 5.46314 0.538122 5.37807L5.36596 4.68809L7.52983 0.387524C7.65485 0.132325 7.82796 0 8.00107 0C8.17418 0 8.33767 0.132325 8.47231 0.387524L10.6362 4.68809L15.464 5.37807C16.0411 5.46314 16.1757 5.86011 15.7525 6.26654Z"></path>
+                                                 </svg>
+                                              </span>
+                                           </div>
+                                           <b class="rating-score">{{seller_all_count}}</b>
+                                           <span class="ratings-count">
+                                              (<!-- -->{{seller_all_review|length}}<!-- -->)
+                                           </span>
+                                        </div>
+                                     </div>
+                                     <a class="ZQi_S8t YmeteBT a1WZUBV co-grey-1000 btn-contact-me" href="/inbox/{{request.user.username}}">Contact Me</a>
+                                  </div>
+                               </div>
+                               <div class="stats-desc">
+                                  <ul class="user-stats">
+                                     <li>From<strong>{{userDetails.country.name}}</strong></li>
+                                     <li>Member since<strong>{{ userDetails.created_at|date:"M Y" }}</strong></li>
+                                     <li>Avg. response time<strong>{{ userDetails.avg_respons}} hour</strong></li>
+                                     <li>Last delivery<strong>{{ userDetails.avg_respons}} month</strong></li>
+                                  </ul>
+                                  <article class="seller-desc">
+                                     <div class="inner">{{profile_Details.profess_overview|safe}}                                </div>
+                                     
+                                  </article>
+                               </div>
+                            </div>
+                         </div>
+                         {% if gig_package_Details|length > 1 %}
+                         <div class="gig-page-packages-table mt-5" id="packagesTable">
+                            <h2 class="section-title">Compare Packages</h2>
+                            <input type="hidden" id="pack_data_0" value="{{gig_package_Details.0.package_data}}">
+                            <input type="hidden" id="pack_data_1" value="{{gig_package_Details.1.package_data}}">
+                            <input type="hidden" id="pack_data_2" value="{{gig_package_Details.2.package_data}}">
+                            <table id="comp_tbl">
+                                <colgroup>
+                                   <col>
+                                   <col>
+                                   <col>
+                                   <col>
+                                </colgroup>
+                                <tbody>
+                                   <tr class="package-type">
+                                      <th>Package</th>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="price">$ {{gig_package_Details.0.package_price}}</p>
+                                         </div>
+                                         <b class="type">Basic</b><b class="title">standard</b>
+                                      </td>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="price">$ {{gig_package_Details.1.package_price}}</p>
+                                         </div>
+                                         <b class="type">Standard</b><b class="title">Business</b>
+                                      </td>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="price">$ {{gig_package_Details.2.package_price}}</p>
+                                         </div>
+                                         <b class="type">Premium</b><b class="title">Enterprise</b>
+                                      </td>
+                                   </tr>
+                                   <tr class="description">
+                                      <th></th>
+                                      <td>{{gig_package_Details.0.package_title}}:
+                                        {{gig_package_Details.0.package_description}}.
+                                      </td>
+                                      <td>{{gig_package_Details.1.package_title}}:
+                                        {{gig_package_Details.1.package_description}}.
+                                      </td>
+                                      <td>{{gig_package_Details.2.package_title}}:
+                                        {{gig_package_Details.2.package_description}}.
+                                      </td>
+                                   </tr>
+                                   <tr>
+                                      <th>
+                                         <div class="tmELUJj P_h9XGC"><span class="vpfXdaJ">Revisions</span></div>
+                                      </th>
+                                      <td>{{gig_package_Details.0.package_revisions}}</td>
+                                      <td>{{gig_package_Details.1.package_revisions}}</td>
+                                      <td>{{gig_package_Details.2.package_revisions}}</td>
+                                   </tr>
+                                   <tr class="delivery-time">
+                                      <th>Delivery Time</th>
+                                      <td>
+                                         <div class="fake-radio-wrapper">
+                                            <label class="fake-radio"><input type="radio" name="1" value="0" checked=""><span class="radio-img"></span><span>{{gig_package_Details.0.package_delivery}} days</span></label>
+                                         
+                                         </div>
+                                      </td>
+                                      <td>
+                                         <div class="fake-radio-wrapper">
+                                            <label class="fake-radio"><input type="radio" name="2" value="0" checked=""><span class="radio-img"></span><span>{{gig_package_Details.1.package_delivery}} days</span></label>
+                                         </div>
+                                      </td>
+                                      <td>
+                                         <div class="fake-radio-wrapper">
+                                            <label class="fake-radio"><input type="radio" name="3" value="0" checked=""><span class="radio-img"></span><span>{{gig_package_Details.2.package_delivery}} days</span></label>
+                                            
+                                         </div>
+                                      </td>
+                                   </tr>
+                                   <tr class="select-package">
+                                      <th>Total</th>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="tbody-5">$ {{gig_package_Details.0.package_price}}</p>
+                                         </div>
+                                      </td>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="tbody-5">$ {{gig_package_Details.1.package_price}}</p>
+                                         </div>
+                                      </td>
+                                      <td>
+                                         <div class="price-wrapper">
+                                            <p class="tbody-5">$ {{gig_package_Details.2.package_price}}</p>
+                                         </div>
+                                      </td>
+                                   </tr>
+                                </tbody>
+                             </table>
+                         </div>
+                         {% endif %}
+                         <div class="reviews-package is-collapsed is-collapsable mt-5" id="reviews">
+                            <header class="reviews-header breakdown-header">
+                               <div class="details">
+                                  <h2 class="text-display-5">
+                                     <span>
+                                        <span>
+                                           {{gig_reviews|length}}
+                                        </span>
+                                        Reviews
+                                        <div class="orca-rating ratings-header rating-desktop color-yellow tbody-6">
+                                           <div class="stars">
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                 </svg>
+                                              </span>
+                                           </div>
+                                           <b class="rating-score">{{seller_count}}</b>
+                                        </div>
+                                     </span>
+                                  </h2>
+                                
+                               </div>
+                            </header>
+                            <span class="filters-section">
+                               <div class="breakdown-wrapper grid-12">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="ranking" id="recommendations">
+                                        <ul>
+                                           <li>
+                                              Seller communication level
+                                              <span>
+                                                 <div class="orca-rating color-yellow tbody-6">
+                                                    <div class="stars">
+                                                       <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                          <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                          </svg>
+                                                       </span>
+                                                    </div>
+                                                    <b class="rating-score">{{comm_count}}</b>
+                                                 </div>
+                                              </span>
+                                           </li>
+                                           <li>
+                                              Recommend to a friend
+                                              <span>
+                                                 <div class="orca-rating color-yellow tbody-6">
+                                                    <div class="stars">
+                                                       <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                          <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                          </svg>
+                                                       </span>
+                                                    </div>
+                                                    <b class="rating-score">{{recc_count}}</b>
+                                                 </div>
+                                              </span>
+                                           </li>
+                                           <li>
+                                              Service as described
+                                              <span>
+                                                 <div class="orca-rating color-yellow tbody-6">
+                                                    <div class="stars">
+                                                       <span class="nFghBOe orca-star" style="width:15px;height:15px" aria-hidden="true">
+                                                          <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                          </svg>
+                                                       </span>
+                                                    </div>
+                                                    <b class="rating-score">{{serv_count}}</b>
+                                                 </div>
+                                              </span>
+                                           </li>
+                                        </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                               </div>
+                            </span>
+                            <div class="reviews-wrap mt-4">
+                               <ul class="review-list">
+                                 {% for review in gig_reviews %}
+                                  <section>
+                                     <span class="review-item-wrapper">
+                                        <li class="review-item" data-impression-collected="true">
+                                           <div class="user-profile-image"><label class="profile-pict" for="profile_image_2863486360849" style="width: 32px; height: 32px; font-size: 1em;"><img class="missing-profile-image flex-center" src="{{review.sender.avatar}}"></img></label></div>
+                                           <header>
+                                              <div class="reviewer-details">
+                                                 <h5>{{review.sender.username}}</h5>
+                                                 <div class="orca-rating color-yellow tbody-6">
+                                                    <div class="stars">
+                                                       <span class="nFghBOe orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                          <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                          </svg>
+                                                       </span>
+                                                    </div>
+                                                    <b class="rating-score">{{review.review}}</b>
+                                                 </div>
+                                              </div>
+                                              <div class="reviewer-sub-details">
+                                                 <div class="country">
+                                                   <img class="country-flag" src="{{review.country_flag}}" alt="1f1fa-1f1f8.png">
+                                                    <div class="country-name tbody-6">{{review.sender.country.name}}</div>
+                                                 </div>
+                                              </div>
+                                           </header>
+                                           <div class="review-description">
+                                              <p class="text-body-2">{{review.message}}</p>
+                                           </div>
+                                           <section><span></span></section>
+                                           <span class="summarize"><time class="text-body-2">{{review.review_date}} ago</time></span>
+                                           <span class="review_seller_comment_is_shown-wrapper">
+                                              <div class="response-item">
+                                                 <div class="user-profile-image"><label class="profile-pict" for="profile_image_9752182660853" style="width: 32px; height: 32px; font-size: 1em;"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90" loading="lazy"></label></div>
+                                                 <header>
+                                                    <h5 class="response-title">Seller's Response</h5>
+                                                 </header>
+                                                 <div class="review-description">
+                                                    <p class="text-body-2">{{review.buyer_resp}} </p>
+                                                 </div>
+                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date}}  ago</time></span>
+                                              </div>
+                                           </span>
+                                        </li>
+                                     </span>
+                                  </section>
+                                  {% endfor %}
+                               </ul>    
+                            </div>
+                         </div>
+                    </div>
+                  </section>
+               </div>
+               <div class="col-lg-1" id="column-filter-mid">
+               </div>
+               <div class="col-lg-4 mx-0">
+                  <div class="sticky-outer-wrapper sidebar react-sticky active" style="height: 695.4px;">
+                     <div class="sticky-inner-wrapper inner-sticky " >
+                         <aside class="sidebar-content">
+                             <div class="packages-tabs triple">
+                                 <input id="package-tab-1" name="package-tab-group" type="radio" checked=""><input id="package-tab-2" name="package-tab-group" type="radio"><input id="package-tab-3" name="package-tab-group" type="radio">
+                                 
+                                    {% if gig_package_Details|length > 1 %}
+                                    <div class="nav-container">
+                                       <label for="package-tab-1" onclick="basic_click('basic');">Basic</label>
+                                       <label for="package-tab-2" onclick="basic_click('standard')">Standard</label>
+                                       <label for="package-tab-3" onclick="basic_click('premium')">Premium</label>
+                                    </div>
+                                    {% else %}
+                                    <div class="nav-container">
+                                       <label for="package-tab-1" onclick="basic_click('basic');">Basic</label>
+                                    </div>
+                                    {% endif %}
+                                 <div class="package-content zxTHQ6r mt-4" id="basic_contents">
+                                    <header class="header-default">
+                                       <h3>
+                                          <b class="title">basic</b>
+                                          <div class="price-wrapper"><span class="price">$ {{gig_package_Details.0.package_price}}</span></div>
+                                       </h3>
+                                       <p>{{gig_package_Details.0.package_title}}:
+                                        {{gig_package_Details.0.package_description}}.
+                                       </p>
+                                    </header>
+                                    <article>
+                                       <div class="additional-info">
+                                          <div class="delivery-wrapper">
+                                             <span class="nFghBOe delivery-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                   <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                   <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                </svg>
+                                             </span>
+                                             <b class="delivery">{{gig_package_Details.0.package_delivery}} Days Delivery</b>
+                                          </div>
+                                          <div class="revisions-wrapper">
+                                             <span class="nFghBOe revisions-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                   <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path>
+                                                   <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
+                                                </svg>
+                                             </span>
+                                             <b class="revisions">{{gig_package_Details.0.package_revisions}} Revisions</b>
+                                          </div>
+                                       </div>
+                                       <ul class="features">
+                                         
+                                       </ul>
+                                    </article>
+                                    <footer class="tab-footer"><button class="ZQi_S8t AOOSxop co-white bg-co-green-700" type="submit"><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></button></footer>
+                                 </div>
+                                 <div class="package-content zxTHQ6r mt-4" id="standard_contents">
+                                    <header class="header-default">
+                                       <h3>
+                                          <b class="title">standard</b>
+                                          <div class="price-wrapper"><span class="price">$ {{gig_package_Details.1.package_price}}</span></div>
+                                       </h3>
+                                       <p>{{gig_package_Details.1.package_title}}:
+                                        {{gig_package_Details.1.package_description}}.
+                                       </p>
+                                    </header>
+                                    <article>
+                                        <div class="additional-info">
+                                           <div class="delivery-wrapper">
+                                              <span class="nFghBOe delivery-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                    <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                 </svg>
+                                              </span>
+                                              <b class="delivery">{{gig_package_Details.1.package_delivery}} Days Delivery</b>
+                                           </div>
+                                           <div class="revisions-wrapper">
+                                              <span class="nFghBOe revisions-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path>
+                                                    <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <b class="revisions">{{gig_package_Details.1.package_revisions}} Revisions</b>
+                                           </div>
+                                        </div>
+                                        <ul class="features">
+                                          
+                                        </ul>
+                                     </article>
+                                     <footer class="tab-footer"><button class="ZQi_S8t AOOSxop co-white bg-co-green-700" type="submit"><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></button></footer>
+                                 </div>
+                                 <div class="package-content zxTHQ6r mt-4" id="premium_contents">
+                                    <header class="header-default">
+                                       <h3>
+                                          <b class="title">premium</b>
+                                          <div class="price-wrapper"><span class="price">$ {{gig_package_Details.2.package_price}}</span></div>
+                                        </h3>
+                                        <p>{{gig_package_Details.2.package_title}}:
+                                         {{gig_package_Details.2.package_description}}.
+                                        </p>
+                                    </header>
+                                    <article>
+                                        <div class="additional-info">
+                                           <div class="delivery-wrapper">
+                                              <span class="nFghBOe delivery-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                    <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                 </svg>
+                                              </span>
+                                              <b class="delivery">{{gig_package_Details.2.package_delivery}} Days Delivery</b>
+                                           </div>
+                                           <div class="revisions-wrapper">
+                                              <span class="nFghBOe revisions-icon" aria-hidden="true" style="width: 16px; height: 16px;">
+                                                 <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path>
+                                                    <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
+                                                 </svg>
+                                              </span>
+                                              <b class="revisions">{{gig_package_Details.2.package_revisions}} Revisions</b>
+                                           </div>
+                                        </div>
+                                        <ul class="features">
+                                          
+                                        </ul>
+                                     </article>
+                                     <footer class="tab-footer"><button class="ZQi_S8t AOOSxop co-white bg-co-green-700" type="submit"><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></button></footer>
+                                 </div>
+                                
+                             </div>
+                         </aside>
+                     </div>
+                 </div>
+               </div>
+            </div>
+            <aside class="gig-page-bottom">
+                <div class="max-width-container">
+                   <div class="gig-card-carousel-wrapper gigs-other-gigs-by">
+                      <h2 class="section-title"><span>More Services By <a href="/user/profile/{{userDetails.username}}">{{userDetails.username}}</a></span></h2>
+                      <div class="gig_listings-package listing-carousel gig-card-layout">
+                         <div data-container-id="099a4324-56ab-4b9d-8139-2cbe9f4e346d">
+                            <div class="orca-slider">
+                               <div class="slick-slider slick-slider slick-initialized">
+                                  <div class="slick-list">
+                                     <div class="slick-track add_on_gigs" >
+                                        <div class="slick-slide slick-active slick-current" aria-hidden="false" style="outline: none; width: 263px;">
+                                           <div>
+                                            {% for o_gig in Other_gigs %}
+                                              <div class="gig-card-layout" data-impression-item="fc85b25c-6934-4269-89fb-314109ae8d79" data-parent-id="099a4324-56ab-4b9d-8139-2cbe9f4e346d">
+                                                 <div class="gig-wrapper-impressions gig-wrapper card" data-gig-id="228160561" data-impression-collected="true">
+                                                    <a   class="media" title="" rel="">
+                                                       <div class="slider">
+                                                          <span class="arrow next"></span>
+                                                          <div class="slides preview">
+                                                             <div class="slide-item active" style="width: auto;"><img src="{{o_gig.gig_Image}}" srcset="" alt="develop your web application within no time" loading="lazy"></div>
+                                                          </div>
+                                                          <span class="arrow prev"></span>
+                                                       </div>
+                                                    </a>
+                                                    <div class="seller-info text-body-2">
+                                                       <div class="inner-wrapper">
+                                                          <span class="seller-image">
+                                                             <div class="vN3S32e" style="border-radius: 50%;">
+                                                                <figure class="_nIXZEm seller-avatar" title="swap_soln_90" style="font-size: 24px; background-color: rgb(37, 161, 176);">
+                                                                   <figcaption class="Y1BXLWZ">s</figcaption>
+                                                                   <img class="ziXAPIc" src="{{userDetails.avatar}}" alt="swap_soln_90" loading="lazy">
+                                                                </figure>
+                                                             </div>
+                                                          </span>
+                                                          <div class="seller-identifiers">
+                                                             <div class="seller-name-and-country">
+                                                                <div class="seller-name"><a href="/user/profile/{{userDetails.username}}" target="_self" class="text-semi-bold" title="" rel="nofollow noopener noreferrer">{{userDetails.username}}</a></div>
+                                                             </div>
+                                                          </div>
+                                                       </div>
+                                                    </div>
+                                                    <h3><a href="/gigs/{{userDetails.username}}}/{{o_gig.gig_Name}}" target="_self" title="{{o_gig.gig_Name}}I will develop your web application within no time" rel="">{{o_gig.gig_Name}}</a></h3>
+                                                   
+                                                  
+                                                 </div>
+                                              </div>
+                                            {% endfor %}
+                                           </div>
+                                        </div>
+                                     
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             </aside>
+            
+        </div>
+    </div>
+</div>
+
+{% if request.session.userpage == "buyer" %}
+   {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+{% endblock %}
+<div class="modal" id="modal_share" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h1></h1>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        </div>
+        <div class="modal-body">
+          <div class="row tab1" id="publish_social_div">
+             <div class="col-lg-1">
+             </div>
+             <div class="col-lg-10">
+                <div class="">
+                   <input type="hidden" id="share_gig_id">
+                   <input type="hidden" id="share_gig_name">
+                   <div class="share-text">
+                    <h2 class="sharing-title">Boost Your Traffic</h2>
+                    <div class="sharing-description"><p>Share your Gig to grow your audience</p><p>engage with potential buyers and earn more trust.</p></div>
+                   </div>
+                   <div class="share-buttons-container">
+                      <div class="share-list">
+                        <!-- FACEBOOK -->
+                        <a class="fb-h" onclick="return fbs_click()" target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/facebook-f.png">
+                        </a>
+                    
+                        <!-- TWITTER -->
+                        <a class="tw-h" onclick="return tbs_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/twitter-squared.png">
+                        </a>
+                    
+                        <!-- LINKEDIN -->
+                        <a class="li-h" onclick="return lbs_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/linkedin.png">
+                        </a>
+                    
+                         <!-- LINKEDIN -->
+                        <a class="wa-h" onclick="return was_click()"  target="_blank">
+                          <img src="https://img.icons8.com/material-rounded/96/000000/whatsapp.png">
+                        </a>
+                        
+                        <a class="co-h" onclick="return cos_click()"  target="_blank">
+                          <img src="https://i.ibb.co/kBTbdHG/chain-link-icon-free-vector.jpg">
+                        </a>
+                      </div>
+                    </div>
+                </div>
+             </div>
+             <div class="col-lg-1">   
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />
+<script src="{% static 'assets/js/jquery.light-carousel.js' %}"></script>
+<script>
+   $(document).ready(function(){
+    function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+    dataObj1 =  eval($("#pack_data_0").val());
+    dataObj2 =  eval($("#pack_data_1").val());
+    dataObj3 =  eval($("#pack_data_2").val());
+    $.each(dataObj1, function(i, v) {
+        if(isNumber(v.value))
+        {
+            $('#comp_tbl > tbody > tr').eq(2+i).before('<tr><th><div class="tmELUJj P_h9XGC"><span class="vpfXdaJ">'+v.name+'</span></div></th><td>'+v.value+'</td><td>'+dataObj2[i].value+'</td><td>'+dataObj3[i].value+'</td></tr>');
+            $("#basic_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+v.value+' '+v.name+'  </li>');
+            $("#standard_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+dataObj2[i].value+' '+dataObj2[i].name+'  </li>');
+            $("#premium_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+dataObj3[i].value+' '+dataObj3[i].name+'  </li>');
+        }
+        else 
+        {
+            checkvalue1 = '';
+            checkvalue2 = '';
+            checkvalue3 = '';
+            if(v.value== 'true')
+            {
+                $("#basic_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span>  '+v.name+'  </li>');
+                checkvalue1= '<span class="nFghBOe pricing-factor-check-icon included" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            else{
+                $("#basic_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+v.name+' </li>');
+                checkvalue1= '<span class="nFghBOe pricing-factor-check-icon" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            if(dataObj2[i].value== 'true')
+            {
+                $("#standard_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span>  '+v.name+'  </li>');
+                checkvalue2= '<span class="nFghBOe pricing-factor-check-icon included" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            else{
+                $("#standard_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+v.name+' </li>');
+                checkvalue2= '<span class="nFghBOe pricing-factor-check-icon" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            if(dataObj3[i].value== 'true')
+            {
+                $("#premium_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1 ZbQv8bb" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span>  '+v.name+'  </li>');
+                checkvalue3= '<span class="nFghBOe pricing-factor-check-icon included" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            else{
+                $("#premium_contents").find(".features").append('<li class="qSePHwK flex flex-items-center"><span class="nFghBOe bvg2_O1" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="16" height="16" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg" fill="currentFill"><path d="M3.645 8.102.158 4.615a.536.536 0 0 1 0-.759l.759-.758c.21-.21.549-.21.758 0l2.35 2.349L9.054.416c.21-.21.55-.21.759 0l.758.758c.21.21.21.55 0 .759L4.403 8.102c-.209.21-.549.21-.758 0Z"></path></svg></span> '+v.name+' </li>');
+                checkvalue3= '<span class="nFghBOe pricing-factor-check-icon" aria-hidden="true" style="width: 16px; height: 16px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span>';
+            }
+            $('#comp_tbl > tbody > tr').eq(2+i).before('<tr><th><div class="tmELUJj P_h9XGC"><span class="vpfXdaJ">'+v.name+'</span></div></th><td class="boolean-pricing-factor">'+checkvalue1+'</td><td class="boolean-pricing-factor">'+checkvalue2+'</td><td class="boolean-pricing-factor">'+checkvalue3+'</td></tr>');
+        }
+        
+    });
+    $('.sample1').lightCarousel({
+        interval: 10000, 
+        changeHeight: false, 
+        slideshow: false,
+        caption:false,
+        });
+      $("#basic_contents").show();
+      $("#standard_contents").hide();
+      $("#premium_contents").hide();
+   });
+   function basic_click(ev)
+   {
+      if(ev=="basic")
+      {
+         $("#basic_contents").show();
+         $("#standard_contents").hide();
+         $("#premium_contents").hide();
+      }
+      else if(ev=="standard")
+      {
+         $("#basic_contents").hide();
+         $("#standard_contents").show();
+         $("#premium_contents").hide();
+      }
+      else if(ev=="premium")
+      {
+         $("#basic_contents").hide();
+         $("#standard_contents").hide();
+         $("#premium_contents").show();
+      }
+   }
+   function shareonclick()
+   {
+        $("#modal_share").modal('show');
+   }
+
+   function fbs_click() { 
+    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
+    var pageLink = window.location.href;
+    window.open(`http://www.facebook.com/sharer.php?u=${pageLink}&quote=${pageTitle}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+       
+ function tbs_click() { 
+    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
+    var pageLink = window.location.href;
+    window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+ 
+ function lbs_click() { 
+    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
+    var pageLink = window.location.href;
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+ 
+ function was_click() { 
+    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
+    var pageLink = window.location.href;
+    window.open(`https://api.whatsapp.com/send?text=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+ 
+ function cos_click() { 
+    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
+    var pageLink = window.location.href;
+       navigator.clipboard.writeText(pageLink).then(
+         function() {
+           window.alert('Url Copied!') 
+         }, 
+         function() {
+           window.alert('Opps! Your browser does not support the Clipboard API')
+         }
+       )
+    return false; }
+function favClick()
+{
+   $.ajax({
+      type:"POST",
+      url: "/post_make_fav/",
+      data: {'gigid':'{{gig_details.id}}' ,'userid': {{request.user.id}}},
+      success: function(data)
+      {
+         $(".collect-count").text(data);
+         $("#fav_btn").empty();
+         $("#fav_btn").append('<button class="icn-heart" delay="120" content="[object Object]" position="top" boxclassname="X305f1z" onclick="unfavClick(this);" boxcontentclassname="VP4T2Vr" containerclassname="collect-package-tooltip gig-page-nav-collect tooltip"><span class="nFghBOe heart-icon red_heart" style="width:16px;height:16px" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.4469 1.95625C12.7344 0.496875 10.1875 0.759375 8.61561 2.38125L7.99999 3.01562L7.38436 2.38125C5.81561 0.759375 3.26561 0.496875 1.55311 1.95625C-0.409388 3.63125 -0.512513 6.6375 1.24374 8.45312L7.29061 14.6969C7.68124 15.1 8.31561 15.1 8.70624 14.6969L14.7531 8.45312C16.5125 6.6375 16.4094 3.63125 14.4469 1.95625Z"></path></svg></span></button>');
+      }
+   });
+}
+function unfavClick()
+{
+   $.ajax({
+      type:"POST",
+      url: "/post_make_unfav/",
+      data: {'gigid':'{{gig_details.id}}' ,'userid': {{request.user.id}}},
+      success: function(data)
+      {
+         $(".collect-count").text(data);
+         $("#fav_btn").empty();
+         $("#fav_btn").append('<button class="icn-heart" delay="120" content="[object Object]"   onclick="favClick(this);" position="top" boxclassname="X305f1z" boxcontentclassname="VP4T2Vr" containerclassname="collect-package-tooltip gig-page-nav-collect tooltip"><span class="nFghBOe heart-icon" style="width:16px;height:16px" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.4469 1.95625C12.7344 0.496875 10.1875 0.759375 8.61561 2.38125L7.99999 3.01562L7.38436 2.38125C5.81561 0.759375 3.26561 0.496875 1.55311 1.95625C-0.409388 3.63125 -0.512513 6.6375 1.24374 8.45312L7.29061 14.6969C7.68124 15.1 8.31561 15.1 8.70624 14.6969L14.7531 8.45312C16.5125 6.6375 16.4094 3.63125 14.4469 1.95625Z"></path></svg></span></button>');
+      }
+   });
+}
+</script>
