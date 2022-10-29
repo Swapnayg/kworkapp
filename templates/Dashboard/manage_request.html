@@ -21,7 +21,7 @@
                         <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>{{active_request|length}}</span></div></a></li>
                         <li><a href="#pausedtab" role="tab" data-toggle="tab">Paused <div class="circle"><span>{{paused_request|length}}</span></div></a></li>
                         <li><a href="#pendingtab" role="tab" data-toggle="tab">Pending<div class="circle"><span>{{pending_request|length}}</span></div></a></li>
-                        <li><a href="#unapprovedtab" role="tab" data-toggle="tab">UnApproved <div class="circle"><span>{{rejected_request|length}}</span></div></a></li>
+                        <li><a href="#unapprovedtab" role="tab" data-toggle="tab">Rejected <div class="circle"><span>{{rejected_request|length}}</span></div></a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="activetab">
@@ -312,4 +312,10 @@
         });
     }
 </script>
+<style>
+   .nav-tabs li:last-child
+   {
+      width: 17%;
+   }
+</style>
 {% endblock %}

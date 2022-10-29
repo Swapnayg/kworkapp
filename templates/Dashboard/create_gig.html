@@ -486,7 +486,9 @@
                                                    <span class="gallery-item-wrapper">
                                                       <li class="gallery-item-placeholder b-0 " id="gal_li_1">
                                                          <div class="dropzone">
-                                                            <div class="dropzone-body image"><label for="image1">Browse<input type="file" id="image1" name="file" onchange="gig_imgUpload('gal_li_1',this)" ></label></div>
+                                                            <div class="dropzone-body image"><label for="image1">Browse<input type="file" id="image1" name="file" onchange="gig_imgUpload('gal_li_1',this)" accept=
+                                                               "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                                               text/plain, application/pdf, image/*" ></label></div>
                                                          </div>
                                                          <a class="delete_img_anchor"><img class="gig_img"></img><span class="gig_img_del_ico" onclick="delete_img_click('image1');"><i class="fa fa-trash"></i></span></a>                                                 
                                                       </li>
@@ -495,7 +497,9 @@
                                                       <li class="gallery-item-placeholder b-0  " id="gal_li_2">
                                                          <div class="dropzone">
                                                             <div class="dropzone-body image">
-                                                               <label for="image2">Browse<input type="file" id="image2" name="file" onchange="gig_imgUpload('gal_li_2',this)" ></label></div>
+                                                               <label for="image2">Browse<input type="file" id="image2" name="file" onchange="gig_imgUpload('gal_li_2',this)" accept=
+                                                                  "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                                                  text/plain, application/pdf, image/*" ></label></div>
                                                          </div>
                                                          <a class="delete_img_anchor"><img class="gig_img"></img><span class="gig_img_del_ico" onclick="delete_img_click('image2');"><i class="fa fa-trash"></i></span></a>                                                 
                                                       </li>
@@ -503,7 +507,9 @@
                                                    <span class="gallery-item-wrapper">
                                                       <li class="gallery-item-placeholder b-0  " id="gal_li_3">
                                                          <div class="dropzone">
-                                                            <div class="dropzone-body image"><label for="image3">Browse<input type="file" id="image3" name="file" onchange="gig_imgUpload('gal_li_3',this)" ></label></div>
+                                                            <div class="dropzone-body image"><label for="image3">Browse<input type="file" id="image3" name="file" onchange="gig_imgUpload('gal_li_3',this)" accept=
+                                                               "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                                               text/plain, application/pdf, image/*" ></label></div>
                                                          </div>
                                                          <a class="delete_img_anchor"><img class="gig_img"></img><span class="gig_img_del_ico" onclick="delete_img_click('image3');"><i class="fa fa-trash"></i></span></a>                                                 
                                                       </li>
@@ -511,7 +517,9 @@
                                                    <span class="gallery-item-wrapper">
                                                       <li class="gallery-item-placeholder b-0  " id="gal_li_4">
                                                          <div class="dropzone">
-                                                            <div class="dropzone-body image"><label for="image4">Browse<input type="file" id="image4" name="file" onchange="gig_imgUpload('gal_li_4',this)"></label></div>
+                                                            <div class="dropzone-body image"><label for="image4">Browse<input type="file" id="image4" name="file" onchange="gig_imgUpload('gal_li_4',this)" accept=
+                                                               "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                                                               text/plain, application/pdf, image/*"></label></div>
                                                          </div>
                                                          <a class="delete_img_anchor"><img class="gig_img"></img><span class="gig_img_del_ico" onclick="delete_img_click('image4');"><i class="fa fa-trash"></i></span></a>                                                 
                                                       </li>
@@ -823,6 +831,14 @@
                      $('#btn_gig_title').attr("disabled",false);
                   }
                   else if($('#textarea_iwill').val().length == 0)
+                  {
+                     $('#btn_gig_title').attr("disabled",true);
+                  }
+                  if($("#gig_tags").val().length != "0")
+                  {
+                     $('#btn_gig_title').attr("disabled",false);
+                  }
+                  else if($("#gig_tags").val().length == "0")
                   {
                      $('#btn_gig_title').attr("disabled",true);
                   }

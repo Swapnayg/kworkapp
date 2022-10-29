@@ -154,22 +154,26 @@ class Conversation(models.Model):
         verbose_name_plural = _("Conversations")
 
     def __str__(self):
-        return self.timestamp
+        return str(self.timestamp)
 
 class Message(models.Model):
+    BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('activity', 'Activity Message')]
     sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_sender")
     receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_receiver")
-    text = models.CharField(max_length=200)
-    attachment = models.ImageField(blank=True)
+    text = models.CharField(max_length=1000,blank=True,null=True)
+    attachment = models.CharField(max_length=500,blank=True,null=True)
     conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
+    message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
 
     class Meta:
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
 
     def __str__(self):
-        return self.timestamp
+        return str(self.timestamp)
+
+
 
 class PageEditor(models.Model):
     page_name = models.CharField(max_length=500)
@@ -658,6 +662,9 @@ class Referral_Users(models.Model):
 
     def __str__(self):
         return str(self.affiliate_code)
+    
+    
+    
 
 
 class Request_Offers(models.Model):
@@ -728,7 +735,21 @@ class User_orders(models.Model):
 
     def __str__(self):
         return str(self.order_no)
+
+class User_orders_Extra_Gigs(models.Model):
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
+    gig_extra_package = models.ForeignKey(UserExtra_gigs, on_delete=models.CASCADE,null=True,blank=True)
     
+    class Meta:
+        verbose_name = _("Order Extra Offer")
+        verbose_name_plural = _("Order Extra Offer")
+
+    def __str__(self):
+        return str(self.order_no)
+    
+
+
 class Seller_Reviews(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('cancel', 'Cancelled'),('completed', 'Completed')]
     communication = models.CharField(max_length=200,blank=True,default="",null=True)
@@ -848,3 +869,68 @@ class User_Order_Resolution(models.Model):
     def __str__(self):
         return str(self.resolution_text)
 
+
+
+class Order_Conversation(models.Model):
+    initiator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_convo_starter")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_convo_participant")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+
+    class Meta:
+        verbose_name = _("Order Conversation")
+        verbose_name_plural = _("Order Conversations")
+
+    def __str__(self):
+        return str(self.timestamp)
+    
+    
+class Order_Message(models.Model):
+    BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('activity', 'Activity Message')]
+    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="order_message_sender")
+    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="order_message_receiver")
+    text =models.CharField(max_length=1000,blank=True,null=True)
+    attachment = models.CharField(max_length=500,blank=True,null=True)
+    conversation_id = models.ForeignKey(Order_Conversation, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now, blank=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+
+    class Meta:
+        verbose_name = _("Order Message")
+        verbose_name_plural = _("Order Messages")
+
+    def __str__(self):
+        return str(self.timestamp)
+
+
+class Message_Response_Time(models.Model):
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message_recieved")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("Message Response Analysis")
+        verbose_name_plural = _("Message Response Analysys")
+
+    def __str__(self):
+        return str(self.timestamp)
+    
+
+class Order_Delivery(models.Model):
+    BOOL_CHOICES_TYPES = [('delivered', 'Delivered'),('completed', 'Completed')]
+    delivery_message =models.CharField(max_length=1000,blank=True,null=True)
+    attachment = models.CharField(max_length=1000,blank=True,null=True)
+    delivery_date = models.DateTimeField(default=timezone.now, blank=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    delivered_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="delivered_by",null=True,blank=True)
+    delivered_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="delivered_to",null=True,blank=True)
+    delivery_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    
+    class Meta:
+        verbose_name = _("Order Delivery")
+        verbose_name_plural = _("Order Delivery")
+
+    def __str__(self):
+        return str(self.delivery_date)
+
+		

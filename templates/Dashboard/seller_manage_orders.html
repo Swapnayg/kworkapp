@@ -14,10 +14,10 @@
                 </div>
                 <div class="col-md-12 mx-0">
                     <ul class="nav nav-tabs" role="tablist">
-                        <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>1</span></div></a></li>
-                        <li><a href="#deliveredtab" role="tab" data-toggle="tab">Delivered <div class="circle"><span>1</span></div></a></li>
-                        <li><a href="#completedtab" role="tab" data-toggle="tab">Completed <div class="circle"><span>1</span></div></a></li>
-                        <li><a href="#cancelledtab" role="tab" data-toggle="tab">Cancelled <div class="circle"><span>1</span></div></a></li>
+                        <li><a href="#activetab" role="tab" data-toggle="tab" class="active">Active <div class="circle"><span>{{active_orders|length}}</span></div></a></li>
+                        <li><a href="#deliveredtab" role="tab" data-toggle="tab">Delivered <div class="circle"><span>{{delivered_orders|length}}</span></div></a></li>
+                        <li><a href="#completedtab" role="tab" data-toggle="tab">Completed <div class="circle"><span>{{completed_orders|length}}</span></div></a></li>
+                        <li><a href="#cancelledtab" role="tab" data-toggle="tab">Cancelled <div class="circle"><span>{{cancelled_orders|length}}</span></div></a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="activetab">
@@ -42,83 +42,241 @@
                                 <div class="col-md-2 db-manage-gigs ">
                                     <h5 class="header_span">Status</h5>
                                 </div>
-                            </div>  
+                            </div>
+
+                            {% for ac_order in active_orders %}
                             <div class="row text_row">
                                 <div class="col-md-3 db-manage-gigs ">
-                                    <div class="order-buyer"><div class="avatar"><figure class="fit-avatar-figure fit-avatar-circle-shape" style="font-size: 40px;"><figcaption class="">b</figcaption><span class="fit-avatar-image" style="background-image: url(&quot;https://fiverr-res.cloudinary.com/image/upload/t_profile_small,q_auto,f_auto/v1/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg&quot;);"></span></figure>
+                                    <div class="order-buyer"><div class="avatar"><figure class="fit-avatar-figure fit-avatar-circle-shape" style="font-size: 40px;"><figcaption class=""></figcaption><span class="fit-avatar-image" style="background-image: url('{{ac_order.buyer_img}}');"></span></figure>
                                     </div>
-                                    <div class="username">beinganaatiidu1</div></div>
+                                    <div class="username">{{ac_order.buyer_username | title}}</div></div>
                                 </div>
                                 <div class="col-md-5 db-manage-gigs ">
-                                    <div class="order-gig-title"><div class="gig-name"><a href="/users/swap_soln_90/manage_orders/FO3186B04CD07">build your web applications with no bound of limits welcome</a></div></div>
+                                    <div class="order-gig-title"><div class="gig-name"><a href="/gigs/{{ac_order.buyer_username}}/{{ac_order.gig_title}}">{{ac_order.gig_title | title}}</a></div></div>
                                 </div>
                                 <div class="col-md-1 db-manage-gigs ">
-                                    <div class="tbl-cell due-on">Nov 05</div>
+                                    <div class="tbl-cell due-on">{{ac_order.due_date | date:"M d" }} </div>
                                 </div>
                                 <div class="col-md-1 db-manage-gigs ">
-                                    <div class="tbl-cell total">$150</div>
+                                    <div class="tbl-cell total">${{ac_order.order_price }}</div>
                                 </div>
                                 <div class="col-md-2 db-manage-gigs ">
                                     <div class="tbl-cell status"><div class="order-status" style="background: rgb(88, 74, 255); border-color: rgb(88, 74, 255);">In Progress</div></div>
                                 </div>
                             </div> 
-
-                            <div class="row text_row activity_row">
-                                <div class="col-md-3 db-manage-gigs ">
+                            {% for o_act in ac_order.order_activity %}
+                                <div class="row text_row activity_row">
+                                    <div class="col-md-3 db-manage-gigs ">
+                                    </div>
+                                    <div class="col-md-5 db-manage-gigs ">
+                                        <div class="order-gig-title"><div class="gig-name"><a href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id }}/activities">{{o_act.order_message}}</a></div></div>
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
                                    
-                                </div>
-                                <div class="col-md-5 db-manage-gigs ">
-                                    <div class="order-gig-title"><div class="gig-name"><a href="/users/swap_soln_90/manage_orders/FO3186B04CD07">×1build your web applications with no bound of limits welcome</a></div></div>
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                   
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                    <div class="tbl-cell total">$150</div>
-                                </div>
-                                <div class="col-md-2 db-manage-gigs ">
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                    </div>
+                                    <div class="col-md-2 db-manage-gigs ">
                                     
-                                </div>
-                            </div> 
-                            <div class="row text_row activity_row">
-                                <div class="col-md-3 db-manage-gigs ">
-                                   
-                                </div>
-                                <div class="col-md-5 db-manage-gigs ">
-                                    <div class="order-gig-title"><div class="gig-name"><a href="/users/swap_soln_90/manage_orders/FO3186B04CD07">	×1Extend Delivery</a></div></div>
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                   
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                    <div class="tbl-cell total">$0.0</div>
-                                </div>
-                                <div class="col-md-2 db-manage-gigs ">
-                                    
-                                </div>
-                            </div> 
-
-                            <div class="row text_row activity_row">
-                                <div class="col-md-3 db-manage-gigs ">
-                                   
-                                </div>
-                                <div class="col-md-5 db-manage-gigs ">
-                                    <div class="order-gig-title"><div class="gig-name"><a href="/users/swap_soln_90/manage_orders/FO3186B04CD07">	×1Extend Delivery</a></div></div>
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                   
-                                </div>
-                                <div class="col-md-1 db-manage-gigs ">
-                                    <div class="tbl-cell total">$0.0</div>
-                                </div>
-                                <div class="col-md-2 db-manage-gigs ">
-                                    
-                                </div>
-                            </div> 
+                                    </div>
+                                </div>   
+                            {% endfor %}
+                                                   
+                            {% endfor %}
                         </div>
-                        <div class="tab-pane" id="deliveredtab">MySQL is a databased mostly used for web applications.</div>
-                        <div class="tab-pane" id="completedtab">jQuery content here</div>
-                        <div class="tab-pane" id="cancelledtab">jQuery content here 32</div>
+                        <div class="tab-pane" id="deliveredtab">
+                            <div class="row">
+                                <div class="col-md-12 db-manage-gigs ">
+                                    <h6 class="alt">DELIVERED ORDERS</h6>
+                                </div>
+                            </div>  
+                            <div class="row header_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <h5 class="header_span">Buyer</h5>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <h5 class="header_span">Gig</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Due On</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Total</h5>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <h5 class="header_span">Status</h5>
+                                </div>
+                            </div>
+
+                            {% for ac_order in delivered_orders %}
+                            <div class="row text_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <div class="order-buyer"><div class="avatar"><figure class="fit-avatar-figure fit-avatar-circle-shape" style="font-size: 40px;"><figcaption class=""></figcaption><span class="fit-avatar-image" style="background-image: url('{{ac_order.buyer_img}}');"></span></figure>
+                                    </div>
+                                    <div class="username">{{ac_order.buyer_username | title}}</div></div>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <div class="order-gig-title"><div class="gig-name"><a href="/gigs/{{ac_order.buyer_username}}/{{ac_order.gig_title}}">{{ac_order.gig_title | title}}</a></div></div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell due-on">{{ac_order.due_date | date:"M d" }} </div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell total">${{ac_order.order_price }}</div>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <div class="tbl-cell status"><div class="order-status" style="background: rgb(88, 74, 255); border-color: rgb(88, 74, 255);">Delivered</div></div>
+                                </div>
+                            </div> 
+                            {% for o_act in ac_order.order_activity %}
+                                <div class="row text_row activity_row">
+                                    <div class="col-md-3 db-manage-gigs ">
+                                    </div>
+                                    <div class="col-md-5 db-manage-gigs ">
+                                        <div class="order-gig-title"><div class="gig-name"><a href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id }}/activities">{{o_act.order_message}}</a></div></div>
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                   
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                    </div>
+                                    <div class="col-md-2 db-manage-gigs ">
+                                    
+                                    </div>
+                                </div>   
+                            {% endfor %}                         
+                            {% endfor %}
+                        </div>
+                        <div class="tab-pane" id="completedtab">
+                            <div class="row">
+                                <div class="col-md-12 db-manage-gigs ">
+                                    <h6 class="alt">COMPLETED ORDERS</h6>
+                                </div>
+                            </div>  
+                            <div class="row header_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <h5 class="header_span">Buyer</h5>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <h5 class="header_span">Gig</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Due On</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Total</h5>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <h5 class="header_span">Status</h5>
+                                </div>
+                            </div>
+
+                            {% for ac_order in completed_orders %}
+                            <div class="row text_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <div class="order-buyer"><div class="avatar"><figure class="fit-avatar-figure fit-avatar-circle-shape" style="font-size: 40px;"><figcaption class=""></figcaption><span class="fit-avatar-image" style="background-image: url('{{ac_order.buyer_img}}');"></span></figure>
+                                    </div>
+                                    <div class="username">{{ac_order.buyer_username | title}}</div></div>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <div class="order-gig-title"><div class="gig-name"><a href="/gigs/{{ac_order.buyer_username}}/{{ac_order.gig_title}}">{{ac_order.gig_title | title}}</a></div></div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell due-on">{{ac_order.due_date | date:"M d" }} </div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell total">${{ac_order.order_price }}</div>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <div class="tbl-cell status"><div class="order-status" style="background: rgb(88, 74, 255); border-color: rgb(88, 74, 255);">Completed</div></div>
+                                </div>
+                            </div> 
+                            {% for o_act in ac_order.order_activity %}
+                                <div class="row text_row activity_row">
+                                    <div class="col-md-3 db-manage-gigs ">
+                                    </div>
+                                    <div class="col-md-5 db-manage-gigs ">
+                                        <div class="order-gig-title"><div class="gig-name"><a href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id }}/activities">{{o_act.order_message}}</a></div></div>
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                   
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                    </div>
+                                    <div class="col-md-2 db-manage-gigs ">
+                                    
+                                    </div>
+                                </div>   
+                            {% endfor %}                         
+                            {% endfor %}
+                        </div>
+                        <div class="tab-pane" id="cancelledtab">
+                            <div class="row">
+                                <div class="col-md-12 db-manage-gigs ">
+                                    <h6 class="alt">CANCELLED ORDERS</h6>
+                                </div>
+                            </div>  
+                            <div class="row header_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <h5 class="header_span">Buyer</h5>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <h5 class="header_span">Gig</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Due On</h5>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <h5 class="header_span">Total</h5>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <h5 class="header_span">Status</h5>
+                                </div>
+                            </div>
+
+                            {% for ac_order in cancelled_orders %}
+                            <div class="row text_row">
+                                <div class="col-md-3 db-manage-gigs ">
+                                    <div class="order-buyer"><div class="avatar"><figure class="fit-avatar-figure fit-avatar-circle-shape" style="font-size: 40px;"><figcaption class=""></figcaption><span class="fit-avatar-image" style="background-image: url('{{ac_order.buyer_img}}');"></span></figure>
+                                    </div>
+                                    <div class="username">{{ac_order.buyer_username | title}}</div></div>
+                                </div>
+                                <div class="col-md-5 db-manage-gigs ">
+                                    <div class="order-gig-title"><div class="gig-name"><a href="/gigs/{{ac_order.buyer_username}}/{{ac_order.gig_title}}">{{ac_order.gig_title | title}}</a></div></div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell due-on">{{ac_order.due_date | date:"M d" }} </div>
+                                </div>
+                                <div class="col-md-1 db-manage-gigs ">
+                                    <div class="tbl-cell total">${{ac_order.order_price }}</div>
+                                </div>
+                                <div class="col-md-2 db-manage-gigs ">
+                                    <div class="tbl-cell status"><div class="order-status" style="background: rgb(88, 74, 255); border-color: rgb(88, 74, 255);">Cancelled</div></div>
+                                </div>
+                            </div> 
+                            {% for o_act in ac_order.order_activity %}
+                                <div class="row text_row activity_row">
+                                    <div class="col-md-3 db-manage-gigs ">
+                                    </div>
+                                    <div class="col-md-5 db-manage-gigs ">
+                                        <div class="order-gig-title"><div class="gig-name"><a href="/user/{{request.user.username}}/manage_orders/{{ac_order.order_id }}/activities">{{o_act.order_message}}</a></div></div>
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                   
+                                    </div>
+                                    <div class="col-md-1 db-manage-gigs ">
+                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                    </div>
+                                    <div class="col-md-2 db-manage-gigs ">
+                                    
+                                    </div>
+                                </div>   
+                            {% endfor %}                         
+                            {% endfor %}
+                        </div>
                       
                     </div>
                 </div>     

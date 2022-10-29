@@ -30,7 +30,9 @@
                       <div class="description-footer">
                          <div class="_2g7EPin fJuccPM file-uploader-tooltip">
                             <span class="_1iCafnp file-uploader-tooltip-content" >
-                               <input type="file" hidden="" multiple="" id="upload_post_req{{gig_req.id}}" required onchange="upload_req_reqimgChange(this)" >
+                               <input type="file" hidden="" multiple="" id="upload_post_req{{gig_req.id}}" required onchange="upload_req_reqimgChange(this)" accept=
+                               "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                               text/plain, application/pdf, image/*" >
                                <label class="FKiIhUG _1cZWUFp co-grey-1100 upload-button bg-co-grey-300" for="upload_post_req{{gig_req.id}}">
                                   <p class="upload-button-title">Attach Files</p>
                                   <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
@@ -72,7 +74,9 @@
                       <div class="description-footer">
                          <div class="_2g7EPin fJuccPM file-uploader-tooltip">
                             <span class="_1iCafnp file-uploader-tooltip-content" >
-                               <input type="file" hidden="" multiple="" id="upload_post_req{{gig_req.id}}" required onchange="upload_req_reqimgChange(this)" >
+                               <input type="file" hidden="" multiple="" id="upload_post_req{{gig_req.id}}" required onchange="upload_req_reqimgChange(this)" accept=
+                               "application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,
+                               text/plain, application/pdf, image/*" >
                                <label class="FKiIhUG _1cZWUFp co-grey-1100 upload-button bg-co-grey-300" for="upload_post_req{{gig_req.id}}">
                                   <p class="upload-button-title">Attach Files</p>
                                   <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
@@ -162,7 +166,7 @@
         $.ajax({
             type:"GET",
             url: "/post_mark_as_read/",
-            data: {'gig_id': $("#gig_id").val(),'user_id': $("#order_by").val(),'req_ques':$("#"+data_sec_id).find(".title").val(),"order_no":$("#order_no").val()},
+            data: {'gig_id': $("#gig_id").val(),'user_id': $("#order_by").val(),'req_ques':$("#"+data_sec_id).find(".title").text(),"order_no":$("#order_no").val()},
             success: function(data)
             {
                 if(data_next=="next")
@@ -191,7 +195,7 @@
             $.ajax({
                 type:"GET",
                 url: "/post_buyer_requ_save/",
-                data:  {'gig_id': $("#gig_id").val(),'user_id': $("#order_by").val(),'req_ques':$("#"+data_sec_id).find(".title").val(),'req_ans':$("#"+data_sec_id).find("textarea").val(),'req_imgs':imgList,"order_no":$("#order_no").val()},
+                data:  {'gig_id': $("#gig_id").val(),'user_id': $("#order_by").val(),'req_ques':$("#"+data_sec_id).find(".title").text(),'req_ans':$("#"+data_sec_id).find("textarea").val(),'req_imgs':imgList,"order_no":$("#order_no").val()},
                 success: function(data)
                 {
                     if(data_next=="next")

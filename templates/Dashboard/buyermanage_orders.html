@@ -37,6 +37,7 @@
                                    </thead>
                                    <tbody>
                                     {% for ac_orders in active_orders %}
+
                                       <tr>
                                          <td class="gig-image-thumb"><img src="{{ac_orders.gig_image}}"></td>
                                          <td class="ellipsis-wrap">
@@ -45,7 +46,7 @@
                                          <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
                                          <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
                                          <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
-                                         <td class="action-btn"><div class="order-status inprogress" >In Progress</div></td>
+                                         <td class="action-btn"><div class="order-status inprogress" ><a href="/user/{{request.user.username}}/manage_orders/{{ac_orders.order_id }}/activities" data>In Progress </a></div></td>
                                       </tr>
                                     {% endfor %}
                                    </tbody>
@@ -78,7 +79,7 @@
                                          <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
                                          <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
                                          <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
-                                         <td class="action-btn"><div class="order-status delivered" >Delivered</div></td>
+                                         <td class="action-btn"><div class="order-status delivered" ><a href="/user/{{request.user.username}}/manage_orders/{{ac_orders.order_id }}/activities">Delivered</a></div></td>
                                       </tr>
                                     {% endfor %}
                                    </tbody>
@@ -142,7 +143,7 @@
                                          <td class="date">{{ac_orders.order_date| date:"M d, Y"}}</td>
                                          <td class="date">{{ac_orders.order_due_date| date:"M d, Y"}}</td>
                                          <td class="amount t-a-left">${{ac_orders.order_amout}}</td>
-                                         <td class="action-btn"><div class="order-status cancelled" >Cancelled</div></td>
+                                         <td class="action-btn"><div class="order-status cancelled" ><a href="/user/{{request.user.username}}/manage_orders/{{ac_orders.order_id }}/activities">Cancelled</a></div></td>
                                       </tr>
                                     {% endfor %}
                                    </tbody>
@@ -212,6 +213,14 @@
         text-align: center;
         padding: 4px;
         border-radius: 3px; 
+    }
+    .inprogress a,.cancelled a, .delivered a{
+        color:white;
+        text-decoration:none;
+    }
+    .inprogress a:focus,.cancelled a:focus, .delivered a:focus,.inprogress a:hover,.cancelled a:hover, .delivered a:hover{
+        color:white;
+        text-decoration:none;
     }
     .inprogress
     {

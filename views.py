@@ -6,6 +6,7 @@ from operator import itemgetter
 from python_flutterwave import payment
 from datetime import datetime, timedelta
 from dateutil import relativedelta
+from pathlib import Path
 from tabnanny import verbose
 from django.views import View
 from urllib.parse import urlparse
@@ -23,7 +24,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,Gig_favourites,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic
+from kworkapp.models import Categories,UserGigPackages,Gig_favourites,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 
@@ -595,7 +596,11 @@ class seller_main_view(View):
                     order_status = ''
                     due_in_str = ''
                     active_earnings = float(active_earnings) + float(a_order.order_amount)
-                    due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
+                    due_date = ''
+                    try:
+                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     num = float(diff.days)
@@ -630,9 +635,18 @@ class seller_main_view(View):
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
                     s_cancelled_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar, "buyer_username":a_order.order_by.username,"order_price":a_order.order_amount,"del_satus":"Cancelled","order_id":a_order.order_no})
-                active_per = round(float(len(s_active_orders_detls)/total_orders)*100,2)
-                delivered_per = round(float(len(s_delivered_orders_detls)/total_orders)*100,2)
-                completed_per = round(float(len(s_completed_orders_detls)/total_orders)*100,2)
+                try:
+                    active_per = round(float(len(s_active_orders_detls)/total_orders)*100,2)
+                except:
+                    active_per = 0
+                try:
+                    delivered_per = round(float(len(s_delivered_orders_detls)/total_orders)*100,2)
+                except:
+                    delivered_per = 0
+                try:
+                    completed_per = round(float(len(s_completed_orders_detls)/total_orders)*100,2)
+                except:
+                    completed_per = 0
                 return render(request , 'Dashboard/seller_dashboard.html',{"active_orders":s_active_orders,"delivered_orders":s_delivered_orders,"completed_orders":s_completed_orders,"cancelled_orders":s_cancelled_orders,"Active_earning":active_earnings,"resp_time":userDetails.avg_respons,"this_earning":userDetails.current_earning,"active_per":active_per,"delivered_per":delivered_per,"completed_per":completed_per})
             # except:
             #     return render(request , 'register.html')
@@ -669,8 +683,7 @@ class offers_view(View):
                         seller_levl = "Advanced or higher"
                     elif(user_details_off.seller_level=="level3"):
                         seller_levl = "Professional"
-                    buyer_offers_li.append({"buyer_username":b_o.user_id.username,"buyer_image":b_o.user_id.avatar,"gig_id":b_o.gig_name.id,"gig_title":b_o.gig_name.gig_title ,"gig_image":gig_image_url,"seller_reviews":seller_count,"offer_desc":b_o.offer_desc,"offer_price":b_o.offer_budget,"offer_time":b_o.offer_time,"seller_level":seller_levl,"offer_date":str(b_o.offer_date),"offer_id":b_o.id})
-                
+                    buyer_offers_li.append({"buyer_username":b_o.user_id.username,"buyer_image":b_o.user_id.avatar,"gig_id":b_o.gig_name.id,"gig_title":b_o.gig_name.gig_title ,"gig_image":gig_image_url,"seller_reviews":seller_count,"offer_desc":b_o.offer_desc,"offer_price":b_o.offer_budget,"offer_time":b_o.offer_time,"seller_level":seller_levl,"offer_date":str(b_o.offer_date),"offer_id":b_o.id,"offer_data":json.loads(b_o.extra_parameters)})
                 return render(request , 'Dashboard/offers.html',{"buyer_request":buyer_request,"offers":buyer_offers_li})
             # except:
             #     return render(request , 'register.html')
@@ -723,20 +736,30 @@ class payments_view(View):
     
 class requirements_p_view(View):
     return_url = None
-    def get(self , request,offer_id="",pay_id="",pay_email="",trans_id="",pay_status="",base_price=0,total_price=0,service_fee=0):
+    def get(self , request,offer_id="",pay_id="",pay_email="",trans_id="",pay_status="",base_price=0,total_price=0,service_fee=0,pay_to=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
-                offer_details = Request_Offers.objects.get(id= offer_id)
-                gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
-                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                gig_requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details)
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "gig_requirements_ans"))
+                pay_user = User.objects.get(username = pay_to)
+                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                gig_requirements = []
+                charcterlimits = []
+                gig_details = []
                 gig_req_ans_char = 0
-                for c in charcterlimits:
-                    if(c.Char_category_Name == "gig_requirements_ans"):
-                        gig_req_ans_char = c.Max_No_of_char_allowed
-                already_submitted = Buyer_Requirements.objects.filter(user_id= userDetails,gig_name=gig_details).count()
-                return render(request , 'Dashboard/get_requirements_paypal.html',{"offer_id":offer_id,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_details.id,"submitted":already_submitted})
+                gig_id_str = 0
+                if(offer_details.ask_requirements == True):
+                    gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+                    gig_id_str = int(gig_details.id)
+                    userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                    gig_requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details)
+                    charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "gig_requirements_ans"))
+                    for c in charcterlimits:
+                        if(c.Char_category_Name == "gig_requirements_ans"):
+                            gig_req_ans_char = c.Max_No_of_char_allowed
+                    already_submitted = Buyer_Requirements.objects.filter(user_id= userDetails,gig_name=gig_details).count()
+                else:
+                    already_submitted = 2  
+                    gig_id_str = 0
+                return render(request , 'Dashboard/get_requirements_paypal.html',{"offer_id":offer_id,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_id_str,"submitted":already_submitted})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -744,20 +767,30 @@ class requirements_p_view(View):
 
 class requirements_f_view(View):
     return_url = None
-    def get(self , request,offer_id="",base_price=0,total_price=0,service_fee=0):
+    def get(self , request,offer_id="",base_price=0,total_price=0,service_fee=0,pay_to=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
-                offer_details = Request_Offers.objects.get(id= offer_id)
-                gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
-                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                gig_requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details)
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "gig_requirements_ans"))
+                pay_user = User.objects.get(username = pay_to)
+                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                gig_requirements = []
+                charcterlimits = []
+                gig_details = []
                 gig_req_ans_char = 0
-                for c in charcterlimits:
-                    if(c.Char_category_Name == "gig_requirements_ans"):
-                        gig_req_ans_char = c.Max_No_of_char_allowed
-                already_submitted = Buyer_Requirements.objects.filter(user_id= userDetails,gig_name=gig_details).count()
-                return render(request , 'Dashboard/get_requirements_flutter.html',{"offer_id":offer_id,"base_price":base_price,"total_price":total_price,"service_fee":service_fee,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_details.id,"submitted":already_submitted})
+                gig_id_str = 0
+                if(offer_details.ask_requirements == True):
+                    gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+                    gig_id_str = int(gig_details.id)
+                    userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                    gig_requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details)
+                    charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "gig_requirements_ans"))
+                    for c in charcterlimits:
+                        if(c.Char_category_Name == "gig_requirements_ans"):
+                            gig_req_ans_char = c.Max_No_of_char_allowed
+                    already_submitted = Buyer_Requirements.objects.filter(user_id= userDetails,gig_name=gig_details).count()
+                else:
+                    already_submitted = 2  
+                    gig_id_str = 0
+                return render(request , 'Dashboard/get_requirements_flutter.html',{"offer_id":offer_id,"base_price":base_price,"total_price":total_price,"service_fee":service_fee,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_id_str,"submitted":already_submitted})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -960,28 +993,28 @@ class buyer_manage_orders_view(View):
                     gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    active_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_date":a_req.order_date,"order_due_date":a_req.due_date,"order_amout":a_req.order_amount,"order_status":a_req.order_status,"gig_username":gig_details.user_id.username})
+                    active_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"order_id":a_req.order_no,"gig_image":gig_image_url,"order_date":a_req.order_date,"order_due_date":a_req.due_date,"order_amout":a_req.order_amount,"order_status":a_req.order_status,"gig_username":gig_details.user_id.username})
                 for d_req in delivered_request_obj:
                     gig_details = UserGigs.objects.get(gig_title = d_req.package_gig_name.gig_title)
                     gig_image_url = ''
                     gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    delivered_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_date":d_req.order_date,"order_due_date":d_req.due_date,"order_amout":d_req.order_amount,"order_status":d_req.order_status,"gig_username":gig_details.user_id.username})
+                    delivered_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_id":d_req.order_no,"order_date":d_req.order_date,"order_due_date":d_req.due_date,"order_amout":d_req.order_amount,"order_status":d_req.order_status,"gig_username":gig_details.user_id.username})
                 for c_req in completed_request_obj:
                     gig_details = UserGigs.objects.get(gig_title = c_req.package_gig_name.gig_title)
                     gig_image_url = ''
                     gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    completed_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_date":c_req.order_date,"order_due_date":c_req.due_date,"order_amout":c_req.order_amount,"order_status":c_req.order_status,"gig_username":gig_details.user_id.username})
+                    completed_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_id":c_req.order_no,"order_date":c_req.order_date,"order_due_date":c_req.due_date,"order_amout":c_req.order_amount,"order_status":c_req.order_status,"gig_username":gig_details.user_id.username})
                 for ca_req in cancelled_request_obj:
                     gig_details = UserGigs.objects.get(gig_title = ca_req.package_gig_name.gig_title)
                     gig_image_url = ''
                     gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    cancelled_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_date":ca_req.order_date,"order_due_date":ca_req.due_date,"order_amout":ca_req.order_amount,"order_status":ca_req.order_status,"gig_username":gig_details.user_id.username})
+                    cancelled_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image":gig_image_url,"order_id":ca_req.order_no,"order_date":ca_req.order_date,"order_due_date":ca_req.due_date,"order_amout":ca_req.order_amount,"order_status":ca_req.order_status,"gig_username":gig_details.user_id.username})
                 return render(request , 'Dashboard/buyermanage_orders.html',{"active_orders":active_orders,"completed_orders":completed_orders,"delivered_orders":delivered_orders,"cancelled_orders":cancelled_orders,"resp_time":userDetails.avg_respons})
             # except:
             #     return render(request , 'register.html')
@@ -991,7 +1024,104 @@ class buyer_manage_orders_view(View):
 class seller_manage_orders_view(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'Dashboard/seller_manage_orders.html')
+        request.session['userpage'] =	"seller"
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                s_active_orders = []
+                s_delivered_orders = []
+                s_completed_orders = []
+                s_cancelled_orders = []
+                active_earnings = 0
+                active_rate = 0
+                delivered_rate = 0
+                completed_rate = 0
+                total_orders = User_orders.objects.filter(order_to = userDetails).count()
+                s_active_orders_detls = User_orders.objects.filter(order_to = userDetails,order_status= "active")
+                s_delivered_orders_detls = User_orders.objects.filter(order_to = userDetails,order_status= "delivered")
+                s_completed_orders_detls = User_orders.objects.filter(order_to = userDetails,order_status= "completed")
+                s_cancelled_orders_detls = User_orders.objects.filter(order_to = userDetails,order_status= "cancel")
+                for a_order in s_active_orders_detls:
+                    gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
+                    gig_image_url = ''
+                    gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+                    if(gig_image != None):
+                        gig_image_url = gig_image.gig_image
+                    order_status = ''
+                    due_in_str = ''
+                    active_earnings = float(active_earnings) + float(a_order.order_amount)
+                    due_date = ''
+                    try:
+                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                    order_act_lists = []
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order)
+                    for o_act in orderactivities:
+                        order_act_lists.append({"order_message":o_act.order_message,"order_amount":o_act.order_amount})
+                    s_active_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar,"due_date":a_order.due_date, "buyer_username":a_order.order_by.username,"order_price":a_order.order_amount,"delivery_time":due_in_str,"del_satus":order_status,"order_id":a_order.order_no,"order_activity":order_act_lists})
+                for a_order in s_delivered_orders_detls:
+                    gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
+                    gig_image_url = ''
+                    gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+                    if(gig_image != None):
+                        gig_image_url = gig_image.gig_image
+                    order_act_lists = []
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order)
+                    for o_act in orderactivities:
+                        order_act_lists.append({"order_message":o_act.order_message,"order_amount":o_act.order_amount})
+                    s_delivered_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar,"due_date":a_order.due_date, "buyer_username":a_order.order_by.username,"order_price":a_order.order_amount,"del_satus":"Delivered","order_id":a_order.order_no,"order_activity":order_act_lists})
+                for a_order in s_completed_orders_detls:
+                    gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
+                    gig_image_url = ''
+                    gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+                    if(gig_image != None):
+                        gig_image_url = gig_image.gig_image
+                    order_act_lists = []
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order)
+                    for o_act in orderactivities:
+                        order_act_lists.append({"order_message":o_act.order_message,"order_amount":o_act.order_amount})
+                    s_completed_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar, "buyer_username":a_order.order_by.username,"due_date":a_order.due_date,"order_price":a_order.order_amount,"del_satus":"Completed","order_id":a_order.order_no,"order_activity":order_act_lists})
+                for a_order in s_cancelled_orders_detls:
+                    gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
+                    gig_image_url = ''
+                    gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+                    if(gig_image != None):
+                        gig_image_url = gig_image.gig_image
+                    order_act_lists = []
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order)
+                    for o_act in orderactivities:
+                        order_act_lists.append({"order_message":o_act.order_message,"order_amount":o_act.order_amount})
+                    s_cancelled_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar, "buyer_username":a_order.order_by.username,"due_date":a_order.due_date,"order_price":a_order.order_amount,"del_satus":"Cancelled","order_id":a_order.order_no,"order_activity":order_act_lists})
+                try:
+                    active_per = round(float(len(s_active_orders_detls)/total_orders)*100,2)
+                except:
+                    active_per = 0
+                try:
+                    delivered_per = round(float(len(s_delivered_orders_detls)/total_orders)*100,2)
+                except:
+                    delivered_per = 0
+                try:
+                    completed_per = round(float(len(s_completed_orders_detls)/total_orders)*100,2)
+                except:
+                    completed_per = 0
+                return render(request , 'Dashboard/seller_manage_orders.html',{"active_orders":s_active_orders,"delivered_orders":s_delivered_orders,"completed_orders":s_completed_orders,"cancelled_orders":s_cancelled_orders,"Active_earning":active_earnings,"resp_time":userDetails.avg_respons,"this_earning":userDetails.current_earning,"active_per":active_per,"delivered_per":delivered_per,"completed_per":completed_per})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
 
 class buyer_request_view(View):
     return_url = None
@@ -1087,8 +1217,132 @@ class earnings_view(View):
 
 class order_activities_view(View):
     return_url = None
-    def get(self , request,username='',orderid=''):
-        return render(request , 'Dashboard/order_activity.html')
+    def get(self , request,username='',orderid=0):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                delivery  = ''
+                delivery_details_list = []
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                order_details = User_orders.objects.get(order_no = orderid)
+                offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
+                ordered_by_user = User.objects.get(id= order_details.order_by.id)
+                ordered_to_user = User.objects.get(id= order_details.order_to.id)
+                current_user = ''
+                if(userDetails.username == ordered_by_user.username):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
+                s_gig_list = []
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=seller_gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                order_status = ''
+                due_in_str = ''
+                due_date = ''
+                d_days = ''
+                d_hours = ''
+                d_minutes = ''
+                d_seconds = ''
+                due_date_format = ''
+                if(str(order_details.order_status) == "active"):
+                    try:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    formatted_due_date = str(due_date_format.year) + "-" + str(due_date_format.month)+ "-" + str(due_date_format.day) 
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                        formatted_due_date = "failed"
+                    d_days = str(abs(diff.days))
+                    d_hours = str(abs(diff.hours))
+                    d_minutes = str(abs(diff.minutes))
+                    d_seconds = str(abs(diff.seconds))
+                else:
+                    order_status = str(order_details.order_status)
+                    d_days = 00
+                    d_hours = 00
+                    d_minutes = 00
+                    d_seconds = 00
+                    formatted_due_date = "failed"
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date})
+                requirements_lists = []
+                conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user,order_no=order_details)
+                if(offer_details.ask_requirements == True):
+                    requirements = "yes"
+                    requirements_l = Buyer_Requirements.objects.filter(order_no= order_details)
+                    for req_det in requirements_l:
+                        doc_lists = []
+                        if(len(req_det.req_documents.strip()) == 0):
+                            doc_lists = []
+                        else:
+                            img_fm = [".tif", ".tiff", ".jpg", ".jpeg", ".gif", ".png", ".eps", ".raw", ".cr2", ".nef", ".orf", ".sr2", ".bmp", ".ppm", ".heif"]
+                            doc_lists_split = req_det.req_documents.split(",")
+                            for doc in doc_lists_split:
+                                if(len(doc.strip()) != 0):
+                                    extype = ''
+                                    extension = Path(doc).suffix
+                                    if(extension in img_fm):
+                                        extype = "image"
+                                    elif(extension == ".pdf"):
+                                        extype = "pdf"
+                                    else:
+                                        extype = "doc"
+                                    doc_lists.append({"doc":doc,"ext_type":extype,"ext":extension})
+                        requirements_lists.append({"requirement_ques":req_det.requirement_ques,"requirement_ans":req_det.requirement_ans,"default_req":req_det.default_req,"req_documents":doc_lists})
+                else:
+                    requirements = "no"
+                delivered = ''
+                delivery_status = ''
+                if(Order_Delivery.objects.filter(order_no=order_details).exists() == True):
+                    delivered = "yes"
+                    delivery_details = Order_Delivery.objects.get(order_no=order_details)
+                    if(delivery_details.delivery_status == "delivered"):
+                        delivery_status = "delivered"
+                    elif(delivery_details.delivery_status == "completed"):
+                        delivery_status = "completed"
+                    del_doc_lists = []
+                    if(len(delivery_details.attachment.strip()) == 0):
+                        del_doc_lists = []
+                    else:
+                        img_fm = [".tif", ".tiff", ".jpg", ".jpeg", ".gif", ".png", ".eps", ".raw", ".cr2", ".nef", ".orf", ".sr2", ".bmp", ".ppm", ".heif"]
+                        del_doc_lists_split = delivery_details.attachment.split(",")
+                        for doc in del_doc_lists_split:
+                            if(len(doc.strip()) != 0):
+                                extype = ''
+                                extension = Path(doc).suffix
+                                if(extension in img_fm):
+                                    extype = "image"
+                                elif(extension == ".pdf"):
+                                    extype = "pdf"
+                                elif(extension == ".zip"):
+                                    extype = "zip"
+                                elif(extension == ".rar"):
+                                    extype = "rar"
+                                else:
+                                    extype = "doc"
+                                del_doc_lists.append({"doc":doc,"ext_type":extype,"ext":extension})
+                        delivery_details_list.append({"delivery_message":delivery_details.delivery_message,"delivery_date":delivery_details.delivery_date,"delivered_by_user":delivery_details.delivered_by.username,"del_documents":del_doc_lists})
+                else:
+                    delivered = "no"
+                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
     
 class resolution_view(View):
     return_url = None
@@ -1724,98 +1978,79 @@ def post_gig_save_view(request):
         return HttpResponse('sucess')
 
 
-@csrf_exempt
-def post_packages_save_view(request):
-    if request.method == 'POST':
-        u_gig_id = request.POST.get("u_gig_id")
-        u_user_id = request.POST.get("u_user_id")
-        u_gigtitle = request.POST.get("u_gigtitle")
-        u_gig_category = request.POST.get("u_gig_category")
-        u_gig_sub_category = request.POST.get("u_gig_sub_category")
-        u_gig_tags = request.POST['u_gig_tags']
-        data = json.loads(u_gig_tags)
-        userDetails =  User.objects.get(pk=u_user_id)
-        gigDetails =  UserGigs.objects.get(pk=u_gig_id , user_id = userDetails)
-        gigDetails.gig_title = u_gigtitle
-        gigDetails.gig_category =  Categories.objects.get(pk=u_gig_category)
-        gigDetails.gig_sub_category =  SubSubCategories.objects.get(pk=u_gig_sub_category)
-        gigDetails.save()
-        UserGigsTags.objects.filter(gig_name=gigDetails ,user_id = userDetails).delete()
-        for d in data:
-            usertags = UserGigsTags(gig_tag_name= d,gig_name=gigDetails ,user_id = userDetails)
-            usertags.save()
-        return HttpResponse('sucess')
-
 
 @csrf_exempt
 def post_packages_save_view(request):
     if request.method == 'POST':
-        u_gig_id = request.POST.get("u_gig_id")
-        u_user_id = request.POST.get("u_user_id")
-        u_package_details = request.POST['u_package_details']
-        u_package_details1 = request.POST['u_package_details1']
-        u_package_details2 = request.POST['u_package_details2']
-        u_extra_delivery = request.POST['u_extra_delivery']
-        u_extra_package_details = request.POST['u_add_on_package_details']
-        u_add_on_gig = request.POST['u_add_on_gig']
-        data_package_details = json.loads(u_package_details)
-        data_package_details1 = json.loads(u_package_details1)
-        data_package_details2 = json.loads(u_package_details2)
-        data_extra_delivery = json.loads(u_extra_delivery)
-        data_extra_package_details = json.loads(u_extra_package_details)
-        data_add_on_gig = json.loads(u_add_on_gig)
-        userDetails =  User.objects.get(pk=u_user_id)
-        gigDetails =  UserGigs.objects.get(pk=u_gig_id, user_id = userDetails)
-        UserGigPackages.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
-        UserGigPackage_Extra.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
-        UserExtra_gigs.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
-        UserGig_Extra_Delivery.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
-        pack_data_analysys = data_package_details[0]
-        dist_keys = pack_data_analysys.keys()
-        package_array = []
-        for i,key in enumerate(dist_keys):
-            if "pack_data_" in key:
-                package_array.append({"name":pack_data_analysys[key]["name"],"value":pack_data_analysys[key]["value"]})
-        for data_packages in data_package_details:
-            pack_delivery = Parameter.objects.get(parameter_value =str(data_packages["pack_duration"]),parameter_name="delivery_time")
-            pack_revision = Parameter.objects.get(parameter_value =str(data_packages["pack_revision"]),parameter_name="no_revisions")
-            user_gig_packages = UserGigPackages(package_type=data_packages["pack_type"],package_title=data_packages["pack_title"],package_description=data_packages["pack_description"],package_delivery=pack_delivery,package_revisions=pack_revision,package_price=data_packages["pack_price"],package_data=str(package_array),package_gig_name= gigDetails,user_id=userDetails)
-            user_gig_packages.save()
-        if(len(data_package_details1) != 0):
-            pack_data_analysys1 = data_package_details1[0]
-            dist_keys1 = pack_data_analysys1.keys()
-            package_array1 = []
-            for i,key in enumerate(dist_keys1):
+        try:
+            u_gig_id = request.POST.get("u_gig_id")
+            u_user_id = request.POST.get("u_user_id")
+            u_package_details = request.POST['u_package_details']
+            u_package_details1 = request.POST['u_package_details1']
+            u_package_details2 = request.POST['u_package_details2']
+            u_extra_delivery = request.POST['u_extra_delivery']
+            u_extra_package_details = request.POST['u_add_on_package_details']
+            u_add_on_gig = request.POST['u_add_on_gig']
+            data_package_details = json.loads(u_package_details)
+            data_package_details1 = json.loads(u_package_details1)
+            data_package_details2 = json.loads(u_package_details2)
+            data_extra_delivery = json.loads(u_extra_delivery)
+            data_extra_package_details = json.loads(u_extra_package_details)
+            data_add_on_gig = json.loads(u_add_on_gig)
+            userDetails =  User.objects.get(pk=u_user_id)
+            gigDetails =  UserGigs.objects.get(pk=u_gig_id, user_id = userDetails)
+            UserGigPackages.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
+            UserGigPackage_Extra.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
+            UserExtra_gigs.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
+            UserGig_Extra_Delivery.objects.filter(package_gig_name=gigDetails ,user_id = userDetails).delete()
+            pack_data_analysys = data_package_details[0]
+            dist_keys = pack_data_analysys.keys()
+            package_array = []
+            for i,key in enumerate(dist_keys):
                 if "pack_data_" in key:
-                    package_array1.append({"name":pack_data_analysys1[key]["name"],"value":pack_data_analysys1[key]["value"]})
-            for data_packages1 in data_package_details1:
-                pack_delivery1 = Parameter.objects.get(parameter_value =str(data_packages1["pack_duration"]),parameter_name="delivery_time")
-                pack_revision1 = Parameter.objects.get(parameter_value =str(data_packages1["pack_revision"]),parameter_name="no_revisions")
-                user_gig_packages = UserGigPackages(package_type=data_packages1["pack_type"],package_title=data_packages1["pack_title"],package_description=data_packages1["pack_description"],package_delivery=pack_delivery1,package_revisions=pack_revision1,package_price=data_packages1["pack_price"],package_data=str(package_array1),package_gig_name= gigDetails,user_id=userDetails)
+                    package_array.append({"name":pack_data_analysys[key]["name"],"value":pack_data_analysys[key]["value"]})
+            for data_packages in data_package_details:
+                pack_delivery = Parameter.objects.get(parameter_value =str(data_packages["pack_duration"]),parameter_name="delivery_time")
+                pack_revision = Parameter.objects.get(parameter_value =str(data_packages["pack_revision"]),parameter_name="no_revisions")
+                user_gig_packages = UserGigPackages(package_type=data_packages["pack_type"],package_title=data_packages["pack_title"],package_description=data_packages["pack_description"],package_delivery=pack_delivery,package_revisions=pack_revision,package_price=data_packages["pack_price"],package_data=str(package_array),package_gig_name= gigDetails,user_id=userDetails)
                 user_gig_packages.save()
-        if(len(data_package_details2) != 0):
-            pack_data_analysys2 = data_package_details2[0]
-            dist_keys2 = pack_data_analysys2.keys()
-            package_array2 = []
-            for i,key in enumerate(dist_keys2):
-                if "pack_data_" in key:
-                    package_array2.append({"name":pack_data_analysys2[key]["name"],"value":pack_data_analysys2[key]["value"]})
-            for data_packages2 in data_package_details2:
-                pack_delivery2 = Parameter.objects.get(parameter_value =str(data_packages2["pack_duration"]),parameter_name="delivery_time")
-                pack_revision2 = Parameter.objects.get(parameter_value =str(data_packages2["pack_revision"]),parameter_name="no_revisions")
-                user_gig_packages = UserGigPackages(package_type=data_packages2["pack_type"],package_title=data_packages2["pack_title"],package_description=data_packages2["pack_description"],package_delivery=pack_delivery2,package_revisions=pack_revision2,package_price=data_packages2["pack_price"],package_data=str(package_array2),package_gig_name= gigDetails,user_id=userDetails)
-                user_gig_packages.save() 
-        for extra_delivery in data_extra_delivery:
-            extra_days = Parameter.objects.get(parameter_value =str(extra_delivery["days"]),parameter_name="extra_days")
-            extra_delivery_gig = UserGig_Extra_Delivery(package_type= extra_delivery["name"],delivery_in= extra_days,extra_price= extra_delivery["price"],package_gig_name= gigDetails,user_id=userDetails)
-            extra_delivery_gig.save()
-        user_extra_data = UserGigPackage_Extra(package_data= str(data_extra_package_details),package_gig_name= gigDetails,user_id=userDetails)
-        user_extra_data.save();
-        for ad_on_gig in data_add_on_gig:
-            gig_extra_days = Parameter.objects.get(parameter_value =str(ad_on_gig["gig_duration"]),parameter_name="extra_days")
-            extra_gig_days = UserExtra_gigs(extra_gig_title= ad_on_gig["gig_title"],extra_gig_description= ad_on_gig["gig_description"],extra_gig_price= ad_on_gig["gig_price"],extra_gig_duration=gig_extra_days,package_gig_name= gigDetails,user_id=userDetails)
-            extra_gig_days.save()
-        return HttpResponse('sucess')
+            if(len(data_package_details1) != 0):
+                pack_data_analysys1 = data_package_details1[0]
+                dist_keys1 = pack_data_analysys1.keys()
+                package_array1 = []
+                for i,key in enumerate(dist_keys1):
+                    if "pack_data_" in key:
+                        package_array1.append({"name":pack_data_analysys1[key]["name"],"value":pack_data_analysys1[key]["value"]})
+                for data_packages1 in data_package_details1:
+                    pack_delivery1 = Parameter.objects.get(parameter_value =str(data_packages1["pack_duration"]),parameter_name="delivery_time")
+                    pack_revision1 = Parameter.objects.get(parameter_value =str(data_packages1["pack_revision"]),parameter_name="no_revisions")
+                    user_gig_packages = UserGigPackages(package_type=data_packages1["pack_type"],package_title=data_packages1["pack_title"],package_description=data_packages1["pack_description"],package_delivery=pack_delivery1,package_revisions=pack_revision1,package_price=data_packages1["pack_price"],package_data=str(package_array1),package_gig_name= gigDetails,user_id=userDetails)
+                    user_gig_packages.save()
+            if(len(data_package_details2) != 0):
+                pack_data_analysys2 = data_package_details2[0]
+                dist_keys2 = pack_data_analysys2.keys()
+                package_array2 = []
+                for i,key in enumerate(dist_keys2):
+                    if "pack_data_" in key:
+                        package_array2.append({"name":pack_data_analysys2[key]["name"],"value":pack_data_analysys2[key]["value"]})
+                for data_packages2 in data_package_details2:
+                    pack_delivery2 = Parameter.objects.get(parameter_value =str(data_packages2["pack_duration"]),parameter_name="delivery_time")
+                    pack_revision2 = Parameter.objects.get(parameter_value =str(data_packages2["pack_revision"]),parameter_name="no_revisions")
+                    user_gig_packages = UserGigPackages(package_type=data_packages2["pack_type"],package_title=data_packages2["pack_title"],package_description=data_packages2["pack_description"],package_delivery=pack_delivery2,package_revisions=pack_revision2,package_price=data_packages2["pack_price"],package_data=str(package_array2),package_gig_name= gigDetails,user_id=userDetails)
+                    user_gig_packages.save() 
+            for extra_delivery in data_extra_delivery:
+                extra_days = Parameter.objects.get(parameter_value =str(extra_delivery["days"]),parameter_name="extra_days")
+                extra_delivery_gig = UserGig_Extra_Delivery(package_type= extra_delivery["name"],delivery_in= extra_days,extra_price= extra_delivery["price"],package_gig_name= gigDetails,user_id=userDetails)
+                extra_delivery_gig.save()
+            user_extra_data = UserGigPackage_Extra(package_data= str(data_extra_package_details),package_gig_name= gigDetails,user_id=userDetails)
+            user_extra_data.save();
+            for ad_on_gig in data_add_on_gig:
+                gig_extra_days = Parameter.objects.get(parameter_value =str(ad_on_gig["gig_duration"]),parameter_name="extra_days")
+                extra_gig_days = UserExtra_gigs(extra_gig_title= ad_on_gig["gig_title"],extra_gig_description= ad_on_gig["gig_description"],extra_gig_price= ad_on_gig["gig_price"],extra_gig_duration=gig_extra_days,package_gig_name= gigDetails,user_id=userDetails)
+                extra_gig_days.save()
+            return HttpResponse('sucess')
+        except Exception as e:
+            return HttpResponse(str(type(e)) + str(e))
 
 @csrf_exempt
 def post_gig_desp_save_view(request):
@@ -2212,7 +2447,9 @@ def get_buyer_request_view(request):
             for g_c in UserGigCategory:
                 if(g_c["gig_category"] != None):
                     category_d = Categories.objects.get(id = g_c["gig_category"])
-                    buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d ,service_status="active").exclude(user_id= userDetails)
+                    curr_date = datetime.today()
+                    new_d = curr_date - timedelta(days=2)
+                    buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d ,service_status="active",service_date__range=(new_d, curr_date)).exclude(user_id= userDetails)
                     for b in buyer_requests:
                         offer_data = Request_Offers.objects.filter(user_id = userDetails,buyer_request=b).count()
                         offer_status = ''
@@ -2234,7 +2471,9 @@ def get_buyer_request_view(request):
                         buyer_requests_list.append({"serv_date":str(b.service_date),"buyer_img":b.user_id.avatar,"buyer_username":b.user_id.username,"buyer_mssg":b.service_desc,"buyer_attachments":b.service_images,"buyer_attachments":b.service_images,"no_offers":no_of_offers,"service_time":service_time_str,"service_price":b.service_budget,"req_id":b.id, "req_buyer_number":b.buyer_request_id,"Offer_status":offer_status})
         else:
             category_d = Categories.objects.get(category_Name =category_name)
-            buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d,service_status="active").exclude(user_id= userDetails)
+            curr_date = datetime.today()
+            new_d = curr_date - timedelta(days=2)
+            buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d,service_status="active",service_date__range=(new_d, curr_date)).exclude(user_id= userDetails)
             for b in buyer_requests:
                 offer_data = Request_Offers.objects.filter(user_id = userDetails).count()
                 offer_status = ''
@@ -2424,8 +2663,10 @@ def post_flutterwave_transaction_view(request):
             Begindatestring = datetime.today()
             due_date = Begindatestring + timedelta(days=no_of_days)
             order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=u_base_price,due_date=due_date)
-            order_details.save()
+            order_details.save()   
             order_details_get = User_orders.objects.get(pk = order_details.pk)
+            order_conver = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+            order_conver.save()
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)
@@ -2459,6 +2700,8 @@ def post_paypal_transaction_view(request):
             order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=u_base_price,due_date=due_date)
             order_details.save()
             order_details_get = User_orders.objects.get(pk = order_details.pk)
+            order_conver = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+            order_conver.save()
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='paypal',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paypal_id=u_paypal_id,paypal_email=u_paypal_email,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)

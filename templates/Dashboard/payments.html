@@ -281,7 +281,7 @@
                                                 <input type="hidden" name="amount" value="{{gig_details.0.total_amount}}" />
                                                 <input type="hidden" name="currency" value="USD" />
                                                 <input type="hidden" name="meta[token]" value="{{gig_details.0.offer_id}}" />
-                                                <input type="hidden" name="redirect_url" value="{{base_url}}requirements/flutter/{{gig_details.0.offer_id}}/{{gig_details.0.offer_price}}/{{gig_details.0.total_amount}}/{{gig_details.0.service_fees}}" />
+                                                <input type="hidden" name="redirect_url" value="{{base_url}}requirements/flutter/{{gig_details.0.offer_id}}/{{gig_details.0.offer_price}}/{{gig_details.0.total_amount}}/{{gig_details.0.service_fees}}/{{gig_details.0.pay_to_user}}" />
                                                 <button type="submit" id="start-payment-button" class="agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700"><span class="button-message">Confirm &amp; Pay</span></button>
                                               </form>
                                           </div>
@@ -335,7 +335,7 @@
                  total_price = '{{gig_details.0.total_amount}}'
                  fees = '{{gig_details.0.service_fees}}'
                  location_href =  $(location).attr('href').split("/");
-                 window.location.href = location_href[0]+"//"+location_href[2] +"/requirements/paypal/{{gig_details.0.offer_id}}/"+payer_id+"/"+payer_email+"/"+transaction_id+"/"+transaction_status+"/"+base_price+"/"+ total_price +"/" + fees;
+                 window.location.href = location_href[0]+"//"+location_href[2] +"/requirements/paypal/{{gig_details.0.offer_id}}/"+payer_id+"/"+payer_email+"/"+transaction_id+"/"+transaction_status+"/"+base_price+"/"+ total_price +"/" + fees+"/" + '{{gig_details.0.pay_to_user}}';
              });
          }
      }).render('#paypal-button-container');

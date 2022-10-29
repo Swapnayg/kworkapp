@@ -100,6 +100,21 @@
                               <span class="long-desc js-long-desc">  {{off.offer_desc}}</span>
                            </p>
                            <ul>
+                              {% for data in off.offer_data %}
+                                 {% if data.value == 'true' %}
+                                    <li>
+                                       <i class="fa fa-check"></i>
+                                       {{data.name}}
+                                    </li>
+                                 {% else %}
+                                    <li>
+                                       <i class="fa fa-check"></i>
+                                       {{data.value}} - {{data.name}}
+                                    </li>
+                                 {% endif %}
+                              {% endfor %}   
+                           </ul>
+                           <ul>
                               <li><i class="fa fa-clock-o"></i>{{off.offer_time}} Days Delivery
                               </li>
                            </ul>
@@ -137,7 +152,7 @@
                $("#order_val").text(sorted_val);
                $("#users_offers_lists").empty();
                $.each(jsonObj, function(i, v) {
-                  $("#users_offers_lists").append('<li> <a href="/gigs/'+ v.buyer_username+'/'+ v.gig_title+'" target="_blank" class="photos f-slider js-offer-photos-slider" data-anchor="62ff22041f8c9d000177ebb9"> <div class="slider-box"> <div class="slider-hider" style="transition-duration: 400ms;"> <div class="slide"><img src="'+ v.gig_image+'" class="gig-photo" alt=""></div> </div> </div> </a> <div class="details-wrap"> <div class="price"> $ '+ v.offer_price+' </div> <div class="seller cf"> <span class="level_two_seller"></span> <span class="user-pict-50"> <img class="missing-image-user" src="'+ v.buyer_image+' "></img> </span> <b><a href="/user/profile/'+ v.buyer_username+'" class="name js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Seller">'+ v.buyer_username +'('+v.seller_level+') | <span class="star-rating-s9 rate-10" title="rating">('+v.seller_reviews+')</span> </a></b> <br><a href="/inbox/'+v.buyer_username+'/" class="contact js-seller-contact js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Contact"><i class="fa fa-envelope"></i>Contact me</a> </div> <div class="details"> <h6><a href="/gigs/'+v.buyer_username+'/'+v.gig_title+'" class="js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Gig Name">'+v.gig_title+'</a></h6> <p class="description js-offer-desc"> <span class="long-desc js-long-desc"> '+v.offer_desc+'</span> </p> <ul> <li><i class="fa fa-clock-o"></i>'+v.offer_time+' Days Delivery </li> </ul> </div> <a onclick="remove_request('+v.offer_id+');" class="link-blue link-remove js-remove-offer js-gtm-event-auto" >Remove Offer</a> <a class="btn-standard btn-green-grad js-gtm-event-auto" href="/payments/{{buyer_request.buyer_request_id}}/'+v.offer_id+'"> Order Now</a> </div> </li> ');
+                  $("#users_offers_lists").append('<li> <a href="/gigs/'+ v.buyer_username+'/'+ v.gig_title+'" target="_blank" class="photos f-slider js-offer-photos-slider" data-anchor="62ff22041f8c9d000177ebb9"> <div class="slider-box"> <div class="slider-hider" style="transition-duration: 400ms;"> <div class="slide"><img src="'+ v.gig_image+'" class="gig-photo" alt=""></div> </div> </div> </a> <div class="details-wrap"> <div class="price"> $ '+ v.offer_price+' </div> <div class="seller cf"> <span class="level_two_seller"></span> <span class="user-pict-50"> <img class="missing-image-user" src="'+ v.buyer_image+' "></img> </span> <b><a href="/user/profile/'+ v.buyer_username+'" class="name js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Seller">'+ v.buyer_username +'('+v.seller_level+') | <span class="star-rating-s9 rate-10" title="rating">('+v.seller_reviews+')</span> </a></b> <br><a href="/inbox/'+v.buyer_username+'/" class="contact js-seller-contact js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Contact"><i class="fa fa-envelope"></i>Contact me</a> </div> <div class="details"> <h6><a href="/gigs/'+v.buyer_username+'/'+v.gig_title+'" class="js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Gig Name">'+v.gig_title+'</a></h6> <p class="description js-offer-desc"> <span class="long-desc js-long-desc"> '+v.offer_desc+'</span> </p> <ul> <li><i class="fa fa-clock-o"></i>'+v.offer_time+' Days Delivery </li> </ul> </div> <a onclick="remove_request('+v.offer_id+');" class="link-blue link-remove js-remove-offer js-gtm-event-auto" >Remove Offer</a> <a class="btn-standard btn-green-grad js-gtm-event-auto"  onclick="Offer_order_now_click(this);" data-username = "'+ v.buyer_username+'" data-gig-title = "'+ v.gig_id+'" data-offer-id = "'+ v.offer_id+'" data-buyer-req-id = "{{buyer_request.buyer_request_id}}"> Order Now</a> </div> </li> ');
                });
             }
          });
@@ -174,11 +189,11 @@
             if(data == "not exits")
             {
                location_href =  $(location).attr('href').split("/");
-               window.open(location_href[0]+"//"+location_href[2] +'/payments/'+data_buyer_id+'/'+ data_offer_id, "_blank");
+               window.open(location_href[0]+"//"+location_href[2] +'/payments/'+data_buyer_id+'/'+ data_offer_id, "_self");
             }
             else{
                location_href =  $(location).attr('href').split("/");
-               window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/manage_orders/'+data.toString()+'/activities', "_blank");
+               window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/manage_orders/'+data.toString()+'/activities', "_self");
             }
          }
       });

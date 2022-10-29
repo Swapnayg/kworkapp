@@ -12,7 +12,7 @@
           <div class="card px-0 pt-4 pb-0 mb-3"  id="refferral_gigs_card">
             <div class="row">
                 <div class="col-md-12 db-manage-gigs ">
-                    <h1 class="alt">Billing</h1>
+                    <h1 class="alt">Buyer Requests</h1>
                 </div>
                 <div class="col-md-12 db-manage-gigs">
                     <small class="offers-left"><span class="js-offers-left">{{user_details.offers_left}}</span> offers left today
@@ -150,7 +150,7 @@
                                  {% for offers in offer_sent_req %}
                                   <tr>
                                      <td class="text-wide">
-                                        <h4>{{offers.gig_title}}</h4>
+                                        <h4>I will {{offers.gig_title}}</h4>
                                         <span>{{offers.offer_desc}}</span>
                                      </td>
                                      <td class="text-simple ">
@@ -248,9 +248,9 @@
                            <select name="offer[custom_offer][duration]" class="js-ddown-delivery" id="delivery_time" required>
                               {% for del in delivery_time %}
                                  {% if forloop.first %}
-                                    <option value="{{del.parameter_value}}" selected="">{{del.parameter_value}}</option>
+                                    <option value="{{del.parameter_value}}" selected="">{{del.parameter_value}} Days</option>
                                  {% else %}
-                                    <option value="{{del.parameter_value}}">{{del.parameter_value}}</option>
+                                    <option value="{{del.parameter_value}}">{{del.parameter_value}} Days</option>
                                  {% endif %}
                               {% endfor %}
                            </select>
@@ -424,7 +424,7 @@
             $("#sent_offers").text(JsonObj.length);
             $("#tbl_sent_offers tbody").empty();
             $.each(JsonObj, function(i, v8) {
-               $("#tbl_sent_offers tbody").append(' <tr> <td class="text-wide"> <h4>'+v8.gig_title+'</h4> <span> '+v8.offer_desc+'</span> </td> <td class="text-simple "> <span>'+v8.duration+' Days</span> </td> <td class="text-simple "> <span>$ '+v8.price+'</span> </td> <td class="profile-sml"> <span class="user-pict-24"><img src="'+v8.buyer_img+'" alt="xringo" width="24" height="24"></span> <span></span> </td> <td class="text-simple "> <h4 class="txt-green">'+v8.buyer_name+'</h4> <span> '+v8.buyer_req_desc+'</span> <div> <div class="info-line">Delivery Time - '+v8.buyer_delivery_time+'</div> <div class="info-line">Budget - <span>$ '+v8.buyer_price+'</span></div> </div> </td> </tr> ');
+               $("#tbl_sent_offers tbody").append(' <tr> <td class="text-wide"> <h4>I will '+v8.gig_title+'</h4> <span> '+v8.offer_desc+'</span> </td> <td class="text-simple "> <span>'+v8.duration+' Days</span> </td> <td class="text-simple "> <span>$ '+v8.price+'</span> </td> <td class="profile-sml"> <span class="user-pict-24"><img src="'+v8.buyer_img+'" alt="xringo" width="24" height="24"></span> <span></span> </td> <td class="text-simple "> <h4 class="txt-green">'+v8.buyer_name+'</h4> <span> '+v8.buyer_req_desc+'</span> <div> <div class="info-line">Delivery Time - '+v8.buyer_delivery_time+'</div> <div class="info-line">Budget - <span>$ '+v8.buyer_price+'</span></div> </div> </td> </tr> ');
             });
          }
     });

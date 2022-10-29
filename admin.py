@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,Gig_favourites,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic
+from kworkapp.models import Categories,UserGigPackages,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -164,6 +164,44 @@ class AdminLearningTopicDetails(admin.ModelAdmin):
     list_display = ['topic_Name','topic_description','image_Text']
 
 admin.site.register(LearningTopicDetails, AdminLearningTopicDetails)
+
+class AdminOrder_Conversation(admin.ModelAdmin):
+    list_display = ['initiator','receiver','timestamp','order_no']
+
+admin.site.register(Order_Conversation, AdminOrder_Conversation)
+
+class AdminConversation(admin.ModelAdmin):
+    list_display = ['initiator','receiver','timestamp']
+
+admin.site.register(Conversation, AdminConversation)
+
+class AdminMessage(admin.ModelAdmin):
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','message_type']
+
+admin.site.register(Message, AdminMessage)
+
+class AdminMessage_Response_Time(admin.ModelAdmin):
+    list_display = ['receiver','timestamp']
+
+admin.site.register(Message_Response_Time, AdminMessage_Response_Time)
+
+
+class AdminUser_orders_Extra_Gigs(admin.ModelAdmin):
+    list_display = ['order_no','package_gig_name','gig_extra_package']
+
+admin.site.register(User_orders_Extra_Gigs, AdminUser_orders_Extra_Gigs)
+
+
+class AdminOrder_Delivery(admin.ModelAdmin):
+    list_display = ['delivery_message','attachment','delivery_date','order_no','delivered_by','delivered_to','delivery_status']
+
+admin.site.register(Order_Delivery, AdminOrder_Delivery)
+
+class AdminOrder_Message(admin.ModelAdmin):
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type']
+
+admin.site.register(Order_Message, AdminOrder_Message)
+
 
 class AdminLearningTopicCounts(admin.ModelAdmin):
     list_display = ['topic_name','ip_address']
