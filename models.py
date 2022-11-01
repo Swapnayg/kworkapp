@@ -99,6 +99,7 @@ class User(AbstractBaseUser):
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     affiliate_code= ShortUUIDField(length=6,max_length=6,alphabet="123456",blank=True,unique=True, editable=False, default=shortuuid.uuid,null=True)
     referrals_earnings =  models.IntegerField(blank=True,default="0",null=True)
+    pay_pal_mail_id = models.EmailField(max_length=300, blank=True, null=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -152,6 +153,18 @@ class Conversation(models.Model):
     class Meta:
         verbose_name = _("Conversation")
         verbose_name_plural = _("Conversations")
+
+    def __str__(self):
+        return str(self.timestamp)
+    
+class ChatWords(models.Model):
+    name =  models.CharField(max_length=200,blank=True,default="",null=True)
+    slug =  models.CharField(max_length=200,blank=True,default="",null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("Chat Word")
+        verbose_name_plural = _("Chat Words")
 
     def __str__(self):
         return str(self.timestamp)
@@ -220,7 +233,7 @@ class supportMapping(models.Model):
 
 class TopicDetails(models.Model):
     topic_Name = models.ForeignKey(supportTopic, on_delete=models.CASCADE,related_name="topic_Name",null=False,blank=False)
-    topic_Desc =  models.TextField()
+    topic_Desc =  models.TextField(blank=True,default="",null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -621,8 +634,8 @@ class Buyer_Post_Request(models.Model):
     BOOL_CHOICES =[('24hours', '24 Hours'),('3days', '3 Days'),('7days', '7 Days'),('other', 'Others')]
     BOOL_CHOICES_TYPES =[('individual', 'Individual'),('all', 'All')]
     BOOL_CHOICES_STATUS =[('active', 'Active'),('paused', 'Paused'),('pending', 'Pending'),('rejected', 'Rejected')]
-    service_desc = models.TextField()
-    service_images = models.TextField()
+    service_desc = models.TextField(blank=True,default="",null=True)
+    service_images = models.TextField(blank=True,default="",null=True)
     buyer_request_id = ShortUUIDField(length=6,max_length=10,alphabet="123456",blank=True, editable=True, default=shortuuid.uuid,null=True)
     service_category =  models.ForeignKey(Categories, on_delete=models.CASCADE,related_name="Post_Category_Name",null=False,blank=False)
     service_sub_category =  models.ForeignKey(SubSubCategories, on_delete=models.CASCADE,related_name="Post_SubCategory_Name",null=False,blank=False)
@@ -673,12 +686,12 @@ class Request_Offers(models.Model):
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     buyer_request = models.ForeignKey(Buyer_Post_Request, on_delete=models.CASCADE,null=False,blank=False)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
-    offer_desc =  models.TextField()
+    offer_desc =  models.TextField(blank=True,default="",null=True)
     offer_budget = models.CharField(max_length=300,blank=True,default="",null=True)
     offer_time = models.CharField(max_length=300,blank=True,default="",null=True)
     no_revisions = models.CharField(max_length=300,blank=True,default="",null=True)
     ask_requirements =  models.BooleanField(default=False)
-    extra_parameters =  models.TextField()
+    extra_parameters =  models.TextField(blank=True,default="",null=True)
     offer_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="all",null=True)
     offer_date = models.DateTimeField(default=timezone.now, blank=True)
     offer_status_by_buyer = models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="active",null=True)
@@ -711,8 +724,8 @@ class Withdrawal_Parameters(models.Model):
     no_of_days = models.CharField(max_length=500,blank=True,default="",null=True)
     
     class Meta:
-        verbose_name = _("Withdrawal Parameter")
-        verbose_name_plural = _("Withdrawal Parameters")
+        verbose_name = _("Parameter")
+        verbose_name_plural = _("Parameters")
 
     def __str__(self):
         return str(self.no_of_days)
@@ -757,7 +770,7 @@ class Seller_Reviews(models.Model):
     service = models.CharField(max_length=200,blank=True,default="",null=True)
     average_val = models.CharField(max_length=200,blank=True,default="",null=True)
     buyer_response = models.TextField(blank=True,default="",null=True)
-    review_message = models.TextField()
+    review_message = models.TextField(blank=True,default="",null=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     s_review_from = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False,related_name="s_review_from")
@@ -774,7 +787,7 @@ class Seller_Reviews(models.Model):
 
 class Buyer_Reviews(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('cancel', 'Cancelled'),('completed', 'Completed')]
-    review_message = models.TextField()
+    review_message = models.TextField(blank=True,default="",null=True)
     seller_response = models.TextField(blank=True,default="",null=True)
     rating_val = models.CharField(max_length=200,blank=True,default="",null=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=False,blank=False)
@@ -851,16 +864,18 @@ class User_Order_Activity(models.Model):
         return str(self.order_message)
     
 class User_Order_Resolution(models.Model):
-    BOOL_CHOICES_TYPES = [('cancel', 'Cancel Order'),('extention', 'Extension Days')]
-    BOOL_CHOICES_STATUS = [('accepted', 'Accepted'),('rejected', 'Rejected')]
+    BOOL_CHOICES_TYPES = [('cancel', 'Cancel Order'),('extention', 'Extension Days'),('delivered', 'Delivered'),('completed', 'Completed')]
+    BOOL_CHOICES_STATUS = [('accepted', 'Accepted'),('rejected', 'Rejected'),('pending', 'Pending')]
     resolution_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     resolution_text =   models.CharField(max_length=500,blank=True,null=True)
     resolution_message =   models.CharField(max_length=200,blank=True,null=True)
     resolution_desc =   models.CharField(max_length=1000,blank=True,null=True)
-    resolution_personal_msg =   models.CharField(max_length=1000,blank=True,null=True)
     resolution_days =   models.CharField(max_length=200,blank=True,null=True)
     resolution_date = models.DateTimeField(default=timezone.now, blank=True)
+    raised_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_by",null=True,blank=True)
+    raised_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_to",null=True,blank=True)
     resolution_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:
         verbose_name = _("Order Resolution Center")
@@ -895,6 +910,8 @@ class Order_Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    resolution = models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE, related_name="order_con_resolution",blank=True,default="",null=True)
+
 
     class Meta:
         verbose_name = _("Order Message")
@@ -917,7 +934,7 @@ class Message_Response_Time(models.Model):
     
 
 class Order_Delivery(models.Model):
-    BOOL_CHOICES_TYPES = [('delivered', 'Delivered'),('completed', 'Completed')]
+    BOOL_CHOICES_TYPES = [('delivered', 'Delivered'),('completed', 'Completed'),('draft', 'Draft')]
     delivery_message =models.CharField(max_length=1000,blank=True,null=True)
     attachment = models.CharField(max_length=1000,blank=True,null=True)
     delivery_date = models.DateTimeField(default=timezone.now, blank=True)

@@ -30,49 +30,22 @@
                             <h3>What would you like to do?</h3>
                             <ul class="radio-form">
                                <li>
-                                  <label class="fake-radio-green radio-text">
-                                     <input type="radio" data-other="false" data-reasons="_16,_17,_18,_26,_29,_24,_22,_19" data-type="4" data-title="Extend the delivery time" name="solution_id" value="3"><span class="radio-img"></span><!-- react-text: 292 -->Extend the delivery time<!-- /react-text -->
+                                 <label>
+                                    <input type="radio"  onclick="resolution_cat(this);" name="solution_id" value="1" id="solution1">
+                                    <label  for="solution1">Extend the delivery time</label>
                                   </label>
                                </li>
                                <li>
-                                  <label class="fake-radio-green radio-text">
-                                     <input type="radio" data-other="false" data-reasons="_21,_24,_22,_29,_19" data-type="8" data-title="Modify the order" name="solution_id" value="4"><span class="radio-img"></span><!-- react-text: 297 -->Modify the order<!-- /react-text -->
-                                  </label>
-                               </li>
-                               <li>
-                                  <label class="fake-radio-green radio-text">
-                                     <input type="radio" data-other="false" data-reasons="_16,_17,_18,_21,_26,_24,_22,_29,_19" data-type="1" data-title="Ask the buyer to cancel this order" name="solution_id" value="1"><span class="radio-img"></span><!-- react-text: 302 -->Ask the buyer to cancel this order<!-- /react-text -->
+                                 <label>
+                                    <input type="radio"  onclick="resolution_cat(this);" name="solution_id" value="2" id="solution2">
+                                    <label for="solution2">Ask the buyer to cancel this order</label>
                                   </label>
                                </li>
                             </ul>
-                            <div class="m-t-30">
+                            <div class="m-t-30" id="solution2_div">
                                <h3>Your feedback will help us improve</h3>
-                               <ul class="radio-form">
-                                  <li>
-                                     <label class="fake-radio-green radio-text">
-                                        <input type="radio" data-other="false" data-solutions="1,8,16" data-type="price" data-title="We couldn't agree on the price" name="reason_id" value="21"><span class="radio-img"></span><!-- react-text: 310 -->We couldn't agree on the price<!-- /react-text -->
-                                     </label>
-                                  </li>
-                                  <li>
-                                     <label class="fake-radio-green radio-text">
-                                        <input type="radio" data-other="false" data-solutions="1,4,8,16" data-type="requirements" data-title="I didn't receive enough information from the buyer" name="reason_id" value="24"><span class="radio-img"></span><!-- react-text: 315 -->I didn't receive enough information from the buyer<!-- /react-text -->
-                                     </label>
-                                  </li>
-                                  <li>
-                                     <label class="fake-radio-green radio-text">
-                                        <input type="radio" data-other="false" data-solutions="1,4,16" data-type="personal_technical" data-title="Due to personal/technical reasons, I cannot complete the work" name="reason_id" value="22"><span class="radio-img"></span><!-- react-text: 320 -->Due to personal/technical reasons, I cannot complete the work<!-- /react-text -->
-                                     </label>
-                                  </li>
-                                  <li>
-                                     <label class="fake-radio-green radio-text">
-                                        <input type="radio" data-other="false" data-solutions="1,2,4,8,16" data-type="not_in_scope" data-title="The buyer requested additional work, which wasn't in the scope of the original order" name="reason_id" value="29"><span class="radio-img"></span><!-- react-text: 325 -->The buyer requested additional work, which wasn't in the scope of the original order<!-- /react-text -->
-                                     </label>
-                                  </li>
-                                  <li>
-                                     <label class="fake-radio-green radio-text">
-                                        <input type="radio" data-other="true" data-solutions="1,4,8,16" data-type="other" data-title="Other" name="reason_id" value="19"><span class="radio-img"></span><!-- react-text: 330 -->Other<!-- /react-text -->
-                                     </label>
-                                  </li>
+                               <ul class="radio-form" id="solution2_lists">
+
                                </ul>
                             </div>
                          </div>
@@ -89,7 +62,7 @@
                   <div class="col-lg-7 right_pan pt-4">
                      <div class="sub-actions js-next-back">
                         <section class="btns mb-2">
-                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="action_res" data-next="details_res" type="button">Continue</button>
+                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="action_res" data-next="details_res" id="btn_actions" type="button">Continue</button>
                         </section>
                      </div>
                   </div>
@@ -102,73 +75,60 @@
                     <div class="col-lg-1">
                     </div>
                     <div class="col-lg-10 pt-4">
-                        <div class="extras-form">
-                            <h1>Modify Your Order</h1>
-                            <h2>You can modify your order to accommodate your buyer.</h2>
-                            <strong class="p-b-20">Select what you would like to add to your order</strong>
-                            <ul>
-                               <li class="custom-extra display-mode edit-mode">
-                                  <label class="fake-check-black check-text">
-                                     <input type="checkbox" value="on"><span class="chk-img"></span>
-                                     <span class="extra-title">
-                                        <i class="fa fa-pencil"></i><!-- react-text: 342 --> <!-- /react-text --><!-- react-text: 343 -->Add custom extra<!-- /react-text -->
-                                     </span>
-                                  </label>
-                                  <div>
-                                     <div class="custom-extra-form">
-                                        <textarea class="custom-extra-title" placeholder="I will..." maxlength="185"></textarea>                                        
-                                        <div class="p-t-20">
-                                           <!-- react-text: 350 -->For an extra<!-- /react-text --><span class="custom-extra-price"><input type="number" min="5" max="500" class="borderless"></span><!-- react-text: 353 -->and an additional<!-- /react-text -->
-                                           <select>
-                                              <option value="0">0 Days</option>
-                                              <option value="1">1 Day</option>
-                                              <option value="2">2 Days</option>
-                                              <option value="3">3 Days</option>
-                                              <option value="4">4 Days</option>
-                                              <option value="5">5 Days</option>
-                                              <option value="6">6 Days</option>
-                                              <option value="7">7 Days</option>
-                                              <option value="8">8 Days</option>
-                                              <option value="9">9 Days</option>
-                                              <option value="10">10 Days</option>
-                                              <option value="11">11 Days</option>
-                                              <option value="12">12 Days</option>
-                                              <option value="13">13 Days</option>
-                                              <option value="14">14 Days</option>
-                                           </select>
-                                        </div>
-                                     </div>
-                                  </div>
-                               </li>
-                            </ul>
-                            <div class="cf summary">
-                               <span>
-                                  <!-- react-text: 372 -->Expected duration<!-- /react-text --><!-- react-text: 373 -->: <!-- /react-text -->
-                                  <strong>
-                                     <!-- react-text: 375 -->0<!-- /react-text --><!-- react-text: 376 --> Days<!-- /react-text -->
-                                  </strong>
-                               </span>
-                               <span class="rf">
-                                  <!-- react-text: 378 -->Total<!-- /react-text --><!-- react-text: 379 -->: <!-- /react-text -->
-                                  <strong>
-                                     <!-- react-text: 381 -->$<!-- /react-text --><!-- react-text: 382 -->0<!-- /react-text -->
-                                  </strong>
-                               </span>
-                            </div>
+                        <div class="extras-form" id="cancellation_form">
+                            <h1>Request Cancellation</h1>
+                            <h2>You can ask the buyer to cancel this order.</h2>                            
                             <div class="m-t-40">
                                <div class="message-box">
                                   <label for="message">
-                                     <!-- react-text: 386 -->Explain why you would like to modify your order<!-- /react-text --><!-- react-text: 387 --> <!-- /react-text -->
+                                    Explain to the buyer why you would like to cancel this order
                                   </label>
-                                  <textarea name="message" placeholder="Type your message here..."></textarea>
-                                  <span class="chars-counter">
-                                     <!-- react-text: 390 -->0<!-- /react-text --><!-- react-text: 391 -->/<!-- /react-text --><!-- react-text: 392 -->2,500<!-- /react-text --><!-- react-text: 393 --> <!-- /react-text --><!-- react-text: 394 -->Characters<!-- /react-text -->
+                                  <textarea name="message" id="can_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="can_text_char_onkeyup(this);" ></textarea>
+                                  <span class="chars-counter" id="span_can_text_char">
+                                    0/{{resolution_char}} Characters
                                   </span>
                                </div>
                             </div>
-                         </div>
+                        </div>
+                        <div class="extras-form" id="extension_form">
+                            <div class="delivery-form">
+                                <h1>Extend Delivery Time</h1>
+                                <h2>You can ask beinganaatiidu1 to extend the delivery time of this order.</h2>
+                                <div class="select-box">
+                                   <label for="delivery">Select the number of days you would like to add to your delivery time</label>
+                                   <select name="delivery" id="delivery">
+                                      <option value="0">Select</option>
+                                      {% for e_days in extra_days %}
+                                            <option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>
+                                      {% endfor %}
+                                   </select>
+                                   <span class="delivered_by">The order should be delivered by <b> {{ seller_gig_details.0.due_date|date:"M d, y" }} </b></span>
+                                </div>
+                                <div class="message-box">
+                                   <label for="message">
+                                      Explain why you would like to extend your delivery time
+                                   </label>
+                                   <textarea name="message" id="ext_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="ext_text_char_onkeyup(this);" ></textarea>
+                                   <span class="chars-counter" id="span_ext_text_char">
+                                     0/{{resolution_char}} Characters
+                                   </span>
+                                </div>
+                             </div>
+                        </div>
                     </div>
                     <div class="col-lg-1">
+                    </div>
+                 </div>
+
+                 <div class="row tab7" >
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="error-message">
+                            <label class="error"> Please describe your delivery message.</label>
+                         </div>
+                    </div>
+                    <div class="col-lg-2">
                     </div>
                  </div>
                <div class="row tab7" >
@@ -181,7 +141,7 @@
                         <section class="btns mb-2">
                            <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="details_res" data-next="last" type="button">Publish Gig</button>
                         </section>
-                        <button type="button" class="previous naked-button back co-green" data-label="details_res" data-previous="details_res">back</button>
+                        <button type="button" class="previous naked-button back co-green" data-label="details_res" data-previous="action_res">back</button>
                      </div>
                   </div>
                   <div class="col-lg-1">
@@ -193,25 +153,35 @@
       <div class="col-3 text-center p-0 mt-3 mb-2">
         <div class="order-box">
             <div class="info-wrap">
-               <img src="https://fiverr-res.cloudinary.com/t_medium5,q_auto,f_auto,q_auto,f_auto/gigs/213090617/original/ee5f15bd13e8fcaf802a0d164d5158c8055f8431.png">
+               <img src="{{seller_gig_details.0.gig_image}}">
                <div class="info">
                   <h5>
-                     <!-- react-text: 42 -->I will<!-- /react-text --><!-- react-text: 43 --> <!-- /react-text --><!-- react-text: 44 -->build your web applications with no bound of limits welcome<!-- /react-text -->
+                    I will {{seller_gig_details.0.gig_title}}
                   </h5>
                   <ul class="extras">
-                     <li>
-                        <i class="fa fa-check"></i><!-- react-text: 48 -->Unlimited revisions<!-- /react-text -->
-                     </li>
-                     <li>
-                        <i class="fa fa-check"></i><!-- react-text: 51 -->Extend delivery<!-- /react-text -->
-                     </li>
+                    {% for extra in seller_gig_details.0.offer_extra %}
+                        {% if extra.value != 'true' %}
+                            <li>
+                                <i class="fa fa-check"></i> {{extra.value}} - {{extra.name|title}}
+                            </li>
+                        {% else %}
+                            <li>
+                                <i class="fa fa-check"></i>{{extra.name|title}}
+                            </li>
+                        {% endif %}
+                        
+                    {% endfor %}
                   </ul>
                   <ul class="general">
-                     <li><span>Status</span><span class="status-bar in_progress">In Progress</span></li>
-                     <li><span>Order</span><span>#FO3186B04CD07</span></li>
-                     <li><span>Order Date</span><span>Aug 11, 2022</span></li>
+                     {% if seller_gig_details.0.order_status == 'late' %}
+                        <li><span>Status</span><span class="status-bar in_late">{{seller_gig_details.0.order_status}}</span></li>
+                     {% else %}
+                        <li><span>Status</span><span class="status-bar in_progress">{{seller_gig_details.0.order_status}}</span></li>
+                     {% endif %}
+                        <li><span>Order</span><span>#{{seller_gig_details.0.order_no}}</span></li>
+                     <li><span>Order Date</span><span> {{ seller_gig_details.0.order_date|date:"M d, y" }}  </span></li>
                      <li><span>Quantity</span><span>X 1</span></li>
-                     <li><span>Price</span><span>₹12,855</span></li>
+                     <li><span>Price</span><span>$ {{seller_gig_details.0.order_amount}}</span></li>
                   </ul>
                </div>
             </div>
@@ -284,6 +254,11 @@
    transform: translateX(-100%);
    z-index: -1;
    }
+   .error-message
+   {
+    text-align :left;
+    color:red;
+   }
    .generic-section-education>header {
    margin-bottom: 8px;
    }
@@ -292,7 +267,7 @@
    line-height: 16px;
    }
    .gig-title-group .title-education>.img {
-   background: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/gig_management_perseus/apps/gig-edit-tooltip-collection.8cd272d.png) -7px 0 no-repeat;
+  
    width: 232px;
    height: 231px;
    margin-left: -23px;
@@ -308,8 +283,7 @@
    }
    .generic-section-education:before {
    content: "";
-   background: transparent url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/gig_management_perseus/apps/chip.88e56cb.svg) no-repeat 0 0;
-   position: absolute;
+  
    z-index: 1;
    display: block;
    overflow: hidden;
@@ -364,7 +338,7 @@
    color: #222325;
    }
    .regular-gig-generic-education .img-education-video-thumbnail {
-   background: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/gig_management_perseus/apps/overview-education.d427a9c.jpg);
+   
    width: 100%;
    height: 118px;
    background-size: contain;
@@ -583,7 +557,7 @@
    }
    .dropzone-body::before {
    content: "";
-   background: url("https://fiverr-res.cloudinary.com/npm-assets/@fiverr/gig_management_perseus/apps/sprite-gig-edit.c77a1a7.svg") 0px 0px / 300px 100px no-repeat transparent;
+  
    display: block;
    margin: 0px auto;
    padding-bottom: 10px;
@@ -821,7 +795,6 @@
    border-color: currentColor;
    }
    .requirement-item .icn-free-text {
-   background: url("https://fiverr-res.cloudinary.com/npm-assets/@fiverr/gig_management_perseus/apps/free-text-icon.67b067f.svg");
    width: 7px;
    height: 8px;
    display: block;
@@ -2179,6 +2152,12 @@
     border-color:#2E5DC5;
 }
 
+.status-bar.in_late {
+    color: #fff;
+    background-color: orangered;
+    border-color:orangered;
+}
+
 .order-box .info-wrap .info ul.general li span:nth-child(2) {
     position: absolute;
     z-index: 1;
@@ -2268,24 +2247,9 @@ label.fake-radio-green {
     font-size: 14px;
     line-height: 22px;
 }
-.fake-radio-green input[type=radio] {
-    position: absolute;
-    opacity: 0;
-    top: -20px;
-    left: -20px;
-}
-.fake-radio-green .radio-img {
-    background: transparent url(//assetsv2.fiverrcdn.com/assets/v2_globals/icn-master-slim-small-6ccc03f71411e80001d3ce4cdb0cfb97.svg) no-repeat -125px -150px;
-    background-size: 500px 200px;
-    vertical-align: middle;
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-}
-.fake-radio-green.radio-text .radio-img {
-    float: left;
-    margin-right: 8px;
-}
+
+
+
 #action_res  .radio-form li {
     padding-bottom: 10px;
 }
@@ -2317,7 +2281,7 @@ label.fake-radio-green {
     border:none;
 }
 select {
-    background: #fff url(//assetsv2.fiverrcdn.com/assets/v2_globals/select-caret-cf0558e10bbeef187909f5a1d9c2922a.gif) no-repeat right center;
+    background: #fff url('/static/assets/images/files/select-caret-1.gif') no-repeat right center;
     font: 400 16px macan,helvetica neue,Helvetica,Arial,sans-serif;
     color: #62646a;
     border: 1px #b5b6ba solid;
@@ -2375,6 +2339,94 @@ select {
     float: right;
     padding-top: 10px;
 }
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: #2E5DC5;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}
+.radio-text
+{
+   width: 100%;
+}
+
+button:disabled,
+button[disabled]{
+   cursor:not-allowed;
+}
+
+.delivery-form .select-box {
+    margin-bottom: 40px;
+}
+
+.select-box {
+    margin-bottom: 20px;
+    vertical-align: top;
+}
+.select-box label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #555;
+    display: block;
+    padding-bottom: 15px;
+}
+
+.select-box select {
+    width: 169px;
+}
+
+.select-box .delivered_by {
+    color: #999;
+    font-size: 14px;
+    margin-left: 20px;
+    vertical-align: middle;
+}
+
+
 </style>
 <script>
    function extractContent(html) {
@@ -2383,7 +2435,8 @@ select {
           .documentElement.textContent;
   }
    $(document).ready(function(){
-
+      $("#solution2_div").hide();
+      $("#btn_actions").prop("disabled",true);
      $("#description_gig").summernote({
        placeholder: "Write your content here",
        height: 200,
@@ -2422,6 +2475,7 @@ select {
            next_fs =  $(this).attr("data-next"); 
            if(next_fs != "last")
            {
+              $(".error-message").hide();
               $("#progressbar li").eq($("#"+next_fs).index() -1).addClass("active");
               $("#progressbar li").eq($("#"+current_fs).index() -1).removeClass("active")
               $("#"+next_fs).show(); 
@@ -2438,7 +2492,61 @@ select {
            });
         }
         else{
-           console.log("publish")
+            res_type = '';
+            res_desc = '';
+            res_days = '';
+            res_text = '';
+            res_message = '';
+            checked_val = $('input[name="solution_id"]:checked').val();
+            valid_message = false;
+            if(parseInt(checked_val) == 1)
+            {
+                res_type = "extention";
+                res_desc = $("#ext_text_char").val();
+                res_days = $("#delivery").val();
+                res_text = $('input[name="solution_id"]:checked').next().text();
+                res_message = $('input[name="solution_txt"]:checked').next().text();
+                if(res_desc.trim().length == 0 || res_days.trim().length == 0 )
+                {
+                    $(".error-message").show();
+                    valid_message = false;
+                }
+                else{
+                    $(".error-message").hide();
+                    valid_message = true;
+                }
+            }
+            else if(parseInt(checked_val)  == 2)
+            {
+                res_type = "cancel";
+                res_desc = $("#can_text_char").val();
+                res_days = 0;
+                res_text = $('input[name="solution_id"]:checked').next().text();
+                res_message = $('input[name="solution_txt"]:checked').next().text();
+                if(res_desc.trim().length == 0 )
+                {
+                    $(".error-message").show();
+                    valid_message = false;
+                }
+                else{
+                    $(".error-message").hide();
+                    valid_message = true;
+                }
+            }
+            if(valid_message == true)
+            {
+                $.ajax({
+                    type:"POST",
+                    url: "/post_resolutions/",
+                    data: {"res_type":res_type,"res_text":res_text,"res_message":res_message,"res_desc":res_desc,"res_days":res_days,"raised_by":'{{request.user.username}}',"order_no":'{{seller_gig_details.0.order_no}}'},
+                    success: function(data) 
+                    {
+                        location_href =  $(location).attr('href').split("/");
+                        window.location = location_href[0]+"//"+location_href[2] + '/user/{{request.user.username}}/manage_orders/{{seller_gig_details.0.order_no}}/activities';
+                    }
+                }); 
+            } 
+            
         }
    });
    
@@ -2449,6 +2557,35 @@ select {
      }).toggle();
    });
    });
+
+   function resolution_cat(ev)
+   {
+      lists1 = ["We couldn't agree on the price","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
+      lists2 = ["The buyer is not responding","The buyer will order again","I’m too busy for this job","We couldn't agree on the price","I'm not able to do this job","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
+      $("#solution2_lists").empty();
+      if(ev.value == 1)
+      {
+        $("#extension_form").show();
+        $("#cancellation_form").hide();
+         $.each(lists1, function(i, v) {
+            $("#solution2_lists").append('<label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label>');
+         });
+      }
+      else if(ev.value == 2)
+      {
+        $("#extension_form").hide();
+        $("#cancellation_form").show();
+         $.each(lists2, function(i, v) {
+            $("#solution2_lists").append('<label class="radio-text" ><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label>');
+         });
+      }
+      $("#btn_actions").prop("disabled",true);
+      $("#solution2_div").show();
+   }
+   function solution2_onclick(ev)
+   {
+      $("#btn_actions").prop("disabled",false);
+   }
    function openTab(evt) {
    cityName= $(evt).attr("data-label");
    var tab_height =0;
@@ -2479,6 +2616,32 @@ select {
        $(".tab").css("height",parseInt($("#" + cityName).height()) + "px");
    }
    }
+
+   function can_text_char_onkeyup(ev)
+   {
+      var thisChars = ev.value.replace(/{.*}/g, '').length; 
+         var maxlength = $(ev).attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         }else{
+            $("#span_can_text_char").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
+         }
+   }  
    
+   function ext_text_char_onkeyup(ev)
+   {
+      var thisChars = ev.value.replace(/{.*}/g, '').length; 
+         var maxlength = $(ev).attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         }else{
+            $("#span_ext_text_char").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
+         }
+   }   
+ 
 </script>
 {% endblock %}

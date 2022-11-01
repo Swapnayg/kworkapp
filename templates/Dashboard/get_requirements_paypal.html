@@ -123,7 +123,13 @@
      </div>
 </div>
 {% include  'footer.html' %}
-
+<style>
+    .FW1syM7 {
+        font-size: 12px;
+        width: 25%;
+    }
+    
+</style>
 <script>
     $(document).ready(function(){
         location_href =  $(location).attr('href').split("/");
@@ -135,10 +141,11 @@
         base_price = location_href[10]
         total_price = location_href[11]
         service_fees = location_href[12]
+        extra_gigs = location_href[14]
         $.ajax({
             type:"GET",
             url: "/post_paypal_transaction/",
-            data: {'u_offer_id': offer_id,'u_user_id': {{request.user.id}},'u_paypal_id': paypal_id,'u_paypal_email': paypal_email,'u_trans_id': trans_id,'u_trans_status': trans_status,"u_base_price":base_price,"u_total_price":total_price,"u_service_fees":service_fees},
+            data: {'u_offer_id': offer_id,'u_user_id': {{request.user.id}},'u_paypal_id': paypal_id,'u_paypal_email': paypal_email,'u_trans_id': trans_id,'u_trans_status': trans_status,"u_base_price":base_price,"u_total_price":total_price,"u_service_fees":service_fees ,"u_extra_gigs":extra_gigs},
             success: function(data)
             {
                 jsonObj = JSON.parse(data);

@@ -6,6 +6,12 @@
 <script src="https://www.paypal.com/sdk/js?client-id=AW-FHqM7mF3sp-BfzARq-tPwp4k7uQV0kLtobOD5DuKvjaAf_g2K4Nw3ZINXxAasjmj88LnUWo2quBRN&currency=USD&disable-funding=credit,card"></script>
 <div class="all_page page-flex__content pt0 m0">
     <div id="event_list" class="event-list js-event-list"></div>
+
+    <input type="hidden"  value="{{gig_details.0.serv_fees_type}}" id="ser_fee_type" />
+    <input type="hidden" value="{{gig_details.0.serv_fees_val}}" id="ser_fee_val" />
+    <input type="hidden" value="{{gig_details.0.offer_revisions}}" id="base_rev" />
+    <input type="hidden" value="" id="base_price_wout_sf" />
+    <input type="hidden" value="" id="extra_gig_val" />
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-0" id="manage_payments">
         <div class="col-11 text-center p-0 mt-3 mb-2">
@@ -225,9 +231,28 @@
                                       </header>
                                       <article class="order-details-general">
                                          <span class="order-details-general-title text-display-7">{{gig_details.0.gig_title}}</span>
-                                         <div class="quantity-price-container "><span class="order-details-general-quantity hide">1</span><span class="price order-details-general-price">$ {{gig_details.0.offer_price}}</span></div>
+                                         <div class="quantity-price-container "><span class="order-details-general-quantity hide">1</span><span class="price order-details-general-price" id="offer_price">$ {{gig_details.0.offer_price}}</span></div>
                                       </article>
-                                      <ul class="order-details-items-container">
+                                      <div class="extra-border" id= "extra_addOn">
+                                       {% for e_gigs in extra_gigs %}
+                                      <ul class="flex flex-col extra-factors extra-pricing-factor-list">
+                                       <li class="pf-container" data-label-type="number"> 
+                                       <ul> 
+                                       <li class="pf-row"> 
+                                          <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="lbel{{ forloop.counter }}"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" id="lbel{{ forloop.counter }}" data-label="{{e_gigs.id}}" value="{{e_gigs.extra_gig_price}}"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span>{{e_gigs.extra_gig_title}} </label> 
+                                             <div class="quantity-price-container "><span class="order-details-general-quantity ">{{e_gigs.extra_gig_duration}} days</span><span class="price order-details-general-price">$ {{e_gigs.extra_gig_price}}</span></div>
+                                          </div>
+                                          <div class="factor-decription">  
+                                             <p> {{e_gigs.extra_gig_description}}
+                                             </p>
+                                          </div> 
+                                       </li>
+                                       </ul> 
+                                       </li>
+                                       </ul>
+                                       {% endfor %} 
+                                    </div> 
+                                      <ul class="order-details-items-container" id="revisiondiv">
                                          <li class="order-details-item">
                                             <span class="item-title">
                                                <span class="fit-icon order-details-item-icon" style="width: 16px; height: 16px; fill: rgb(29, 191, 115);">
@@ -250,12 +275,12 @@
                                             Service fee
                                             <div class="fit-popover fit-popover-top fit-tooltip tooltip" data-position="top"><span class="fit-popover-content"><i class="fa fa-question-circle" content="[object Object]" position="top"></i></span></div>
                                          </span>
-                                         <span class="price">$ {{gig_details.0.service_fees}}</span>
+                                         <span class="price" id="serv_fees">$ {{gig_details.0.service_fees}}</span>
                                       </div>
                                    </div>
                                    <div class="summary-footer">
-                                      <div class="table-row total-price"><span class="row-title">Total</span><span class="price">$ {{gig_details.0.total_amount}}</span></div>
-                                      <div class="table-row delivery-date"><span class="row-title">Total Delivery Time</span><span class="date">{{gig_details.0.offer_revisions}} days</span></div>
+                                      <div class="table-row total-price"><span class="row-title">Total</span><span class="price" id="serv_total_fees">$ {{gig_details.0.total_amount}}</span></div>
+                                      <div class="table-row delivery-date"><span class="row-title">Total Delivery Time</span><span class="date" id="serv_days">{{gig_details.0.offer_revisions}} days</span></div>
                                    </div>
                                    <div class="pay-button-component">
                                       <div class="pay-button-component">
@@ -278,10 +303,12 @@
                                                 <input type="hidden" name="customer[email]" value="{{gig_details.0.pay_to_user_email}}" />
                                                 <input type="hidden" name="customer[name]" value="{{gig_details.0.pay_to_user}}" />
                                                 <input type="hidden" name="tx_ref" value="{{gig_details.0.tax_ref_name}}" />
-                                                <input type="hidden" name="amount" value="{{gig_details.0.total_amount}}" />
+                                                <input type="hidden" id="flutter_amount" name="amount" value="{{gig_details.0.total_amount}}" />
                                                 <input type="hidden" name="currency" value="USD" />
                                                 <input type="hidden" name="meta[token]" value="{{gig_details.0.offer_id}}" />
-                                                <input type="hidden" name="redirect_url" value="{{base_url}}requirements/flutter/{{gig_details.0.offer_id}}/{{gig_details.0.offer_price}}/{{gig_details.0.total_amount}}/{{gig_details.0.service_fees}}/{{gig_details.0.pay_to_user}}" />
+                                                <input type="hidden" name="meta[data_extra]" id="flutter_extra_gigs" value="None" />
+                                                <input type="hidden" name="meta[base_price_wsdf]" id="flutter_base_price_wsdf" value="" />
+                                                <input type="hidden" name="redirect_url" value="{{base_url}}requirements/flutter/{{gig_details.0.offer_id}}/{{gig_details.0.offer_price}}/{{gig_details.0.total_amount}}/{{gig_details.0.service_fees}}/{{gig_details.0.pay_to_user}}/" />
                                                 <button type="submit" id="start-payment-button" class="agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700"><span class="button-message">Confirm &amp; Pay</span></button>
                                               </form>
                                           </div>
@@ -289,7 +316,7 @@
                                       <div class="secure-payment"><i class="fa fa-lock"></i><span>SSL Secure Payment</span></div>
                                    </div>
                                    <section class="currency-section">
-                                      <div class="currency-message tbody-6">You will be charged<span class="price">$ {{gig_details.0.total_amount}} </span>. Total amount includes currency conversion fees.</div>
+                                      <div class="currency-message tbody-6">You will be charged<span class="price" id="bottom_price">$ {{gig_details.0.total_amount}} </span>. Total amount includes currency conversion fees.</div>
                                    </section>
                                 </section>
                              </aside>
@@ -307,19 +334,138 @@
     </div>
  </div>
  {% include  'footer.html' %}
+<style>
+   .extra-border {
+      border-bottom: 1px solid #e4e5e7;
+      border-right: 1px solid #e4e5e7;
+      border-left: 1px solid #e4e5e7;
+  }
+  .extra-border ul {
+      list-style: none;
+      list-style-image: none;
+  }
+  .extra-pricing-factor-list .pf-container {
+      position: relative;
+  }
+  .pf-row {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      position: relative;
+      padding: 10px 15px;
+      background: #fff;
+      border-top: 1px solid #e4e5e7;
+      font-size: 13px;
+      text-align: left;
+  }
+  #revisiondiv
+  {
+      margin-top:5%;
+  }
+  .factor-title .order-details-general-quantity 
+  {
+      margin-right: 7px;
+  }
+  .fit-checkbox {
+   display: -webkit-inline-box;
+   display: -ms-inline-flexbox;
+   display: inline-flex;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   color: #404145;
+}
+.fit-checkbox input[type=checkbox] {
+   height: 0;
+   width: 0;
+   opacity: 0;
+}
+
+.fit-checkbox .checkmark-box {
+   -webkit-box-sizing: border-box;
+   box-sizing: border-box;
+   display: -webkit-inline-box;
+   display: -ms-inline-flexbox;
+   display: inline-flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   -webkit-box-pack: center;
+   -ms-flex-pack: center;
+   justify-content: center;
+   position: relative;
+   width: 18px;
+   min-width: 18px;
+   height: 18px;
+   border: 1px solid #c5c6c9;
+   border-radius: 2px;
+   margin-right: 12px;
+   cursor: pointer;
+   -webkit-transition: .15s ease-in-out;
+   -o-transition: .15s ease-in-out;
+   transition: .15s ease-in-out;
+}
+.fit-checkbox .checkmark-box .check-icon {
+   -webkit-transform: scale(.5);
+   transform: scale(.5);
+   -webkit-transform-origin: 50% 50%;
+   transform-origin: 50% 50%;
+   display: inline-block;
+   font-weight: inherit;
+   font-style: inherit;
+   opacity: 0;
+   pointer-events: none;
+   fill: #62646a;
+   -webkit-transition: .15s ease-in-out;
+   -o-transition: .15s ease-in-out;
+   transition: .15s ease-in-out;
+}
+.factor-title .quantity-price-container 
+{
+   float:right;
+}
+.fit-icon svg {
+   float: left;
+   height: 100%;
+   width: 100%;
+}
+#revisiondiv svg
+{
+   width: 15px;
+    margin-right: 5px;
+    margin-top: 2px;
+}
+.fit-checkbox input:checked+.checkmark-box .check-icon {
+   -webkit-transform: none;
+   transform: none;
+   opacity: 1;
+}
+</style>
 <script>
     $(document).ready(function(){
         $(".header_top").hide();
         $("#paypal_button").hide();
         $("#flutter_button").hide();
         $("#flutter_wave").prop("checked", true);
+        //$("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]').trigger("change");
         $("#flutter_wave").trigger("change");
         paypal.Buttons({
          createOrder: function(data, actions) {
              return actions.order.create({
                  purchase_units: [{
                      amount: {
-                         value: '{{gig_details.0.total_amount}}'
+                         value:  parseFloat($("#serv_total_fees").text().match(/\d+/)[0]).toFixed(2)
                      }
                  }]
              });
@@ -331,17 +477,21 @@
 					  var payer_id = orderData.payer['payer_id'];
                  var transaction_id =transaction.id;
                  var transaction_status =transaction.status;
-                 base_price = '{{gig_details.0.offer_price}}'
-                 total_price = '{{gig_details.0.total_amount}}'
-                 fees = '{{gig_details.0.service_fees}}'
+                 base_price = $("#base_price_wout_sf").val().match(/\d+/)[0];
+                 total_price = $("#serv_total_fees").text().match(/\d+/)[0];
+                 fees = $("#serv_fees").text().match(/\d+/)[0];
+                 extra_gigs_val = $("#extra_gig_val").val();
+                 if(extra_gigs_val.trim().length == 0){
+                     extra_gigs_val = "None"
+                 }                    
                  location_href =  $(location).attr('href').split("/");
-                 window.location.href = location_href[0]+"//"+location_href[2] +"/requirements/paypal/{{gig_details.0.offer_id}}/"+payer_id+"/"+payer_email+"/"+transaction_id+"/"+transaction_status+"/"+base_price+"/"+ total_price +"/" + fees+"/" + '{{gig_details.0.pay_to_user}}';
+                 window.location.href = location_href[0]+"//"+location_href[2] +"/requirements/paypal/{{gig_details.0.offer_id}}/"+payer_id+"/"+payer_email+"/"+transaction_id+"/"+transaction_status+"/"+base_price+"/"+ total_price +"/" + fees+"/" + '{{gig_details.0.pay_to_user}}' +"/" + extra_gigs_val;
              });
          }
      }).render('#paypal-button-container');
     });
     function paymentmode_click(ev)
-    {
+    { 
       $(".fit-radio").parent().removeClass("selected");
       $(ev).parent().addClass("selected");
       event_id = $(ev).attr("id");
@@ -354,6 +504,86 @@
       {
          $("#paypal_button").show();
          $("#flutter_button").hide();
+      }
+    }
+    function add_on_click(ev)
+    {
+      parentdiv = $(ev).parent().parent();
+      base_price = $("#offer_price").text().match(/\d+/)[0];
+      curr_price = $(parentdiv).find(".price").text().match(/\d+/)[0];
+      //duration = $(parentdiv).find(".order-details-general-quantity").text().match(/\d+/)[0];
+      service_fees = $("#serv_fees").text().match(/\d+/)[0];
+      service_total = $("#serv_total_fees").text().match(/\d+/)[0];
+      service_days = $("#base_rev").val().match(/\d+/)[0];
+      service_fee_val = $("#ser_fee_val").val();
+      service_fee_type = $("#ser_fee_type").val();
+      chckedPrice = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
+         return $(this).val();
+     }).get();
+     extra_gig_vals = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
+         return $(this).attr("data-label");
+      }).get().join(", ");
+      {% comment %} ifextra_gig_vals).trim().length == 0)
+      {
+         extra_gig_vals = "None";
+      } {% endcomment %}
+     revision_days = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
+         return $(this).parent().parent().find('.order-details-general-quantity').text().match(/\d+/)[0];
+      }).get();
+     var price = 0;
+     for (var i = 0; i < chckedPrice.length; i++) {
+      price += chckedPrice[i] << 0;
+   }
+   var duration = 0;
+     for (var i = 0; i < revision_days.length; i++) {
+      duration += revision_days[i] << 0;
+   }
+      if( $(ev).is(':checked'))
+      {
+
+         totl_price_cal = parseInt(base_price) + parseInt(price);
+         ser_fee_cal = ''
+         if(service_fee_type == "flat")
+         {
+            ser_fee_cal = service_fee_val;
+         }
+         else
+         {
+            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)* parseInt(service_fee_val))/100).toFixed(2);
+         }
+         $("#base_price_wout_sf").val(totl_price_cal);
+         $("#flutter_base_price_wsdf").val(totl_price_cal);
+         totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
+         $("#serv_total_fees").text("$ "+  totl_price_cal);
+         $("#flutter_amount").val(totl_price_cal);
+         $("#flutter_extra_gigs").val(extra_gig_vals);
+         $("#extra_gig_val").val(extra_gig_vals);
+         $("#bottom_price").text("$ "+  totl_price_cal);
+         $("#serv_fees").text("$ "+  ser_fee_cal);
+         $("#serv_days").text(parseInt(duration) + parseInt(service_days) + " days");
+      }
+      else
+      {
+         $("#base_price_wout_sf").val(totl_price_cal);
+         $("#flutter_base_price_wsdf").val(totl_price_cal);
+         totl_price_cal = parseInt(base_price) + parseInt(price);
+         ser_fee_cal = ''
+         if(service_fee_type == "flat")
+         {
+            ser_fee_cal = service_fee_val;
+         }
+         else
+         {
+            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)* parseInt(service_fee_val))/100).toFixed(2);
+         }
+         totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
+         $("#serv_total_fees").text("$ "+  totl_price_cal);
+         $("#serv_fees").text("$ "+  ser_fee_cal);
+         $("#extra_gig_val").val(extra_gig_vals);
+         $("#flutter_extra_gigs").val(extra_gig_vals);
+         $("#bottom_price").text("$ "+  totl_price_cal);
+         $("#serv_days").text(parseInt(duration) + parseInt(service_days) + " days");
+         $("#flutter_amount").val(totl_price_cal);
       }
     }
 </script>

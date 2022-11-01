@@ -15,6 +15,7 @@
                      <ul id="progressbar">
                         <li class="active" id="account"><strong>Create Account</strong></li>
                         <li id="category"><strong>Category</strong></li>
+                        <li id="payments"><strong>Account Details</strong></li>
                         <li id="language"><strong>Language</strong></li>
                         <li id="overview"><strong>Overview</strong></li>
                         <li id="prof_image"><strong>Profile Image</strong></li>
@@ -105,7 +106,7 @@
                         <div class="form-card" id="category_form">
                            <div class="header pb-4">
                               <h5>Which category are you specializing In</h5>
-                              <span class="text-muted">2 of 6</span>
+                              <span class="text-muted">2 of 7</span>
                            </div>
                            <div class="body mt-4 mb-4 pb-4">
                               <h5 class="mb-3">Tell us about the work you do</h5>
@@ -138,11 +139,28 @@
                         <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
                         <input type="button" name="next" class="next action-button" value="Next Step"id="create_category" />
                      </fieldset>
+
+                     <fieldset>
+                        <div class="form-card" id="payment_form">
+                           <div class="header pb-4">
+                              <h5>Account Details</h5>
+                              <span class="text-muted">3 of 7</span>
+                           </div>
+                           <div class="body mt-4 mb-4 pb-4">
+                              <h5 class="mb-3">Enter your paypal email address.</h5>
+                              <input type="email" id="paypalemail" placeholder="Enter Email Address" required>
+                              
+                              <label id="payment_error" class="error_mssg"></label>
+                           </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="next" class="next action-button" value="Next Step" id="create_paypal" />
+                     </fieldset>
                      <fieldset>
                         <div class="form-card" id="language_form">
                            <div class="header pb-4">
                               <h5>Select your languages</h5>
-                              <span class="text-muted">3 of 6</span>
+                              <span class="text-muted">4 of 7</span>
                            </div>
                            <div class="body mt-4 mb-4 pb-4">
                               <h6 class="mb-3">What is your English proficiency?</h6>
@@ -217,7 +235,7 @@
                         <div class="form-card" id="overview_form">
                            <div class="header pb-4">
                               <h5>Your Profile Title & Overview</h5>
-                              <span class="text-muted">4 of 6</span>
+                              <span class="text-muted">5 of 7</span>
                            </div>
                            <div class="body mt-4">
                               <div class="form-group">
@@ -246,7 +264,7 @@
                         <div class="form-card" id="profile_form">
                            <div class="header pb-4">
                               <h5>Upload your profile photo</h5>
-                              <span class="text-muted">5 of 6</span>
+                              <span class="text-muted">6 of 7</span>
                            </div>
                            <div class="body mt-4">
                               <p class="b_p_1">Please upload a professional portrait that clearly shows your face.</p>
@@ -562,7 +580,7 @@
    #progressbar li {
    list-style-type: none;
    font-size: 12px;
-   width: 16%;
+   width: 14%;
    float: left;
    position: relative;
    }
@@ -574,6 +592,10 @@
    font-family: FontAwesome;
    content: "\f022";
    }
+   #progressbar #payments:before {
+      font-family: FontAwesome;
+      content: "\f1ed";
+      }
    #progressbar #expertise:before {
    font-family: FontAwesome;
    content: "\f275";
@@ -659,7 +681,7 @@
   }
     
    $(document).ready(function(){
-      $('#seller_headline').trigger('keyup');
+      $('#seller_headline').trifgger('keyup');
       $("#seller_about").summernote({
         placeholder: "Write your content here",
         height: 200,
@@ -682,7 +704,7 @@
                var CharsToDel = (thisChars-maxlength); 
                this.value = this.value.substring(0,this.value.length-CharsToDel); 
             }else{
-               $(".countDesc").text( maxlength - thisChars ); 
+               $(".countDesc").text(  maxlength - thisChars + " /"+maxlength  +" max"  ); 
             }  
          }
        }
@@ -859,6 +881,43 @@
          else{
             $("#category_error").show();
             $("#category_error").text(" error please fill all fields!");
+         }
+      }
+
+      else if($(this).attr("id") == "create_paypal")
+      {
+         var paypal_val = $("#paypalemail").val();
+         if(paypal_val.length != 0)
+         { 
+            $.ajax({
+               type:"GET",
+               url: "/post_user_paypal/",
+               data: {'userid': $("#userprimaryval").val(),'upaypal': paypal_val},
+               success: function(data)
+               {  
+                  if(data == "success")
+                  {
+                     $("#payment_error").hide();
+                     $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                     next_fs.show(); 
+                     current_fs.animate({opacity: 0}, {
+                     step: function(now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                           'display': 'none',
+                           'position': 'relative'
+                        });
+                        next_fs.css({'opacity': opacity});
+                     }, 
+                     duration: 600
+                     });
+                  }
+				   }
+				});
+         }
+         else{
+            $("#payment_error").show();
+            $("#payment_error").text(" error please fill paypal mail address!");
          }
       }
       else if($(this).attr("id") == "create_language")
@@ -1039,7 +1098,7 @@ function accnt_headline_onchange(ev)
          var CharsToDel = (thisChars-maxlength); 
          this.value = this.value.substring(0,this.value.length-CharsToDel); 
       }else{
-         $(".countTitle").text( maxlength - thisChars ); 
+         $(".countTitle").text(  maxlength - thisChars + " /"+maxlength  +" max" ); 
       }
 }
 function addLanguageClick()

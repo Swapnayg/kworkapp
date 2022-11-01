@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -24,7 +24,7 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','affiliate_code','referrals_earnings','offers_left','current_earning')
+    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id')
     list_filter = ('is_admin', 'is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('email', 'username','seller_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons")}),
@@ -46,10 +46,13 @@ def add_user(sender, **kwargs):
     if kwargs['created']: 
         if(kwargs.get('instance').is_admin == False):
             curr_user = User.objects.get(id=kwargs.get('instance').id)
-            ip_address = str(whatismyip.whatismyip())   
-            user_referral = Referral_Users.objects.get(ip_address=ip_address,refferal_user=None)
-            user_referral.refferal_user = curr_user 
-            user_referral.save() 
+            ip_address = str(whatismyip.whatismyip())
+            try:               
+                user_referral = Referral_Users.objects.get(ip_address=ip_address,refferal_user=None)
+                user_referral.refferal_user = curr_user 
+                user_referral.save()
+            except:
+                pass
 
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
@@ -132,8 +135,14 @@ class AdminUser_Order_Activity(admin.ModelAdmin):
 admin.site.register(User_Order_Activity, AdminUser_Order_Activity)
 
 
+class AdminChatWords(admin.ModelAdmin):
+    list_display = ['name','slug','timestamp']
+
+admin.site.register(ChatWords, AdminChatWords)
+
+
 class AdminUser_Order_Resolution(admin.ModelAdmin):
-    list_display = ['resolution_type','resolution_text','resolution_message','resolution_desc','resolution_personal_msg','resolution_days','resolution_date','resolution_status']
+    list_display = ['resolution_type','resolution_text','resolution_message','resolution_desc','resolution_days','resolution_date','resolution_status','order_no','raised_by','raised_to']
 
 admin.site.register(User_Order_Resolution, AdminUser_Order_Resolution)
 
@@ -198,7 +207,7 @@ class AdminOrder_Delivery(admin.ModelAdmin):
 admin.site.register(Order_Delivery, AdminOrder_Delivery)
 
 class AdminOrder_Message(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type']
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type','resolution']
 
 admin.site.register(Order_Message, AdminOrder_Message)
 

@@ -123,10 +123,17 @@
      </div>
 </div>
 {% include  'footer.html' %}
+<style>
+    .FW1syM7 {
+        font-size: 12px;
+        width: 25%;
+    }
+    
+</style>
 <script>
     $(document).ready(function(){
         location_href =  $(location).attr('href').split("/");
-        parameters = location_href[9].split("?");
+        parameters = location_href[10].split("?");
         params = parameters[1].split("&")
         status = params[0].split("=")[1]
         trans_ref = params[1].split("=")[1]
