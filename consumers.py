@@ -7,7 +7,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
 from notifications.signals import notify
 from .models import User
-from .models import Message, Conversation
+from .models import Message, Conversation,Order_Message, Order_Conversation,User_orders
 from django.db.models import Q
 
 class ChatConsumer(WebsocketConsumer):
@@ -49,7 +49,7 @@ class ChatConsumer(WebsocketConsumer):
         conversation = Conversation.objects.get(Q(initiator=sender,receiver=receiver) | Q(initiator=receiver,receiver=sender))
 
         # Attachment
-        if attachment:
+        if len(attachment.strip()) != 0:
             file_str, file_ext = attachment["data"], attachment["format"]
 
             # make i no lie, i don't know what happens here. later things
@@ -138,3 +138,6 @@ class ChatConsumer(WebsocketConsumer):
                     }
                 )
             )
+
+
+

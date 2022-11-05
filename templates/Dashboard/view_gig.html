@@ -20,6 +20,9 @@
                            {% if gig_package_Details|length > 1 %}
                               <li class="nav-packagesTable"><a href="#packagesTable">Compare packages</a></li>
                            {% endif %}
+                           {% if extra_gigs|length > 0 %}
+                              <li class="nav-packagesTable"><a href="#extragigTable">Extra Gigs</a></li>
+                           {% endif %}
                            <li class="nav-recommendations"><a href="#recommendations">Recommendations</a></li>
                        </ul>
                        <aside class="actions">
@@ -345,6 +348,37 @@
                              </table>
                          </div>
                          {% endif %}
+                         <div class="reviews-package is-collapsed is-collapsable mt-5" id="extragigTable">
+                           <header class="reviews-header breakdown-header">
+                              <div class="details">
+                                 <h2 class="text-display-5">
+                                    <span>
+                                       Extra Gigs 
+                                    </span>
+                                 </h2>
+                               
+                              </div>
+                           </header>
+                           <span class="filters-section">
+                              <div class="breakdown-wrapper grid-12">
+                               <div class="row">
+                                 {% for e_gigs in extra_gigs %}
+                                 <div class="stats-desc">
+                                    <ul class="user-stats">
+                                       <li class="e_gig_title">
+                                          <div class="extra_gig_attr">{{e_gigs.extra_gig_title}} <strong class="e_gig_days">{{e_gigs.extra_gig_duration}} days</strong><strong class="e_gig_price">$ {{e_gigs.extra_gig_price}}</strong></div>
+                                          <div class="extra_gig_desc">
+                                             <p> {{e_gigs.extra_gig_description}}
+                                             </p>
+                                          </div>
+                                       </li>
+                                    </ul>
+                                  </div>
+                                 {% endfor %}
+                               </div>
+                              </div>
+                           </span>
+                         </div> 
                          <div class="reviews-package is-collapsed is-collapsable mt-5" id="reviews">
                             <header class="reviews-header breakdown-header">
                                <div class="details">
@@ -764,6 +798,79 @@
     </div>
   </div>
 </div>
+<style>
+   .ZQi_S8t:focus, .ZQi_S8t:hover
+   {
+      color:white;
+      outline:none;
+      border:none;
+   }
+
+   .quantity-price-container {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -ms-flex-preferred-size: 40%;
+      flex-basis: 10%;
+      -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+      justify-content: space-between;
+      }
+      .quantity-price-container .order-details-general-quantity {
+      color: #62646a;
+      }
+      .quantity-price-container .order-details-general-quantity.hide {
+      visibility: hidden;
+      }
+      .quantity-price-container .order-details-general-price {
+      color: #62646a;
+      text-align: right;
+      }
+      
+      ul, ol, nav ul, nav ol {
+      list-style: none;
+      list-style-image: none;
+      }
+  
+  .order-details-general-quantity {
+          color: #62646a;
+      }
+  .extra-factors, .pf-container
+  {
+      width: 100%;
+  }
+  #extragigTable .stats-desc, #extragigTable .user-stats
+  {
+   width:100%;
+   margin-top: 2%;
+  }
+
+  .e_gig_title
+  {
+   padding-left: 5%;
+  }
+  .e_gig_days
+  {
+   position: absolute;
+   right: 13%;
+   color:#2E5DC5;
+  }
+  .e_gig_price
+  {
+   position: absolute;
+   right: 20px;
+   color:#2E5DC5;
+  }
+  .extra_gig_desc
+  {
+   font-size: 12px;
+    margin-top:1%;
+  }
+  .stats-desc
+  {
+   border: 1px solid #dadbdd;
+  }
+</style>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />
 <script src="{% static 'assets/js/jquery.light-carousel.js' %}"></script>
 <script>

@@ -120,4 +120,8 @@ urlpatterns  = [
     path("post_delivered_object/",views.post_delivered_object_view,name = 'post_delivered_object'),
     path("post_delivery_file_upload/",views.post_delivery_file_upload_view,name = 'post_delivery_file_upload'),
     path("post_resolutions/",views.post_resolutions_view,name = 'post_resolutions'),
+    path("post_order_upload/",views.post_order_upload_view,name = 'post_order_upload'),
+    path("get_all_order_messages/",views.get_all_order_messages_view,name = 'get_all_order_messages'),
+    path("post_accept_click/",views.post_accept_click_view,name = 'post_accept_click'),
+    path("post_decline_click/",views.post_decline_click_view,name = 'post_decline_click'),
 ]

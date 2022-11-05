@@ -4,6 +4,9 @@
 <title>Letworkbedone - {{request.user.username}} / Shopping - Status of your Order</title>
 <div class="all_page page-flex__content pt0 m0">
     <div id="event_list" class="event-list js-event-list"></div>
+    <input type="hidden"  value="{{seller_user_name}}" id="seller_username" />
+    <input type="hidden"  value="{{buyer_user_name}}" id="buyer_username" />
+    <input type="hidden"  value="{{conversation_id}}" id="conversation_id" />
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-0" id="manage_gigs">
        <div class="col-9 text-center p-0 mt-3 mb-2">
@@ -34,398 +37,22 @@
                                    </div>
                                 </div>
                                 <div class="wrap-box">
-                                   <div class="activities with-extras-loading">
-                                      <div class="activity-date">
-                                         <section class="activity-wrap order-placed">
-                                            <label>
-                                               <span class="stamp order-placed"></span>
-                                               <p class="header-base with-inline-body"><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_order_placed" class="username-url">beinganaatiidu1</a></span> placed the order</span><i class="time-stamp">Aug 11, 6:35 AM</i></p>
-                                            </label>
-                                         </section>
-                                        
-                                      </div>
-                                      <div class="activity-date">
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_7551947545612" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 5, 9:13 AM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">That is support email</p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_0133274945617" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 5, 9:18 AM</i></p>
-                                                     </label>
-                                                  </div>
-                                                
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Ok will use that thank u</p>
-                                                           </div>
-                                                           
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                      </div>
-                                      <div class="activity-date">
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_8932034445621" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 10, 10:57 AM</i></p>
-                                                     </label>
-                                                  </div>
-                                                
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Good evening</p>
-                                                           </div>
-
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_6150506945625" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 10, 5:24 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Hi ge </p>
-                                                           </div>
-
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_1714072445628" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 10, 5:25 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Sorry gm it's new day now</p>
-                                                           </div>
-                                                         
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_7770996245630" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 10, 5:26 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                              
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Yes. Im still asleep</p>
-                                                           </div>
-
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_7200943845633" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 10, 5:27 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Ok i just woke up tell me na actually today is your submission day and still i am on the front end the design is little bit complicated and involve a lot of dynamic work too so taking a bit longer time</p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 10, 5:29 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">We can extend time</p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_1807264845639" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 10, 5:29 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                                
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Yes thank u for understanding, yes i definitely need time extension </p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_0451042645643" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 10, 5:30 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                              
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Ok</p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-received">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link message-received">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_8283274245646" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div></a>
-                                                     <p class="header-base "><span class="title-text">You sent <span><a href="/beinganaatiidu1?source=order_page_user_message_link" class="username-url">beinganaatiidu1</a></span> a message</span><i class="time-stamp">Sep 10, 5:30 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Will send the request, soon </p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                         <section class="activity-wrap is-message message-sent">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent">
-                                                           <div class="user-profile-image">
-                                                     <label class="profile-pict" for="profile_image_2764785345649" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a>
-                                                     <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_link_message_sent" class="username-url">beinganaatiidu1</a></span> sent you a message</span><i class="time-stamp">Sep 10, 5:31 PM</i></p>
-                                                     </label>
-                                                  </div>
-                                               
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <article class="activity-body">
-                                                     <div style="max-height: unset; overflow: unset;">
-                                                        <div>
-                                                           <div class="body-with-attachments">
-                                                              <p class="message-content">Ok</p>
-                                                           </div>
-                                                        </div>
-                                                     </div>
-                                                  </article>
-                                               </div>
-                                            </article>
-                                         </section>
-                                      </div>
-                                      <div class="activity-date">
-                                         <section class="activity-wrap resolution-accepted">
-                                            <article class="LF267+J H1pvagJ PpAciwT">
-                                               <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                  <div class="CLdO82Y">
-                                                     <label>
-                                                        <span class="stamp resolution-accepted extend-delivery is-seller"></span>
-                                                        <p class="header-base "><span class="title-text"><span><a href="/beinganaatiidu1?source=order_page_user_resolution_link" class="username-url">beinganaatiidu1</a></span> accepted your request to extend the delivery time</span><i class="time-stamp">Sep 29, 2:56 AM</i></p>
-                                                     </label>
-                                                  </div>
-                                                 
-                                               </div>
-                                               <div class="activity-collapsible-content">
-                                                  <div style="max-height: unset; overflow: unset;">
-                                                     <div>
-                                                        <article class="activity-body">
-                                                           <section class="card-wrap resolution extend-delivery-section">
-                                                              <div class="card-content">
-                                                                 <div class="user-message">
-                                                                    <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link">
-                                                                       <div class="user-profile-image"><label class="profile-pict" for="profile_image_3203106945658" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div>
-                                                                    </a>
-                                                                    <div class="message-column">
-                                                                       <p><span class="username">Message to <span><a href="/beinganaatiidu1?source=order_page_user_message_inner_link" class="username-url">beinganaatiidu1</a></span></span></p>
-                                                                       <p>it will take sometime to complete the order.</p>
-                                                                    </div>
-                                                                 </div>
-                                                                 <div class="dates-comparison">
-                                                                    <div class="irrelevant-date">
-                                                                       <p>Original date</p>
-                                                                       <p>Sep 10, 2022</p>
-                                                                    </div>
-                                                                    <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;">
-                                                                       <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                                          <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path>
-                                                                       </svg>
-                                                                    </span>
-                                                                    <div class="">
-                                                                       <p>New date</p>
-                                                                       <p>Oct 8, 2022</p>
-                                                                    </div>
-                                                                 </div>
-                                                              </div>
-                                                           </section>
-                                                        </article>
-                                                     </div>
-                                                  </div>
-                                               </div>
-                                            </article>
-                                         </section>
-                                      </div>
+                                   <div class="activities with-extras-loading" id="message_wrap_box">
                                    </div>
+                                   {% if seller_gig.0.order_status == 'late' or seller_gig.0.order_status == 'delivered' or seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' %}
                                    <div class="seller-message-box shared-message-box">
                                       <div class="rzAP5-N text-area-container m-b-16 flex flex-col">
-                                         <div class="LsC-Zuk p-r-0 form-text-area"><textarea maxlength="{{message_char}}" placeholder="Type your message here" id="text_order_mssg"></textarea></div>
+                                         <div class="LsC-Zuk p-r-0 form-text-area">
+                                          <textarea maxlength="{{message_char}}" placeholder="Type your message here" id="text_order_mssg"></textarea>
+                                          <div class="help_div"> <div class="helptext_desc">Message should contain {{message_char}} characters minimum.</div> <span class="help_text_span"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>
+                                       </div>
                                          <span class="control-bar flex-end">
                                             <span class="text-counter" id="span_order_mssg">0 / {{message_char}}</span>
                                             <div class="e4rLWCQ _1DtaAoI upload-attachment-tooltip">
                                              <span class="FPMjOVo">
                                              <label class="ORLWF8p _7pUBXz- co-green-700 attachments-button p-0 YxOH7gm bg-co-white">
                                                 <span class="attachment-icon" for="chat_file"></span>
-                                                <input  type="file" id="chat_file"   multiple="" accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
+                                                <input  type="file" id="chat_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
                                           </label>
                                           
                                           </span>
@@ -435,9 +62,19 @@
                                          </span>
                                       </div>
                                       <div class="message-box-cta"> 
-                                         <button class="ORLWF8p _0MkXbqi L9EM07f co-green-700 message-box-send">Send</button>
+                                         <button class="ORLWF8p _0MkXbqi L9EM07f co-green-700 message-box-send" id="chat_message_send">Send</button>
+                                        
                                       </div>
                                    </div>
+                                   <div class="wrap-box" id="wrap_files_list">
+                                       <div class="message-box-cta" id="files_list"> 
+                                       </div>
+                                    </div>
+                                    <div class="wrap-box" id="wrap_progress_list">
+                                       <div class="message-box-cta" id="file_progress_div"> 
+                                       </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
                           
                                 <footer class="inbox-link">
@@ -616,11 +253,11 @@
        </div>
        <div class="col-3 text-center p-0 mt-3 mb-2">
         <div class="col-12-xs col-4-md col-3-lg sidebar">
+            {% if seller_gig.0.order_status == 'late' or  seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' or seller_gig.0.order_status == 'delivered' %}
             <div class="wrap-box m-b-16 sidebar-padding">
                <div class="delivery-countdown">
                   <header>
-                     <h6 class="co-grey-1100 header-text m-r-4 countdown-title">Time left to deliver</h6>
-                     
+                     <h6 class="co-grey-1100 header-text m-r-4 countdown-title">Time left to deliver</h6> 
                   </header>
                   <div class="flex-center flex-between m-t-12 m-b-16" id="time_indicator">
                      {% if seller_gig.0.formatted_due_date != 'failed' %}
@@ -647,6 +284,7 @@
                   
                </div>
             </div>
+            {% endif %}
             <div class="wrap-box m-b-16 p-0">
                <div class="has-shadow">
                   <aside class="order-summary sidebar-padding">
@@ -664,8 +302,16 @@
                                        <div class="status flex-start">
                                           {% if seller_gig.0.order_status == 'late' %}
                                              <div class="order-status late_delivery_no_res">Late</div>
-                                          {% else %}
+                                          {% elif  seller_gig.0.order_status == "resolution" %}
+                                             <div class="order-status in_resolution">Resolution Opened</div>
+                                          {% elif  seller_gig.0.order_status == "delivered" %}
+                                             <div class="order-status in_progress">Delivered</div>
+                                          {% elif  seller_gig.0.order_status == "completed" %}
+                                             <div class="order-status in_progress">Completed</div>
+                                          {% elif  seller_gig.0.order_status == "progress" %}
                                              <div class="order-status in_progress">In progress</div>
+                                          {% elif  seller_gig.0.order_status == "cancel" %}
+                                             <div class="order-status in_progress">Cancelled</div>
                                           {% endif %}
                                           
                                        </div>
@@ -701,65 +347,76 @@
                            </div>
                            
                         </div>
-                        <div style="height: 0px;">
-                           <ul class="sidebar-padding p-t-0 p-b-0">
+                     </article>
+                     <ul class="sidebar-padding p-t-0 p-b-0">
+                        <li class="tracker-station is-complete">
+                           <div class="circle"></div>
+                           <div class="description">
+                              <h4>Order placed</h4>
+                           </div>
+                        </li>
+                        <li class="tracker-station is-complete">
+                           <div class="circle"></div>
+                           <div class="description">
+                              <h4>Requirements submitted </h4>
+                           </div>
+                        </li>
+                        {% if seller_gig.0.order_status == "cancel" %}
+                        
+                        <li class="tracker-station is-complete">
+                           <div class="circle"></div>
+                           <div class="description">
+                              <h4>Order in progress</h4>
+                           </div>
+                        </li>
+                        <li class="tracker-station is-active">
+                           <div class="circle"></div>
+                           <div class="description">
+                              <h4>Order Cancelled</h4>
+                           </div>
+                        </li>
+                        {% elif delivery == 'yes' %}
+                           {% if delivery_status == 'delivered' %}
                               <li class="tracker-station is-complete">
                                  <div class="circle"></div>
                                  <div class="description">
-                                    <h4>Order placed</h4>
+                                    <h4>Order in progress</h4>
+                                 </div>
+                              </li>
+                              <li class="tracker-station is-active">
+                                 <div class="circle"></div>
+                                 <div class="description">
+                                    <h4>Review delivery</h4>
+                                 </div>
+                              </li>
+                           {% elif  delivery_status == 'completed' %}
+                              <li class="tracker-station is-complete">
+                                 <div class="circle"></div>
+                                 <div class="description">
+                                 <h4>Order in progress</h4>
                                  </div>
                               </li>
                               <li class="tracker-station is-complete">
                                  <div class="circle"></div>
                                  <div class="description">
-                                    <h4>Requirements submitted</h4>
+                                    <h4>Review delivery</h4>
                                  </div>
                               </li>
+                              <li class="tracker-station is-active">
+                                 <div class="circle"></div>
+                                    <div class="description">
+                                       <h4>Complete order</h4>
+                                    </div>
+                              </li>
+                           {% endif %}  
+                           {% elif seller_gig.0.order_status == 'late' or  seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' or seller_gig.0.order_status == 'delivered' %}
                               <li class="tracker-station is-active">
                                  <div class="circle"></div>
                                  <div class="description">
                                     <h4>Order in progress</h4>
                                  </div>
                               </li>
-                              {% if delivery == 'yes' %}
-                                 {% if delivery_status == 'delivered' %}
-                                    <li class="tracker-station is-active">
-                                       <div class="circle"></div>
-                                       <div class="description">
-                                          <h4>Review delivery</h4>
-                                       </div>
-                                    </li>
-                                 {% elif  delivery_status == 'completed' %}
-                                    <li class="tracker-station is-complete">
-                                       <div class="circle"></div>
-                                       <div class="description">
-                                          <h4>Review delivery</h4>
-                                       </div>
-                                    </li>
-                                    <li class="tracker-station is-active">
-                                       <div class="circle"></div>
-                                       <div class="description">
-                                          <h4>Complete order</h4>
-                                       </div>
-                                    </li>
-                                 {% endif %}  
-                              {% endif %}                             
-                           </ul>
-                        </div>
-                     </article>
-                     <ul class="sidebar-padding p-t-0 p-b-0">
-                        <li class="tracker-station is-complete">
-                           <div class="circle"></div>
-                           <div class="description">
-                              <h4>Requirements submitted</h4>
-                           </div>
-                        </li>
-                        <li class="tracker-station is-active">
-                           <div class="circle"></div>
-                           <div class="description">
-                              <h4>Order in progress</h4>
-                           </div>
-                        </li>
+                        {% endif %}
                      </ul>
                   </div>
                </div>
@@ -785,6 +442,7 @@
                         </span>
                      </a>
                   </li>
+                  {% if seller_gig.0.order_status == 'late' or  seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' or seller_gig.0.order_status == 'delivered' %}
                   <li class="item-wrapper">
                      <a href="/user/{{order_by.username}}/manage_orders/{{order_details.order_no}}/resolution" class="link p-t-16">
                         <span class="lFICM06 item-icon" aria-hidden="true" style="width: 16px; height: 16px;">
@@ -803,6 +461,7 @@
                         </span>
                      </a>
                   </li>
+                  {% endif %}
                </ul>
             </aside>
          </div>
@@ -824,11 +483,13 @@
                   <div class="seller">
                      <div class="delivery-form">
                         <div class="rzAP5-N text-area-container m-b-16 flex flex-col">
-                           <div class="LsC-Zuk p-r-0 form-text-area"><textarea maxlength="{{delivery_char}}" placeholder="Describe your delivery in details" id="text_delivery_messsg" required></textarea></div>
+                           <div class="LsC-Zuk p-r-0 form-text-area"><textarea maxlength="{{delivery_char}}" placeholder="Describe your delivery in details" id="text_delivery_messsg" required></textarea>
+                              
+                           </div>
                            <span class="control-bar flex-end"><span class="text-counter"   id="span_delivery_messsg">0 / {{delivery_char}}</span></span>
                         </div>
                         <div class="attachment-buttons">
-                           <div class="e4rLWCQ _1DtaAoI upload-attachment-tooltip"><span class="FPMjOVo"><label for="delivery_file" class="ORLWF8p T2YhX76 co-grey-1100 attachments-button bg-co-grey-300" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm"><input  type="file" multiple="" id="delivery_file" onchange="upload_deliveryChange(this)" 
+                           <div class="e4rLWCQ _1DtaAoI upload-attachment-tooltip"><span class="FPMjOVo"><label for="delivery_file" class="ORLWF8p T2YhX76 co-grey-1100 attachments-button bg-co-grey-300" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm"><input  type="file" id="delivery_file" onchange="upload_deliveryChange(this)" 
                               <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
                                  <svg width="13" height="14" viewBox="0 0 13 14" xmlns="http://www.w3.org/2000/svg">
                                     <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23276 12.7969C0.691092 12.2865 0.326868 11.6803 0.140086 10.9785C-0.0466954 10.2767 -0.0466954 9.57943 0.140086 8.88672C0.326868 8.19401 0.691092 7.59245 1.23276 7.08203L7.53664 0.902344C7.92888 0.519531 8.4005 0.255208 8.95151 0.109375C9.50251 -0.0364583 10.0535 -0.0364583 10.6045 0.109375C11.1555 0.255208 11.6365 0.524089 12.0474 0.916016C12.4583 1.30794 12.7385 1.77279 12.8879 2.31055C13.0374 2.84831 13.0374 3.38607 12.8879 3.92383C12.7385 4.46159 12.4583 4.93099 12.0474 5.33203L6.75216 10.5273C6.30388 10.9466 5.77155 11.1562 5.15517 11.1562C4.53879 11.1562 4.00647 10.9421 3.55819 10.5137C3.10991 10.0853 2.88578 9.57031 2.88578 8.96875C2.88578 8.36719 3.10991 7.84766 3.55819 7.41016L8.06897 3.00781C8.125 2.95312 8.19971 2.92578 8.2931 2.92578C8.38649 2.92578 8.46121 2.95312 8.51724 3.00781L8.99354 3.47266C9.06825 3.54557 9.1056 3.6276 9.1056 3.71875C9.1056 3.8099 9.06825 3.88281 8.99354 3.9375L4.51078 8.33984C4.32399 8.50391 4.2306 8.70898 4.2306 8.95508C4.2306 9.20117 4.32399 9.41081 4.51078 9.58398C4.69756 9.75716 4.91703 9.84375 5.16918 9.84375C5.42134 9.84375 5.63147 9.76172 5.79957 9.59766L11.1228 4.40234C11.4777 4.05599 11.6552 3.63216 11.6552 3.13086C11.6552 2.62956 11.4731 2.20117 11.1088 1.8457C10.7446 1.49023 10.3057 1.3125 9.79203 1.3125C9.27838 1.3125 8.83477 1.48568 8.46121 1.83203L2.15733 7.98438C1.61566 8.53125 1.34483 9.18294 1.34483 9.93945C1.34483 10.696 1.62033 11.3431 2.17134 11.8809C2.72234 12.4186 3.38542 12.6875 4.16056 12.6875C4.9357 12.6875 5.60345 12.4141 6.16379 11.8672L11.6272 6.50781C11.7019 6.45312 11.7859 6.42578 11.8793 6.42578C11.9727 6.42578 12.0474 6.45312 12.1034 6.50781L12.5797 6.97266C12.6545 7.04557 12.6918 7.1276 12.6918 7.21875C12.6918 7.3099 12.6545 7.38281 12.5797 7.4375L7.11638 12.7969C6.57471 13.3255 5.94899 13.681 5.23922 13.8633C4.52945 14.0456 3.81501 14.0456 3.09591 13.8633C2.3768 13.681 1.75575 13.3255 1.23276 12.7969Z"></path>
@@ -2272,7 +1933,7 @@
 .activities .activity-wrap .activity-body {
    border-bottom: 1px solid rgb(239, 239, 240);
    margin-left: 70px;
-   padding: 2px 24px 24px 0px;
+   padding: 2px 24px 0px 0px;
 }
 
 .card-wrap {
@@ -2336,12 +1997,13 @@
    margin-top:1%;
 }
 
-.extend-delivery-section .dates-comparison {
+.dates-comparison {
    display: flex;
    -webkit-box-align: center;
    align-items: center;
-   margin-bottom: 24px;
+   margin-bottom: 0px;
    margin-left: 56px;
+   margin-top: 12%;
 }
 
 .extend-delivery-section .irrelevant-date, .mutual-cancellation-section .irrelevant-date {
@@ -2835,6 +2497,40 @@ a.blue-link {
    display: inline-block;
    padding: 0;
 }
+
+.error_help .help_text_span
+{
+color:red;
+}
+.help_div
+{
+   position: absolute;
+   right: 5px;
+   top: 15px;
+}
+.help_txt
+{
+   font-size: 12px;
+   color: green;
+   font-weight: 400;
+   text-align: left;
+}
+.helptext_desc, .offers-left-tooltip {
+   font-size: 12px;
+   width: 200px;
+   text-align: left;
+   top: 20px;
+}
+.help_text_span
+{
+color:red;
+}
+
+ .help_text_span, .help_text_span
+{
+color:#2E5DC5;
+}
+
 .order-details-tab .header .info a.view-history {
    color: inherit;
    text-decoration: none;
@@ -2878,6 +2574,14 @@ a.blue-link {
    text-align: justify;
    padding-left: 5%;
    padding-right: 5%;
+}
+
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  cursor:not-allowed;
 }
  .table-row span:first-of-type {
    -webkit-box-flex: 3;
@@ -3420,6 +3124,11 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
     outline: none;
     border: none;
 } 
+#chat_message_send:hover, #chat_message_send:focus
+{
+   outline:none;
+   border:1px solid #2E5DC5;
+}
 .error
 {
    color:red;
@@ -3452,9 +3161,708 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
 {
    margin-left: 0px;
 }
+.min_width
+{
+   width:150px;
+}
+
+#myProgress {
+   width: 100%;
+}
+#uploaded_files {
+   margin-top: 25px;
+   display: flex;
+}
+label {
+   font-weight: bold;
+}
+
+.file-icon {
+   background-position: 50%;
+   background-repeat: no-repeat;
+   background-size: contain;
+   height: 20px;
+   width: 20px;
+   margin-left:2%;
+}
+.file-icon i {
+   font-size: 25px;
+   color: rgb(0, 0, 0);
+}
+.file-details {
+   padding-left: 7%;
+   width: 100%;
+   margin-top: -2%;
+}
+.file-details p {
+   margin-bottom: -2px;
+}
+small {
+   margin-top: 0;
+   color: black;
+}
+#wrap_files_list,#wrap_progress_list
+{
+   border:none;
+   box-shadow:none;
+   margin-top: 2%;
+   padding-bottom: 2%;
+}
+#files_list .imagediv
+{
+   height: 80px;
+   width: 62px;
+   display: block;
+   text-align: center;
+   position: relative;
+   display: inline-block;
+   text-align: left;
+   float: left;
+   margin-right: 2%;
+}
+
+#files_list .imagediv .fa
+{
+   display: inline-block;
+   float: right;
+   position: absolute;
+   color: red;
+   font-size: 14px;
+   padding-left: 15%;
+}
+
+#files_list .imagediv .fileicon{
+   text-align: center;
+    font-size: 40px;
+    color: #333;
+    margin-bottom: 7%;
+    position: absolute;
+    left: 24%;
+    padding-left: 5%;
+}
+#files_list .imagediv .file_name {
+   font-size: 8px;
+   line-height: 8px;
+   display: block;
+   bottom: 15px;
+   width: 100%;
+   float: left;
+   position: absolute;
+   text-align: center;
+   font-weight: 700;
+}
+.progress {
+   background-color: #ddd;
+   margin-top: 5px;
+   height: 6px;
+   width: 95%;
+}
+.progress-bar{
+      background-color: #177de5 !important;
+}
+#file_progress_div
+{
+   position:relative;
+}
+.request_opened {
+   color: #fff;
+   background-color: #fc832b;
+   border-color: #fc832b;
+}
+
+.activities .activity-wrap:before {
+   content: "";
+   display: block;
+   border-left: 1px solid #efeff0;
+   height: 100%;
+   width: 1px;
+   position: absolute;
+   z-index: 0;
+   top: 18px;
+   left: 35px;
+}
+.activities .activity-wrap:before {
+   left: 43px;
+}
+
+.stamp {
+   background: #fff url('/static/assets/images/activities-sprite.9fd2c2a.svg') no-repeat 0 0;
+   background-size: 40px 880px;
+   border-radius: 50%;
+   border: 5px solid #fff;
+   width: 40px;
+   height: 40px;
+   text-align: center;
+   position: absolute;
+   z-index: 1;
+   top: 11px;
+   left: 10px;
+}
+.stamp.resolution-withdrawn {
+   background-position: -5px -365px;
+}
+
+.stamp.resolution-opened {
+   background-position: -4px -445px;
+}
+
+.header-base {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   -ms-flex-wrap: wrap;
+   flex-wrap: wrap;
+   padding: 16px 0;
+   margin-left: 70px;
+   border-bottom: 1px solid #efeff0;
+   -webkit-transition: border-color .1s linear .2s;
+   -o-transition: border-color .1s linear .2s;
+   transition: border-color .1s linear .2s;
+}
+
+.header-base {
+   padding: 8px 0;
+   min-height: 49px;
+   margin-left: 76px;
+}
+
+.activity-collapsible-title-wrapper .header-base {
+   padding-top: 4px;
+   min-height: unset;
+}
+.activity-collapsible-title-wrapper .header-base {
+   padding-top: 4px;
+   min-height: unset;
+}
+
+.activity-wrap .LF267\+J .AuUenGR{
+   padding: 5px 0;
+}
+
+.user-message .username {
+   font-weight: 600;
+   padding-right: 5px;
+}
+.user-message p {
+   word-break: break-word;
+}
+
+.HRhxExy.ZBfSqH\+, .HRhxExy .ZBfSqH\+ {
+   background: #fff2e9;
+   color: #99501b;
+}
+
+.HRhxExy {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: start;
+   -ms-flex-align: start;
+   align-items: flex-start;
+   padding: 16px;
+   border-radius: 4px;
+}
+.gCuoMYn {
+   margin: 24px 0;
+}
+.zv900so {
+   display: inline-block;
+   background: none;
+   border: none;
+   padding: 0;
+   margin: 0;
+   fill: #74767e;
+}
+.HRhxExy .uB\+IefT {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -ms-flex-negative: 0;
+   flex-shrink: 0;
+   padding-top: 3px;
+   margin-right: 12px;
+}
+.HRhxExy .GManzyj {
+   fill: #99501b;
+}
+.zv900so svg {
+   float: left;
+   height: 100%;
+   width: 100%;
+}
+.HRhxExy .IjzCHAs {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: start;
+   -ms-flex-align: start;
+   align-items: flex-start;
+   -webkit-box-flex: 1;
+   -ms-flex: 1;
+   flex: 1 1;
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+}
+
+.HRhxExy .IjzCHAs {
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-pack: justify;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+}
+
+.extend-delivery-section .extend-actions, .mutual-cancellation-section .extend-actions {
+   padding-top: 24px;
+   border-top: 1px solid #dadbdd;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-pack: end;
+   -ms-flex-pack: end;
+   justify-content: flex-end;
+}
+.ORLWF8p {
+   display: inline-block;
+   -webkit-box-sizing: border-box;
+   box-sizing: border-box;
+   position: relative;
+   padding: 12px 24px;
+   border: 1px solid transparent;
+   border-radius: 4px;
+   font-weight: 600;
+   font-size: 16px;
+   line-height: 100%;
+   text-decoration: none;
+   text-align: center;
+   cursor: pointer;
+   -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+   -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+   transition: 70ms cubic-bezier(.75,0,.25,1);
+}
+.extend-delivery-section .extend-actions :last-child, .mutual-cancellation-section .extend-actions :last-child {
+   margin-left: 12px;
+}
+.bg-co-green-700 {
+   background-color: #1dbf73;
+}
+.co-white {
+   color: #fff;
+}
+
+.stamp.resolution-declined {
+   background-position: 0 -480px;
+}
+
+
+.stamp.delivery-received {
+   background-position: 0 -120px;
+}
+.in_resolution
+{
+   color: #fff;
+   background-color: #ff5319 ;
+   border-color: #ff5319;
+}
+
+.stamp.resolution-declined .stamp-icon {
+   fill: #f74040;
+   position: absolute;
+   bottom: -1px;
+   right: -2px;
+   z-index: 1;
+}
+
+.dates-comparison {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   margin-bottom: 0px;
+   margin-left: 56px;
+   margin-top: 16%;
+}
+.dates-arrow {
+   margin: 0 24px;
+}
+.lFICM06 {
+   display: inline-block;
+   background: none;
+   border: none;
+   padding: 0;
+   margin: 30px;
+   fill: #74767e;
+}
+.dates-comparison p{
+   font-weight:600;
+   font-size:15px;
+}
+.lFICM06 svg {
+   float: left;
+   height: 100%;
+   width: 100%;
+}
+ .irrelevant-date, .irrelevant-date {
+   opacity: .8;
+}
+.attachments-preview-component {
+   margin: 0;
+   padding: 0;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+}
+.attachments-preview-component {
+   z-index: 1000;
+   margin-top: 24px;
+}
+
+.attachments-preview-component .thumbnails-header {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+}
+.attachments-preview-component .thumbnails-header h3 {
+   font-size: 13px;
+   margin-left: 2px;
+   margin-right: 24px;
+   font-weight: 700;
+   line-height: 34px;
+   color: #404145;
+}
+
+.attachments-preview-component .attchments-container {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -ms-flex-wrap: wrap;
+   flex-wrap: wrap;
+}
+.thumbnail-preview .fileicon{
+   font-size: 70px !important;
+    line-height: 124px !important;
+    text-align: center;
+    width: 100%;
+}
+.attachments-preview-component .attchments-container .thumbnail-preview {
+   position: relative;
+   height: 140px;
+   width: 178px;
+   border: 1px solid #efeff0;
+   border-radius: 4px;
+   background-color: #fff;
+   margin: 12px 12px 0 0;
+   cursor:pointer;
+}
+
+.attachments-preview-component .attchments-container .thumbnail-preview .thumbnail-link {
+   height: 104px;
+   display: block;
+   cursor: pointer;
+}
+.attachments-preview-component .attchments-container .thumbnail-preview .thumbnail {
+   height: 104px;
+   width: 178px;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   -webkit-box-pack: center;
+   -ms-flex-pack: center;
+   justify-content: center;
+   border-bottom: 1px solid #efeff0;
+   border-top-left-radius: 4px;
+   border-top-right-radius: 4px;
+}
+.thumbnail-preview .fa{
+   font-size: 15px;
+   color:#446ee7;
+   line-height: 30px;
+}
+.attachments-preview-component .action-bar {
+   max-width: 163px;
+   padding-left: 15px;
+   position: relative;
+   height: 150%;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+}
+
+.attachments-preview-component .action-bar .attachment-name-container {
+   max-width: 91px;
+   overflow: hidden;
+   padding-right: 5px;
+   display: inline-block;
+}
+
+.attachments-preview-component .attachment-size {
+   display: inline;
+   color: #74767e;
+   font-size: 13px;
+}
+
+.attachments-preview-component .action-bar .attachment-name-container .attachment-name {
+   font-size: 13px;
+   font-weight: 700;
+   color: #62646a;
+   line-height: 32px;
+   overflow: hidden;
+   max-width: 85px;
+   white-space: nowrap;
+}
+.attachments-preview-component .attachment-size {
+   display: inline;
+   color: #74767e;
+   font-size: 13px;
+}
+
+.attachments-preview-component .action-bar .download-button {
+   background: url() no-repeat;
+   width: 12px;
+   height: 14px;
+}
+
 </style>
 <script>
+   function formatDate(date) {
+      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var _date = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var d = new Date();
+      var curr_year = d.getFullYear();    
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = '';
+      strTime =  monthNames[month] + " " + _date+ ", " + year ;  
+      return strTime;
+    }
+   
+   function formatAMPM(date) {
+      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var _date = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var d = new Date();
+      var curr_year = d.getFullYear();    
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = '';
+      if(curr_year != year)
+      {
+         strTime =  monthNames[month] + " " + _date+ ", " + year + hours + ':' + minutes + ' ' + ampm; 
+      }
+      else{
+         strTime = monthNames[month]  + " " + _date+ ", " + hours + ':' + minutes + ' ' + ampm;  
+      }   
+      return strTime;
+    }
    $(document).ready(function(){
+      $.ajax({
+         type:"GET",
+         url: "/get_all_order_messages/",
+         data: {"conver_id":$("#conversation_id").val(),"order_no":'{{order_details.order_no}}'},
+         success: function(data) 
+         {
+            $.each(data, function(i, v) {
+               if(v.attachment != "None")
+               {
+                  attachments = v.attachment.trim().split(",");
+                  attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                  $.each(attachments, function (key, value) {
+                     if(value.trim().length != 0)
+                     {
+                        file_path = '/media/order_files/'+value.trim();
+                        attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                     }
+                  });
+                  attachment_txt += '</ul></div>';
+                  if('{{request.user.username}}' == v.sender_username)
+                  {
+                     $("#message_wrap_box").append('<section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p>'+attachment_txt+' </div> </div> </div> </article> </div> </article> </section>');
+                  }
+                  else{
+                     $("#message_wrap_box").append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> '+attachment_txt+' </div> </div> </div> </article> </div> </article> </section>');
+                  } 
+               }
+               else{
+                  if(v.mssg_type != "chat")
+                  {
+                     if('{{request.user.username}}' == v.reciever_username)
+                     {
+                        classtype = ''
+                        message_type = ''
+                        extensionmssg = ''
+                        req_type= ''
+                        buttons_txt = ''
+                        if(v.res_type.trim() == "cancel")
+                        {
+                           req_type= "cancel"
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = 'Your order was cancelled'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'You decided not to cancel this order'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                           }
+                        }
+                        else if(v.res_type.trim() == "extention")
+                        {
+                           req_type= "extention"
+                           extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+formatDate(new Date(v.res_next_date))  +'</p> </div></div>';
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> agreed to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> requested to extend the delivery date';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                           }
+                        }
+                        else if(v.res_type.trim() == "delivered")
+                        {
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp delivery-received"></span>'
+                              message_type = 'Your order was completed'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'Sorry your delivery was rejected'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened delivery-received"></span>'
+                              message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                           } 
+                        }
+                        else if(v.res_status.trim() == "completed")
+                        {
+                           classtype = '<span class="stamp order-completed"></span>'
+                           message_type = 'Your order was completed'
+                        }
+                        $("#message_wrap_box").append('<section class="activity-wrap resolution-opened"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> '+classtype+'<p class="header-base "><span class="title-text"><span>'+message_type+'</span></span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap resolution mutual-cancellation-section"> <div class="card-content"> <div class="user-message"> <a href="user/profile/'+v.reciever_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_9928531938024" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div> </p> <p>'+v.res_message+'</p> '+extensionmssg+' </div> </div>  '+buttons_txt+' </div> </section> </article> </div> </div> </div> </article></section>');
+                     }
+                     else{
+                        classtype = ''
+                        message_type = ''
+                        if(v.res_type.trim() == "cancel")
+                        {
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> order was cancelled'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to cancel this order'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
+                           }
+                        }
+                        else if(v.res_type.trim() == "extention")
+                        {
+                           extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+ formatDate(new Date(v.res_next_date)) +'</p> </div></div>';
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'                              
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> agreed to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'You decided not to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
+                              message_type = 'You requested to extend the delivery date'
+                           }
+                        }
+                        else if(v.res_type.trim() == "delivered")
+                        {
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp delivery-received"></span>'
+                              message_type = 'Your order was completed'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'Sorry your delivery was rejected'
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened delivery-received"></span>'
+                              message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order'
+                           } 
+                        }
+                        else if(v.res_status.trim() == "completed")
+                        {
+                           classtype = '<span class="stamp order-completed"></span>'
+                           message_type = 'Your order was completed'
+                        }   
+                        $("#message_wrap_box").append('<section class="activity-wrap resolution-withdrawn"><article class="LF267+J H1pvagJ PpAciwT"><div class="AuUenGR activity-collapsible-title-wrapper"><div class="CLdO82Y"><label> '+classtype+'<p class="header-base "><span class="title-text">'+message_type+'</span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p></label></div></div><div class="activity-collapsible-content"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap resolution mutual-cancellation-section"><div class="card-content"><div class="user-message"><a href="user/profile/'+v.reciever_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_7171343538020" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div></p><p>'+v.res_message+'</p> '+extensionmssg+'</div></div></div></section></article></div></div></div></article></section>');
+                     }
+                  }
+                  else
+                  {
+                     if('{{request.user.username}}' == v.sender_username)
+                     {
+                        $("#message_wrap_box").append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+                     }
+                     else{
+                        $("#message_wrap_box").append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+                     }
+                  }
+               } 
+            });
+         }
+      });
+      $(".help_div").hover(function (e) {
+         $('.helptext_desc').toggle();
+     });
       $('#due_timer').flipper('init');
       $(".error-message").hide();
       $( "#btn_delivery_now" ).click(function() {
@@ -3536,8 +3944,171 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
             $(".error-message").show();
          }
       });
-   });
 
+      const get = (selector, root = document) => root.querySelector(selector);
+
+    let attachment;
+
+      const roomName = $("#conversation_id").val();
+    const chatSocket = new WebSocket(
+        'ws://'
+        + window.location.host
+        + '/ws/order_chat/'
+        + roomName
+        + '/'
+    );
+
+    var buyer_user = $("#buyer_username").val();
+    var seller_user = $("#seller_username").val();
+    chatSocket.onmessage = e => {
+        const data = JSON.parse(e.data);
+        $("#text_order_mssg").val("");
+        $("#files_list").empty();
+        if('{{request.user.username}}' == data.sender)
+        {
+            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+        }
+        else 
+        {
+            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+        }
+    };
+    chatSocket.onclose = e => console.error(e);
+    $( "#chat_message_send" ).click(function() {
+        event.preventDefault();
+        if($("#text_order_mssg").val().trim()  != 0)
+        {
+         let message;
+         imgList= '';
+         $("#files_list").find('.imagediv').each(function(ev){ 
+             imgList = imgList +", "+  $(this).find('.img_file_name').val();
+         });
+         const msgText = $("#text_order_mssg").val().trim() 
+         sender_mssg = '';
+         receiver_mssg = '';
+         if('{{request.user.username}}' == buyer_user)
+         {
+            sender_mssg = buyer_user;
+            receiver_mssg = seller_user;
+         }
+         else if('{{request.user.username}}' == seller_user)
+         {
+            sender_mssg = seller_user;
+            receiver_mssg = buyer_user;
+         }
+         message = JSON.stringify({
+            'message': msgText,
+            'recepient': receiver_mssg,
+            'sender': sender_mssg,   
+            'order_no': '{{seller_gig.0.order_no}}' ,
+            'attachment': imgList,
+            'time': Date.now()
+         });
+         chatSocket.send(message);
+        }
+        else{
+         $(".help_div").removeClass("min_width").addClass("error_help");
+         $(".help_div").show();
+         $(".help_div").find(".helptext_desc").text('This field is required.').addClass("min_width");
+        }
+    });
+
+
+    class FileUpload {
+      constructor(input) {
+          this.input = input
+          this.max_length = 1024 * 1024 * 10;
+      }
+      create_progress_bar() {
+          var progress = `<div class="file-icon">
+                              <i class="fa fa-file-o" aria-hidden="true"></i>
+                          </div>
+                          <div class="file-details">
+                              <p class="filename"></p>
+                              <div class="progress" style="margin-top: 5px;">
+                                  <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                  </div>
+                              </div>
+                          </div>`
+          document.getElementById('file_progress_div').innerHTML = progress
+      }
+      upload() {
+          this.create_progress_bar();
+          this.initFileUpload();
+      }
+  
+      initFileUpload() {
+          this.file = this.input.files[0];
+          this.upload_file(0, null);
+      }
+      upload_file(start, model_id) {
+          var end;
+          var self = this;
+          var existingPath = model_id;
+          var formData = new FormData();
+          var nextChunk = start + this.max_length + 1;
+          var currentChunk = this.file.slice(start, nextChunk);
+          var uploadedChunk = start + currentChunk.size
+          if (uploadedChunk >= this.file.size) {
+              end = 1;
+          } else {
+              end = 0;
+          }
+          formData.append('file', currentChunk)
+          formData.append('filename', this.file.name)
+          $('.filename').text(this.file.name)
+          formData.append('end', end)
+          formData.append('existingPath', existingPath);
+          formData.append('nextSlice', nextChunk);
+          $.ajax({
+              xhr: function () {
+                  var xhr = new XMLHttpRequest();
+                  xhr.upload.addEventListener('progress', function (e) {
+                      if (e.lengthComputable) {
+                          if (self.file.size < self.max_length) {
+                              var percent = Math.round((e.loaded / e.total) * 100);
+                          } else {
+                              var percent = Math.round((uploadedChunk / self.file.size) * 100);
+                          }
+                          $('.progress-bar').css('width', percent + '%')
+                          $('.progress-bar').text(percent + '%')
+                      }
+                  });
+                  return xhr;
+              },
+              url: '/post_order_upload/',
+              type: 'POST',
+              dataType: 'json',
+              cache: false,
+              processData: false,
+              contentType: false,
+              data: formData,
+              error: function (xhr) {
+                  alert(xhr.statusText);
+              },
+              success: function (res) {
+                  if (nextChunk < self.file.size) {
+                      existingPath = res.existingPath
+                      self.upload_file(nextChunk, existingPath);
+                      $("#chat_message_send").prop("disabled",true);
+                  } else {
+                     $("#file_progress_div").empty();
+                     var no_of_imgs = $("#files_list").find(".imagediv").length;
+                      $("#files_list").append('<div class="mssg_img'+(no_of_imgs+1)+' imagediv" id="mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');
+                      $("#chat_message_send").prop("disabled",false);
+                  }
+              }
+          });
+      };
+  }
+  
+
+      $("#chat_file").change(function() {
+         var uploader = new FileUpload(document.querySelector('#chat_file'));
+         uploader.upload();
+      });
+
+   });
    function upload_deliveryChange(ev)
    {
      var fd = new FormData();
@@ -3564,7 +4135,53 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
         alert("Please select a file.");
       }
    }
+   function post_img_message_delete(ev)
+   {
+      div_id = $(ev).attr("data-label");
+      $("#files_list").find("#" +div_id).remove();
+   }
 
+   function res_acceptClick(ev)
+   {
+      var prev_date ;
+      var next_date;
+      if($(ev).attr("data-text") == "extention")
+      {
+         prev_date = $(ev).attr("data-prev-date");
+         next_date = $(ev).attr("data-next-date");
+      }
+      else if($(ev).attr("data-text") == "cancel")
+      {
+         prev_date = '';
+         next_date = '';
+      }
+      $.ajax({
+         type:"GET",
+         url: "/post_accept_click/",
+         data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text"),"pre_date": prev_date, "next_date":next_date},
+         success: function(data) 
+         {
+            location.reload();
+		   }
+		});
+   }
 
+   function res_declineClick(ev)
+   {
+      $.ajax({
+         type:"GET",
+         url: "/post_decline_click/",
+         data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text")},
+         success: function(data) 
+         {
+            location.reload();
+		   }
+		});
+   }
+   function attachfile_onclick(ev)
+   {
+      location_href =  $(location).attr('href').split("/");
+      window.open( location_href[0]+"//"+location_href[2] + $(ev).attr("data-label"),"_blank");
+   }
 </script>
 {% endblock %}

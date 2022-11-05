@@ -139,7 +139,7 @@
                   <div class="col-lg-7 right_pan pt-4">
                      <div class="sub-actions js-next-back">
                         <section class="btns mb-2">
-                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="details_res" data-next="last" type="button">Publish Gig</button>
+                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="details_res" data-next="last" type="button">Open Resolution</button>
                         </section>
                         <button type="button" class="previous naked-button back co-green" data-label="details_res" data-previous="action_res">back</button>
                      </div>
@@ -190,6 +190,7 @@
    </div>
 </div>
 {% include  'Dashboard/base_seller.html' %}
+<script src="{% static 'assets/js/moment.min.js' %}"></script>
 <style>
    .help_div
    {
@@ -2417,6 +2418,7 @@ button[disabled]{
 
 .select-box select {
     width: 169px;
+    border-radius:3px;
 }
 
 .select-box .delivered_by {
@@ -2532,6 +2534,7 @@ button[disabled]{
                     $(".error-message").hide();
                     valid_message = true;
                 }
+                prev_date = '';
             }
             if(valid_message == true)
             {

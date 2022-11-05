@@ -71,6 +71,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     BOOL_CHOICES =[('Buyer', 'Buyer'),('Seller', 'Seller')]
+    BOOL_CHOICES_STATUS =[('active', 'ACTIVE'),('warning', 'WARNING'),('blocked', 'BLOCKED')]
     BOOL_CHOICES_Levels =[('level1', 'New or higher'),('level2', 'Advanced or higher'),('level3', 'Professional')]
     email = models.EmailField(max_length=255, unique=True,default="",blank=True,null=True)
     username = models.CharField(max_length=150, unique=False,default="",blank=True,null=True)
@@ -85,6 +86,7 @@ class User(AbstractBaseUser):
     avg_delivery_time = models.CharField(max_length=500, blank=True,default="Within 24 Hours",null=True)
     seller_level =  models.CharField(max_length=200,choices=BOOL_CHOICES_Levels,blank=True,default="level1",null=True)
     profile_type = models.CharField(max_length=200,choices=BOOL_CHOICES,blank=True,default="",null=True)
+    profile_status = models.CharField(max_length=200,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     code = models.IntegerField(default=False)
@@ -210,14 +212,19 @@ class PageEditor(models.Model):
 class supportTopic(models.Model):
     support_topic_Name = models.CharField(max_length=500)
     topic_category = models.CharField(max_length=500)
+    slug = models.CharField(max_length=500,blank=True, null=True,unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = _("Support Topic")
         verbose_name_plural = _("Support Topics")
-
+        
+    def save(self, *args, **kwargs):
+        self.slug = self.slug.lower()
+        return super(supportTopic, self).save(*args, **kwargs)
+    
     def __str__(self):
-        return self.support_topic_Name
+        return self.slug
 
 class supportMapping(models.Model):
     suport_topic = models.ForeignKey(supportTopic, on_delete=models.CASCADE,related_name="suport_topic")
@@ -626,10 +633,6 @@ class Usergig_requirement(models.Model):
     def __str__(self):
         return str(self.gig_req_question)
     
-    
-
-
-    
 class Buyer_Post_Request(models.Model):
     BOOL_CHOICES =[('24hours', '24 Hours'),('3days', '3 Days'),('7days', '7 Days'),('other', 'Others')]
     BOOL_CHOICES_TYPES =[('individual', 'Individual'),('all', 'All')]
@@ -676,10 +679,6 @@ class Referral_Users(models.Model):
     def __str__(self):
         return str(self.affiliate_code)
     
-    
-    
-
-
 class Request_Offers(models.Model):
     BOOL_CHOICES_TYPES =[('custom', 'Custom'),('request', 'Request')]
     BOOL_CHOICES_STATUS = [('active', 'Active'),('deleted', 'Removed')]
@@ -703,7 +702,6 @@ class Request_Offers(models.Model):
     def __str__(self):
         return str(self.gig_name)  
 
-
 class Payment_Parameters(models.Model):
     BOOL_CHOICES_TYPES =[('percent', 'Percentage'),('flat', 'Fixed Amount')]
     parameter_name =   models.CharField(max_length=200,blank=True,null=True)
@@ -718,14 +716,13 @@ class Payment_Parameters(models.Model):
     def __str__(self):
         return str(self.parameter_name)
 
-
-class Withdrawal_Parameters(models.Model):
+class Addon_Parameters(models.Model):
     parameter_name =   models.CharField(max_length=200,blank=True,null=True)
     no_of_days = models.CharField(max_length=500,blank=True,default="",null=True)
     
     class Meta:
-        verbose_name = _("Parameter")
-        verbose_name_plural = _("Parameters")
+        verbose_name = _("Add On Parameter")
+        verbose_name_plural = _("Add On Parameters")
 
     def __str__(self):
         return str(self.no_of_days)
@@ -760,8 +757,6 @@ class User_orders_Extra_Gigs(models.Model):
 
     def __str__(self):
         return str(self.order_no)
-    
-
 
 class Seller_Reviews(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('cancel', 'Cancelled'),('completed', 'Completed')]
@@ -837,6 +832,7 @@ class User_Transactions(models.Model):
     paypal_email = models.CharField(max_length=500,blank=True,default="",null=True)
     flutter_account_id = models.CharField(max_length=500,blank=True,default="",null=True)
     flutter_app_fee = models.CharField(max_length=500,blank=True,default="",null=True)
+    flutter_fluw_ref = models.CharField(max_length=1000,blank=True,default="",null=True)
     flutter_pay_type = models.CharField(max_length=500,blank=True,default="",null=True)
     transaction_date = models.DateTimeField(default=timezone.now, blank=True)
     paid_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="paid_by",null=True,blank=True)
@@ -863,27 +859,6 @@ class User_Order_Activity(models.Model):
     def __str__(self):
         return str(self.order_message)
     
-class User_Order_Resolution(models.Model):
-    BOOL_CHOICES_TYPES = [('cancel', 'Cancel Order'),('extention', 'Extension Days'),('delivered', 'Delivered'),('completed', 'Completed')]
-    BOOL_CHOICES_STATUS = [('accepted', 'Accepted'),('rejected', 'Rejected'),('pending', 'Pending')]
-    resolution_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
-    resolution_text =   models.CharField(max_length=500,blank=True,null=True)
-    resolution_message =   models.CharField(max_length=200,blank=True,null=True)
-    resolution_desc =   models.CharField(max_length=1000,blank=True,null=True)
-    resolution_days =   models.CharField(max_length=200,blank=True,null=True)
-    resolution_date = models.DateTimeField(default=timezone.now, blank=True)
-    raised_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_by",null=True,blank=True)
-    raised_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_to",null=True,blank=True)
-    resolution_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
-    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
-    
-    class Meta:
-        verbose_name = _("Order Resolution Center")
-        verbose_name_plural = _("Order Resolution Center")
-
-    def __str__(self):
-        return str(self.resolution_text)
-
 
 
 class Order_Conversation(models.Model):
@@ -910,8 +885,6 @@ class Order_Message(models.Model):
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
-    resolution = models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE, related_name="order_con_resolution",blank=True,default="",null=True)
-
 
     class Meta:
         verbose_name = _("Order Message")
@@ -930,8 +903,119 @@ class Message_Response_Time(models.Model):
         verbose_name_plural = _("Message Response Analysys")
 
     def __str__(self):
-        return str(self.timestamp)
+        return str(self.timestamp)   
+		
+class UploadFile(models.Model):
+    existingPath = models.CharField(unique=True, max_length=100)
+    name = models.CharField(max_length=50)
+    eof = models.BooleanField()
     
+class User_Order_Resolution(models.Model):
+    BOOL_CHOICES_TYPES = [('cancel', 'Cancel Order'),('extention', 'Extension Days'),('delivered', 'Delivered'),('completed', 'Completed')]
+    BOOL_CHOICES_STATUS = [('accepted', 'Accepted'),('rejected', 'Rejected'),('pending', 'Pending')]
+    resolution_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    resolution_text =   models.CharField(max_length=500,blank=True,null=True)
+    resolution_message =   models.CharField(max_length=200,blank=True,null=True)
+    resolution_desc =   models.CharField(max_length=1000,blank=True,null=True)
+    resolution_days =   models.CharField(max_length=200,blank=True,null=True)
+    resolution_last_date =   models.DateTimeField(default=timezone.now,null=True,blank=True)
+    ext_prev_date = models.DateTimeField(default=timezone.now,null=True,blank=True)
+    ext_new_date = models.DateTimeField(default=timezone.now,null=True,blank=True)
+    resolution_date = models.DateTimeField(default=timezone.now, blank=True)
+    raised_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_by",null=True,blank=True)
+    raised_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="raised_to",null=True,blank=True)
+    resolution_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    message = models.ForeignKey(Order_Message, on_delete=models.CASCADE, related_name="message_contact",blank=True,default="",null=True)
+    
+    class Meta:
+        verbose_name = _("Order Resolution Center")
+        verbose_name_plural = _("Order Resolution Center")
+
+    def __str__(self):
+        return str(self.resolution_text)
+
+
+
+
+class User_Refund(models.Model):
+    refund_amount = models.CharField(max_length=500,blank=True,default="",null=True)
+    refund_date = models.DateTimeField(default=timezone.now, blank=True)
+    resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    
+    class Meta:
+        verbose_name = _("Order Refund")
+        verbose_name_plural = _("Order Refunds")
+
+    def __str__(self):
+        return str(self.refund_amount)
+
+class User_Earnings(models.Model):
+    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending'),('initiated', 'Initiated')]
+    earning_amount = models.CharField(max_length=500,blank=True,default="",null=True)
+    aval_with = models.CharField(max_length=500,blank=True,default="",null=True)
+    earning_date = models.DateTimeField(default=timezone.now, blank=True)
+    resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    clearence_date = models.DateTimeField(default=timezone.now, blank=True)
+    clearence_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
+    cleared_on = models.DateTimeField(default=timezone.now, blank=True)
+    
+    class Meta:
+        verbose_name = _("Order Earning")
+        verbose_name_plural = _("Order Earnings")
+
+    def __str__(self):
+        return str(self.earning_amount)
+    
+    
+    
+class Api_keys(models.Model):
+    BOOL_CHOICES_STATUS = [('google', 'Google'),('facebook', 'Facebook'),('paypal', 'Paypal'),('flutterwave', 'Flutterwave')]
+    api_name =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True, unique=True)
+    secrete_key = models.CharField(max_length=1000,blank=True,default="",null=True)
+    private_key = models.CharField(max_length=1000,blank=True,default="",null=True)
+    created_on = models.DateTimeField(default=timezone.now, blank=True)
+    
+    class Meta:
+        verbose_name = _("Api Key")
+        verbose_name_plural = _("Api Keys")
+
+    def __str__(self):
+        return str(self.api_name)
+
+class SpamDetection(models.Model):
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    detected_word =  models.ForeignKey(ChatWords, on_delete=models.CASCADE,null=True,blank=True)
+    detected_on = models.DateTimeField(default=timezone.now, blank=True)
+    
+    def block_button(self):
+            return format_html('<a href="{}" class="link">Block</a>',
+            reverse_lazy("admin:admin_block_scenario", args=[self.pk])
+        )
+            
+    class Meta:
+        verbose_name = _("Spam Detection")
+        verbose_name_plural = _("Spam Detections")
+
+    def __str__(self):
+        return str(self.detected_word)
+    
+class User_warning(models.Model):
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    warning_date = models.DateTimeField(default=timezone.now, blank=True)
+    confirmed_status =  models.BooleanField(default=False)
+    confirmed_on = models.DateTimeField(default=timezone.now, blank=True)
+    spamword =  models.ForeignKey(SpamDetection, on_delete=models.CASCADE,null=True,blank=True)
+    
+    class Meta:
+        verbose_name = _("User Warning")
+        verbose_name_plural = _("User Warnings")
+
+    def __str__(self):
+        return str(self.warning_date)
+
 
 class Order_Delivery(models.Model):
     BOOL_CHOICES_TYPES = [('delivered', 'Delivered'),('completed', 'Completed'),('draft', 'Draft')]
@@ -942,6 +1026,7 @@ class Order_Delivery(models.Model):
     delivered_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="delivered_by",null=True,blank=True)
     delivered_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="delivered_to",null=True,blank=True)
     delivery_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    resolution = models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:
         verbose_name = _("Order Delivery")
@@ -950,4 +1035,8 @@ class Order_Delivery(models.Model):
     def __str__(self):
         return str(self.delivery_date)
 
-		
+
+
+
+
+

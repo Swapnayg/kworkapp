@@ -8,7 +8,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Withdrawal_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,UploadFile,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -141,8 +141,24 @@ class AdminChatWords(admin.ModelAdmin):
 admin.site.register(ChatWords, AdminChatWords)
 
 
+class AdminUploadFile(admin.ModelAdmin):
+    list_display = ['existingPath','name','eof']
+
+admin.site.register(UploadFile, AdminUploadFile)
+
+class AdminUser_Refund(admin.ModelAdmin):
+    list_display = ['refund_amount','refund_date','resolution','order_no']
+
+admin.site.register(User_Refund, AdminUser_Refund)
+
+class AdminUser_Earnings(admin.ModelAdmin):
+    list_display = ['earning_amount','earning_date','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on']
+
+admin.site.register(User_Earnings, AdminUser_Earnings)
+
+
 class AdminUser_Order_Resolution(admin.ModelAdmin):
-    list_display = ['resolution_type','resolution_text','resolution_message','resolution_desc','resolution_days','resolution_date','resolution_status','order_no','raised_by','raised_to']
+    list_display = ['resolution_type','resolution_text','resolution_message','resolution_desc','resolution_days','resolution_date','resolution_status','order_no','raised_by','raised_to','message','resolution_last_date']
 
 admin.site.register(User_Order_Resolution, AdminUser_Order_Resolution)
 
@@ -168,6 +184,28 @@ class AdminGig_favourites(admin.ModelAdmin):
     list_display = ['gig_name','user_id']
 
 admin.site.register(Gig_favourites, AdminGig_favourites)
+
+
+class AdminUser_warning(admin.ModelAdmin):
+    list_display = ['user_id','warning_date','confirmed_status','confirmed_on','spamword']
+
+admin.site.register(User_warning, AdminUser_warning)
+
+
+class AdminSpamDetection(admin.ModelAdmin):
+    list_display = ['user_id','detected_word','detected_on']
+    def get_urls(self):
+        urls = super().get_urls()
+        my_urls = [
+            path('block-scenario/<int:pk>/', self.block_scenario, name="admin_block_scenario"),
+        ]
+        return my_urls + urls
+    
+    def block_scenario(self, request, pk):
+        print("1")
+        return redirect(request.META.get('HTTP_REFERER'))
+
+admin.site.register(SpamDetection, AdminSpamDetection)
 
 class AdminLearningTopicDetails(admin.ModelAdmin):
     list_display = ['topic_Name','topic_description','image_Text']
@@ -202,12 +240,12 @@ admin.site.register(User_orders_Extra_Gigs, AdminUser_orders_Extra_Gigs)
 
 
 class AdminOrder_Delivery(admin.ModelAdmin):
-    list_display = ['delivery_message','attachment','delivery_date','order_no','delivered_by','delivered_to','delivery_status']
+    list_display = ['delivery_message','attachment','delivery_date','order_no','delivered_by','delivered_to','delivery_status','resolution']
 
 admin.site.register(Order_Delivery, AdminOrder_Delivery)
 
 class AdminOrder_Message(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type','resolution']
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type']
 
 admin.site.register(Order_Message, AdminOrder_Message)
 
@@ -362,10 +400,16 @@ class AdminReferral_Users(admin.ModelAdmin):
 admin.site.register(Referral_Users, AdminReferral_Users)
 
 
-class AdminWithdrawal_Parameters(admin.ModelAdmin):
+class AdminApi_keys(admin.ModelAdmin):
+    list_display = ['api_name','secrete_key','private_key','created_on']
+
+admin.site.register(Api_keys, AdminApi_keys)
+
+
+class AdminAddon_Parameters(admin.ModelAdmin):
     list_display = ['parameter_name','no_of_days']
 
-admin.site.register(Withdrawal_Parameters, AdminWithdrawal_Parameters)
+admin.site.register(Addon_Parameters, AdminAddon_Parameters)
 
 
 class AdminUser_Transactions(admin.ModelAdmin):

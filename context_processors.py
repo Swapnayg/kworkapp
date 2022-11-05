@@ -1,7 +1,8 @@
 from kworkapp.models import  Conversation,Message,User
 from django.db.models import Q
-from kworkapp.models import Categories,SubCategories,SubSubCategories
+from kworkapp.models import Categories,SubCategories,SubSubCategories,Api_keys
 import json
+from django.conf import settings
 
 def message_processor(request):
     frndData =[]
@@ -92,4 +93,19 @@ def menu_procesor(request):
     return {
         'main_menu' : menu_list,
         'sub_menu' : json.dumps(sub_menulist),
+    }
+
+
+
+def set_settings(request):
+    api_details = Api_keys.objects.filter(Q(api_name="google") | Q(api_name= "facebook"))
+    for api in api_details:
+        if(api.api_name == "google"):
+            settings.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = api.private_key
+            settings.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = api.secrete_key
+        elif(api.api_name == "facebook"):
+            settings.SOCIAL_AUTH_FACEBOOK_KEY = api.private_key
+            settings.SOCIAL_AUTH_FACEBOOK_SECRET = api.secrete_key
+    return {
+        'settings_val' : 'true',
     }
