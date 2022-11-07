@@ -152,7 +152,7 @@ class AdminUser_Refund(admin.ModelAdmin):
 admin.site.register(User_Refund, AdminUser_Refund)
 
 class AdminUser_Earnings(admin.ModelAdmin):
-    list_display = ['earning_amount','earning_date','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on']
+    list_display = ['order_amount','earning_amount','earning_date','platform_fees','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on']
 
 admin.site.register(User_Earnings, AdminUser_Earnings)
 

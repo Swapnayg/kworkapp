@@ -917,6 +917,7 @@ class User_Order_Resolution(models.Model):
     resolution_text =   models.CharField(max_length=500,blank=True,null=True)
     resolution_message =   models.CharField(max_length=200,blank=True,null=True)
     resolution_desc =   models.CharField(max_length=1000,blank=True,null=True)
+    resolution_cancel_mssg =   models.CharField(max_length=1000,blank=True,null=True)
     resolution_days =   models.CharField(max_length=200,blank=True,null=True)
     resolution_last_date =   models.DateTimeField(default=timezone.now,null=True,blank=True)
     ext_prev_date = models.DateTimeField(default=timezone.now,null=True,blank=True)
@@ -952,15 +953,17 @@ class User_Refund(models.Model):
         return str(self.refund_amount)
 
 class User_Earnings(models.Model):
-    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending'),('initiated', 'Initiated')]
+    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending')]
+    order_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     earning_amount = models.CharField(max_length=500,blank=True,default="",null=True)
+    platform_fees = models.CharField(max_length=500,blank=True,default="",null=True)
     aval_with = models.CharField(max_length=500,blank=True,default="",null=True)
     earning_date = models.DateTimeField(default=timezone.now, blank=True)
     resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
-    clearence_date = models.DateTimeField(default=timezone.now, blank=True)
+    clearence_date = models.DateTimeField(default=timezone.now, blank=True,null=True)
     clearence_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
-    cleared_on = models.DateTimeField(default=timezone.now, blank=True)
+    cleared_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
     
     class Meta:
         verbose_name = _("Order Earning")
@@ -991,7 +994,7 @@ class SpamDetection(models.Model):
     detected_on = models.DateTimeField(default=timezone.now, blank=True)
     
     def block_button(self):
-            return format_html('<a href="{}" class="link">Block</a>',
+            return format_html('<a href="{}" class="link">Warn User</a>',
             reverse_lazy("admin:admin_block_scenario", args=[self.pk])
         )
             

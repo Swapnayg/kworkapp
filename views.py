@@ -26,7 +26,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,UploadFile,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,UploadFile,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 
@@ -929,6 +929,22 @@ class inbox_view(View):
     return_url = None
     def get(self , request,username=''):
         return render(request , 'Dashboard/chat.html')
+    
+class buyer_review_view(View):
+    return_url = None
+    def get(self , request,username=''):
+        return render(request , 'Dashboard/buyer_review.html')
+
+class seller_review_view(View):
+    return_url = None
+    def get(self , request,username=''):
+        return render(request , 'Dashboard/seller_review.html')
+    
+class warning_review_view(View):
+    return_url = None
+    def get(self , request,username=''):
+        return render(request , 'Dashboard/warning.html')
+
 
 class favourites_view(View):
     return_url = None
@@ -1276,7 +1292,7 @@ class order_activities_view(View):
                 d_minutes = ''
                 d_seconds = ''
                 due_date_format = ''
-                if(str(order_details.order_status) == "active"):
+                if(str(order_details.order_status) == "active" or str(order_details.order_status) == "delivered" ):
                     try:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
@@ -1314,44 +1330,49 @@ class order_activities_view(View):
                     order_status = "resolution"
                 delivered = ''
                 delivery_status = ''
-                if(Order_Delivery.objects.filter(order_no=order_details).exists() == True):
-                    delivered = "yes"
-                    delivery_details = Order_Delivery.objects.get(order_no=order_details)
-                    if(delivery_details.delivery_status == "delivered"):
-                        delivery_status = "delivered"
-                        order_status = "delivered"
-                    elif(delivery_details.delivery_status == "completed"):
-                        delivery_status = "completed"
-                        order_status = "completed"
-                    del_doc_lists = []
-                    
-                    if((delivery_details.attachment) == None):
+                if(str(order_details.order_status) == "delivered" or str(order_details.order_status) == "completed"):
+                    if(Order_Delivery.objects.filter(order_no=order_details).exists() == True):
+                        delivered = "yes"
+                        delivery_details = Order_Delivery.objects.filter(order_no=order_details).first()
+                        if(delivery_details.delivery_status == "delivered"):
+                            delivery_status = "delivered"
+                        elif(delivery_details.delivery_status == "completed"):
+                            delivery_status = "completed"
                         del_doc_lists = []
+                    
+                        if((delivery_details.attachment) == None):
+                            del_doc_lists = []
+                        else:
+                            img_fm = [".tif", ".tiff", ".jpg", ".jpeg", ".gif", ".png", ".eps", ".raw", ".cr2", ".nef", ".orf", ".sr2", ".bmp", ".ppm", ".heif"]
+                            del_doc_lists_split = delivery_details.attachment.split(",")
+                            for doc in del_doc_lists_split:
+                                if(len(doc.strip()) != 0):
+                                    extype = ''
+                                    extension = Path(doc).suffix
+                                    if(extension in img_fm):
+                                        extype = "image"
+                                    elif(extension == ".pdf"):
+                                        extype = "pdf"
+                                    elif(extension == ".zip"):
+                                        extype = "zip"
+                                    elif(extension == ".rar"):
+                                        extype = "rar"
+                                    else:
+                                        extype = "doc"
+                                    del_doc_lists.append({"doc":doc,"ext_type":extype,"ext":extension})
+                        delivery_details_list.append({"delivery_message":delivery_details.delivery_message,"delivery_date":delivery_details.delivery_date,"delivered_by_user":delivery_details.delivered_by.username,"del_documents":del_doc_lists})
                     else:
-                        img_fm = [".tif", ".tiff", ".jpg", ".jpeg", ".gif", ".png", ".eps", ".raw", ".cr2", ".nef", ".orf", ".sr2", ".bmp", ".ppm", ".heif"]
-                        del_doc_lists_split = delivery_details.attachment.split(",")
-                        for doc in del_doc_lists_split:
-                            if(len(doc.strip()) != 0):
-                                extype = ''
-                                extension = Path(doc).suffix
-                                if(extension in img_fm):
-                                    extype = "image"
-                                elif(extension == ".pdf"):
-                                    extype = "pdf"
-                                elif(extension == ".zip"):
-                                    extype = "zip"
-                                elif(extension == ".rar"):
-                                    extype = "rar"
-                                else:
-                                    extype = "doc"
-                                del_doc_lists.append({"doc":doc,"ext_type":extype,"ext":extension})
-                    delivery_details_list.append({"delivery_message":delivery_details.delivery_message,"delivery_date":delivery_details.delivery_date,"delivered_by_user":delivery_details.delivered_by.username,"del_documents":del_doc_lists})
-                else:
-                    delivered = "no"
-                print(formatted_due_date)
+                        delivered = "no"
+                if(str(order_details.order_status) == "delivered"):
+                    order_status = "delivered"       
+                if(str(order_details.order_status) == "completed"):
+                    order_status = "completed"
                 s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date})
                 requirements_lists = []
-                conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user,order_no=order_details)
+                try:
+                    conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
+                except:
+                    conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
                 if(offer_details.ask_requirements == True):
                     requirements = "yes"
                     requirements_l = Buyer_Requirements.objects.filter(order_no= order_details)
@@ -1372,23 +1393,27 @@ class order_activities_view(View):
                                         extype = "pdf"
                                     else:
                                         extype = "doc"
-                                    doc_lists.append({"doc":doc,"ext_type":extype,"ext":extension})
+                                    doc_lists.append({"doc":doc.replace("/media/buyer_requirements/",""),"ext_type":extype,"ext":extension})
                         requirements_lists.append({"requirement_ques":req_det.requirement_ques,"requirement_ans":req_det.requirement_ans,"default_req":req_det.default_req,"req_documents":doc_lists})
                 else:
                     requirements = "no"
                 message_char = ''  
-                delivery_char = ''   
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="order_message") | Q(Char_category_Name= "delivery_description"))
+                delivery_char = ''
+                cancel_char = ''  
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="order_message") | Q(Char_category_Name= "delivery_description") | Q(Char_category_Name= "resolution_cancel_text"))
                 for c in charcterlimits:
                     if(c.Char_category_Name == "order_message"):
                         message_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name == "delivery_description"):
                         delivery_char = c.Max_No_of_char_allowed
+                    elif(c.Char_category_Name == "resolution_cancel_text"):
+                        cancel_char = c.Max_No_of_char_allowed
                 try:
-                    conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user,order_no=order_details)
+                    conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
                 except:
-                    conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user,order_no=order_details)
-                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id)})
+                    conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
+                chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
+                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words)})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -2566,7 +2591,11 @@ def update_seller_offers():
         seller_object = SellerLevels.objects.get(level_name= us.seller_level)
         userDetails.offers_left = seller_object.No_of_offers
         userDetails.save()  
-            
+
+
+def spam_detection():
+    print("123")
+         
     
 def get_buyer_request_view(request):
     if request.method == 'GET':
@@ -2782,7 +2811,6 @@ def post_flutterwave_transaction_view(request):
         gig_details = UserGigs.objects.get(gig_title = offers_sent.gig_name.gig_title)
         payment.token = 'FLWSECK_TEST-027992a01e7b87b0522d8b2141395a30-X'
         details = payment.get_payment_details(u_trans_id)
-        print(details)
         flu_amout = details['data']['amount']
         flu_app_fee = details['data']['app_fee']
         flu_pay_type = details['data']['payment_type']
@@ -2801,9 +2829,14 @@ def post_flutterwave_transaction_view(request):
             order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=order_amount,due_date=due_date)
             order_details.save()   
             order_details_get = User_orders.objects.get(pk = order_details.pk)
-            order_conver = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-            order_conver.save()
-            cover_detls =  Order_Conversation.objects.get(pk = order_conver.pk)
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            if(cover_detls == None):
+                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                cover_detls.save()
+            cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)
@@ -2850,8 +2883,14 @@ def post_paypal_transaction_view(request):
             order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=u_base_price,due_date=due_date)
             order_details.save()
             order_details_get = User_orders.objects.get(pk = order_details.pk)
-            order_conver = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-            order_conver.save()
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            if(cover_detls == None):
+                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                cover_detls.save()
+            cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='paypal',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paypal_id=u_paypal_id,paypal_email=u_paypal_email,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)
@@ -2985,7 +3024,10 @@ def post_draft_object_view(request):
         order_details = User_orders.objects.get(order_no=d_orde_no)
         delivered_by  = User.objects.get(pk=order_details.order_to.id)
         delivered_to  = User.objects.get(pk=order_details.order_by.id)
-        cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
+        try:    
+            cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
+        except:
+            cover_detls = Order_Conversation.objects.get(initiator=delivered_by,receiver = delivered_to)
         order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity")
         order_message.save()
         resolution_interval_gap = 2
@@ -2993,9 +3035,9 @@ def post_draft_object_view(request):
         resolution_ext = Addon_Parameters.objects.filter(Q(Char_category_Name="resolution_days") )
         for ext in resolution_ext:
             if(ext.parameter_name == "resolution_days"):
-                resolution_interval_gap = c.no_of_days
+                resolution_interval_gap = ext.no_of_days
         today_date = datetime.today()
-        last_date = today_date + timedelta(days=resolution_interval_gap)
+        last_date = today_date + timedelta(days=int(resolution_interval_gap))
         resolution= User_Order_Resolution(resolution_type="draft",resolution_text = "Delivery",resolution_message="Delivered",resolution_desc="successfuly delivered",resolution_status="pending",order_no=order_details,raised_by=delivered_by,raised_to=delivered_to,message=get_message , resolution_last_date= last_date)
         resolution.save()
         get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
@@ -3015,8 +3057,10 @@ def post_delivered_object_view(request):
         order_details = User_orders.objects.get(order_no=d_orde_no)
         delivered_by  = User.objects.get(pk=order_details.order_to.id)
         delivered_to  = User.objects.get(pk=order_details.order_by.id)
-        cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
-
+        try:    
+            cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
+        except:
+            cover_detls = Order_Conversation.objects.get(initiator=delivered_by,receiver = delivered_to)
         order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity")
         order_message.save()
         get_message =  Order_Message.objects.get(pk = order_message.pk)
@@ -3032,22 +3076,6 @@ def post_delivered_object_view(request):
         return HttpResponse('sucess')
 
     
-@csrf_exempt
-def post_delivery_file_upload_view(request):
-    if request.method == 'POST':
-        files = request.FILES.getlist("files") 
-        urls = []
-        if len(files) != 0:
-            for file in files:
-                fs= FileSystemStorage(location= settings.MEDIA_ROOT +'/delivery/')
-                file_path=fs.save(file.name.replace(' ','_'),file) 
-                url = '/media/delivery/'+file_path
-                urls.append(url)
-        else:
-            print('No File') 
-        responseData = {'data':urls}
-        return JsonResponse(responseData,safe=False)
-
 @csrf_exempt
 def post_resolutions_view(request):
     if request.method == 'POST': 
@@ -3105,7 +3133,6 @@ def post_order_upload_view(request):
         else:
             if existingPath == 'null':
                 fileName = str(shortuuid.ShortUUID().random(length=15)) +"_"+ str(fileName)[0:8]  + pathlib.Path(fileName).suffix 
-                print(fileName)
                 path = 'media/order_files/' + fileName
                 with open(path, 'wb+') as destination: 
                     destination.write(file)
@@ -3141,12 +3168,61 @@ def post_order_upload_view(request):
                     return HttpResponse(res)
         
 
+@csrf_exempt
+def post_delivery_order_upload_view(request):
+    if request.method == 'POST':
+        file = request.FILES['file'].read()
+        fileName= request.POST['filename']
+        existingPath = request.POST['existingPath']
+        end = request.POST['end']
+        nextSlice = request.POST['nextSlice']
+        if file=="" or fileName=="" or existingPath=="" or end=="" or nextSlice=="":
+            res = JsonResponse({'data':'Invalid Request'})
+            return HttpResponse(res)
+        else:
+            if existingPath == 'null':
+                fileName = str(shortuuid.ShortUUID().random(length=15)) +"_"+ str(fileName)[0:8]  + pathlib.Path(fileName).suffix 
+                path = 'media/delivery/' + fileName
+                with open(path, 'wb+') as destination: 
+                    destination.write(file)
+                FileFolder = UploadFile()
+                FileFolder.existingPath = fileName
+                FileFolder.eof = end
+                FileFolder.name = fileName
+                FileFolder.save()
+                if int(end):
+                    res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
+                else:
+                    res = JsonResponse({'existingPath': fileName})
+                return HttpResponse(res)
+            else:
+                path = 'media/delivery/' + existingPath
+                model_id = UploadFile.objects.get(existingPath=existingPath)
+                if model_id.existingPath == existingPath:
+                    if not model_id.eof:
+                        with open(path, 'ab+') as destination: 
+                            destination.write(file)
+                        if int(end):
+                            model_id.eof = int(end)
+                            model_id.save()
+                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':existingPath})
+                        else:
+                            res = JsonResponse({'existingPath':existingPath})    
+                        return HttpResponse(res)
+                    else:
+                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        return HttpResponse(res)
+                else:
+                    res = JsonResponse({'data':'No such file exists in the existingPath'})
+                    return HttpResponse(res)
+
 
 def get_all_order_messages_view(request):
     if request.method == 'GET':
         order_no = request.GET['order_no']
         conver_id = request.GET['conver_id']
         data = []
+        delivery_no=0
         order_details = User_orders.objects.get(order_no = order_no)
         cover_detls =  Order_Conversation.objects.get(pk = conver_id)
         all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details)
@@ -3166,11 +3242,16 @@ def get_all_order_messages_view(request):
                 if(reolution_details != None):
                     delivery_description= ''
                     delivery_images= ''
+                    message_str = ''
                     if(reolution_details.resolution_type == "delivered"):
                         order_del_details = Order_Delivery.objects.get(resolution = reolution_details)
                         delivery_description = order_del_details.delivery_message
                         delivery_images= order_del_details.attachment
-                    data.append({"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":reolution_details.resolution_desc,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images})
+                        message_str = ''
+                        delivery_no = delivery_no + 1
+                    else:
+                        message_str = reolution_details.resolution_desc
+                    data.append({"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
         data.sort(key=operator.itemgetter('mssg_time'))
         return JsonResponse(data,safe=False)
 
@@ -3195,14 +3276,63 @@ def post_accept_click_view(request):
             order_details.save()
             refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details)
             refund_details.save()
+        elif(res_type == "delivered"):
+            order_details = User_orders.objects.get(order_no = res_details.order_no)
+            service_fees_price = 0
+            if(int(order_details.order_amount) <=40):
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  int(serv_fees_val)
+                    else:
+                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            else:
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  int(serv_fees_val)
+                    else:
+                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+            withdrwal_val = 0
+            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
+            for ext in withdrawal_ext:
+                if(ext.parameter_name == "withdrawal_clearence_days"):
+                    withdrwal_val = ext.no_of_days
+            today_date = datetime.today()
+            clearencedate = today_date + timedelta(days=int(withdrwal_val))                
+            order_details.order_status = 'completed'
+            order_details.save()
+            order_by =  User.objects.get(username= order_details.order_by.username)   
+            order_to =  User.objects.get(username= order_details.order_to.username)  
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)      
+            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None)
+            refund_details.save()
+            order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity")
+            order_message.save()
+            get_message =  Order_Message.objects.get(pk = order_message.pk)
+            resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
+            resolution.save()
+            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details)
+            order_ativity.save()
         return HttpResponse('sucess')
-    
     
 def post_decline_click_view(request):
     if request.method == 'GET':
         res_id = request.GET['res_id']
         res_type = request.GET['res_type']
+        res_text = request.GET['res_text']
         res_details = User_Order_Resolution.objects.get(id = res_id)
         res_details.resolution_status = 'rejected'
+        res_details.resolution_cancel_mssg = res_text
         res_details.save()
         return HttpResponse('sucess')

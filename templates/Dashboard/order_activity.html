@@ -7,6 +7,7 @@
     <input type="hidden"  value="{{seller_user_name}}" id="seller_username" />
     <input type="hidden"  value="{{buyer_user_name}}" id="buyer_username" />
     <input type="hidden"  value="{{conversation_id}}" id="conversation_id" />
+    <input type="hidden"  value="{{chat_words}}" id="chat_words_hidd" />
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-0" id="manage_gigs">
        <div class="col-9 text-center p-0 mt-3 mb-2">
@@ -61,6 +62,7 @@
                                           </span></div>
                                          </span>
                                       </div>
+                                      <div class="errors m-t-16 co-red-700 text-body-2 flex flex-col" id="message_errors">Terms of Service reminder: Providing <span class="detected_mssg"></span> is only allowed if it is needed as part of the service. Otherwise, all communication must go through Letworkbedone</div>
                                       <div class="message-box-cta"> 
                                          <button class="ORLWF8p _0MkXbqi L9EM07f co-green-700 message-box-send" id="chat_message_send">Send</button>
                                         
@@ -176,24 +178,12 @@
                                              <p>{{req_det.requirement_ans}}  </p>
                                              <div class="requirment_imags">
                                              {% if req_det.req_documents|length != 0 %}
+                                             <div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div>
+                                             <ul class="attchments-container">
                                                 {% for doc in req_det.req_documents %}
-                                                   {% if doc.ext_type == 'image' %}
-                                                      <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                         <img alt="logo" src="{{doc.doc}}">
-                                                      </a>
-                                                   {% elif  doc.ext_type == "doc" %}
-                                                      <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                         <img alt="logo" src="{% static 'assets/images/files/document.png' %}">
-                                                      </a>
-                                                   {% elif  doc.ext_type == "pdf" %}
-                                                      <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                         <img alt="logo" src="{% static 'assets/images/files/pdf_109.png' %}">
-                                                      </a>
-                                                   {% endif %}
-                                                   {% comment %} <a download="logo.png" href="http://localhost/folder/img/logo.png" title="Logo title">
-                                                      <img alt="logo" src="http://localhost/folder/img/logo.png">
-                                                   </a> {% endcomment %}
+                                                <li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="{{doc.doc}}" data-label= "/media/buyer_requirements/{{doc.doc.strip}}"><a class="thumbnail-link" href="/media/buyer_requirements/{{doc.doc.strip}}" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...{{doc.doc|slice:'20:'}}</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>
                                                 {% endfor %}
+                                             </ul></div>
                                              {% endif %}
                                              <div>
                                           </li>
@@ -210,35 +200,14 @@
                                  {{delivery_details.0.delivery_message}}
                               </p>
                               <div class="delivery_images">
-
                                  {% if delivery_details.0.del_documents|length != 0 %}
+                                    <div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div>
+                                    <ul class="attchments-container">
                                        {% for doc in delivery_details.0.del_documents %}
-                                          {% if doc.ext_type == 'image' %}
-                                             <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                <img alt="logo" src="{{doc.doc}}">
-                                             </a>
-                                          {% elif  doc.ext_type == "zip" %}
-                                             <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                <img alt="logo" src="{% static 'assets/images/files/zip.png' %}">
-                                             </a>
-                                          {% elif  doc.ext_type == "rar" %}
-                                             <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                <img alt="logo" src="{% static 'assets/images/files/rar.png' %}">
-                                             </a>
-                                          {% elif  doc.ext_type == "doc" %}
-                                             <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                <img alt="logo" src="{% static 'assets/images/files/document.png' %}">
-                                             </a>
-                                          {% elif  doc.ext_type == "pdf" %}
-                                             <a download="{{doc.doc}}" href="{{doc.doc}}">
-                                                <img alt="logo" src="{% static 'assets/images/files/pdf_109.png' %}">
-                                             </a>
-                                          {% endif %}
-                                          {% comment %} <a download="logo.png" href="http://localhost/folder/img/logo.png" title="Logo title">
-                                             <img alt="logo" src="http://localhost/folder/img/logo.png">
-                                          </a> {% endcomment %}
+                                       <li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="{{doc.doc}}" data-label= "/media/delivery/{{doc.doc.strip}}"><a class="thumbnail-link" href="/media/delivery/{{doc.doc.strip}}" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...{{doc.doc|slice:'20:'}}</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>
                                        {% endfor %}
-                                    {% endif %}
+                                    </ul></div>
+                                 {% endif %}
                               </div>
                            </div>
                            <div class="info">
@@ -252,9 +221,12 @@
           </div>
        </div>
        <div class="col-3 text-center p-0 mt-3 mb-2">
+         
         <div class="col-12-xs col-4-md col-3-lg sidebar">
+         
             {% if seller_gig.0.order_status == 'late' or  seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' or seller_gig.0.order_status == 'delivered' %}
             <div class="wrap-box m-b-16 sidebar-padding">
+              
                <div class="delivery-countdown">
                   <header>
                      <h6 class="co-grey-1100 header-text m-r-4 countdown-title">Time left to deliver</h6> 
@@ -273,18 +245,19 @@
                         <div class="flipper-group flipper-delimiter">:</div>
                         <div class="flipper-group flipper-dd"><label>Seconds</label><div class="flipper-digit reverse" data-value="0"><div class="digit-next"></div><div class="digit-bottom">0</div><div class="digit-top2">0</div><div class="digit-top">0</div><div class="digit-face active">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">3</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div></div><div class="flipper-delimiter"></div><div class="flipper-digit reverse" data-value="1"><div class="digit-next"></div><div class="digit-bottom">0</div><div class="digit-top2">0</div><div class="digit-top">0</div><div class="digit-face">0</div><div class="digit-face active">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div><div class="digit-face">0</div></div></div>  
                      </div>
-                     {% endif %}
-                     
+                     {% endif %}                 
                   </div>
+                  {% if request.user.username == order_to.username %}
                   {% if delivery != 'yes' %}
                      <div class="m-t-12"><button class="ORLWF8p _0MkXbqi i6NB5Ls co-white delivery-button bg-co-green-700" id="btn_delivery_now">Deliver Now</button></div> 
                   {% else %} 
-                     <div class="m-t-12"><button class="ORLWF8p _0MkXbqi i6NB5Ls co-white delivery-button bg-co-green-700">Delivered</button></div> 
+                     <div class="m-t-12"><button class="ORLWF8p _0MkXbqi i6NB5Ls co-white delivery-button bg-co-green-700" id="btn_delivery_now">Deliver Again</button></div> 
                   {% endif %} 
-                  
+                  {% endif %}
                </div>
             </div>
             {% endif %}
+            
             <div class="wrap-box m-b-16 p-0">
                <div class="has-shadow">
                   <aside class="order-summary sidebar-padding">
@@ -376,7 +349,7 @@
                            </div>
                         </li>
                         {% elif delivery == 'yes' %}
-                           {% if delivery_status == 'delivered' %}
+                           {% if seller_gig.0.order_status == 'delivered' %}
                               <li class="tracker-station is-complete">
                                  <div class="circle"></div>
                                  <div class="description">
@@ -389,7 +362,7 @@
                                     <h4>Review delivery</h4>
                                  </div>
                               </li>
-                           {% elif  delivery_status == 'completed' %}
+                           {% elif  seller_gig.0.order_status == 'completed' %}
                               <li class="tracker-station is-complete">
                                  <div class="circle"></div>
                                  <div class="description">
@@ -405,7 +378,7 @@
                               <li class="tracker-station is-active">
                                  <div class="circle"></div>
                                     <div class="description">
-                                       <h4>Complete order</h4>
+                                       <h4>Completed order</h4>
                                     </div>
                               </li>
                            {% endif %}  
@@ -489,15 +462,24 @@
                            <span class="control-bar flex-end"><span class="text-counter"   id="span_delivery_messsg">0 / {{delivery_char}}</span></span>
                         </div>
                         <div class="attachment-buttons">
-                           <div class="e4rLWCQ _1DtaAoI upload-attachment-tooltip"><span class="FPMjOVo"><label for="delivery_file" class="ORLWF8p T2YhX76 co-grey-1100 attachments-button bg-co-grey-300" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm"><input  type="file" id="delivery_file" onchange="upload_deliveryChange(this)" 
-                              <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
-                                 <svg width="13" height="14" viewBox="0 0 13 14" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23276 12.7969C0.691092 12.2865 0.326868 11.6803 0.140086 10.9785C-0.0466954 10.2767 -0.0466954 9.57943 0.140086 8.88672C0.326868 8.19401 0.691092 7.59245 1.23276 7.08203L7.53664 0.902344C7.92888 0.519531 8.4005 0.255208 8.95151 0.109375C9.50251 -0.0364583 10.0535 -0.0364583 10.6045 0.109375C11.1555 0.255208 11.6365 0.524089 12.0474 0.916016C12.4583 1.30794 12.7385 1.77279 12.8879 2.31055C13.0374 2.84831 13.0374 3.38607 12.8879 3.92383C12.7385 4.46159 12.4583 4.93099 12.0474 5.33203L6.75216 10.5273C6.30388 10.9466 5.77155 11.1562 5.15517 11.1562C4.53879 11.1562 4.00647 10.9421 3.55819 10.5137C3.10991 10.0853 2.88578 9.57031 2.88578 8.96875C2.88578 8.36719 3.10991 7.84766 3.55819 7.41016L8.06897 3.00781C8.125 2.95312 8.19971 2.92578 8.2931 2.92578C8.38649 2.92578 8.46121 2.95312 8.51724 3.00781L8.99354 3.47266C9.06825 3.54557 9.1056 3.6276 9.1056 3.71875C9.1056 3.8099 9.06825 3.88281 8.99354 3.9375L4.51078 8.33984C4.32399 8.50391 4.2306 8.70898 4.2306 8.95508C4.2306 9.20117 4.32399 9.41081 4.51078 9.58398C4.69756 9.75716 4.91703 9.84375 5.16918 9.84375C5.42134 9.84375 5.63147 9.76172 5.79957 9.59766L11.1228 4.40234C11.4777 4.05599 11.6552 3.63216 11.6552 3.13086C11.6552 2.62956 11.4731 2.20117 11.1088 1.8457C10.7446 1.49023 10.3057 1.3125 9.79203 1.3125C9.27838 1.3125 8.83477 1.48568 8.46121 1.83203L2.15733 7.98438C1.61566 8.53125 1.34483 9.18294 1.34483 9.93945C1.34483 10.696 1.62033 11.3431 2.17134 11.8809C2.72234 12.4186 3.38542 12.6875 4.16056 12.6875C4.9357 12.6875 5.60345 12.4141 6.16379 11.8672L11.6272 6.50781C11.7019 6.45312 11.7859 6.42578 11.8793 6.42578C11.9727 6.42578 12.0474 6.45312 12.1034 6.50781L12.5797 6.97266C12.6545 7.04557 12.6918 7.1276 12.6918 7.21875C12.6918 7.3099 12.6545 7.38281 12.5797 7.4375L7.11638 12.7969C6.57471 13.3255 5.94899 13.681 5.23922 13.8633C4.52945 14.0456 3.81501 14.0456 3.09591 13.8633C2.3768 13.681 1.75575 13.3255 1.23276 12.7969Z"></path>
-                                 </svg>
-                              </span>
-                              Upload work</label></span></div>
+                           <div class="e4rLWCQ _1DtaAoI upload-attachment-tooltip">
+                              <span class="FPMjOVo">
+                              <label for="delivery_file" class="ORLWF8p T2YhX76 co-grey-1100 attachments-button bg-co-grey-300" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm">
+                                 <input  type="file" id="delivery_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
+                                 <span class="_1AB8XqH upload-button-icon" aria-hidden="true" style="width: 14px; height: 14px;">
+                                    <svg width="13" height="14" viewBox="0 0 13 14" xmlns="http://www.w3.org/2000/svg">
+                                       <path fill-rule="evenodd" clip-rule="evenodd" d="M1.23276 12.7969C0.691092 12.2865 0.326868 11.6803 0.140086 10.9785C-0.0466954 10.2767 -0.0466954 9.57943 0.140086 8.88672C0.326868 8.19401 0.691092 7.59245 1.23276 7.08203L7.53664 0.902344C7.92888 0.519531 8.4005 0.255208 8.95151 0.109375C9.50251 -0.0364583 10.0535 -0.0364583 10.6045 0.109375C11.1555 0.255208 11.6365 0.524089 12.0474 0.916016C12.4583 1.30794 12.7385 1.77279 12.8879 2.31055C13.0374 2.84831 13.0374 3.38607 12.8879 3.92383C12.7385 4.46159 12.4583 4.93099 12.0474 5.33203L6.75216 10.5273C6.30388 10.9466 5.77155 11.1562 5.15517 11.1562C4.53879 11.1562 4.00647 10.9421 3.55819 10.5137C3.10991 10.0853 2.88578 9.57031 2.88578 8.96875C2.88578 8.36719 3.10991 7.84766 3.55819 7.41016L8.06897 3.00781C8.125 2.95312 8.19971 2.92578 8.2931 2.92578C8.38649 2.92578 8.46121 2.95312 8.51724 3.00781L8.99354 3.47266C9.06825 3.54557 9.1056 3.6276 9.1056 3.71875C9.1056 3.8099 9.06825 3.88281 8.99354 3.9375L4.51078 8.33984C4.32399 8.50391 4.2306 8.70898 4.2306 8.95508C4.2306 9.20117 4.32399 9.41081 4.51078 9.58398C4.69756 9.75716 4.91703 9.84375 5.16918 9.84375C5.42134 9.84375 5.63147 9.76172 5.79957 9.59766L11.1228 4.40234C11.4777 4.05599 11.6552 3.63216 11.6552 3.13086C11.6552 2.62956 11.4731 2.20117 11.1088 1.8457C10.7446 1.49023 10.3057 1.3125 9.79203 1.3125C9.27838 1.3125 8.83477 1.48568 8.46121 1.83203L2.15733 7.98438C1.61566 8.53125 1.34483 9.18294 1.34483 9.93945C1.34483 10.696 1.62033 11.3431 2.17134 11.8809C2.72234 12.4186 3.38542 12.6875 4.16056 12.6875C4.9357 12.6875 5.60345 12.4141 6.16379 11.8672L11.6272 6.50781C11.7019 6.45312 11.7859 6.42578 11.8793 6.42578C11.9727 6.42578 12.0474 6.45312 12.1034 6.50781L12.5797 6.97266C12.6545 7.04557 12.6918 7.1276 12.6918 7.21875C12.6918 7.3099 12.6545 7.38281 12.5797 7.4375L7.11638 12.7969C6.57471 13.3255 5.94899 13.681 5.23922 13.8633C4.52945 14.0456 3.81501 14.0456 3.09591 13.8633C2.3768 13.681 1.75575 13.3255 1.23276 12.7969Z"></path>
+                                    </svg>
+                                 </span>
+                                 Upload work
+                              </label>
+                           </span>
+                        </div>
                         </div>
                         <div class="_2g7EPin custom-order-package-tooltip" id="image_list">
+    
+                        </div>  
+                        <div class="_2g7EPin custom-order-package-tooltip" id="d_file_progress_div">
     
                         </div>   
                         <div class="error-message">
@@ -505,6 +487,47 @@
                         </div>
                      </div>
                      <div class="buttons-containers flex-end"><button class="ORLWF8p _7pUBXz- co-green-700 YxOH7gm bg-co-white" id="btn_save_draft">Save Draft</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" id="btn_delivery_submit">Deliver</button></div>
+                  </div>
+               </div>
+            </div>
+       </div>
+     </div>
+   </div>
+ </div>
+</div>
+
+
+<div class="modal" id="modal_cancel" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+   <div class="modal-dialog modal-lg" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+           <h1>Deliver your work</h1>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       </div>
+       <div class="modal-body">
+         <div class="row tab1" id="publish_social_div">
+            <div class="col-lg-11 main_delivery_content">
+               <div class="order-page">
+                  <div class="seller">
+                     <div class="cancel-form">
+                        <input type="hidden" id="resl_id" value="">
+                        <input type="hidden" id="resl_type" value="">
+                        <div class="rzAP5-N text-area-container m-b-16 flex flex-col">
+                           <div class="LsC-Zuk p-r-0 form-text-area"><textarea maxlength="{{cancel_char}}" placeholder="Describe your cancellation in details" id="text_cancel_messsg" required></textarea>
+                              
+                           </div>
+                           <span class="control-bar flex-end"><span class="text-counter"   id="span_cancel_messsg">0 / {{cancel_char}}</span></span>
+                        </div>
+                      
+                        </div>
+                      
+                       
+                        <div class="canl-error-message">
+                           <label class="error"> Please describe your cancellation message.</label>
+                        </div>
+                     </div>
+                     <div class="buttons-containers flex-end">
+					 <button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" id="btn_cancel_submit">Submit</button></div>
                   </div>
                </div>
             </div>
@@ -1948,7 +1971,7 @@
    padding: 16px;
    border-bottom-right-radius: 4px;
    border-bottom-left-radius: 4px;
-   padding: 0px 24px 24px;
+   padding: 0px 0px 24px;
 }
 .extend-delivery-section .user-message, .mutual-cancellation-section .user-message {
    margin: 24px 0px;
@@ -3035,6 +3058,7 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
    border: 1px solid black;
    background-color:white ;
    border:none;
+
 }
 .upload-attachment-tooltip {
    z-index: 10000!important;
@@ -3047,6 +3071,8 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
    line-height: 40px;
    font-size: 15px;
    font-weight: 600;
+   background-color: #efeff0;
+   cursor:pointer;
 }
 
 .e4rLWCQ .FPMjOVo {
@@ -3133,6 +3159,8 @@ h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text
 {
    color:red;
    margin-top:2%;
+   font-size: 12px;
+   font-weight: 500;
 }
 .attachments-button .attachment-icon {
    display: -webkit-inline-box;
@@ -3458,12 +3486,12 @@ small {
 }
 
 .stamp.resolution-declined {
-   background-position: 0 -480px;
+   background-position: -6px -480px;
 }
 
 
 .stamp.delivery-received {
-   background-position: 0 -120px;
+   background-position:-3px -125px;
 }
 .in_resolution
 {
@@ -3475,8 +3503,8 @@ small {
 .stamp.resolution-declined .stamp-icon {
    fill: #f74040;
    position: absolute;
-   bottom: -1px;
-   right: -2px;
+   bottom: -35px;
+   right: -40px;
    z-index: 1;
 }
 
@@ -3643,7 +3671,131 @@ small {
    width: 12px;
    height: 14px;
 }
+#image_list .fileicon
+{
+   font-size: 70px !important;
+   color:#2E5DC5 !important;
+}
+#image_list
+{
+   max-height: 150px;
+   height: 100px;
+   margin-top: 3%;
+   display: block;
+   width: 100%;
+}
+#image_list .fa
+{
+   font-size: 15px;
+   position: absolute;
+   color: red;
+   margin-right: 4%;
+}
+#image_list .file_name
+{
+   font-size: 8px;
+   line-height: 8px;
+   display: block;
+   bottom: -95px;
+   width: 100%;
+   float: left;
+   position: absolute;
+   text-align: center;
+   font-weight: 700;
+}
+#image_list .imagediv
+{
+   display: inline-block;
+   width: 13%;
+   position:relative;
+}
 
+.card-wrap .card-header {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   -ms-flex-wrap: wrap;
+   flex-wrap: wrap;
+   font-weight: 600;
+   font-size: 16px;
+   color: #62646a;
+   background-color: #fafafa;
+   padding: 0 16px;
+   height: 43px;
+   border-bottom: 1px solid #efeff0;
+   border-collapse: collapse;
+   border-radius: 4px;
+   border-bottom-right-radius: 0;
+   border-bottom-left-radius: 0;
+}
+
+.card-wrap .card-header {
+   font-size: 16px;
+   padding: 0 24px;
+   height: 43px;
+}
+.delivery_content .activity-body, .cancel_div .activity-body
+{
+   margin-left: 10px !important;
+}
+.delivery_content .activity-body .card-wrap, .cancel_div .activity-body .card-wrap
+{
+   margin-top: 3%;
+}
+.delivery_content .auto-complete, .cancel_div .auto-complete {
+   background: #f0f4ff;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-align: start;
+   -ms-flex-align: start;
+   align-items: flex-start;
+   padding: 12px;
+   margin: 24px 0 32px;
+}
+
+.delivery_content .auto-complete .note-icon {
+   fill: #284389;
+   -ms-flex-negative: 0;
+   flex-shrink: 0;
+   margin-right: 12px;
+   margin-top: 2%;
+}
+
+.delivery_content  .lFICM06 {
+   display: inline-block;
+   background: none;
+   border: none;
+   padding: 0;
+   margin: 0;
+   fill: #74767e;
+}
+
+.delivery_content .warning-note p {
+   text-align: left;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   position: relative;
+}
+.cancel_div .activity-body
+{
+   margin-top:8%;
+}
+#message_errors
+{
+   text-align: left;
+   padding: 2%;
+   color: red;
+   display: inline-block;
+}
 </style>
 <script>
    function formatDate(date) {
@@ -3688,6 +3840,9 @@ small {
       return strTime;
     }
    $(document).ready(function(){
+      $("#message_errors").hide();
+      jsonObj1 = eval($("#chat_words_hidd").val());
+      console.log(jsonObj1);
       $.ajax({
          type:"GET",
          url: "/get_all_order_messages/",
@@ -3723,11 +3878,16 @@ small {
                         classtype = ''
                         message_type = ''
                         extensionmssg = ''
+                        deliverymssg = ''
                         req_type= ''
                         buttons_txt = ''
+                        cancel_mssg = ''
                         if(v.res_type.trim() == "cancel")
                         {
+                           extensionmssg = ''
+                           deliverymssg = ''
                            req_type= "cancel"
+                           cancel_mssg = ''
                            if(v.res_status.trim() == "accepted")
                            {
                               classtype = '<span class="stamp order-completed"></span>'
@@ -3736,16 +3896,22 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = 'You decided not to cancel this order'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "extention")
                         {
                            req_type= "extention"
+                           deliverymssg = ''
+                           cancel_mssg = ''
                            extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+formatDate(new Date(v.res_next_date))  +'</p> </div></div>';
                            if(v.res_status.trim() == "accepted")
                            {
@@ -3755,15 +3921,35 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to extend the delivery date'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> requested to extend the delivery date';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "delivered")
                         {
+                           extensionmssg = ''
+                           cancel_mssg = ''
+                           if(v.del_images.trim().length != 0)
+                           {
+                              del_attachments = v.del_images.trim().split(",");
+                              del_attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                              $.each(del_attachments, function (key, value1) {
+                              if(value1.trim().length != 0)
+                              {
+                                 file_path = '/media/delivery/'+value1.trim();
+                                 del_attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...'+value1.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                              }
+                              });
+                              del_attachment_txt += '</ul></div>';
+                           }
+                           deliverymssg = '<div class="activity-collapsible-content delivery_content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap delivery-card old-revision-copy"> <header class="card-header"><span class="card-title">Delivery #'+v.delivery_No+'</span> </header> <div class="card-content"> <div class="user-message"> <a href="/user/profile/'+v.sender_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_2405330232899" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username">'+v.sender_username+'</span></div> </p> <p>'+v.del_descrp+'</p> '+del_attachment_txt+' </div> </div>  </div> </section> </article> </div> </div></div>'
                            if(v.res_status.trim() == "accepted")
                            {
                               classtype = '<span class="stamp delivery-received"></span>'
@@ -3772,25 +3958,38 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = 'Sorry your delivery was rejected'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened delivery-received"></span>'
                               message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by Nov 6, 1:00 pm or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            } 
                         }
-                        else if(v.res_status.trim() == "completed")
+                        else if(v.res_type.trim() == "completed")
                         {
                            classtype = '<span class="stamp order-completed"></span>'
                            message_type = 'Your order was completed'
+                           deliverymssg = ''
+                           extensionmssg = ''
+                           cancel_mssg = ''
                         }
-                        $("#message_wrap_box").append('<section class="activity-wrap resolution-opened"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> '+classtype+'<p class="header-base "><span class="title-text"><span>'+message_type+'</span></span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap resolution mutual-cancellation-section"> <div class="card-content"> <div class="user-message"> <a href="user/profile/'+v.reciever_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_9928531938024" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div> </p> <p>'+v.res_message+'</p> '+extensionmssg+' </div> </div>  '+buttons_txt+' </div> </section> </article> </div> </div> </div> </article></section>');
+                        $("#message_wrap_box").append('<section class="activity-wrap resolution-opened"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> '+classtype+'<p class="header-base "><span class="title-text"><span>'+message_type+'</span></span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap resolution mutual-cancellation-section"> <div class="card-content"> <div class="user-message"> <a href="user/profile/'+v.reciever_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_9928531938024" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div> </p> <p>'+v.res_message+'</p> '+ extensionmssg + deliverymssg + cancel_mssg + '  </div> </div>  '+buttons_txt+' </div> </section> </article> </div> </div> </div> </article></section>');
                      }
                      else{
                         classtype = ''
                         message_type = ''
+                        extensionmssg = ''
+                        deliverymssg = ''
+                        cancel_mssg = ''
                         if(v.res_type.trim() == "cancel")
                         {
+                           extensionmssg = ''
+                           deliverymssg = ''
+                           cancel_mssg = ''
                            if(v.res_status.trim() == "accepted")
                            {
                               classtype = '<span class="stamp order-completed"></span>'
@@ -3799,6 +3998,10 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to cancel this order'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
@@ -3807,6 +4010,8 @@ small {
                         }
                         else if(v.res_type.trim() == "extention")
                         {
+                           deliverymssg = ''
+                           cancel_mssg = ''
                            extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+ formatDate(new Date(v.res_next_date)) +'</p> </div></div>';
                            if(v.res_status.trim() == "accepted")
                            {
@@ -3816,6 +4021,10 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = 'You decided not to extend the delivery date'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
@@ -3824,6 +4033,22 @@ small {
                         }
                         else if(v.res_type.trim() == "delivered")
                         {
+                           extensionmssg = ''
+                           cancel_mssg = ''
+                           if(v.del_images.trim().length != 0)
+                           {
+                              del_attachments = v.del_images.trim().split(",");
+                              del_attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                              $.each(del_attachments, function (key, value1) {
+                              if(value1.trim().length != 0)
+                              {
+                                 file_path = '/media/delivery/'+value1.trim();
+                                 del_attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...'+value1.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                              }
+                              });
+                              del_attachment_txt += '</ul></div>';
+                           }
+                           deliverymssg = '<div class="activity-collapsible-content delivery_content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap delivery-card old-revision-copy"> <header class="card-header"><span class="card-title">Delivery #'+v.delivery_No+'</span> </header> <div class="card-content"> <div class="user-message"> <a href="/user/profile/'+v.sender_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_2405330232899" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username">Me</span></div> </p> <p>'+v.del_descrp+'</p> '+del_attachment_txt+' </div> </div> <div class="warning-note auto-complete"> <span class="lFICM06 note-icon" aria-hidden="true" style="width: 18px; height: 18px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM8 14.25C4.54688 14.25 1.75 11.4531 1.75 8C1.75 4.54688 4.54688 1.75 8 1.75C11.4531 1.75 14.25 4.54688 14.25 8C14.25 11.4531 11.4531 14.25 8 14.25ZM9.93125 10.9875L7.27812 9.05937C7.18125 8.9875 7.125 8.875 7.125 8.75625V3.625C7.125 3.41875 7.29375 3.25 7.5 3.25H8.5C8.70625 3.25 8.875 3.41875 8.875 3.625V8.05313L10.9625 9.57187C11.1312 9.69375 11.1656 9.92813 11.0437 10.0969L10.4563 10.9062C10.3344 11.0719 10.1 11.1094 9.93125 10.9875Z"></path> </svg> </span> <p class="tbody-6"><span class="note-text"><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a> has until <b>'+formatAMPM(new Date(v.res_last_date))+'</b> to approve this delivery or request a revision. After this date, the order will be finalized and marked as complete.</span></p> </div> </div> </section> </article> </div> </div></div>'
                            if(v.res_status.trim() == "accepted")
                            {
                               classtype = '<span class="stamp delivery-received"></span>'
@@ -3832,18 +4057,24 @@ small {
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
                               message_type = 'Sorry your delivery was rejected'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
                            }
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened delivery-received"></span>'
-                              message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order'
+                              message_type =  'You delivered the order'
                            } 
                         }
-                        else if(v.res_status.trim() == "completed")
+                        else if(v.res_type.trim() == "completed")
                         {
                            classtype = '<span class="stamp order-completed"></span>'
                            message_type = 'Your order was completed'
-                        }   
-                        $("#message_wrap_box").append('<section class="activity-wrap resolution-withdrawn"><article class="LF267+J H1pvagJ PpAciwT"><div class="AuUenGR activity-collapsible-title-wrapper"><div class="CLdO82Y"><label> '+classtype+'<p class="header-base "><span class="title-text">'+message_type+'</span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p></label></div></div><div class="activity-collapsible-content"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap resolution mutual-cancellation-section"><div class="card-content"><div class="user-message"><a href="user/profile/'+v.reciever_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_7171343538020" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div></p><p>'+v.res_message+'</p> '+extensionmssg+'</div></div></div></section></article></div></div></div></article></section>');
+                           deliverymssg = ''
+                           extensionmssg = ''
+                        }
+                        $("#message_wrap_box").append('<section class="activity-wrap resolution-withdrawn"><article class="LF267+J H1pvagJ PpAciwT"><div class="AuUenGR activity-collapsible-title-wrapper"><div class="CLdO82Y"><label> '+classtype+'<p class="header-base "><span class="title-text">'+message_type+'</span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p></label></div></div><div class="activity-collapsible-content"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap resolution mutual-cancellation-section"><div class="card-content"><div class="user-message"><a href="user/profile/'+v.reciever_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_7171343538020" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div></p><p>'+v.res_message+'</p> '+ extensionmssg + deliverymssg + cancel_mssg +'</div></div></div></section></article></div></div></div></article></section>');
                      }
                   }
                   else
@@ -3873,6 +4104,7 @@ small {
       $('#text_order_mssg').emojiPicker({
          position: 'right'
        });
+
       $('#text_delivery_messsg').keyup(function() { 
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
@@ -3884,9 +4116,23 @@ small {
             $("#span_delivery_messsg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
       }); 
+
+      $('#text_cancel_messsg').keyup(function() { 
+         var thisChars = this.value.replace(/{.*}/g, '').length; 
+         var maxlength = $(this).attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         }else{
+            $("#span_cancel_messsg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
+         }
+      });
       $('#text_order_mssg').keyup(function() { 
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
+         messages =  jsonObj1.some(substring=>this.value.includes(substring));
+         console.log(messages);
          if(thisChars > maxlength) 
          {
             var CharsToDel = (thisChars-maxlength); 
@@ -3902,9 +4148,9 @@ small {
          {
             $(".error-message").hide();
             imgList= '';
-            $(".order-page").find("#image_list").find('.imagediv').each(function(ev){ 
-                imgList = imgList +", "+  $(this).find('img').attr("src");
-            });
+            $(".delivery-form").find(".imagediv").each(function(ev){ 
+               imgList = imgList +", "+  $(this).find('.img_file_name').val();
+           });
             $.ajax({
                type:"POST",
                url: "/post_draft_object/",
@@ -3920,14 +4166,31 @@ small {
             $(".error-message").show();
          }
       });
+      $("#btn_cancel_submit").click(function(){
+         if($("#text_cancel_messsg").val().trim().length != 0)
+         {
+            $(".canl-error-message").hide();
+            $.ajax({
+               type:"GET",
+               url: "/post_decline_click/",
+               data: {"res_id":$("#resl_id").val(),"res_type":$("#resl_type").val(),"res_text":$("#text_cancel_messsg").val()},
+               success: function(data) 
+               {
+                  location.reload();
+               }
+            });
+         }else{
+            $(".canl-error-message").show();
+         }
+      });
       $("#btn_delivery_submit").click(function(){
          order_mssg = $("#text_delivery_messsg").val();
          if(order_mssg.length != 0)
          {
             $(".error-message").hide();
             imgList= '';
-            $(".order-page").find("#image_list").find('.imagediv').each(function(ev){ 
-                imgList = imgList +", "+  $(this).find('img').attr("src");
+            $(".delivery-form").find(".imagediv").each(function(ev){ 
+                imgList = imgList +", "+  $(this).find('.img_file_name').val();
             });
             $.ajax({
                type:"POST",
@@ -4012,8 +4275,6 @@ small {
          $(".help_div").find(".helptext_desc").text('This field is required.').addClass("min_width");
         }
     });
-
-
     class FileUpload {
       constructor(input) {
           this.input = input
@@ -4101,50 +4362,119 @@ small {
           });
       };
   }
-  
 
-      $("#chat_file").change(function() {
-         var uploader = new FileUpload(document.querySelector('#chat_file'));
-         uploader.upload();
-      });
-
+   $("#chat_file").change(function() {
+      var uploader = new FileUpload(document.querySelector('#chat_file'));
+      uploader.upload();
    });
-   function upload_deliveryChange(ev)
-   {
-     var fd = new FormData();
-       var files = $("#delivery_file").get(0).files;
-     if(files.length > 0 ){
-           for (var i = 0; i < files.length; i++) {
-               fd.append("files", files[i]);
-           }
-        var xhr=new XMLHttpRequest();
-        xhr.open("POST","/post_delivery_file_upload/",true);
-        xhr.onreadystatechange = function() {
-           if (this.readyState == 4 && this.status == 200) {
-              var data=xhr.responseText;
-                   data1 = JSON.parse(data);
-                   $.each(data1, function (key, value) {
-                       $.each(value, function (key1, value1){
-                        $(".order-page").find("#image_list").append('<div class="img'+(key1+1)+' imagediv"><img src='+value1+' id="img'+(key1+1)+'"><i class="fa fa-trash" onclick="post_img_delete(this);"></i></img></div>');
-                       });
-                   });
-           }};
-        xhr.send(fd);
-     }
-     else{
-        alert("Please select a file.");
+
+
+   class FileUpload_deliery {
+      constructor(input) {
+          this.input = input
+          this.max_length = 1024 * 1024 * 10;
       }
-   }
+      create_progress_bar() {
+          var progress = `<div class="file-icon">
+                              <i class="fa fa-file-o" aria-hidden="true"></i>
+                          </div>
+                          <div class="file-details">
+                              <p class="filename"></p>
+                              <div class="progress" style="margin-top: 5px;">
+                                  <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                                  </div>
+                              </div>
+                          </div>`
+          document.getElementById('d_file_progress_div').innerHTML = progress
+      }
+      upload() {
+          this.create_progress_bar();
+          this.initFileUpload();
+      }
+  
+      initFileUpload() {
+          this.file = this.input.files[0];
+          this.upload_file(0, null);
+      }
+      upload_file(start, model_id) {
+          var end;
+          var self = this;
+          var existingPath = model_id;
+          var formData = new FormData();
+          var nextChunk = start + this.max_length + 1;
+          var currentChunk = this.file.slice(start, nextChunk);
+          var uploadedChunk = start + currentChunk.size
+          if (uploadedChunk >= this.file.size) {
+              end = 1;
+          } else {
+              end = 0;
+          }
+          formData.append('file', currentChunk)
+          formData.append('filename', this.file.name)
+          $('.filename').text(this.file.name)
+          formData.append('end', end)
+          formData.append('existingPath', existingPath);
+          formData.append('nextSlice', nextChunk);
+          $.ajax({
+              xhr: function () {
+                  var xhr = new XMLHttpRequest();
+                  xhr.upload.addEventListener('progress', function (e) {
+                      if (e.lengthComputable) {
+                          if (self.file.size < self.max_length) {
+                              var percent = Math.round((e.loaded / e.total) * 100);
+                          } else {
+                              var percent = Math.round((uploadedChunk / self.file.size) * 100);
+                          }
+                          $('.progress-bar').css('width', percent + '%')
+                          $('.progress-bar').text(percent + '%')
+                      }
+                  });
+                  return xhr;
+              },
+              url: '/post_delivery_order_upload/',
+              type: 'POST',
+              dataType: 'json',
+              cache: false,
+              processData: false,
+              contentType: false,
+              data: formData,
+              error: function (xhr) {
+                  alert(xhr.statusText);
+              },
+              success: function (res) {
+                  if (nextChunk < self.file.size) {
+                      existingPath = res.existingPath
+                      self.upload_file(nextChunk, existingPath);
+                      $("#btn_delivery_submit").prop("disabled",true);
+                  } else {
+                     $("#d_file_progress_div").empty();
+                     var no_of_imgs = $("#image_list").find(".imagediv").length;
+                      $("#image_list").append('<div class="del_mssg_img'+(no_of_imgs+1)+' imagediv" id="del_mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_del_message_delete(this);" data-label="del_mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');
+                      $("#btn_delivery_submit").prop("disabled",false);
+                  }
+              }
+          });
+      };
+  }
+   $("#delivery_file").change(function() {
+      var uploader = new FileUpload_deliery(document.querySelector('#delivery_file'));
+      uploader.upload();
+   });  
+});
    function post_img_message_delete(ev)
    {
       div_id = $(ev).attr("data-label");
       $("#files_list").find("#" +div_id).remove();
    }
-
+   function post_img_del_message_delete(ev)
+   {
+      div_id = $(ev).attr("data-label");
+      $("#image_list").find("#" +div_id).remove();
+   }
    function res_acceptClick(ev)
    {
-      var prev_date ;
-      var next_date;
+      var prev_date = '' ;
+      var next_date = '' ;
       if($(ev).attr("data-text") == "extention")
       {
          prev_date = $(ev).attr("data-prev-date");
@@ -4168,15 +4498,10 @@ small {
 
    function res_declineClick(ev)
    {
-      $.ajax({
-         type:"GET",
-         url: "/post_decline_click/",
-         data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text")},
-         success: function(data) 
-         {
-            location.reload();
-		   }
-		});
+      $("#resl_id").val($(ev).attr("data-label"));
+      $("#resl_type").val($(ev).attr("data-text"));
+      $(".canl-error-message").hide();
+      $("#modal_cancel").modal('show');
    }
    function attachfile_onclick(ev)
    {

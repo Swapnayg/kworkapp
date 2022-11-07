@@ -1,11 +1,14 @@
 from django.urls import include, path
 from . import views
-from . views import indexView,aboutView,privacyView,resolution_view,payments_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
+from . views import indexView,aboutView,privacyView,resolution_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
 urlpatterns  = [
 	path('', indexView.as_view(), name='index' ),
 	path('about', aboutView.as_view(), name='about' ),
 	path('privacy', privacyView.as_view(), name='privacy' ),
 	path('buyer_protection', buyer_protectionView.as_view(), name='buyer_protection' ),
+ 	path('buyer_reviews/<str:order_no>', buyer_review_view.as_view(), name='buyer_reviews' ),
+  	path('seller_reviews/<str:order_no>', seller_review_view.as_view(), name='seller_reviews' ),
+    path('warning/<str:username>', warning_review_view.as_view(), name='warning' ),
 	path("user/<str:username>/seller_dashboard",seller_main_view.as_view(),name = 'seller_main'),
  	path("seller",seller_main_view.as_view(),name = 'seller'),
 	path('user/<str:username>/manage_request', Manage_request_view.as_view(), name='manage_request' ),
@@ -118,9 +121,9 @@ urlpatterns  = [
     path("get_date_range_data/",views.get_date_range_data_view,name = 'get_date_range_data'),
     path("post_draft_object/",views.post_draft_object_view,name = 'post_draft_object'),
     path("post_delivered_object/",views.post_delivered_object_view,name = 'post_delivered_object'),
-    path("post_delivery_file_upload/",views.post_delivery_file_upload_view,name = 'post_delivery_file_upload'),
     path("post_resolutions/",views.post_resolutions_view,name = 'post_resolutions'),
     path("post_order_upload/",views.post_order_upload_view,name = 'post_order_upload'),
+    path("post_delivery_order_upload/",views.post_delivery_order_upload_view,name = 'post_delivery_order_upload'),
     path("get_all_order_messages/",views.get_all_order_messages_view,name = 'get_all_order_messages'),
     path("post_accept_click/",views.post_accept_click_view,name = 'post_accept_click'),
     path("post_decline_click/",views.post_decline_click_view,name = 'post_decline_click'),
