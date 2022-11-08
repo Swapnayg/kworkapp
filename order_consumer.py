@@ -7,8 +7,10 @@ from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
 from notifications.signals import notify
 from .models import User
-from .models import Message, Conversation,Order_Message, Order_Conversation,User_orders
+from .models import Message, Conversation,Order_Message, Order_Conversation,User_orders,ChatWords,SpamDetection
 from django.db.models import Q
+import itertools
+
 
 class Order_ChatConsumer(WebsocketConsumer):
     def connect(self):
@@ -43,6 +45,14 @@ class Order_ChatConsumer(WebsocketConsumer):
         receiver_prof =  receiver.avatar
         conversation = Order_Conversation.objects.get(Q(initiator=sender,receiver=receiver) | Q(initiator=receiver,receiver=sender))
         order_details = User_orders.objects.get(order_no = order_no )
+        chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
+        chat_list_words = []
+        for chat in chat_words:
+            chat_list_words.append(''.join(chat))
+        if any((match := substring) in message for substring in chat_list_words):
+            res = [ele for ele in chat_list_words if(ele in message)]
+            spam_detection = SpamDetection(user_id=sender,detected_word=str(res))
+            spam_detection.save()
         _message = Order_Message.objects.create(
             sender=sender,
             receiver=receiver,

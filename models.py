@@ -2,6 +2,7 @@ import datetime
 from operator import truediv
 from django.utils import timezone
 import os
+from django.urls import reverse_lazy
 from django.forms import DateField
 from django_countries.fields import CountryField
 import shortuuid
@@ -670,8 +671,11 @@ class Gig_favourites(models.Model):
 class Referral_Users(models.Model):
     affiliate_code = models.CharField(max_length=300,blank=True,default="",null=True)
     ip_address =  models.CharField(max_length=300,blank=True,default="",null=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="affiliate_user",null=False,blank=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="reff_affiliate_user",null=False,blank=False)
     refferal_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="referral_user",null=True,blank=True,default="")
+    seller_affi_amount =  models.CharField(max_length=300,blank=True,default="",null=True)
+    buyer_affi_amount =  models.CharField(max_length=300,blank=True,default="",null=True)
+    
     class Meta:
         verbose_name = _("Referral")
         verbose_name_plural = _("Referrals")
@@ -764,14 +768,14 @@ class Seller_Reviews(models.Model):
     recommendation = models.CharField(max_length=200,blank=True,default="",null=True)
     service = models.CharField(max_length=200,blank=True,default="",null=True)
     average_val = models.CharField(max_length=200,blank=True,default="",null=True)
-    buyer_response = models.TextField(blank=True,default="",null=True)
+    seller_response = models.TextField(blank=True,default="",null=True)
     review_message = models.TextField(blank=True,default="",null=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     s_review_from = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False,related_name="s_review_from")
     s_review_to = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False, related_name="s_review_to")
     review_date = models.DateTimeField(default=timezone.now, blank=True)
-    buyer_resp_date = models.DateTimeField(default=timezone.now, blank=True)
+    buyer_resp_date = models.DateTimeField(default=timezone.now, blank=True,null=True)
     
     class Meta:
         verbose_name = _("Seller Review")
@@ -783,7 +787,6 @@ class Seller_Reviews(models.Model):
 class Buyer_Reviews(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('cancel', 'Cancelled'),('completed', 'Completed')]
     review_message = models.TextField(blank=True,default="",null=True)
-    seller_response = models.TextField(blank=True,default="",null=True)
     rating_val = models.CharField(max_length=200,blank=True,default="",null=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=False,blank=False)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
@@ -954,6 +957,7 @@ class User_Refund(models.Model):
 
 class User_Earnings(models.Model):
     BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending')]
+    BOOL_CHOICES_TYPES = [('order', 'Order'),('affiliate', 'Affiliate'),('tip', 'Tip')]
     order_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     earning_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     platform_fees = models.CharField(max_length=500,blank=True,default="",null=True)
@@ -964,6 +968,9 @@ class User_Earnings(models.Model):
     clearence_date = models.DateTimeField(default=timezone.now, blank=True,null=True)
     clearence_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
     cleared_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="earning_user",)
+    earning_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    affiliate_user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="affiliate_user",)
     
     class Meta:
         verbose_name = _("Order Earning")
@@ -989,18 +996,24 @@ class Api_keys(models.Model):
         return str(self.api_name)
 
 class SpamDetection(models.Model):
+    BOOL_CHOICES_warning = [('sent', 'Sent'),('pending', 'Pending')]
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
-    detected_word =  models.ForeignKey(ChatWords, on_delete=models.CASCADE,null=True,blank=True)
+    detected_word =  models.CharField(max_length=1000,blank=True,default="",null=True)
     detected_on = models.DateTimeField(default=timezone.now, blank=True)
-    
+    sent_status = models.CharField(max_length=300,choices=BOOL_CHOICES_warning,blank=True,default="pending",null=True)
     def block_button(self):
-            return format_html('<a href="{}" class="link">Warn User</a>',
-            reverse_lazy("admin:admin_block_scenario", args=[self.pk])
-        )
+        if(self.sent_status == "pending"):
+                return format_html('<a href="{}" class="link">Warn User</a>',
+                reverse_lazy("admin:admin_block_scenario", args=[self.pk])
+            )
+        else:
+            return format_html('<a href="{}" class="link">Warning sent</a>',
+                reverse_lazy("admin:admin_block_scenario", args=[self.pk])
+            )  
             
     class Meta:
         verbose_name = _("Spam Detection")
-        verbose_name_plural = _("Spam Detections")
+        verbose_name_plural = _("Spam Detections ")
 
     def __str__(self):
         return str(self.detected_word)
@@ -1009,7 +1022,7 @@ class User_warning(models.Model):
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
     warning_date = models.DateTimeField(default=timezone.now, blank=True)
     confirmed_status =  models.BooleanField(default=False)
-    confirmed_on = models.DateTimeField(default=timezone.now, blank=True)
+    confirmed_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
     spamword =  models.ForeignKey(SpamDetection, on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:

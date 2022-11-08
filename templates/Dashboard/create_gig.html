@@ -36,13 +36,13 @@
                                             <div class="input-wrapper">
                                                 <div class="gig-title-input">
                                                    <span class="title-prefix" style="transform: translateY(0px);">I will</span>
-                                                   <div class="fit-textarea gig-title-textarea"><textarea maxlength="{{characters.0.gig_title}}" placeholder="do something I'm really good at" id="textarea_iwill" onchange="textarea_iwillonchange(this)"></textarea></div>
+                                                   <div class="fit-textarea gig-title-textarea"><textarea maxlength="{{gig_title_char}}" placeholder="do something I'm really good at" id="textarea_iwill" onchange="textarea_iwillonchange(this)"></textarea></div>
                                                    <div class="title-footer help_txt">
-                                                      <span>This is your Gig title. Choose wisely, you can only use {{characters.0.gig_title}} characters.</span>
-                                                      <span class="gig_title_count">0 / {{characters.0.gig_title}} max</span>
+                                                      <span>This is your Gig title. Choose wisely, you can only use {{gig_title_char}} characters.</span>
+                                                      <span class="gig_title_count">0 / {{gig_title_char}} max</span>
                                                    </div>
                                                    <div class="title-footer error_txt">
-                                                      <span class="error" id="gig_title_error">Create a title with  {{characters.0.gig_title}} characters minimum. Your title should have at least 4 words</span>
+                                                      <span class="error" id="gig_title_error">Create a title with  {{gig_title_char}} characters minimum. Your title should have at least 4 words</span>
                                                    </div>
                                                 </div>
                                             </div> 
@@ -161,15 +161,15 @@
                                  <div class="col-lg-9 left_pan pt-4">
                                     <section class="packages-pricing-factors-section">
                                        <header><span>Packages</span></header>
-                                       <input type="hidden" value="{{characters.1.gig_package_title}}" id="char_gig_package_title">
-                                       <input type="hidden" value="{{characters.2.gig_package_description}}" id="char_gig_package_description">
-                                       <input type="hidden" value="{{characters.4.gig_extra_description}}" id="char_gig_extra_description">
-                                       <input type="hidden" value="{{characters.3.gig_extra_title}}" id="char_gig_extra_title">
-                                       <input type="hidden" value="{{characters.5.gig_description}}" id="char_gig_description">
-                                       <input type="hidden" value="{{characters.6.gig_faq_question}}" id="char_gig_faq_question">
-                                       <input type="hidden" value="{{characters.7.gig_faq_answer}}" id="char_gig_faq_answer">
-                                       <input type="hidden" value="{{characters.8.gig_requirements_ques}}" id="char_gig_requirements_ques">
-                                       <input type="hidden" value="{{characters.9.gig_requirements_ans}}" id="char_gig_requirements_ans">
+                                       <input type="hidden" value="{{gig_package_title_char}}" id="char_gig_package_title">
+                                       <input type="hidden" value="{{gig_package_description_char}}" id="char_gig_package_description">
+                                       <input type="hidden" value="{{gig_extra_description_char}}" id="char_gig_extra_description">
+                                       <input type="hidden" value="{{gig_extra_title_char}}" id="char_gig_extra_title">
+                                       <input type="hidden" value="{{gig_description_char}}" id="char_gig_description">
+                                       <input type="hidden" value="{{gig_faq_question_char}}" id="char_gig_faq_question">
+                                       <input type="hidden" value="{{gig_faq_answer_char}}" id="char_gig_faq_answer">
+                                       <input type="hidden" value="{{gig_requirements_ques_char}}" id="char_gig_requirements_ques">
+                                       <input type="hidden" value="{{gig_requirements_ans_char}}" id="char_gig_requirements_ans">
                                        <div class="packages-pfs-container">
                                           <div class="row" id="table_pricing">
                                              <div class="col-lg-12 left_pan pt-4">
@@ -335,10 +335,10 @@
                                        </header>
                                        <div class="description-wrapper">
                                           <p>Briefly Describe Your Gig</p>
-                                          <input type="hidden" value="{{characters.5.gig_description}}" id="gig_descrip_hidden">
-                                          <textarea id="description_gig" minlength="0" maxlength="{{characters.5.gig_description}}"   placeholder="" cols="50" rows="60" class="form-control" required=""></textarea>
-                                          <p class="text-muted text-right"><span class="countDesc" id="gig_desc_count">{{characters.5.gig_description}}</span> characters left</p>
-                                          <span class="error" id="gig_desciption_error">Description should contain {{characters.5.gig_description}} characters maximum.</span>
+                                          <input type="hidden" value="{{gig_description_char}}" id="gig_descrip_hidden">
+                                          <textarea id="description_gig" minlength="0" maxlength="{{gig_description_char}}"   placeholder="" cols="50" rows="60" class="form-control" required=""></textarea>
+                                          <p class="text-muted text-right"><span class="countDesc" id="gig_desc_count">{{gig_description_char}}</span> characters left</p>
+                                          <span class="error" id="gig_desciption_error">Description should contain {{gig_description_char}} characters maximum.</span>
                                        </div>
 
                                     </div>
@@ -360,13 +360,13 @@
                                        <div class="faq-form add" id="faq_form_que_ans">
                                           <div class="fit-input-wrapper faq-question fit-input-icon-start">
                                              <div class="fit-input-inner-wrapper" id="faq_question_wrapper">
-                                                <input class="fit-input" type="text" id="faq_question" maxlength="{{characters.6.gig_faq_question}}" placeholder="Add a Question: i.e. Do you translate to English as well?" value="">
-                                                <span class="fit-counter fit-textarea-counter" id="faq_ques_counter">0 / {{characters.6.gig_faq_question}}</span>
+                                                <input class="fit-input" type="text" id="faq_question" maxlength="{{gig_faq_question_char}}" placeholder="Add a Question: i.e. Do you translate to English as well?" value="">
+                                                <span class="fit-counter fit-textarea-counter" id="faq_ques_counter">0 / {{gig_faq_question_char}}</span>
                                                 <div class="help_div sub_head"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;"> Question: Can you provide a British accent? </div> <span class="help_text_span"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>
                                              </div>
                                           </div>
                                           <div class="fit-textarea faq-answer fit-textarea-has-counter">
-                                             <textarea maxlength="{{characters.7.gig_faq_answer}}"  id="faq_answer"  placeholder="Add an Answer: i.e. Yes, I also translate from English to Hebrew."></textarea><span class="fit-counter fit-textarea-counter" id="faq_ans_counter">0 / {{characters.7.gig_faq_answer}}</span>
+                                             <textarea maxlength="{{gig_faq_answer_char}}"  id="faq_answer"  placeholder="Add an Answer: i.e. Yes, I also translate from English to Hebrew."></textarea><span class="fit-counter fit-textarea-counter" id="faq_ans_counter">0 / {{gig_faq_answer_char}}</span>
                                              <div class="help_div sub_head"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Answer: Of course, I lived in England for 3 years! That won't be a problem.</div> <span class="help_text_span"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>
                                           </div>
                                        </div>
@@ -767,7 +767,7 @@
             {
                $("#requirements_form").show();
                $.each(data.gig_requirements, function(i, v77) {
-                  $("#requirements_form_divs").append('<div id="textarea'+(parseInt(i)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(i)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{characters.8.gig_requirements_ques}}" placeholder="Request necessary details such as dimensions, brand guidelines, and more." onkeyup="requirementskeyup(this)">'+v77.fields["gig_req_question"]+'</textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>')
+                  $("#requirements_form_divs").append('<div id="textarea'+(parseInt(i)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(i)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{gig_requirements_ques_char}}" placeholder="Request necessary details such as dimensions, brand guidelines, and more." onkeyup="requirementskeyup(this)">'+v77.fields["gig_req_question"]+'</textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>')
                });
             }
             else if(data.gig_requirements.length == 5)
@@ -2691,7 +2691,7 @@ function add_questionclick()
 
    $("#requirements_form").show();
    textarealength=  $("#requirements_form_divs").find(".question-textarea").length;
-   $("#requirements_form_divs").append('<div id="textarea'+(parseInt(textarealength)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(textarealength)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{characters.8.gig_requirements_ques}}" onkeyup="requirementskeyup(this)" placeholder="Request necessary details such as dimensions, brand guidelines, and more." ></textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>');
+   $("#requirements_form_divs").append('<div id="textarea'+(parseInt(textarealength)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(textarealength)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{gig_requirements_ques_char}}" onkeyup="requirementskeyup(this)" placeholder="Request necessary details such as dimensions, brand guidelines, and more." ></textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>');
    if((parseInt(textarealength)+1) == 5)
    {
       $("#btn_add_new_question").hide();

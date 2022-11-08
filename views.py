@@ -932,18 +932,80 @@ class inbox_view(View):
     
 class buyer_review_view(View):
     return_url = None
-    def get(self , request,username=''):
-        return render(request , 'Dashboard/buyer_review.html')
+    def get(self , request,order_no=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                previous_page = request.META.get('HTTP_REFERER')
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "buyer_review"))
+                buyer_char = 0
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "buyer_review"):
+                        buyer_char = c.Max_No_of_char_allowed
+                return render(request , 'Dashboard/buyer_review.html',{"previous_page":previous_page,"order_no":order_no,"buyer_descp_count":buyer_char})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
 
 class seller_review_view(View):
     return_url = None
-    def get(self , request,username=''):
-        return render(request , 'Dashboard/seller_review.html')
+    def get(self , request,order_no=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                previous_page = request.META.get('HTTP_REFERER')
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "seller_review"))
+                seller_char = 0
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "seller_review"):
+                        seller_char = c.Max_No_of_char_allowed
+                return render(request , 'Dashboard/seller_review.html',{"previous_page":previous_page,"order_no":order_no,"seller_descp_count":seller_char})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
     
 class warning_review_view(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'Dashboard/warning.html')
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                get_warning = User_warning.objects.get(user_id = userDetails , confirmed_status= False)
+                warning_count =  User_warning.objects.filter(user_id = userDetails).count()
+                previous_page = request.META.get('HTTP_REFERER')
+                warning_count_text = ""
+                if(warning_count == 3):
+                    userDetails.profile_status = "blocked"
+                    userDetails.save()
+                    return render(request , 'register.html')
+                else:
+                    if(warning_count == 2):
+                        warning_count_text = "Second"
+                    elif(warning_count == 1):
+                        warning_count_text = "First"
+                    return render(request , 'Dashboard/warning.html',{"warning_details":get_warning,"warning_count":warning_count_text,"previous_page":previous_page})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+        
+    
+class blocked_view(View):
+    return_url = None
+    def get(self , request,username=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                return render(request , 'Dashboard/blocked.html')
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
+                
 
 
 class favourites_view(View):
@@ -973,29 +1035,38 @@ class create_gig_view(View):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:  
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                characters = []
                 charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="gig_title") | Q(Char_category_Name= "gig_package_title") | Q(Char_category_Name= "gig_package_description")  | Q(Char_category_Name= "gig_extra_title") | Q(Char_category_Name= "gig_extra_description")  | Q(Char_category_Name= "gig_description")  | Q(Char_category_Name= "gig_faq_question")  | Q(Char_category_Name= "gig_faq_answer")  | Q(Char_category_Name= "gig_requirements_ques") | Q(Char_category_Name= "gig_requirements_ans"))
+                gig_title_char = ''
+                gig_package_title_char = ''
+                gig_package_description_char = ''
+                gig_extra_description_char = ''
+                gig_extra_title_char = ''
+                gig_description_char = ''
+                gig_faq_question_char = ''
+                gig_faq_answer_char = ''
+                gig_requirements_ques_char = ''
+                gig_requirements_ans_char = ''
                 for c in charcterlimits:
                     if(c.Char_category_Name.strip() == "gig_title"):
-                        characters.append({"gig_title":c.Max_No_of_char_allowed})
+                        gig_title_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_package_title"):
-                        characters.append({"gig_package_title":c.Max_No_of_char_allowed})
+                        gig_package_title_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_package_description"):
-                        characters.append({"gig_package_description":c.Max_No_of_char_allowed})
+                        gig_package_description_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_extra_description"):
-                        characters.append({"gig_extra_description":c.Max_No_of_char_allowed})
+                        gig_extra_description_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_extra_title"):
-                        characters.append({"gig_extra_title":c.Max_No_of_char_allowed})
+                        gig_extra_title_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_description"):
-                        characters.append({"gig_description":c.Max_No_of_char_allowed})
+                        gig_description_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_faq_question"):
-                        characters.append({"gig_faq_question":c.Max_No_of_char_allowed})
+                        gig_faq_question_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_faq_answer"):
-                        characters.append({"gig_faq_answer":c.Max_No_of_char_allowed})
+                        gig_faq_answer_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_requirements_ques"):
-                        characters.append({"gig_requirements_ques":c.Max_No_of_char_allowed})
+                        gig_requirements_ques_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name.strip() == "gig_requirements_ans"):
-                        characters.append({"gig_requirements_ans":c.Max_No_of_char_allowed})
+                        gig_requirements_ans_char = c.Max_No_of_char_allowed
                     categorieslist = Categories.objects.all() 
                     delivery_time = []      
                     no_revisions = []   
@@ -1005,7 +1076,7 @@ class create_gig_view(View):
                     no_revisions = Parameter.objects.filter(Q(parameter_name="no_revisions"))
                     extra_days = Parameter.objects.filter(Q(parameter_name="extra_days"))
                     extra_time = Parameter.objects.filter(Q(parameter_name="extra_time"))
-                return render(request , 'Dashboard/create_gig.html',{"characters":characters,"category":categorieslist,"Delivery_Time":delivery_time,"No_Revisions":no_revisions,"Extra_Days":extra_days,"Extra_Time":extra_time})
+                return render(request , 'Dashboard/create_gig.html',{"category":categorieslist,"Delivery_Time":delivery_time,"No_Revisions":no_revisions,"Extra_Days":extra_days,"Extra_Time":extra_time,"gig_title_char":gig_title_char,"gig_package_title_char":gig_package_title_char,"gig_package_description_char":gig_package_description_char,"gig_extra_description_char":gig_extra_description_char,"gig_extra_title_char":gig_extra_title_char,"gig_description_char":gig_description_char,"gig_faq_question_char":gig_faq_question_char,"gig_faq_answer_char":gig_faq_answer_char,"gig_requirements_ques_char":gig_requirements_ques_char,"gig_requirements_ans_char":gig_requirements_ans_char})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1413,7 +1484,18 @@ class order_activities_view(View):
                 except:
                     conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
                 chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
-                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words)})
+                chat_words_5_words = list(ChatWords.objects.order_by().values_list('name').distinct())[:5]
+                buyer_review = []
+                seller_review = []
+                if(Buyer_Reviews.objects.filter(b_review_from=ordered_to_user,b_review_to=ordered_by_user).exists() == True):
+                    buyer_review = Buyer_Reviews.objects.get(b_review_from=ordered_to_user,b_review_to=ordered_by_user)
+                else:
+                    buyer_review = []
+                if(Seller_Reviews.objects.filter(s_review_from=ordered_by_user,s_review_to=ordered_to_user).exists() == True):
+                    seller_review = Seller_Reviews.objects.get(s_review_from=ordered_by_user,s_review_to=ordered_to_user)
+                else:
+                    seller_review = []
+                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"buyer_review":buyer_review,"seller_review":seller_review})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -3314,8 +3396,9 @@ def post_accept_click_view(request):
             try:    
                 cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
             except:
-                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)      
-            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None)
+                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
+                  
+            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
             refund_details.save()
             order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity")
             order_message.save()
@@ -3335,4 +3418,34 @@ def post_decline_click_view(request):
         res_details.resolution_status = 'rejected'
         res_details.resolution_cancel_mssg = res_text
         res_details.save()
+        return HttpResponse('sucess')
+    
+
+def post_confirm_warning_view(request):
+    if request.method == 'GET':
+        warning_id = request.GET['warning_id']
+        war_details = User_warning.objects.get(id = warning_id)
+        war_details.confirmed_status = True
+        war_details.confirmed_on =  datetime.today()
+        war_details.save()
+        userdetails = User.objects.get(id = war_details.user_id.id)
+        userdetails.profile_status = 'warning'
+        userdetails.save()
+        return HttpResponse('sucess')
+    
+
+def post_seller_review_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        s_comm = request.GET['s_comm']
+        s_serv = request.GET['s_serv']
+        s_recomm = request.GET['s_recomm']
+        s_review_txt = request.GET['s_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        orderedby_user = User.objects.get(username = ord_details.order_by.username)
+        orderedto_user = User.objects.get(username = ord_details.order_to.username)
+        gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)
+        average_val =  round(float(int(s_comm) + int(s_serv)+ int(s_recomm) / 3),2)
+        seller_reviews = Seller_Reviews(communication=s_comm,recommendation=s_recomm,service=s_serv,average_val=average_val,seller_response="",review_message=s_review_txt,order_no=ord_details,package_gig_name= gig_details,s_review_from=orderedby_user,s_review_to=orderedto_user,buyer_resp_date=None)
+        seller_reviews.save()
         return HttpResponse('sucess')

@@ -1,6 +1,6 @@
 from django.urls import include, path
 from . import views
-from . views import indexView,aboutView,privacyView,resolution_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
+from . views import indexView,aboutView,privacyView,resolution_view,blocked_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
 urlpatterns  = [
 	path('', indexView.as_view(), name='index' ),
 	path('about', aboutView.as_view(), name='about' ),
@@ -9,6 +9,7 @@ urlpatterns  = [
  	path('buyer_reviews/<str:order_no>', buyer_review_view.as_view(), name='buyer_reviews' ),
   	path('seller_reviews/<str:order_no>', seller_review_view.as_view(), name='seller_reviews' ),
     path('warning/<str:username>', warning_review_view.as_view(), name='warning' ),
+    path('blocked/<str:username>', blocked_view.as_view(), name='blocked' ),
 	path("user/<str:username>/seller_dashboard",seller_main_view.as_view(),name = 'seller_main'),
  	path("seller",seller_main_view.as_view(),name = 'seller'),
 	path('user/<str:username>/manage_request', Manage_request_view.as_view(), name='manage_request' ),
@@ -127,4 +128,6 @@ urlpatterns  = [
     path("get_all_order_messages/",views.get_all_order_messages_view,name = 'get_all_order_messages'),
     path("post_accept_click/",views.post_accept_click_view,name = 'post_accept_click'),
     path("post_decline_click/",views.post_decline_click_view,name = 'post_decline_click'),
+    path("post_confirm_warning/",views.post_confirm_warning_view,name = 'post_confirm_warning'),
+    path("post_seller_review/",views.post_seller_review_view,name = 'post_seller_review'),
 ]

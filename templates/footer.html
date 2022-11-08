@@ -138,104 +138,114 @@
 <script src="{% static 'assets/js/select2.min.js' %}"></script>
 <script>
    $(document).ready(function(){
-       var urls = ['http://127.0.0.1:8000/static/assets/images/users/banner-user-1.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-2.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-3.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-4.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-5.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-6.png',
-       'http://127.0.0.1:8000/static/assets/images/users/banner-user-7.png'];
-       var listItems = $("#swiper_slider .swiper-slide");
-       var names = ["Lily, ","Eugene, ","Tanya, ","Alex, ","Margarita, ","Dennis, ","Eugenia, "]
-       var prof = ["Web Developer","Voice Actor","Freelance Accountant","Front-end Developer","Graphic Designer","Web Designer","Freelance Poet"]
-       var count = 1;
-       $('#swiper-slide1').css('background-image', 'url("' + urls[0] + '")');
-       setInterval(function() {
-           $('#swiper-slide1').animate({opacity: 0}, 0).css("background-image", "url(" + urls[count]+ ")").animate({opacity: 1}, 2500);
-           $('#swiper-slide1').find(".banner-slider__text").html('<span class="banner-slider__name">' + names[count] + '</span><span class="banner-slider__profession">' + prof[count] + '</span>')
-           count == urls.length-1 ? count = 0 : count++;
-       }, 6000);	
-       $('#main-menu li ul').each(function(){
-     var count = parseInt(($(this).children('li').length) / 5);
-     $(this).css('width',(count*12)+'em');
-   });	
-   dataObj =  JSON.parse($("#sub_val_text").val());
-   var groupedData = _.groupBy(dataObj, function(d){return d.menu});
-   $.each(groupedData, function(i, v) {
-      menulist = $("#main1-menu").find("a:contains('" + v[0].menu + "')");
-      $(menulist).hasClass("intro");
-      avegrouplength = parseInt(groupedData[i].length /2);
-      group1append = '<div class="submenu-group-inner">'
-      group2append = '<div class="submenu-group-inner">'
-      if ($(menulist).hasClass("js-category-menu-item")) {
-         $.each(groupedData[i], function(j, vv) {
-            if(j <= avegrouplength -1)
-            {
-               group1append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
-            }
-            else if(j >= avegrouplength -1)
-            {
-               group2append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
-            }
-         });
-         group1append += '</div>'
-         group2append += '</div>'
-         $(menulist).next().find(".submenu-group-wrapper").append(group1append);
-         $(menulist).next().find(".submenu-group-wrapper").append(group2append);
+      if('{{warning_message}}' == "yes"){
+         location_href =  $(location).attr('href').split("/");
+         window.location.href = location_href[0]+"//"+location_href[2] +"/warning/{{request.user.username}}"
       }
-   });
-   $('#btn_search').click(function (e) {
-      window.open('/search/'+$("#input_search").val(), "_blank");
-      $("#input_search").val('');
-   });
-   $("#main1-menu li").hover(
-       function () {
-           m_length = $("#main1-menu li").length;
-           $("#main1-menu li").find(".menubox").css({"display":"none"});
-           if(parseInt($(this).index()) == 0)
-           {
-               $(this).find(".menubox").css({"display":"contents"});
-               left_val = 70 + "px !important";
-               $(this).find(".menulist").css({"left":left_val});
-               $("#main1-menu li")[0].find(".menulist").css({"left":"80px;"})
-           }
-           else if(parseInt($(this).index()) == (m_length-1))
-           {
-               conslength = $(this).find(".menubox").find(".submenu-group-inner").length;
-               reduceval = 0;
-               if(conslength == 1){
-                  reduceval = 50;
-               }
-               else if(conslength == 2){
-                  reduceval = 100;
-               }
-               $(this).find(".menubox").css({"display":"contents"});
-               left_val =  (parseInt(Math.ceil($(this).offset().left))) -reduceval + "px";
-               $(this).find(".menulist").css({"left":left_val});
-           }
-           else if(parseInt($(this).index()) == (m_length-2))
-           {
-               $(this).find(".menubox").css({"display":"contents"});
-               left_val =  (parseInt(Math.ceil($(this).offset().left))) -50 + "px";
-               $(this).find(".menulist").css({"left":left_val});
-           }
-           else{
-               $(this).find(".menubox").css({"display":"contents"});
-               left_val =  (parseInt(Math.ceil($(this).offset().left))) + "px";
-               $(this).find(".menulist").css({"left":left_val});
-           } 
-       }, 
-                
-       function () {
-           $(this).find(".menubox").css({"display":"none"});
-       }
-   );
-   user_value='{{request.user.username}}';
-   if(user_value.length !=0)
-   {        
-      $("#loginbtn").remove();
-      $("#registerbtn").remove();
-      $("#freelancerbtn").remove();
+      else if('{{block_message}}' == "yes"){
+         location_href =  $(location).attr('href').split("/");
+         window.location.href = location_href[0]+"//"+location_href[2] +"/blocked/{{request.user.username}}"
+      }
+      else{
+         var urls = ['http://127.0.0.1:8000/static/assets/images/users/banner-user-1.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-2.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-3.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-4.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-5.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-6.png',
+         'http://127.0.0.1:8000/static/assets/images/users/banner-user-7.png'];
+         var listItems = $("#swiper_slider .swiper-slide");
+         var names = ["Lily, ","Eugene, ","Tanya, ","Alex, ","Margarita, ","Dennis, ","Eugenia, "]
+         var prof = ["Web Developer","Voice Actor","Freelance Accountant","Front-end Developer","Graphic Designer","Web Designer","Freelance Poet"]
+         var count = 1;
+         $('#swiper-slide1').css('background-image', 'url("' + urls[0] + '")');
+         setInterval(function() {
+             $('#swiper-slide1').animate({opacity: 0}, 0).css("background-image", "url(" + urls[count]+ ")").animate({opacity: 1}, 2500);
+             $('#swiper-slide1').find(".banner-slider__text").html('<span class="banner-slider__name">' + names[count] + '</span><span class="banner-slider__profession">' + prof[count] + '</span>')
+             count == urls.length-1 ? count = 0 : count++;
+         }, 6000);	
+         $('#main-menu li ul').each(function(){
+       var count = parseInt(($(this).children('li').length) / 5);
+       $(this).css('width',(count*12)+'em');
+     });	
+     dataObj =  JSON.parse($("#sub_val_text").val());
+     var groupedData = _.groupBy(dataObj, function(d){return d.menu});
+     $.each(groupedData, function(i, v) {
+        menulist = $("#main1-menu").find("a:contains('" + v[0].menu + "')");
+        $(menulist).hasClass("intro");
+        avegrouplength = parseInt(groupedData[i].length /2);
+        group1append = '<div class="submenu-group-inner">'
+        group2append = '<div class="submenu-group-inner">'
+        if ($(menulist).hasClass("js-category-menu-item")) {
+           $.each(groupedData[i], function(j, vv) {
+              if(j <= avegrouplength -1)
+              {
+                 group1append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
+              }
+              else if(j >= avegrouplength -1)
+              {
+                 group2append += ' <a class="submenu-item" href="/categories/'+vv.menu+'/'+vv.subcategory+'/'+vv.name+'"><span class="submenu-item__text js-menu-item">'+vv.name+'</span></a>'
+              }
+           });
+           group1append += '</div>'
+           group2append += '</div>'
+           $(menulist).next().find(".submenu-group-wrapper").append(group1append);
+           $(menulist).next().find(".submenu-group-wrapper").append(group2append);
+        }
+     });
+     $('#btn_search').click(function (e) {
+        window.open('/search/'+$("#input_search").val(), "_blank");
+        $("#input_search").val('');
+     });
+     $("#main1-menu li").hover(
+         function () {
+             m_length = $("#main1-menu li").length;
+             $("#main1-menu li").find(".menubox").css({"display":"none"});
+             if(parseInt($(this).index()) == 0)
+             {
+                 $(this).find(".menubox").css({"display":"contents"});
+                 left_val = 70 + "px !important";
+                 $(this).find(".menulist").css({"left":left_val});
+                 $("#main1-menu li")[0].find(".menulist").css({"left":"80px;"})
+             }
+             else if(parseInt($(this).index()) == (m_length-1))
+             {
+                 conslength = $(this).find(".menubox").find(".submenu-group-inner").length;
+                 reduceval = 0;
+                 if(conslength == 1){
+                    reduceval = 50;
+                 }
+                 else if(conslength == 2){
+                    reduceval = 100;
+                 }
+                 $(this).find(".menubox").css({"display":"contents"});
+                 left_val =  (parseInt(Math.ceil($(this).offset().left))) -reduceval + "px";
+                 $(this).find(".menulist").css({"left":left_val});
+             }
+             else if(parseInt($(this).index()) == (m_length-2))
+             {
+                 $(this).find(".menubox").css({"display":"contents"});
+                 left_val =  (parseInt(Math.ceil($(this).offset().left))) -50 + "px";
+                 $(this).find(".menulist").css({"left":left_val});
+             }
+             else{
+                 $(this).find(".menubox").css({"display":"contents"});
+                 left_val =  (parseInt(Math.ceil($(this).offset().left))) + "px";
+                 $(this).find(".menulist").css({"left":left_val});
+             } 
+         }, 
+                  
+         function () {
+             $(this).find(".menubox").css({"display":"none"});
+         }
+     );
+     user_value='{{request.user.username}}';
+     if(user_value.length !=0)
+     {        
+        $("#loginbtn").remove();
+        $("#registerbtn").remove();
+        $("#freelancerbtn").remove();
+     }
    }
 });
    function loginClick()

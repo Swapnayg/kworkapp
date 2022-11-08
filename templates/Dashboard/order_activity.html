@@ -8,6 +8,7 @@
     <input type="hidden"  value="{{buyer_user_name}}" id="buyer_username" />
     <input type="hidden"  value="{{conversation_id}}" id="conversation_id" />
     <input type="hidden"  value="{{chat_words}}" id="chat_words_hidd" />
+    <input type="hidden"  value="{{five_chat_words}}" id="five_chat_words_hidd" />
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-0" id="manage_gigs">
        <div class="col-9 text-center p-0 mt-3 mb-2">
@@ -78,7 +79,299 @@
                                     </div>
                                     {% endif %}
                                 </div>
-                          
+                                {% if  seller_gig.0.order_status == 'completed' %}
+                                    <div class="wrap-box">
+                                       <div class="activity-date">
+                                       {% if  buyer_review|length != 0 %}
+                                       <section class="activity-wrap order-rated-by-buyer">
+                                          <article class="LF267+J H1pvagJ PpAciwT">
+                                             <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                <div class="CLdO82Y">
+                                                   <label>
+                                                      <span class="stamp order-rated-by-buyer">
+                                                         
+                                                      </span>
+                                                      <p class="header-base rating-header"><span class="title-text">You left a 5-star review</span><i class="time-stamp">May 31, 5:48 PM</i></p>
+                                                   </label>
+                                                </div>
+                                                <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                   <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                      <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                         <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                      </svg>
+                                                   </span>
+                                                </div>
+                                             </div>
+                                             <div class="activity-collapsible-content">
+                                                <div style="max-height: unset; overflow: unset;">
+                                                   <div>
+                                                      <article class="activity-body">
+                                                         <div class="rating-activity">
+                                                            <section class="card-wrap">
+                                                               <header class="card-header"><span class="card-title">Your Review</span> </header>
+                                                               <div class="card-content">
+                                                                  <div class="user-message">
+                                                                     <a href="/swap_soln_90?source=order_page_user_stamp_link" class="stamp link">
+                                                                        <div class="user-profile-image"><label class="profile-pict" for="profile_image_3129758391266" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" class="profile-pict-img" alt="swap_soln_90"></label></div>
+                                                                     </a>
+                                                                     <div class="message-column">
+                                                                        <p>
+                                                                        <div class="flex">
+                                                                           <span class="username">Me</span>
+                                                                           <div class="flex">
+                                                                              <div class="orca-rating color-yellow tbody-6">
+                                                                                 <div class="stars">
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                 </div>
+                                                                                 <b class="rating-score">5</b>
+                                                                              </div>
+                                                                           </div>
+                                                                        </div>
+                                                                        </p>
+                                                                        <p>good experience with the seller very professional... thank you</p>
+                                                                     </div>
+                                                                  </div>
+                                                                  <ul>
+                                                                     <li class="rating-row">
+                                                                        <div class="rating-title">Communication With Seller</div>
+                                                                        <div class="orca-rating color-yellow tbody-6">
+                                                                           <div class="stars">
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                           </div>
+                                                                           <b class="rating-score">5</b>
+                                                                        </div>
+                                                                     </li>
+                                                                     <li class="rating-row">
+                                                                        <div class="rating-title">Service as Described</div>
+                                                                        <div class="orca-rating color-yellow tbody-6">
+                                                                           <div class="stars">
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                           </div>
+                                                                           <b class="rating-score">5</b>
+                                                                        </div>
+                                                                     </li>
+                                                                     <li class="rating-row">
+                                                                        <div class="rating-title">Buy Again or Recommend</div>
+                                                                        <div class="orca-rating color-yellow tbody-6">
+                                                                           <div class="stars">
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                              <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                 <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                 </svg>
+                                                                              </span>
+                                                                           </div>
+                                                                           <b class="rating-score">5</b>
+                                                                        </div>
+                                                                     </li>
+                                                                  </ul>
+                                                                  <div class="user-message response">
+                                                                     <a href="/elasho?source=order_page_user_stamp_link" class="stamp link">
+                                                                        <div class="user-profile-image"><label class="profile-pict" for="profile_image_3297531691274" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/86f58e6b6db6f42640df0cf6f614ff84-1652359780115/f5939b8f-ac70-4886-9498-438d265db97d.jpg" class="profile-pict-img" alt="elasho"></label></div>
+                                                                     </a>
+                                                                     <div class="message-column">
+                                                                        <p>
+                                                                        <div class="flex"><span class="username"><span><a href="/elasho?source=order_page_user_message_inner_link" class="username-url">elasho</a></span>'s response:</span></div>
+                                                                        </p>
+                                                                        <p>thank you for the review.</p>
+                                                                     </div>
+                                                                  </div>
+                                                               </div>
+                                                            </section>
+                                                         </div>
+                                                      </article>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </article>
+                                       </section>
+                                       {% else %}  
+                                          {% if current_user == "Buyer" %}
+                                          <div class="row tab7 mt-3 mb-5" >
+                                             <div class="col-lg-12 buyer_btn_review_div">
+                                                <a class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" href="/seller_reviews/{{order_details.order_no}}" target="_self" id="buyer_rev_btn">Give Feedback</a>
+                                             </div>
+                                          </div>
+                                          {% endif %}
+                                       {% endif %}  
+                                       {% if  seller_review|length != 0 %}
+                                       <section class="activity-wrap order-rated-by-seller">
+                                          <article class="LF267+J H1pvagJ PpAciwT">
+                                             <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                <div class="CLdO82Y">
+                                                   <label>
+                                                      <span class="stamp order-rated-by-seller"></span>
+                                                      <p class="header-base rating-header"><span class="title-text"><span><a href="/elasho?source=order_page_user_rating_link" class="username-url">elasho</a></span> left you a 5-star review</span><i class="time-stamp">May 31, 5:50 PM</i></p>
+                                                   </label>
+                                                </div>
+                                                <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                   <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                      <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                         <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                      </svg>
+                                                   </span>
+                                                </div>
+                                             </div>
+                                             <div class="activity-collapsible-content">
+                                                <div style="max-height: unset; overflow: unset;">
+                                                   <div>
+                                                      <article class="activity-body">
+                                                         <div class="rating-activity">
+                                                            <section class="card-wrap">
+                                                               <header class="card-header"><span class="card-title">elasho's Review</span> </header>
+                                                               <div class="card-content">
+                                                                  <div class="user-message">
+                                                                     <a href="/elasho?source=order_page_user_stamp_link" class="stamp link">
+                                                                        <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="https://fiverr-res.cloudinary.com/t_small_thumbnail,q_auto,f_auto/attachments/profile/photo/86f58e6b6db6f42640df0cf6f614ff84-1652359780115/f5939b8f-ac70-4886-9498-438d265db97d.jpg" class="profile-pict-img" alt="elasho"></label></div>
+                                                                     </a>
+                                                                     <div class="message-column">
+                                                                        <p>
+                                                                        <div class="flex">
+                                                                           <span class="username"><span><a href="/elasho?source=order_page_user_message_inner_link" class="username-url">elasho</a></span>'s message</span>
+                                                                           <div class="flex">
+                                                                              <div class="orca-rating color-yellow tbody-6">
+                                                                                 <div class="stars">
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                       </svg>
+                                                                                    </span>
+                                                                                 </div>
+                                                                                 <b class="rating-score">5</b>
+                                                                              </div>
+                                                                           </div>
+                                                                        </div>
+                                                                        </p>
+                                                                        <p>nice to work with you.
+                                                                           <br>Great girl.
+                                                                        </p>
+                                                                     </div>
+                                                                  </div>
+                                                               </div>
+                                                            </section>
+                                                         </div>
+                                                      </article>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </article>
+                                       </section> 
+                                       {% endif %}  
+                                       </div>
+                                    </div>
+                                {% endif %}  
+                                
                                 <footer class="inbox-link">
                                     <div>
                                        {% if  current_user == "Buyer" %}
@@ -216,6 +509,7 @@
                         </div>
                        </div>
                     </div>
+                    
                 </div>     
              </div>
           </div>
@@ -818,6 +1112,20 @@
     }
     .bg-co-green-700 {
         background-color:  #2E5DC5;
+    }
+    #buyer_rev_btn
+    {
+      text-decoration:none;
+      padding: 10px;
+      line-height: 60px;
+      cursor:pointer;
+      height: 60px;
+      width: 200px;
+      color: white;
+      background-color: #2E5DC5;
+      border-radius: 3px;
+      padding-left: 3%;
+      padding-right: 3%;
     }
     .wrap-box {
         background-color: #fff;
@@ -1614,7 +1922,7 @@
         border-color: transparent;
     }
     .stamp {
-        background-size: 40px 880px;
+        background-size: 40px 742px;
         border-radius: 50%;
         border: 5px solid #fff;
         width: 40px;
@@ -2007,6 +2315,7 @@
 .user-message .username {
    font-weight: 600;
    padding-right: 5px;
+   font-size:15px;
 }
 
 .resolution a.username-url {
@@ -3796,6 +4105,110 @@ small {
    color: red;
    display: inline-block;
 }
+
+.stamp.order-rated-by-buyer,  .stamp.order-rated-by-seller, .stamp.seller-rating-buyer {
+   background-position: -7px -604px;
+}
+.rating-header
+{
+   font-size: 16px;
+   margin-top: 3%;
+}
+
+.orca-rating {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+}
+.orca-rating .stars {
+   display: -webkit-inline-box;
+   display: -ms-inline-flexbox;
+   display: inline-flex;
+   padding-bottom: 4px;
+}
+.orca-rating.color-yellow .orca-star {
+   fill: #ffb33e;
+}
+.zv900so {
+   display: inline-block;
+   background: none;
+   border: none;
+   padding: 0;
+   margin: 0;
+   fill: #74767e;
+}
+.username {
+   font-weight: 600;
+   padding-right: 5px;
+}
+
+.user-message .message-column {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   -webkit-box-pack: center;
+   -ms-flex-pack: center;
+   justify-content: center;
+   padding-left: 16px;
+   padding-right: 16px;
+}
+.card-wrap .card-content {
+   padding: 24px;
+}
+.user-message p {
+   word-break: break-word;
+}
+.rating-activity ul {
+   padding: 16px 16px 0 48px;
+}
+
+.rating-row {
+   font-size: 14px;
+   font-weight: 700;
+   padding-top: 16px;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-pack: justify;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   width: 75%;
+}
+.rating-row .rating-title {
+   display: inline-block;
+}
+.orca-rating .rating-score, .orca-rating .ratings-count {
+   padding-left: 4px;
+}
+.rating-activity .response, .rating-activity .seller-response-box-message {
+   border-top: 1px solid #efeff0;
+   padding-top: 32px;
+   margin-top: 32px;
+}
+
+.activity-wrap.collaboration-external-review-received .activity-body,.activity-wrap.collaboration-review-received .activity-body,.activity-wrap.collaboration-review-sent .activity-body, .activity-wrap.delivery-received .activity-body,.activity-wrap.order-rated-by-buyer .activity-body, .activity-wrap.order-rated-by-seller .activity-body,.activity-wrap.resolution-accepted .activity-body, .activity-wrap.resolution-declined .activity-body, .activity-wrap.resolution-opened .activity-body,  .activity-wrap.resolution-withdrawn .activity-body, .activity-wrap.revision-requested .activity-body, .activity-wrap.upsell-accepted .activity-body,.activities .activity-wrap.upsell-declined .activity-body, .activity-wrap.upsell-offered .activity-body,.activity-wrap.upsell-withdrawn .activity-body {
+   margin-left: 76px;
+   padding: 2px 24px 24px 0;
+}
+.activity-wrap {
+   position: relative;
+}
+.buyer_btn_review_div
+{
+   text-align:left;
+   float:left;
+   padding-left:5%;
+}
 </style>
 <script>
    function formatDate(date) {
@@ -3842,7 +4255,7 @@ small {
    $(document).ready(function(){
       $("#message_errors").hide();
       jsonObj1 = eval($("#chat_words_hidd").val());
-      console.log(jsonObj1);
+      five_jsonObj1 = eval($("#five_chat_words_hidd").val());
       $.ajax({
          type:"GET",
          url: "/get_all_order_messages/",
@@ -4132,7 +4545,16 @@ small {
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          messages =  jsonObj1.some(substring=>this.value.includes(substring));
-         console.log(messages);
+         if(messages == true)
+         {
+            array_string =  five_jsonObj1.join(", ");
+            $("#message_errors").show();
+            $(".detected_mssg").text(array_string);
+         }
+         else{
+            $("#message_errors").hide();
+            $(".detected_mssg").text("");
+         }
          if(thisChars > maxlength) 
          {
             var CharsToDel = (thisChars-maxlength); 
@@ -4227,6 +4649,7 @@ small {
         const data = JSON.parse(e.data);
         $("#text_order_mssg").val("");
         $("#files_list").empty();
+        $("#message_errors").hide();
         if('{{request.user.username}}' == data.sender)
         {
             $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> </div> </div> </div> </article> </div> </article> </section>');

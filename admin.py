@@ -1,8 +1,11 @@
 import json
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.admin import AdminSite
 from django.dispatch import receiver
+from django.shortcuts import redirect, render
 import whatismyip
+from django.views import View
 from django.db.models.signals import post_save,pre_delete
 from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
@@ -19,6 +22,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_protect
 import pycountry
+from django.template.response import TemplateResponse
 
 class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
@@ -152,7 +156,7 @@ class AdminUser_Refund(admin.ModelAdmin):
 admin.site.register(User_Refund, AdminUser_Refund)
 
 class AdminUser_Earnings(admin.ModelAdmin):
-    list_display = ['order_amount','earning_amount','earning_date','platform_fees','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on']
+    list_display = ['order_amount','earning_amount','earning_date','platform_fees','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on','user_id','earning_type','affiliate_user']
 
 admin.site.register(User_Earnings, AdminUser_Earnings)
 
@@ -162,15 +166,13 @@ class AdminUser_Order_Resolution(admin.ModelAdmin):
 
 admin.site.register(User_Order_Resolution, AdminUser_Order_Resolution)
 
-
 class AdminSeller_Reviews(admin.ModelAdmin):
-    list_display = ['communication','recommendation','service','average_val','buyer_response','buyer_resp_date','review_message','order_no','package_gig_name','s_review_from','s_review_to','review_date']
+    list_display = ['communication','recommendation','service','average_val','seller_response','buyer_resp_date','review_message','order_no','package_gig_name','s_review_from','s_review_to','review_date']
 
 admin.site.register(Seller_Reviews, AdminSeller_Reviews)
 
-
 class AdminBuyer_Reviews(admin.ModelAdmin):
-    list_display = ['review_message','order_no','package_gig_name','b_review_from','seller_response','seller_resp_date','rating_val','b_review_to','review_date']
+    list_display = ['review_message','order_no','package_gig_name','b_review_from','seller_resp_date','rating_val','b_review_to','review_date']
 
 admin.site.register(Buyer_Reviews, AdminBuyer_Reviews)
 
@@ -193,7 +195,7 @@ admin.site.register(User_warning, AdminUser_warning)
 
 
 class AdminSpamDetection(admin.ModelAdmin):
-    list_display = ['user_id','detected_word','detected_on']
+    list_display = ['user_id','detected_word','detected_on','block_button']
     def get_urls(self):
         urls = super().get_urls()
         my_urls = [
@@ -202,10 +204,23 @@ class AdminSpamDetection(admin.ModelAdmin):
         return my_urls + urls
     
     def block_scenario(self, request, pk):
-        print("1")
+        get_spam_detection = SpamDetection.objects.get(pk = pk)
+        if(get_spam_detection.sent_status != "sent"):
+            spam_user = User.objects.get(username = get_spam_detection.user_id.username)
+            add_warning = User_warning(user_id= spam_user,confirmed_on=None,spamword= get_spam_detection)
+            add_warning.save()
+            get_spam_detection.sent_status = 'sent'
+            get_spam_detection.save()
         return redirect(request.META.get('HTTP_REFERER'))
+    
 
 admin.site.register(SpamDetection, AdminSpamDetection)
+
+
+
+
+def view_admin_dashboard(request, format=None):
+    return render(request , 'admin_dashboard.html')
 
 class AdminLearningTopicDetails(admin.ModelAdmin):
     list_display = ['topic_Name','topic_description','image_Text']
@@ -392,10 +407,8 @@ class AdminUserGigsTags(admin.ModelAdmin):
 
 admin.site.register(UserGigsTags, AdminUserGigsTags)
 
-
-
 class AdminReferral_Users(admin.ModelAdmin):
-    list_display = ['affiliate_code','ip_address','user_id','refferal_user']
+    list_display = ['affiliate_code','ip_address','user_id','refferal_user','seller_affi_amount','buyer_affi_amount']
 
 admin.site.register(Referral_Users, AdminReferral_Users)
 
@@ -440,3 +453,16 @@ def content_editView(request,Id=''):
     print(Id+ ".html")
     return render(request , 'contents.html',{'templateName':Id+ ".html"})
 
+
+def get_admin_urls(urls):
+    def get_urls():
+        my_urls =  [
+            path('view_admin_dashboard/', view_admin_dashboard, name="view_admin_dashboard"),
+        ]
+        return my_urls + urls
+    return get_urls
+
+admin.autodiscover()
+
+admin_urls = get_admin_urls(admin.site.get_urls())
+admin.site.get_urls = admin_urls

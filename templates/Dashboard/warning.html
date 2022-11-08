@@ -1,0 +1,107 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title>Letworkbedone - Warning Message</title>
+<link rel="stylesheet" href="{% static 'assets/css/frontend/payments.css' %}" type="text/css" />
+
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-0" id="manage_payments">
+        <div class="col-11 text-center p-0 mt-3 mb-2">
+        <div id="perseus-app" class="payments_perseus">
+            <span class="payments-sdk-package">
+               <div class="payment-page">
+                  <header class="header-package fiverr-header">
+                     <div class="header-row-wrapper">
+                        <div class="header-row max-width-container equal-padding row-main">
+                           <button class="btn-navicon js-side-nav-trigger">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="19" viewBox="0 0 23 19">
+                                 <rect y="16" width="23" height="3" rx="1.5" fill="#555"></rect>
+                                 <rect width="23" height="3" rx="1.5" fill="#555"></rect>
+                                 <rect y="8" width="23" height="3" rx="1.5" fill="#555"></rect>
+                              </svg>
+                           </button>
+                           <a href="{% url 'index' %}" class="site-logo">
+                              <img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="40" width="160" alt="mobile logo"/>
+                           </a>
+                         
+                        </div>
+                     </div>
+                  </header>
+                  <div class="loadable">
+                    <div class="row justify-content-center mt-0">
+                        <div class="col-10 text-center p-0 mt-3 mb-2">
+                           <article class="payment-methods">
+                              <div class="cash">
+                                 <div class="radio-group">
+                                    <header class="section-header radio-group-header">
+                                       <h4 class="text-display-7"> <img class="js-header-theme-logo" src="{% static 'assets/images/icons/warning.png' %}" height="40" width="50" alt="warning"/> Warning Message</h4>
+                                    </header>
+                                    <article class="payment-methods">
+                                        <section class="summary">
+                                            <h4 class="text-display-7 mb-3">  {{warning_count}} Warning</h4>
+                                            <p>
+                                                We have detected some unwanted or suspecious text message from your chat. which violates our terms and conditions to maintain the servernity please follow the terms and conditions perperly inorder to avoid from blocking your profile.
+                                            </p>
+
+                                            <p class="mt-2">With real-time spam detection, Messages makes chatting easier and safer. Spam detection works with your message data while keeping your messages private. And it’s optional, so you're in control.</p>
+
+                                            <a   class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" data-label="{{warning_details.pk}}" id="confirm_warning">Confirm</a>
+                                        </section>
+                                    </article>
+                                 </div>
+                              </div>
+                           </article>
+                        </div>
+                      
+                    </div>
+                  </div>
+                  <footer class="footer">
+                     <div class="content text-body-3 max-width-container"><span class="text"><span class="co-grey">Terms and Conditions are processed by Letworkbedone Ltd., Letworkbedone Limited, and Letworkbedone Inc. See </span><a class="terms-link co-blue" href="/privacy" rel="noopener noreferrer" target="_blank">Privacy and Policy</a></span></div>
+                  </footer>
+               </div>
+            </span>
+         </div> 
+    
+        </div>
+    </div>
+ </div>
+<style>
+.text-display-7
+{
+    font-size: 22px;
+    font-weight: 600;
+}
+.payment-methods
+{
+    text-align:left;
+    margin-top:2%;
+}
+#confirm_warning:focus, #confirm_warning:hover
+{
+   color:white;
+}
+</style>
+<script src="{% static 'assets/js/jquery.min.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        $(".header_top").hide();
+        $("#confirm_warning").click(function(){
+         warning_id = $(this).attr("data-label");
+         $.ajax({
+            type:"GET",
+            url: "/post_confirm_warning/",
+            data: {"warning_id":warning_id},
+            success: function(data) 
+            {
+               if(data == "sucess")
+               {
+                  window.location.href = '{{previous_page}}';
+               }
+            }
+         });
+        });
+    });
+</script>
+{% endblock %}
