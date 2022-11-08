@@ -28,17 +28,17 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id')
+    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id')
     list_filter = ('is_admin', 'is_staff', 'is_active')
     fieldsets = (
-        (None, {'fields': ('email', 'username','seller_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons")}),
+        (None, {'fields': ('email', 'username','seller_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')}),
         ('Permissions', {'fields': ('is_admin', 'is_staff', 'is_active')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2','country',"profile_type",'terms',"avg_delivery_time",'ordersin_progress','offers_left',"avg_respons")}
+            'fields': ('email', 'username', 'password1', 'password2','country',"profile_type",'terms',"avg_delivery_time",'ordersin_progress','offers_left',"avg_respons",'profile_status')}
         ),
     )
     search_fields = ('email', 'username', 'name')
@@ -128,7 +128,7 @@ admin.site.register(Parameter, AdminParameter)
 
 
 class AdminUser_orders(admin.ModelAdmin):
-    list_display = ['order_no','order_status','package_gig_name','order_date','order_amount','due_date']
+    list_display = ['order_no','order_status','package_gig_name','order_date','order_amount','due_date','completed_date']
 
 admin.site.register(User_orders, AdminUser_orders)
 
@@ -151,7 +151,7 @@ class AdminUploadFile(admin.ModelAdmin):
 admin.site.register(UploadFile, AdminUploadFile)
 
 class AdminUser_Refund(admin.ModelAdmin):
-    list_display = ['refund_amount','refund_date','resolution','order_no']
+    list_display = ['refund_amount','refund_date','resolution','order_no','transaction','refund_status','user_id']
 
 admin.site.register(User_Refund, AdminUser_Refund)
 

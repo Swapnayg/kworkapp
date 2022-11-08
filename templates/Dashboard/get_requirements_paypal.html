@@ -152,6 +152,7 @@
                 $("#order_no").val(jsonObj[0].order_no);
                 $("#order_by").val(jsonObj[0].ordered_by);
                 $("#order_to").val(jsonObj[0].ordered_to);
+                $("#already_sub").val(jsonObj[0].submitted);
                 $(".section_text:first").show();
                 if(parseInt($("#already_sub").val()) >0)
                 {

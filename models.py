@@ -98,6 +98,7 @@ class User(AbstractBaseUser):
     current_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     cancelled_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     avail_bal = models.CharField(max_length=200,blank=True,default="0",null=True)
+    availcredit_bal = models.CharField(max_length=200,blank=True,default="0",null=True)
     updated_at = models.DateTimeField(default=timezone.now, blank=True)
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     affiliate_code= ShortUUIDField(length=6,max_length=6,alphabet="123456",blank=True,unique=True, editable=False, default=shortuuid.uuid,null=True)
@@ -622,17 +623,6 @@ class Usergig_image(models.Model):
         return str(self.gig_image)
     
     
-class Usergig_requirement(models.Model):
-    gig_req_question =  models.CharField(max_length=800,blank=True,default="",null=True)
-    gig_req_ans_type =  models.CharField(max_length=800,blank=True,default="",null=True)
-    package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
-    class Meta:
-        verbose_name = _("Gig Requirement")
-        verbose_name_plural = _("Gig Requirements")
-
-    def __str__(self):
-        return str(self.gig_req_question)
     
 class Buyer_Post_Request(models.Model):
     BOOL_CHOICES =[('24hours', '24 Hours'),('3days', '3 Days'),('7days', '7 Days'),('other', 'Others')]
@@ -739,6 +729,7 @@ class User_orders(models.Model):
     due_date =  models.DateTimeField(default=timezone.now, blank=True)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     order_date = models.DateTimeField(default=timezone.now, blank=True)
+    completed_date = models.DateTimeField(default="", blank=True,null=True)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     order_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_by",null=True,blank=True)
     order_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_to",null=True,blank=True)
@@ -783,6 +774,20 @@ class Seller_Reviews(models.Model):
 
     def __str__(self):
         return str(self.recommendation)
+    
+class Usergig_requirement(models.Model):
+    gig_req_question =  models.CharField(max_length=800,blank=True,default="",null=True)
+    gig_req_ans_type =  models.CharField(max_length=800,blank=True,default="",null=True)
+    package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
+    
+    class Meta:
+        verbose_name = _("Gig Requirement")
+        verbose_name_plural = _("Gig Requirements")
+
+    def __str__(self):
+        return str(self.gig_req_question)
+
 
 class Buyer_Reviews(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('cancel', 'Cancelled'),('completed', 'Completed')]
@@ -802,25 +807,9 @@ class Buyer_Reviews(models.Model):
     def __str__(self):
         return str(self.review_message)
     
-class Buyer_Requirements(models.Model):
-    gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
-    requirement_ques = models.CharField(max_length=800,blank=True,default="",null=True)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
-    default_req = models.BooleanField(default=False)
-    requirement_ans = models.TextField(blank=True,default="",null=True)
-    req_documents = models.TextField(blank=True,default="",null=True)
-    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
-    
-    class Meta:
-        verbose_name = _("Buyer Requirement")
-        verbose_name_plural = _("Buyer Requirements")
-        
-    def __str__(self):
-        return str(self.requirement_ques)
-
 
 class User_Transactions(models.Model):
-    BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave')]
+    BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave'),('credit', 'Credit')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=False,blank=False)
     payment_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
@@ -841,6 +830,7 @@ class User_Transactions(models.Model):
     paid_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="paid_by",null=True,blank=True)
     paid_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="paid_to",null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    credit_ref_numbers = models.CharField(max_length=500,blank=True,default="",null=True)
     
     class Meta:
         verbose_name = _("Transaction")
@@ -896,6 +886,22 @@ class Order_Message(models.Model):
     def __str__(self):
         return str(self.timestamp)
 
+class Buyer_Requirements(models.Model):
+    gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
+    requirement_ques = models.CharField(max_length=800,blank=True,default="",null=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
+    default_req = models.BooleanField(default=False)
+    requirement_ans = models.TextField(blank=True,default="",null=True)
+    req_documents = models.TextField(blank=True,default="",null=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    
+    class Meta:
+        verbose_name = _("Buyer Requirement")
+        verbose_name_plural = _("Buyer Requirements")
+        
+    def __str__(self):
+        return str(self.requirement_ques)
+
 
 class Message_Response_Time(models.Model):
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message_recieved")
@@ -943,10 +949,14 @@ class User_Order_Resolution(models.Model):
 
 
 class User_Refund(models.Model):
+    BOOL_CHOICES_STATUS = [('cancelled', 'Cancelled'),('refunded', 'Refunded')]
     refund_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     refund_date = models.DateTimeField(default=timezone.now, blank=True)
     resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    transaction =   models.ForeignKey(User_Transactions, on_delete=models.CASCADE,null=True,blank=True)
+    user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="refunded_to",)
+    refund_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="cancelled",null=True)
     
     class Meta:
         verbose_name = _("Order Refund")
@@ -956,8 +966,8 @@ class User_Refund(models.Model):
         return str(self.refund_amount)
 
 class User_Earnings(models.Model):
-    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending')]
-    BOOL_CHOICES_TYPES = [('order', 'Order'),('affiliate', 'Affiliate'),('tip', 'Tip')]
+    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending'),('cancelled', 'Cancelled')]
+    BOOL_CHOICES_TYPES = [('order', 'Order'),('affiliate', 'Affiliate'),('tip', 'Tip'),('cancelled', 'Cancelled')]
     order_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     earning_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     platform_fees = models.CharField(max_length=500,blank=True,default="",null=True)

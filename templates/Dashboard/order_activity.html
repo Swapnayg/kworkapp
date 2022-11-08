@@ -457,6 +457,7 @@
                         </div>
                         <div class="tab-pane" id="modificationtab">
                             <div class="requirements-tab">
+                              {% if requirements|length != 0 %}
                                 <div class="answered-requirements single">
                                    <ol class="answered-list">
                                     {% for req_det in requirements %}
@@ -484,6 +485,16 @@
                                     {% endfor %}
                                    </ol>
                                 </div>
+                              {% else %}
+                              <div class="answered-requirements single">
+                                 <ol class="answered-list">
+                                    <li>
+                                       <h6 class="text-display-7">{{req_det.requirement_ques}} </h6>
+                                       <p>No Requirements Requested. </p>
+                                    </li>
+                                 </ol>
+                              </div>
+                              {% endif %}
                              </div>
                         </div>
                         <div class="tab-pane deliverytab" id="deliverytab">

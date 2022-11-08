@@ -306,7 +306,7 @@
                                               </form>
                                           </div>
                                       </div>
-                                      <div class="secure-payment"><i class="fa fa-lock"></i><span>SSL Secure Payment</span></div>
+                                      
                                    </div>
                                    <section class="currency-section">
                                       <div class="currency-message tbody-6">You will be charged<span class="price" id="bottom_price">$ {{gig_details.0.total_amount}} </span>. Total amount includes currency conversion fees.</div>
@@ -519,7 +519,7 @@
      }).get();
      extra_gig_vals = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
          return $(this).attr("data-label");
-      }).get().join(", ");
+      }).get().join(",");
       {% comment %} ifextra_gig_vals).trim().length == 0)
       {
          extra_gig_vals = "None";
