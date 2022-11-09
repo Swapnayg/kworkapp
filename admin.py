@@ -134,7 +134,7 @@ admin.site.register(User_orders, AdminUser_orders)
 
 
 class AdminUser_Order_Activity(admin.ModelAdmin):
-    list_display = ['order_message','order_amount','activity_date','order_no']
+    list_display = ['order_message','order_amount','activity_date','order_no','activity_type']
 
 admin.site.register(User_Order_Activity, AdminUser_Order_Activity)
 
@@ -151,12 +151,12 @@ class AdminUploadFile(admin.ModelAdmin):
 admin.site.register(UploadFile, AdminUploadFile)
 
 class AdminUser_Refund(admin.ModelAdmin):
-    list_display = ['refund_amount','refund_date','resolution','order_no','transaction','refund_status','user_id']
+    list_display = ['refund_amount','refund_date','used_on','used_offer_id','resolution','order_no','credit_used','transaction','refund_status','user_id']
 
 admin.site.register(User_Refund, AdminUser_Refund)
 
 class AdminUser_Earnings(admin.ModelAdmin):
-    list_display = ['order_amount','earning_amount','earning_date','platform_fees','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on','user_id','earning_type','affiliate_user']
+    list_display = ['order_amount','earning_amount','earning_date','platform_fees','aval_with','resolution','order_no','clearence_date','clearence_status','cleared_on','user_id','earning_type','affiliate_user','withdrawn_on','withdrawn_amount','credit_used','used_on','used_offer_id']
 
 admin.site.register(User_Earnings, AdminUser_Earnings)
 
@@ -426,7 +426,7 @@ admin.site.register(Addon_Parameters, AdminAddon_Parameters)
 
 
 class AdminUser_Transactions(admin.ModelAdmin):
-    list_display = ['gig_name','offer_id','payment_type','transaction_id','payment_status','paypal_id','paypal_email','flutter_account_id','order_no']
+    list_display = ['gig_name','offer_id','payment_type','transaction_id','payment_status','paypal_id','paypal_email','flutter_account_id','order_no','transaction_status']
 
 admin.site.register(User_Transactions, AdminUser_Transactions)
 

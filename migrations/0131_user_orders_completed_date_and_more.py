@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='user_orders',
             name='completed_date',
-            field=models.DateTimeField(blank=True, default='', null=True),
+            field=models.DateTimeField(blank=True, default=None, null=True),
         ),
         migrations.AlterField(
             model_name='contactus',

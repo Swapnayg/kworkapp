@@ -142,7 +142,7 @@
                                                         </span>
                                                      </div>
                                                   </div>
-                                                  <div class="text-trunc earning_page" style="margin-top: 0px;"><a href="/earnings?source=balances" class="co-blue DlZb6gW" target="_blank" rel="noopener noreferrer">Your Earnings Page</a></div>
+                                                  <div class="text-trunc earning_page" style="margin-top: 0px;"><a href="/user/{{request.user.username}}/balance" class="co-blue DlZb6gW" target="_blank" rel="noopener noreferrer">Your Earnings Page</a></div>
                                                </div>
                                                <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;"> $ {{earning_bal}}</dd>
                                                <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Available for withdrawal or purchases.</dd>
@@ -179,19 +179,37 @@
                                                         </span>
                                                      </span>
                                                   </div>
-                                               </div>
+                                               </div>                                             
                                                <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{avail_bal}}</dd>
                                                <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Use for purchases.</dd>
                                             </div>
-                                            <div class="p-t-24 p-b-24 IiCJj-i ">
-                                               <div class="conclude_div">
-                                                  <h5>Like to earn some credits?</h5>
-                                                  <p class="m-t-8">Refer people you know and everyone benefits!</p>
-                                                  <a class="FW1syM7 L1yjt43 co-white billing-w-full sm-billing-w-auto m-t-28 bg-co-green-700" target="_blank" rel="noreferrer" href="/affiliate_program">Earn Letworkbedone Credits</a>
-                                               </div>
-                                            </div>
+
+                                            <div class="p-t-24 p-b-24 IiCJj-i b-0">
+                                                <div class="flex flex-items-center" style="gap: 8px;">
+                                                   <dt class="co-grey-1000 text-semi-bold">Used Credits</dt>
+                                                   <div class="W46fKfn k-kBZXW">
+                                                      <span class="_5-fo9i5">
+                                                         <span class="XQskgrQ k-kBZXW" aria-label="tooltip" role="img" style="width: 12px; height: 12px; fill: rgb(181, 182, 186);">
+                                                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentFill">
+                                                               <path fill-rule="evenodd" clip-rule="evenodd" d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16ZM6.667 6.222c0-.228.075-.59.277-.87C7.112 5.12 7.4 4.89 8 4.89c.734 0 1.116.388 1.245.777.136.41.02.867-.405 1.15-.701.468-1.218.92-1.49 1.556-.24.56-.24 1.175-.239 1.752v.098H8.89c0-.728.015-.964.095-1.15.06-.142.21-.356.842-.777a2.751 2.751 0 0 0 1.106-3.19C10.558 3.978 9.488 3.111 8 3.111c-1.179 0-2.001.511-2.5 1.203a3.37 3.37 0 0 0-.611 1.908h1.778Zm2.222 6.667V11.11H7.11v1.778H8.89Z"></path>
+                                                            </svg>
+                                                         </span>
+                                                      </span>
+                                                   </div>
+                                                </div>                                             
+                                                <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{balance_used}}</dd>
+                                                <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Used for purchases.</dd>
+                                             </div>
+                                             <div class="p-t-24 p-b-24 IiCJj-i ">
+                                                <div class="conclude_div">
+                                                   <h5>Like to earn some credits?</h5>
+                                                   <p class="m-t-8">Refer people you know and everyone benefits!</p>
+                                                   <a class="FW1syM7 L1yjt43 co-white billing-w-full sm-billing-w-auto m-t-28 bg-co-green-700" target="_blank" rel="noreferrer" href="/affiliate_program">Earn Letworkbedone Credits</a>
+                                                </div>
+                                             </div>
                                          </dl>
                                       </div>
+                                     
                                    </div>
                                 </div>
                         </div>

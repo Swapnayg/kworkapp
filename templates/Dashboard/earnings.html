@@ -11,35 +11,17 @@
             <h1 class="alt">
                Earnings
                <span class="money-expected">
-               Expected earnings: <b class="js-active-orders">$112.50</b>
-               </span>
-               <span class="money-expected india-seller-taxes-gst" hidden="">
-               TCS under GST: <b class="js-india-gst-taxes">$0</b>
-               <span class="hint--top tooltip" data-hint="Per India tax regulations, this is a 1% tax collected at source (TCS).">
-               <i class="fa fa-question-circle"></i>
-               </span>
+               Expected earnings: <b class="js-active-orders">${{earning_val}}</b>
                </span>
             </h1>
          </header>
          <div class="db-stats-standard cf js-db-stats ">
-            <span><small>Net Income</small>$546.36</span>
-            <a href="/users/swap_soln_90/balance/sales?filter=withdrawn"><small>Withdrawn</small>$546.36</a>
-            <a href="/users/swap_soln_90/balance/sales?filter=revenue_purchases"><small>Used for Purchases</small>$0</a>
-            <a href="/users/swap_soln_90/balance/sales?filter=pending_clearance"><small>Pending Clearance</small>$0</a>
-            <span><small>Available for Withdrawal</small>$0</span>
-         </div>
-         <div class="revenues-actions js-revenues-actions p-b-10 cf">
-            <label>WITHDRAW</label>
-            <script>
-               window.initialData = window.initialData || {};
-               window.initialData['Earnings'] = {"withdrawalCurrencies":{"paypal":"USD","local_bank_transfer":"USD","revenue_card":null,"direct_deposit":null},"withdrawalMethods":[{"type":"paypal","title":"PayPal Account","tooltip":"No Earnings to Withdraw","accountId":"","disabled":true,"unregistered":true,"registrationUrl":null,"withdrawalUrl":null,"currencies":[{"name":"USD","symbol":"$","amount":0,"amountWithSymbol":"$0","selected":true},{"name":"EUR","symbol":"€","amount":0,"amountWithSymbol":"€0","selected":false},{"name":"GBP","symbol":"£","amount":0,"amountWithSymbol":"£0","selected":false},{"name":"AUD","symbol":"A$","amount":0,"amountWithSymbol":"A$0","selected":false},{"name":"CAD","symbol":"C$","amount":0,"amountWithSymbol":"C$0","selected":false},{"name":"ILS","symbol":"₪","amount":0,"amountWithSymbol":"₪0","selected":false},{"name":"CHF","symbol":"CHF","amount":0,"amountWithSymbol":"0 CHF","selected":false},{"name":"NZD","symbol":"NZ$","amount":0,"amountWithSymbol":"NZ$0","selected":false},{"name":"SEK","symbol":"kr","amount":0,"amountWithSymbol":"0 kr","selected":false},{"name":"SGD","symbol":"S$","amount":0,"amountWithSymbol":"S$0","selected":false},{"name":"HKD","symbol":"HK$","amount":0,"amountWithSymbol":"HK$0","selected":false},{"name":"THB","symbol":"฿","amount":0,"amountWithSymbol":"฿0","selected":false},{"name":"MXN","symbol":"$","amount":0,"amountWithSymbol":"$0 MXN","selected":false}],"showCurrencySettings":false},{"type":"local_bank_transfer","title":"Bank Transfer","tooltip":"Cash can only be withdrawn in USD. The minimum amount is $20","accountId":null,"disabled":true,"unregistered":false,"registrationUrl":null,"withdrawalUrl":null,"currencies":[{"name":"USD","symbol":"$","amount":0,"amountWithSymbol":"$0","selected":true}],"showCurrencySettings":false}],"fullBalance":0,"suggestedCurrency":"USD","seller":{"userId":109558113,"username":"swap_soln_90"},"authToken":"1665651170.ewr3SlqYE02RqB7AJe6XbQ/fmDvOTPk0ayqVLx9ugyA=","entryPopup":null,"cashAdvance":{"available":false,"data":{}},"maxWithdrawalAmount":5000,"inWolvesStatementOfEarningsRollout":true,"inWithdrawalWizardPage":null,"locale":"en-US"};
-            </script>
-            <div id="Earnings-component">
-               <div class="earnings-package" data-reactroot="">
-                  <section class="withdraw-buttons-list"><button data-hint="No Earnings to Withdraw" class="withdraw-button paypal hint--top disabled btn-standard" disabled=""><i></i>Paypal Account</button><button data-hint="Cash can only be withdrawn in USD. The minimum amount is $20" class="withdraw-button local_bank_transfer hint--top disabled" disabled=""><i></i>Bank Transfer</button></section>
-                  <section><button class="FW1syM7 L1yjt43 p9qU5Ka co-white m-l-8 bg-co-green-700" style="float:right">Get Statement of Earnings</button></section>
-               </div>
-            </div>
+            <span><small>Net Income</small>${{user_details.total_earning}}</span>
+            <a><small>Withdrawn</small>${{user_details.withdrawn_amount}}</a>
+            <a><small>Used for Purchases</small>${{user_details.with_credits_used_amount}}</a>
+            <a><small>Affiliate Earnings</small>${{user_details.referrals_earnings}}</a>
+            <a><small>Pending Clearance</small>${{user_details.current_earning}}</a>
+            <span><small>Available for Withdrawal</small>${{user_details.avail_bal}}</span>
          </div>
          <div class="revenues-actions cf">
             <label>SHOW</label>
@@ -49,32 +31,27 @@
                      <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="137" data-min-width="137" style="width: 137px;">EVERYTHING</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 180px;">
                         <li>
-                           <a data-type="transactions" data-val="all">
+                           <a data-type="transactions" data-val="all" onclick="transaction_click('all_t');">
                            <span class="text-inner">EVERYTHING</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="withdrawn">
+                           <a data-type="transactions" data-val="withdrawn" onclick="transaction_click('withdrawal');">
                            <span class="text-inner">WITHDRAWN</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="pending_clearance">
+                           <a data-type="transactions" data-val="pending_clearance" onclick="transaction_click('pending');">
                            <span class="text-inner">PENDING CLEARANCE</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="cancelled_revenues">
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('e_cancel');">
                            <span class="text-inner">CANCELLED REVENUES</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="cleared">
-                           <span class="text-inner">CLEARED</span>
-                           </a>
-                        </li>
-                        <li>
-                           <a data-type="transactions" data-val="revenue_purchases">
+                           <a data-type="transactions" data-val="revenue_purchases" onclick="transaction_click('credit');">
                            <span class="text-inner">USED FOR PURCHASES</span>
                            </a>
                         </li>
@@ -87,16 +64,13 @@
                   <div class="fake-dropdown" style="visibility: visible;">
                      <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="32" data-min-width="32" style="width: 32px;">2022</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 72px;">
-                        <li>
-                           <a data-type="years" data-val="2022">
-                           <span class="text-inner">2022</span>
-                           </a>
-                        </li>
-                        <li>
-                           <a data-type="years" data-val="2021">
-                           <span class="text-inner">2021</span>
-                           </a>
-                        </li>
+                        {% for year in number_of_years %}
+                           <li>
+                              <a data-type="years" data-val="{{year.year}}" onclick="year_click('{{year.year}}');">
+                                 <span class="text-inner">{{year.year}}</span>
+                              </a>
+                           </li>
+                        {% endfor %}
                      </ul>
                   </div>
                </div>
@@ -107,67 +81,67 @@
                      <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="77" data-min-width="77" style="width: 77px;">All months</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 120px;">
                         <li>
-                           <a data-type="months" data-val="13">
+                           <a data-type="months" data-val="13" onclick="month_click('all');">
                            <span class="text-inner">All months</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="1">
+                           <a data-type="months" data-val="1" onclick="month_click('1');">
                            <span class="text-inner">January</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="2">
+                           <a data-type="months" data-val="2" onclick="month_click('2');">
                            <span class="text-inner">February</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="3">
+                           <a data-type="months" data-val="3" onclick="month_click('3');">
                            <span class="text-inner">March</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="4">
+                           <a data-type="months" data-val="4" onclick="month_click('4');">
                            <span class="text-inner">April</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="5">
+                           <a data-type="months" data-val="5" onclick="month_click('5');">
                            <span class="text-inner">May</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="6">
+                           <a data-type="months" data-val="6" onclick="month_click('6');">
                            <span class="text-inner">June</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="7">
+                           <a data-type="months" data-val="7" onclick="month_click('7');">
                            <span class="text-inner">July</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="8">
+                           <a data-type="months" data-val="8" onclick="month_click('8');">
                            <span class="text-inner">August</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="9">
+                           <a data-type="months" data-val="9" onclick="month_click('9');">
                            <span class="text-inner">September</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="10">
+                           <a data-type="months" data-val="10" onclick="month_click('10');">
                            <span class="text-inner">October</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="11">
+                           <a data-type="months" data-val="11" onclick="month_click('11');">
                            <span class="text-inner">November</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="12">
+                           <a data-type="months" data-val="12" onclick="month_click('12');">
                            <span class="text-inner">December</span>
                            </a>
                         </li>
@@ -189,11 +163,11 @@
                   <div class="intro-img"></div>
                </div>
             </div>
-            <a href="#" class="csv-export js-revenues-csv-export">Export to CSV</a>
+            <a  class="csv-export js-revenues-csv-export" id="export_csv">Export to CSV</a>
             <div class="csv-export-notif hidden"></div>
          </div>
          <div class="db-new-main-table js-db-table">
-            <table>
+            <table id="reports_table">
                <thead>
                   <tr>
                      <td>DATE</td>
@@ -202,264 +176,6 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr class="hidden-action-link" data-id="TR8429CC1F5C4">
-                     <td class="date  ">
-                        <span>Sep 10, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Cancelled Payment Refunded to Buyer <a href="/users/swap_soln_90/balance/order?tran_id=TR8429CC1F5C4">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-out">
-                        <span>-$37.50</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR531F59178E4">
-                     <td class="date  ">
-                        <span>Sep 10, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax refund <a href="/users/swap_soln_90/balance/order?tran_id=TR531F59178E4">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$2.50</span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR43D0FB1CEB7">
-                     <td class="date  ">
-                        <span>Sep 10, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Cancelled Payment Refunded to Buyer <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-out">
-                        <span>-$18.75</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR858D102A208">
-                     <td class="date  ">
-                        <span>Sep 10, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax refund <a href="/users/swap_soln_90/balance/order?tran_id=TR858D102A208">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$1.25</span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR4212B5B9F42">
-                     <td class="date  ">
-                        <span>Aug 25, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR4212B5B9F42">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$18.75</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR126B2958F96">
-                     <td class="date  ">
-                        <span>Aug 25, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR126B2958F96">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$1.25</span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR5269C0F3392">
-                     <td class="date  ">
-                        <span>Aug 16, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR5269C0F3392">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$37.50</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR3269C0F3474">
-                     <td class="date  ">
-                        <span>Aug 16, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR3269C0F3474">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$2.50</span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR531A3BD2E64">
-                     <td class="date  ">
-                        <span>Aug 16, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Withdrawal Completed Successfully </span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$60</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR83727B5A0A2">
-                     <td class="date  ">
-                        <span>Aug 16, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Withdrawal Initiated </span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-out">
-                        <span>-$60</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR21B91D796D3">
-                     <td class="date  ">
-                        <span>Aug 15, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Funds Cleared <a href="/users/swap_soln_90/balance/order?tran_id=TR21B91D796D3">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$60</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR5479D7EA868">
-                     <td class="date  ">
-                        <span>Aug 11, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR5479D7EA868">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$112.50</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR531946B6204">
-                     <td class="date  ">
-                        <span>Aug 11, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR531946B6204">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$7.50</span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR52A5E6D4203">
-                     <td class="date  ">
-                        <span>Mar 17, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Withdrawal Completed Successfully </span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$26.25</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR83A41D60AA3">
-                     <td class="date  ">
-                        <span>Mar 17, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Withdrawal Initiated </span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-out">
-                        <span>-$26.25</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR22511272775">
-                     <td class="date  ">
-                        <span>Mar 16, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Funds Cleared <a href="/users/swap_soln_90/balance/order?tran_id=TR22511272775">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$26.25</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR434AA46D786">
-                     <td class="date  ">
-                        <span>Feb 25, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Order Revenue <a href="/users/swap_soln_90/balance/order?tran_id=TR434AA46D786">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span class="money-in">
-                        <span>$26.25</span>
-                        </span>
-                     </td>
-                  </tr>
-                  <tr class="hidden-action-link" data-id="TR84EFF6A4437">
-                     <td class="date  ">
-                        <span>Feb 25, 22</span>
-                     </td>
-                     <td class="ellipsis-wrap  ">
-                        <div class="ellipsis">
-                           <span>Tax collected/deducted at source <a href="/users/swap_soln_90/balance/order?tran_id=TR84EFF6A4437">(view order)</a></span>
-                        </div>
-                     </td>
-                     <td class="amount">
-                        <span>$1.75</span>
-                     </td>
-                  </tr>
                </tbody>
             </table>
          </div>
@@ -467,6 +183,7 @@
    </div>
 </div>
 {% include  'Dashboard/base_seller.html' %}
+<script src="{% static 'assets/js/csvExport.js' %}"></script>
 <style>
     #manage_earning
     {
@@ -538,6 +255,10 @@
    width: 230px;
    white-space: pre-wrap;
    }
+   #export_csv
+   {
+      cursor:pointer;
+   }
    .db-stats-standard {
     background-color: #fff;
     padding: 25px 10px;
@@ -558,7 +279,12 @@
 .db-stats-standard a:first-child, .db-stats-standard>span:first-child {
     border: none;
 }
-
+.dropdown-menu li a{
+   font-size: 13px;
+    color: #999;
+    padding: 6px 10px;
+    cursor:pointer;
+}
 .db-stats-standard a, .db-stats-standard>span {
     display: table-cell;
     font-size: 27px;
@@ -797,6 +523,7 @@ table {
 }
 .db-new-main-table table td:last-child {
     padding-right: 20px;
+    text-align:right;
 }
 
 .db-new-main-table table td {
@@ -818,4 +545,66 @@ table {
     color: #555;
 }
 </style>
+
+<script>
+   $(document).ready(function(){
+      $( "#export_csv" ).click(function() {
+         $('#reports_table').csvExport();
+      });
+      refresh_table("all_t","transactions");
+
+   });
+
+   function formatDate(date) {
+      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var _date = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var d = new Date();
+      var curr_year = d.getFullYear();    
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = '';
+      strTime =  monthNames[month] + " " + _date+ ", " + year ;  
+      return strTime;
+    }
+   
+   function refresh_table(parameter,type)
+   {
+      $.ajax({
+         type:"GET",
+         url: "/post_earning_details/",
+         data: {'username':'{{request.user.username}}' ,"parameter":parameter ,"param_type":type},
+         success: function(data)
+         {
+            $("#reports_table tbody").empty();
+            $.each(data, function(i, v) {
+               if(v.a_type=="cancel"){
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link" data-id="TR43D0FB1CEB7"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
+               }
+               else{
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link" data-id="TR43D0FB1CEB7"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span> </div> </td> <td class="amount"> <span class="money-out"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
+               }
+               
+            });
+         }
+      });
+   }
+   function month_click(ev)
+   {
+      refresh_table(ev,'month');
+   }
+   function transaction_click(ev)
+   {
+      refresh_table(ev,'transactions');
+   }
+   function year_click(ev)
+   {
+      refresh_table(ev,'year');
+   }
+</script>
 {% endblock %}

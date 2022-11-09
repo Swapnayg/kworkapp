@@ -15,7 +15,7 @@
                         <div class="seller-card seller_card-package" data-reactroot="">
                             <div style="position: absolute; right: 0px; height: 20px; left: 0px;">
                                 {% if userDetails.username != request.user.username %}
-                                <input type="hidden" value="{{user_avail|length}}">
+                                <input type="hidden" value="{{user_avail|length}}" id="user_avail_hidden">
                                     {% if user_avail|length == 0 %}
                                         <div class="user-online-indicator is-online " data-user-id="109558113">
                                             <i class="dot"></i>Online
@@ -195,7 +195,7 @@
                 <div class="col-lg-7">
                     <div id="react-seller-gigs">
                         {% if userDetails.username == request.user.username %}
-                        {% if user_avail|length != '0' %}
+                        {% if user_avail|length != 0 %}
                         <div class="out-of-office" data-reactroot="">
                             <div class="banner-available new-seller">
                               <input type="hidden" value="{{user_avail.0.available_from}}" id="user_avail_list">

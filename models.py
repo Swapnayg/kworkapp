@@ -97,6 +97,9 @@ class User(AbstractBaseUser):
     total_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     current_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     cancelled_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
+    withdrawn_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
+    with_credits_used_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
+    refund_credits_used_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
     avail_bal = models.CharField(max_length=200,blank=True,default="0",null=True)
     availcredit_bal = models.CharField(max_length=200,blank=True,default="0",null=True)
     updated_at = models.DateTimeField(default=timezone.now, blank=True)
@@ -729,7 +732,7 @@ class User_orders(models.Model):
     due_date =  models.DateTimeField(default=timezone.now, blank=True)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     order_date = models.DateTimeField(default=timezone.now, blank=True)
-    completed_date = models.DateTimeField(default="", blank=True,null=True)
+    completed_date = models.DateTimeField(default=None, blank=True,null=True)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     order_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_by",null=True,blank=True)
     order_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_to",null=True,blank=True)
@@ -810,9 +813,11 @@ class Buyer_Reviews(models.Model):
 
 class User_Transactions(models.Model):
     BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave'),('credit', 'Credit')]
+    BOOL_CHOICES_Status = [('active', 'Active'),('rufunded', 'Rufunded')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=False,blank=False)
     payment_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    transaction_status = models.CharField(max_length=300,choices=BOOL_CHOICES_Status,blank=True,default="",null=True)
     transaction_id = models.CharField(max_length=300,blank=True,default="",null=True)
     transaction_ref =models.CharField(max_length=300,blank=True,default="",null=True)
     payment_status = models.CharField(max_length=300,blank=True,default="",null=True)
@@ -840,10 +845,12 @@ class User_Transactions(models.Model):
         return str(self.payment_type)
 
 class User_Order_Activity(models.Model):
+    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending')]
     order_message =  models.CharField(max_length=1000,blank=True,null=True)
     order_amount =   models.CharField(max_length=200,blank=True,null=True)
     activity_date = models.DateTimeField(default=timezone.now, blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    activity_type =  models.CharField(max_length=300,choices=BOOL_CHOICES,blank=True,default="",null=True)
     
     class Meta:
         verbose_name = _("Order Activity")
@@ -945,12 +952,12 @@ class User_Order_Resolution(models.Model):
     def __str__(self):
         return str(self.resolution_text)
 
-
-
-
 class User_Refund(models.Model):
     BOOL_CHOICES_STATUS = [('cancelled', 'Cancelled'),('refunded', 'Refunded')]
     refund_amount = models.CharField(max_length=500,blank=True,default="",null=True)
+    credit_used = models.CharField(max_length=500,blank=True,default="",null=True)
+    used_on = models.DateTimeField(default=timezone.now, blank=True)
+    used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     refund_date = models.DateTimeField(default=timezone.now, blank=True)
     resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
@@ -978,9 +985,14 @@ class User_Earnings(models.Model):
     clearence_date = models.DateTimeField(default=timezone.now, blank=True,null=True)
     clearence_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
     cleared_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
+    withdrawn_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
+    withdrawn_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="earning_user",)
     earning_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     affiliate_user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="affiliate_user",)
+    credit_used = models.CharField(max_length=500,blank=True,default="",null=True)
+    used_on = models.DateTimeField(default=timezone.now, blank=True)
+    used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:
         verbose_name = _("Order Earning")

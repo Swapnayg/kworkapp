@@ -130,4 +130,5 @@ urlpatterns  = [
     path("post_decline_click/",views.post_decline_click_view,name = 'post_decline_click'),
     path("post_confirm_warning/",views.post_confirm_warning_view,name = 'post_confirm_warning'),
     path("post_seller_review/",views.post_seller_review_view,name = 'post_seller_review'),
+    path("post_earning_details/",views.post_earning_details_view,name = 'post_earning_details'),
 ]
