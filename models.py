@@ -801,7 +801,6 @@ class Buyer_Reviews(models.Model):
     b_review_from = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False,related_name="b_review_from")
     b_review_to = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False,related_name="b_review_to")
     review_date = models.DateTimeField(default=timezone.now, blank=True)
-    seller_resp_date = models.DateTimeField(default=timezone.now, blank=True)
     
     class Meta:
         verbose_name = _("Buyer Review")
@@ -845,7 +844,7 @@ class User_Transactions(models.Model):
         return str(self.payment_type)
 
 class User_Order_Activity(models.Model):
-    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending')]
+    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending'),('tip', 'tip')]
     order_message =  models.CharField(max_length=1000,blank=True,null=True)
     order_amount =   models.CharField(max_length=200,blank=True,null=True)
     activity_date = models.DateTimeField(default=timezone.now, blank=True)

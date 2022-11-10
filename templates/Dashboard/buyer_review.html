@@ -35,8 +35,9 @@
                            <article class="payment-methods">
                               <div class="cash">
                                  <div class="radio-group">
-                                    <article class="payment-methods">
+                                    <article class="payment-methods" id="review_section">
                                         <section class="summary">
+                                            <form id="form_buyer_review">
                                             <div class="row tab7" >
                                                 <div class="col-lg-9">
                                                     <h4  class="header_txt">
@@ -69,15 +70,12 @@
                                                     </select>
                                                 </div>
                                              </div>
-
-
-
                                              <div class="row tab7 mt-3 mb-5" >
                                                 <div class="col-lg-8">
                                                     <h5  class="header_txt1">
                                                         What was it like working with this buyer?
                                                      </h5>
-                                                     <textarea maxlength="{{buyer_descp_count}}" placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" onchange="textarea_buyer_desconchange(this)"></textarea>
+                                                     <textarea maxlength="{{buyer_descp_count}}" required placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" onchange="textarea_buyer_desconchange(this)"></textarea>
                                                     <span class="buyer_desc_count">0 / {{buyer_descp_count}} max</span>
                                                 </div>
                                                 <div class="col-lg-3">
@@ -89,11 +87,39 @@
 
                                                 </div>
                                                 <div class="col-lg-3" style="text-align:right;">
-                                                    <button type="submit" id="start-payment-button" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="seller_rev_submit">Submit Review</button>
+                                                    <button type="submit" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="buyer_rev_submit">Submit Review</button>
                                                 </div>
                                              </div>
-                                        </section>
+                                             <div class="row tab7 mt-3 mb-5" >
+                                                <div class="col-lg-7">
+                                                    <div class="error-message-review">
+                                                        <span class="error">Please fill all the details.</span>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                            </form>
+                                            </section>
                                     </article>
+
+                                    <article class="payment-methods" id="thank_section">
+                                        <div class="cash">
+                                            <div class="radio-group">
+                                               <article class="payment-methods">
+                                                   <section class="summary">
+                                                       <div class="row tab7" >
+                                                           <div class="col-lg-9">
+                                                                <h1>Thank you for your review</h1>
+                                                                <article>
+                                                                   <i class="fa fa-check-circle-o"></i>
+                                                                   <p class="p-t-20">  <b>{{order_details.order_to.username}}</b> keep on doing good work, we appreciate your patience.</p>
+                                                                   <p class="mt-3"><a href="/user/{{request.user.username}}/manage_orders" class="m-t-20">Manage your orders now.</a></p>
+                                                                </article>
+                                                           </div>
+                                                        </div>
+                                                        </div>
+                                                   </section>
+                                               </article>
+            
                                  </div>
                               </div>
                            </article>
@@ -166,13 +192,92 @@
 {
     font-size:16px;
 }
+.thank-you article p, .thank-you-no-icon article p {
+    font-size: 14px;
+    line-height: 20px;
+}
+.thank-you
+{
+    width: 70%;
+    text-align: center; 
+    margin: auto;
+}
+
+article .fa, article .fa {
+    position: absolute;
+    z-index: 0;
+    top: 15px;
+    left: 0;
+    color: #2E5DC5;
+    font-size: 66px;
+}
+
+#thank_section article article p, #thank_section article p {
+    font-size: 14px;
+    line-height: 20px;
+}
+
+#thank_section article, #thank_section article {
+    position: relative;
+    padding-left: 90px;
+    text-align: left;
+}
+.error
+{
+    color:red;
+    font-size:12px;
+}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/themes/fontawesome-stars.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/jquery.barrating.min.js"></script>
 <script>
     $(document).ready(function(){
-        $('#rating_buyer').barrating({ theme: 'fontawesome-stars'});
-        
+        $("#thank_section").hide();
+        $(".error-message-review").hide();
+        rating_buyer = 0;
+        $('#rating_buyer').barrating({ theme: 'fontawesome-stars',initialRating: '0',allowEmpty: false,emptyValue: '',deselectable: true,onSelect: function(value, text, event) {
+            if (typeof(event) !== 'undefined') {
+                rating_buyer = value;
+            } 
+        }});
+        $(".error-message").hide();
+
+        $('#textarea_buyer_desc').keyup(function() { 
+            var thisChars = this.value.replace(/{.*}/g, '').length; 
+            var maxlength = $(this).attr("maxlength");
+            if(thisChars > maxlength) 
+            {
+               var CharsToDel = (thisChars-maxlength); 
+               this.value = this.value.substring(0,this.value.length-CharsToDel); 
+            }else{
+               $(".buyer_desc_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
+            }
+         });
+        $("#form_buyer_review").submit(function(e)
+        {
+            e.preventDefault();
+            console.log(rating_buyer);
+            if(rating_buyer != 0 )
+            {
+                $.ajax({
+                    type:"GET",
+                    url: "/post_buyer_review/",
+                    data: {"order_no":'{{order_no}}',"b_review_txt":$("#textarea_buyer_desc").val(),"b_rating":rating_buyer},
+                    success: function(data) 
+                    {
+                       if(data == "sucess")
+                       {
+                         $("#review_section").hide();
+                         $("#thank_section").show();
+                         $(".error-message-review").hide();
+                       }
+                    }
+                });
+            }
+            else{
+                $(".error-message-review").show();
+            }
+        });
     });
 </script>
 {% endblock %}

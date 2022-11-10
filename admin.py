@@ -172,7 +172,7 @@ class AdminSeller_Reviews(admin.ModelAdmin):
 admin.site.register(Seller_Reviews, AdminSeller_Reviews)
 
 class AdminBuyer_Reviews(admin.ModelAdmin):
-    list_display = ['review_message','order_no','package_gig_name','b_review_from','seller_resp_date','rating_val','b_review_to','review_date']
+    list_display = ['review_message','order_no','package_gig_name','b_review_from','rating_val','b_review_to','review_date']
 
 admin.site.register(Buyer_Reviews, AdminBuyer_Reviews)
 

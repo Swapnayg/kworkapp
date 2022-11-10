@@ -51,6 +51,11 @@
                            </a>
                         </li>
                         <li>
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('tip');">
+                           <span class="text-inner">TIP REVENUES</span>
+                           </a>
+                        </li>
+                        <li>
                            <a data-type="transactions" data-val="revenue_purchases" onclick="transaction_click('credit');">
                            <span class="text-inner">USED FOR PURCHASES</span>
                            </a>
@@ -171,6 +176,7 @@
                <thead>
                   <tr>
                      <td>DATE</td>
+                     <td>ORDER NO.</td>
                      <td>FOR</td>
                      <td class="t-a-right">AMOUNT</td>
                   </tr>
@@ -584,10 +590,10 @@ table {
             $("#reports_table tbody").empty();
             $.each(data, function(i, v) {
                if(v.a_type=="cancel"){
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link" data-id="TR43D0FB1CEB7"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td><td class="amount"> <span class="money-out"> <span>#'+v.a_order_no+' </span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' </span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
                }
                else{
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link" data-id="TR43D0FB1CEB7"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' <a href="/users/swap_soln_90/balance/order?tran_id=TR43D0FB1CEB7">(view order)</a></span> </div> </td> <td class="amount"> <span class="money-out"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="amount"> <span class="money-out"> <span>#'+v.a_order_no+'</span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td><td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+'</span> </div> </td> <td class="amount"> <span class="money-out"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
                }
                
             });

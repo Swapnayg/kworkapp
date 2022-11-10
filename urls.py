@@ -1,6 +1,6 @@
 from django.urls import include, path
 from . import views
-from . views import indexView,aboutView,privacyView,resolution_view,blocked_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
+from . views import indexView,aboutView,privacyView,resolution_view,blocked_view,tips_view,flutter_thank_you_tip_view,paypal_thank_you_tip_view,credit_thank_you_tip_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
 urlpatterns  = [
 	path('', indexView.as_view(), name='index' ),
 	path('about', aboutView.as_view(), name='about' ),
@@ -9,6 +9,10 @@ urlpatterns  = [
  	path('buyer_reviews/<str:order_no>', buyer_review_view.as_view(), name='buyer_reviews' ),
   	path('seller_reviews/<str:order_no>', seller_review_view.as_view(), name='seller_reviews' ),
     path('warning/<str:username>', warning_review_view.as_view(), name='warning' ),
+    path('<str:username>/tips/<str:orderid>', tips_view.as_view(), name='tips' ),
+    path('thank_you/flutter/<str:username>/<str:orderid>', flutter_thank_you_tip_view.as_view(), name='thank_you' ),
+    path('thank_you/paypal/<str:username>/<str:orderid>/<str:payer_id>/<str:payer_email>/<str:transaction_id>/<str:trans_status>/<str:base_price>/<str:service_fees>/<str:total_price>/<str:credit_used>', paypal_thank_you_tip_view.as_view(), name='thank_you' ),
+    path('thank_you/credit/<str:username>/<str:orderid>/<str:base_price>/<str:service_fees>/<str:total_price>/<str:credit_used>', credit_thank_you_tip_view.as_view(), name='thank_you' ),
     path('blocked/<str:username>', blocked_view.as_view(), name='blocked' ),
 	path("user/<str:username>/seller_dashboard",seller_main_view.as_view(),name = 'seller_main'),
  	path("seller",seller_main_view.as_view(),name = 'seller'),
@@ -131,4 +135,9 @@ urlpatterns  = [
     path("post_confirm_warning/",views.post_confirm_warning_view,name = 'post_confirm_warning'),
     path("post_seller_review/",views.post_seller_review_view,name = 'post_seller_review'),
     path("post_earning_details/",views.post_earning_details_view,name = 'post_earning_details'),
+    path("post_credit_tip_details/",views.post_credit_tip_details_view,name = 'post_credit_tip_details'),
+    path("post_paypal_tip_details/",views.post_paypal_tip_details_view,name = 'post_paypal_tip_details'),
+    path("post_flutter_tip_details/",views.post_flutter_tip_details_view,name = 'post_flutter_tip_details'),
+    path("post_seller_response/",views.post_seller_response_view,name = 'post_seller_response'),
+    path("post_buyer_review/",views.post_buyer_review_view,name = 'post_buyer_review'),
 ]

@@ -125,8 +125,14 @@ class gig_View_View(View):
                 recc_count = recc_count + int(s_review.recommendation)
                 serv_count = serv_count + int(s_review.service)
                 seller_count = seller_count + float(s_review.average_val)
-                start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
-                s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
+                try:
+                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
+                except:
+                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
+                try:
+                    s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
+                except:
+                    s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
                 end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                 diff = relativedelta.relativedelta(end_date, start_date)
                 diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
@@ -374,9 +380,12 @@ class profile_view(View):
                     seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"country_flag":country_flag_icon})
                 for b_review in buyer_reviews:
                     buyer_count = buyer_count + int(b_review.rating_val)
-                    start_date = datetime.strptime(str(b_review.review_date), "%Y-%m-%d %H:%M:%S")
+                    try:
+                        due_date = datetime.strptime(str(b_review.review_date),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        due_date = datetime.strptime(str(b_review.review_date),"%Y-%m-%d %H:%M:%S.%f").date()
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                    diff = relativedelta.relativedelta(end_date, start_date)
+                    diff = relativedelta.relativedelta(end_date, due_date)
                     if(diff.years == 0 and diff.months == 0):
                         if(diff.days == 0):
                             b_review_date = 'today'
@@ -942,7 +951,8 @@ class buyer_review_view(View):
                 for c in charcterlimits:
                     if(c.Char_category_Name == "buyer_review"):
                         buyer_char = c.Max_No_of_char_allowed
-                return render(request , 'Dashboard/buyer_review.html',{"previous_page":previous_page,"order_no":order_no,"buyer_descp_count":buyer_char})
+                order_details = User_orders.objects.get(order_no= order_no)
+                return render(request , 'Dashboard/buyer_review.html',{"previous_page":previous_page,"order_no":order_no,"buyer_descp_count":buyer_char,"order_details":order_details})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -964,7 +974,18 @@ class seller_review_view(View):
                 serv_fees_val = ''
                 payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Service Fees")).first()
                 serv_fees_val = payment_parameters.service_fees
-                return render(request , 'Dashboard/seller_review.html',{"previous_page":previous_page,"order_no":order_no,"seller_descp_count":seller_char,"serv_fees_val":serv_fees_val})
+                api_details = Api_keys.objects.filter(Q(api_name="paypal") | Q(api_name= "flutterwave"))
+                paypal_client_id = ''
+                flutter_client_id = ''
+                for api in api_details:
+                    if(api.api_name == "paypal"):
+                        paypal_client_id = api.private_key
+                    elif(api.api_name == "flutterwave"):
+                        flutter_client_id = api.private_key
+                available_credit = float(float(userDetails.avail_bal) + float(userDetails.availcredit_bal))
+                order_details = User_orders.objects.get(order_no= order_no)
+                base_url = request.build_absolute_uri('/ref')
+                return render(request , 'Dashboard/seller_review.html',{"previous_page":previous_page,"order_no":order_no,"seller_descp_count":seller_char,"serv_fees_val":serv_fees_val,"paypal_client_id":paypal_client_id,"flutterwave_client_id":flutter_client_id,"userDetails":userDetails,"available_credit":available_credit,"order_details":order_details,"base_url":base_url})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -995,7 +1016,320 @@ class warning_review_view(View):
         else:
             return render(request , 'register.html')
         
-    
+        
+        
+class flutter_thank_you_tip_view(View):
+    return_url = None
+    def get(self , request,username='',orderid=0):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                order_details = User_orders.objects.get(order_no = orderid)
+                offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
+                ordered_by_user = User.objects.get(id= order_details.order_by.id)
+                ordered_to_user = User.objects.get(id= order_details.order_to.id)
+                extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
+                current_user = ''
+                if(userDetails.username == ordered_by_user.username):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
+                s_gig_list = []
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=seller_gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                order_status = ''
+                due_in_str = ''
+                due_date = ''
+                d_days = ''
+                d_hours = ''
+                d_minutes = ''
+                d_seconds = ''
+                due_date_format = ''
+                if(str(order_details.order_status) == "active"):
+                    try:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    order_due_date = order_details.due_date
+                    formatted_due_date = str(order_due_date.year) + "-" + str(order_due_date.month)+ "-" + str(order_due_date.day)  + " " + str(order_due_date.hour)+ ":" + str(order_due_date.minute)+ ":" + str(order_due_date.second)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "late"
+                        formatted_due_date = "failed"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                        formatted_due_date = "failed"
+                    d_days = str(abs(diff.days))
+                    d_hours = str(abs(diff.hours))
+                    d_minutes = str(abs(diff.minutes))
+                    d_seconds = str(abs(diff.seconds))
+                else:
+                    order_status = str(order_details.order_status)
+                    d_days = 00
+                    d_hours = 00
+                    d_minutes = 00
+                    d_seconds = 00
+                    formatted_due_date = "failed"
+                
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "resolution_text"):
+                        res_char = c.Max_No_of_char_allowed
+                extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
+                return render(request , 'Dashboard/thankyoutip.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
+
+
+class paypal_thank_you_tip_view(View):
+    return_url = None
+    def get(self , request,username='',orderid=0,payer_id='',payer_email='',transaction_id='',trans_status='',base_price='',service_fees='',total_price='',credit_used=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                order_details = User_orders.objects.get(order_no = orderid)
+                offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
+                ordered_by_user = User.objects.get(id= order_details.order_by.id)
+                ordered_to_user = User.objects.get(id= order_details.order_to.id)
+                extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
+                current_user = ''
+                if(userDetails.username == ordered_by_user.username):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
+                s_gig_list = []
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=seller_gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                order_status = ''
+                due_in_str = ''
+                due_date = ''
+                d_days = ''
+                d_hours = ''
+                d_minutes = ''
+                d_seconds = ''
+                due_date_format = ''
+                if(str(order_details.order_status) == "active"):
+                    try:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    order_due_date = order_details.due_date
+                    formatted_due_date = str(order_due_date.year) + "-" + str(order_due_date.month)+ "-" + str(order_due_date.day)  + " " + str(order_due_date.hour)+ ":" + str(order_due_date.minute)+ ":" + str(order_due_date.second)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "late"
+                        formatted_due_date = "failed"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                        formatted_due_date = "failed"
+                    d_days = str(abs(diff.days))
+                    d_hours = str(abs(diff.hours))
+                    d_minutes = str(abs(diff.minutes))
+                    d_seconds = str(abs(diff.seconds))
+                else:
+                    order_status = str(order_details.order_status)
+                    d_days = 00
+                    d_hours = 00
+                    d_minutes = 00
+                    d_seconds = 00
+                    formatted_due_date = "failed"
+                
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "resolution_text"):
+                        res_char = c.Max_No_of_char_allowed
+                extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
+                return render(request , 'Dashboard/thankyoutip.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
+
+class tips_view(View):
+    return_url = None
+    def get(self , request,username='',orderid=0):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                order_details = User_orders.objects.get(order_no = orderid)
+                offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
+                ordered_by_user = User.objects.get(id= order_details.order_by.id)
+                ordered_to_user = User.objects.get(id= order_details.order_to.id)
+                extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
+                current_user = ''
+                if(userDetails.username == ordered_by_user.username):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
+                s_gig_list = []
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=seller_gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                order_status = ''
+                due_in_str = ''
+                due_date = ''
+                d_days = ''
+                d_hours = ''
+                d_minutes = ''
+                d_seconds = ''
+                due_date_format = ''
+                if(str(order_details.order_status) == "active"):
+                    try:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    order_due_date = order_details.due_date
+                    formatted_due_date = str(order_due_date.year) + "-" + str(order_due_date.month)+ "-" + str(order_due_date.day)  + " " + str(order_due_date.hour)+ ":" + str(order_due_date.minute)+ ":" + str(order_due_date.second)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "late"
+                        formatted_due_date = "failed"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                        formatted_due_date = "failed"
+                    d_days = str(abs(diff.days))
+                    d_hours = str(abs(diff.hours))
+                    d_minutes = str(abs(diff.minutes))
+                    d_seconds = str(abs(diff.seconds))
+                else:
+                    order_status = str(order_details.order_status)
+                    d_days = 00
+                    d_hours = 00
+                    d_minutes = 00
+                    d_seconds = 00
+                    formatted_due_date = "failed"
+                
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "resolution_text"):
+                        res_char = c.Max_No_of_char_allowed
+                extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
+                return render(request , 'Dashboard/tips.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
+
+class credit_thank_you_tip_view(View):
+    return_url = None
+    def get(self , request,username='',orderid=0,payer_id='',base_price='',service_fees='',total_price='',credit_used=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                order_details = User_orders.objects.get(order_no = orderid)
+                offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
+                ordered_by_user = User.objects.get(id= order_details.order_by.id)
+                ordered_to_user = User.objects.get(id= order_details.order_to.id)
+                extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
+                current_user = ''
+                if(userDetails.username == ordered_by_user.username):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
+                s_gig_list = []
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=seller_gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                order_status = ''
+                due_in_str = ''
+                due_date = ''
+                d_days = ''
+                d_hours = ''
+                d_minutes = ''
+                d_seconds = ''
+                due_date_format = ''
+                if(str(order_details.order_status) == "active"):
+                    try:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(due_date, end_date)
+                    order_due_date = order_details.due_date
+                    formatted_due_date = str(order_due_date.year) + "-" + str(order_due_date.month)+ "-" + str(order_due_date.day)  + " " + str(order_due_date.hour)+ ":" + str(order_due_date.minute)+ ":" + str(order_due_date.second)
+                    num = float(diff.days)
+                    if num > 0:
+                        order_status = "In progress"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    elif num == 0:
+                        order_status = "late"
+                        formatted_due_date = "failed"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h"
+                    else:
+                        order_status = "late"
+                        due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
+                        formatted_due_date = "failed"
+                    d_days = str(abs(diff.days))
+                    d_hours = str(abs(diff.hours))
+                    d_minutes = str(abs(diff.minutes))
+                    d_seconds = str(abs(diff.seconds))
+                else:
+                    order_status = str(order_details.order_status)
+                    d_days = 00
+                    d_hours = 00
+                    d_minutes = 00
+                    d_seconds = 00
+                    formatted_due_date = "failed"
+                
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "resolution_text"):
+                        res_char = c.Max_No_of_char_allowed
+                extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
+                return render(request , 'Dashboard/thankyoutip.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username,"seller_username":ordered_to_user.username})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+        
 class blocked_view(View):
     return_url = None
     def get(self , request,username=''):
@@ -1524,7 +1858,8 @@ class order_activities_view(View):
                 message_char = ''  
                 delivery_char = ''
                 cancel_char = ''  
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="order_message") | Q(Char_category_Name= "delivery_description") | Q(Char_category_Name= "resolution_cancel_text"))
+                seller_res_char = ''  
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="order_message") | Q(Char_category_Name= "delivery_description") | Q(Char_category_Name= "resolution_cancel_text") | Q(Char_category_Name= "seller_response"))
                 for c in charcterlimits:
                     if(c.Char_category_Name == "order_message"):
                         message_char = c.Max_No_of_char_allowed
@@ -1532,6 +1867,8 @@ class order_activities_view(View):
                         delivery_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name == "resolution_cancel_text"):
                         cancel_char = c.Max_No_of_char_allowed
+                    elif(c.Char_category_Name == "seller_response"):
+                        seller_res_char = c.Max_No_of_char_allowed
                 try:
                     conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
                 except:
@@ -1541,14 +1878,32 @@ class order_activities_view(View):
                 buyer_review = []
                 seller_review = []
                 if(Buyer_Reviews.objects.filter(b_review_from=ordered_to_user,b_review_to=ordered_by_user).exists() == True):
-                    buyer_review = Buyer_Reviews.objects.get(b_review_from=ordered_to_user,b_review_to=ordered_by_user)
+                    buyer_review_det = Buyer_Reviews.objects.get(b_review_from=ordered_to_user,b_review_to=ordered_by_user)
+                    average_list = []
+                    for a in range(0,round(float(buyer_review_det.rating_val))):
+                        average_list.append(a)
+                    buyer_review.append({"review_id":buyer_review_det.id,"review_message":buyer_review_det.review_message,"average_val":average_list,"b_review_from_username":buyer_review_det.b_review_from.username,"b_review_from_img":buyer_review_det.b_review_from.avatar,"review_date":buyer_review_det.review_date,"b_review_to_username":buyer_review_det.b_review_to.username,"b_review_to_img":buyer_review_det.b_review_to.avatar})
                 else:
                     buyer_review = []
                 if(Seller_Reviews.objects.filter(s_review_from=ordered_by_user,s_review_to=ordered_to_user).exists() == True):
-                    seller_review = Seller_Reviews.objects.get(s_review_from=ordered_by_user,s_review_to=ordered_to_user)
+                    seller_review_det = Seller_Reviews.objects.get(s_review_from=ordered_by_user,s_review_to=ordered_to_user)
+                    average_list = []
+                    comm_list = []
+                    recomm_list = []
+                    serv_list = []
+                    for a in range(0,round(float(seller_review_det.average_val))):
+                        average_list.append(a)
+                    for c in range(0,round(float(seller_review_det.communication))):
+                        comm_list.append(c)
+                    for r in range(0,round(float(seller_review_det.recommendation))):
+                        recomm_list.append(r)
+                    for s in range(0,round(float(seller_review_det.service))):
+                        serv_list.append(s)
+                    seller_review.append({"review_id":seller_review_det.id,"review_message":seller_review_det.review_message,"average_val":average_list,"communication":comm_list,"recommendation":recomm_list,"service":serv_list,"seller_response":seller_review_det.seller_response,"s_review_from_username":seller_review_det.s_review_from.username,"s_review_from_img":seller_review_det.s_review_from.avatar,"review_date":seller_review_det.review_date,"s_review_to_username":seller_review_det.s_review_to.username,"s_review_to_img":seller_review_det.s_review_to.avatar})
                 else:
                     seller_review = []
-                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"buyer_review":buyer_review,"seller_review":seller_review})
+                print(buyer_review)
+                return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"seller_resp_char":seller_res_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"buyer_review":buyer_review,"seller_review":seller_review})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -2617,7 +2972,10 @@ def get_buyer_reviews_view(request):
             buyer_revs = Buyer_Reviews.objects.filter(package_gig_name=g)
             review_date = ''
             for buyer_r in buyer_revs:
-                start_date = datetime.strptime(str(buyer_r.review_date), "%Y-%m-%d %H:%M:%S")
+                try:
+                    start_date = datetime.strptime(str(buyer_r.review_date),"%Y-%m-%d %H:%M:%S").date()
+                except:
+                    start_date = datetime.strptime(str(buyer_r.review_date),"%Y-%m-%d %H:%M:%S.%f").date()
                 end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                 diff = relativedelta.relativedelta(end_date, start_date)
                 if(diff.years == 0 and diff.months == 0):
@@ -2760,7 +3118,7 @@ def daily_routine():
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
             except:
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
-            todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S').date()
+            todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             if(int(todays_date.month) == int(earned_date.month)):
                 cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
         refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
@@ -2807,9 +3165,9 @@ def every_minute():
         for earn in total_earnng:
             if(earn.clearence_date != None):
                 try:
-                    clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S").date()
+                    clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
                 except:
-	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f").date()
+	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f")
                 if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour) and int(todays_date.minute) == int(clearence_date.minute) and int(todays_date.second) == int(clearence_date.second)):
                     earn.aval_with = earn.earning_amount
                     earn.clearence_status = "cleared"
@@ -3028,9 +3386,9 @@ def every_minute():
         for res in reolution_details:
             if(res.resolution_last_date != None):
                 try:
-                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S").date()
+                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
                 except:
-                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f").date()
+                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
                 if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour) and int(todays_date.minute) == int(resolution_last_date.minute) and int(todays_date.second) == int(resolution_last_date.second)):
                     if(res.resolution_type=="cancel"):
                         res.resolution_status = 'accepted'
@@ -3210,7 +3568,7 @@ def update_all_balancevalues(username):
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         except:
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
-        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S').date()
+        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         if(int(todays_date.month) == int(earned_date.month)):
             cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
     refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
@@ -4110,49 +4468,118 @@ def post_earning_details_view(request):
         data_details = []
         if(param_type == "transactions" and parameter == 'all_t'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
                 for e_activity in order_activity:
                     activity_type = ''
                     if(e_activity.activity_type == "e_cancel"):
                         activity_type = "cancel" 
                     elif(e_activity.activity_type == "withdrawal"):
                         activity_type = "withdrawal" 
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'withdrawal'):
             for order in ord_details:
                 order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "withdrawal"))
                 for e_activity in order_activity:
                     activity_type = 'withdrawal'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
+        elif(param_type == "transactions" and parameter == 'tip'):
+            for order in ord_details:
+                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "tip"))
+                for e_activity in order_activity:
+                    activity_type = 'tip'
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'pending'):
             for order in ord_details:
                 order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "pending"))
                 for e_activity in order_activity:
                     activity_type = 'pending'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'e_cancel'):
             for order in ord_details:
                 order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "e_cancel"))
                 for e_activity in order_activity:
                     activity_type = 'e_cancel'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter =='credit'):
             for order in ord_details:
                 order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "credit"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "year"):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__year = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__year = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_order_no":order.order_no,"a_type":activity_type})
         elif(param_type == "month"):
             for order in ord_details:
                 my_date = date(2022, int(parameter), 2)
-                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__month = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__month = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
-                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_type":activity_type})
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_order_no":order.order_no,"a_type":activity_type})
         return JsonResponse(data_details,safe=False)
+    
+def post_credit_tip_details_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        s_comm = request.GET['s_comm']
+        s_serv = request.GET['s_serv']
+        s_recomm = request.GET['s_recomm']
+        s_review_txt = request.GET['s_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        return HttpResponse('sucess')
+
+
+def post_credit_tip_details_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        s_comm = request.GET['s_comm']
+        s_serv = request.GET['s_serv']
+        s_recomm = request.GET['s_recomm']
+        s_review_txt = request.GET['s_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        return HttpResponse('sucess')
+    
+def post_paypal_tip_details_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        s_comm = request.GET['s_comm']
+        s_serv = request.GET['s_serv']
+        s_recomm = request.GET['s_recomm']
+        s_review_txt = request.GET['s_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        return HttpResponse('sucess')
+    
+def post_flutter_tip_details_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        s_comm = request.GET['s_comm']
+        s_serv = request.GET['s_serv']
+        s_recomm = request.GET['s_recomm']
+        s_review_txt = request.GET['s_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        return HttpResponse('sucess')
+    
+def post_seller_response_view(request):
+    if request.method == 'GET':
+        seller_rev_id = request.GET['seller_rev_id']
+        seller_rev_response = request.GET['seller_rev_response']
+        seller_reviews = Seller_Reviews.objects.get(pk = seller_rev_id)
+        seller_reviews.seller_response = seller_rev_response
+        seller_reviews.save()
+        return HttpResponse('sucess')
+    
+def post_buyer_review_view(request):
+    if request.method == 'GET':
+        order_no = request.GET['order_no']
+        b_rating = request.GET['b_rating']
+        b_review_txt = request.GET['b_review_txt']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        orderedby_user = User.objects.get(username = ord_details.order_by.username)
+        orderedto_user = User.objects.get(username = ord_details.order_to.username)
+        gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)  
+        buyer_reviews = Buyer_Reviews(review_message=b_review_txt,rating_val=b_rating,order_no=ord_details,package_gig_name=gig_details,b_review_from=orderedto_user,b_review_to=orderedby_user)
+        buyer_reviews.save()
+        return HttpResponse('sucess')
