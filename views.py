@@ -5120,4 +5120,5 @@ def post_buyer_review_view(request):
         gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)  
         buyer_reviews = Buyer_Reviews(review_message=b_review_txt,rating_val=b_rating,order_no=ord_details,package_gig_name=gig_details,b_review_from=orderedto_user,b_review_to=orderedby_user)
         buyer_reviews.save()
+        print("123")
         return HttpResponse('sucess')
