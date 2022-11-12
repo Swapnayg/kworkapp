@@ -1,6 +1,6 @@
 from django.urls import include, path
 from . import views
-from . views import indexView,aboutView,privacyView,resolution_view,blocked_view,tips_view,flutter_thank_you_tip_view,paypal_thank_you_tip_view,credit_thank_you_tip_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
+from . views import indexView,aboutView,privacyView,resolution_view,blocked_view,tips_view,flutter_thank_you_tip_view,requirements_c_view,paypal_thank_you_tip_view,credit_thank_you_tip_view,payments_view,buyer_review_view,seller_review_view,warning_review_view,requirements_p_view,requirements_f_view,offers_view,search_gig_view,search_profile_view,manage_gigs_view,seller_manage_orders_view,earnings_view,gig_View_View,order_activities_view,buyer_request_view,buyer_manage_orders_view,seller_manage_orders_view,favourites_view,inbox_view,billing_view,post_request_view,Manage_request_view,seller_main_view,create_gig_view,menu_pageView,all_gigs_pageView,signup_view,account_settings_view,dashboard_view,buyer_dashboard_view,login_view,profile_view,partners_View,approval_process_View,buyer_protectionView,faq_View,contact_support_View,prohibited_service_View,term_serviceView,for_freelancerView,reviews_View,earn_letorkbdoneView,categoriesView,affiliate_programView
 urlpatterns  = [
 	path('', indexView.as_view(), name='index' ),
 	path('about', aboutView.as_view(), name='about' ),
@@ -58,8 +58,9 @@ urlpatterns  = [
  	path("search/<str:keyword>",search_gig_view.as_view(),name = 'profile'),
   	path("search/user/<str:keyword>",search_profile_view.as_view(),name = 'profile'),
 	path("buyer",buyer_dashboard_view.as_view(),name = 'buyer'),
- 	path("requirements/paypal/<str:offer_id>/<str:pay_id>/<str:pay_email>/<str:trans_id>/<str:pay_status>/<str:base_price>/<str:total_price>/<str:service_fee>/<str:pay_to>/<str:extra_gig>",requirements_p_view.as_view(),name = 'requirements'),
+ 	path("requirements/paypal/<str:offer_id>/<str:pay_id>/<str:pay_email>/<str:trans_id>/<str:pay_status>/<str:base_price>/<str:total_price>/<str:service_fee>/<str:pay_to>/<str:extra_gig>/<str:credits_used>",requirements_p_view.as_view(),name = 'requirements'),
   	path("requirements/flutter/<str:offer_id>/<str:base_price>/<str:total_price>/<str:service_fee>/<str:pay_to>/",requirements_f_view.as_view(),name = 'requirements'),
+ 	path("requirements/credit/<str:offer_id>/<str:base_price>/<str:total_price>/<str:fees>/<str:extra_gigs>/<str:used_credits>/<str:pay_to>/<str:pay_by>",requirements_c_view.as_view(),name = 'requirements'),
 	path("dashboard",dashboard_view.as_view(),name = 'dashboard'),
  	path("users/<str:username>/manage_requests/<str:req_id>",offers_view.as_view(),name = 'offers_view'),
 	path("account_settings",account_settings_view.as_view(),name = 'account_settings'),
@@ -119,6 +120,7 @@ urlpatterns  = [
     path("post_remove_b_offer_req/",views.post_remove_b_offer_req_view,name = 'post_remove_b_offer_req'),
     path("post_paypal_transaction/",views.post_paypal_transaction_view,name = 'post_paypal_transaction'),
     path("post_flutterwave_transaction/",views.post_flutterwave_transaction_view,name = 'post_flutterwave_transaction'),
+    path("post_credit_transaction/",views.post_credit_transaction_view,name = 'post_credit_transaction'),
     path("post_mark_as_read/",views.post_mark_as_read_view,name = 'post_mark_as_read'),
     path("post_buyer_requ_save/",views.post_buyer_requ_save_view,name = 'post_buyer_requ_save'),
     path("post_req_image_upload/",views.post_req_image_upload_view,name = 'post_req_image_upload'),

@@ -716,6 +716,7 @@ class payments_view(View):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
                 gigdetails_list = []
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
                 buyer_req_details = Buyer_Post_Request.objects.get(buyer_request_id= req_id)
                 offer_details = Request_Offers.objects.get(pk= offer_id)
                 service_fees = 0
@@ -758,7 +759,8 @@ class payments_view(View):
                         paypal_client_id = api.private_key
                     elif(api.api_name == "flutterwave"):
                         flutter_client_id = api.private_key
-                return render(request , 'Dashboard/payments.html',{"buyer_req_id":req_id,"gig_details":gigdetails_list,"base_url":base_url,"extra_gigs":extra_gigs,"flutterwave_client_id":flutter_client_id,"paypal_client_id":paypal_client_id})
+                available_credit = float(float(userDetails.avail_bal) + float(userDetails.availcredit_bal)) - float(userDetails.refund_credits_used_amount)
+                return render(request , 'Dashboard/payments.html',{"buyer_req_id":req_id,"offer_details":offer_details,"gig_details":gigdetails_list,"base_url":base_url,"extra_gigs":extra_gigs,"flutterwave_client_id":flutter_client_id,"paypal_client_id":paypal_client_id,"available_credit":available_credit})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -767,7 +769,7 @@ class payments_view(View):
     
 class requirements_p_view(View):
     return_url = None
-    def get(self , request,offer_id="",pay_id="",pay_email="",trans_id="",pay_status="",base_price=0,total_price=0,service_fee=0,pay_to='',extra_gig=''):
+    def get(self , request,offer_id="",pay_id="",pay_email="",trans_id="",pay_status="",base_price=0,total_price=0,service_fee=0,pay_to='',extra_gig='',credits_used=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
                 pay_user = User.objects.get(username = pay_to)
@@ -817,7 +819,38 @@ class requirements_f_view(View):
                             gig_req_ans_char = c.Max_No_of_char_allowed
                 else:
                     gig_id_str = 0
-                return render(request , 'Dashboard/get_requirements_flutter.html',{"offer_id":offer_id,"base_price":base_price,"total_price":total_price,"service_fee":service_fee,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_id_str,"submitted":already_submitted})
+                return render(request , 'Dashboard/get_requirements_flutter.html',{"offer_id":offer_id,"base_price":base_price,"total_price":total_price,"service_fee":service_fee,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_id_str})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
+
+
+
+class requirements_c_view(View):
+    return_url = None
+    def get(self , request,offer_id="",base_price=0,total_price=0,fees=0,extra_gigs='',used_credits='',pay_to='',pay_by=''):
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                pay_user = User.objects.get(username = pay_to)
+                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                gig_requirements = []
+                charcterlimits = []
+                gig_details = []
+                gig_req_ans_char = 0
+                gig_id_str = 0
+                if(offer_details.ask_requirements == True):
+                    gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+                    gig_id_str = int(gig_details.id)
+                    userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                    gig_requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details)
+                    charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "gig_requirements_ans"))
+                    for c in charcterlimits:
+                        if(c.Char_category_Name == "gig_requirements_ans"):
+                            gig_req_ans_char = c.Max_No_of_char_allowed
+                else:
+                    gig_id_str = 0
+                return render(request , 'Dashboard/get_requirements_credit.html',{"offer_id":offer_id,"base_price":base_price,"total_price":total_price,"service_fee":fees,"gig_requirements":gig_requirements,"req_ans_char":gig_req_ans_char,"gig_id":gig_id_str})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -925,9 +958,10 @@ class billing_view(View):
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
                 user_trans = User_Transactions.objects.filter(paid_by=userDetails)
                 category_list = []
+                bal_available = float((float(userDetails.availcredit_bal))) - float((float(userDetails.refund_credits_used_amount)))
                 for tran in user_trans:
                     category_list.append({"cat_id":tran.offer_id.gig_name.gig_sub_category.id,"cat_name":tran.offer_id.gig_name.gig_sub_category.sub_sub_category_Name})
-                return render(request , 'Dashboard/billing.html',{"avail_bal": round(float((float(userDetails.availcredit_bal))),2),"earning_bal": round(float((float(userDetails.total_earning))),2),"cancel_bal": round(float((float(userDetails.cancelled_earning))),2),"cat_lists":category_list,"balance_used":round(float((float(userDetails.refund_credits_used_amount))),2)})
+                return render(request , 'Dashboard/billing.html',{"avail_bal": round(float(bal_available),2),"earning_bal": round(float((float(userDetails.total_earning))),2),"cancel_bal": round(float((float(userDetails.cancelled_earning))),2),"cat_lists":category_list,"balance_used":round(float((float(userDetails.refund_credits_used_amount))),2)})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -972,7 +1006,7 @@ class seller_review_view(View):
                     if(c.Char_category_Name == "seller_review"):
                         seller_char = c.Max_No_of_char_allowed
                 serv_fees_val = ''
-                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Service Fees")).first()
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Buyer Fees")).first()
                 serv_fees_val = payment_parameters.service_fees
                 api_details = Api_keys.objects.filter(Q(api_name="paypal") | Q(api_name= "flutterwave"))
                 paypal_client_id = ''
@@ -1246,7 +1280,26 @@ class tips_view(View):
                     if(c.Char_category_Name == "resolution_text"):
                         res_char = c.Max_No_of_char_allowed
                 extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
-                return render(request , 'Dashboard/tips.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username})
+                previous_page = request.META.get('HTTP_REFERER')
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "seller_review"))
+                seller_char = 0
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "seller_review"):
+                        seller_char = c.Max_No_of_char_allowed
+                serv_fees_val = ''
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Buyer Fees")).first()
+                serv_fees_val = payment_parameters.service_fees
+                api_details = Api_keys.objects.filter(Q(api_name="paypal") | Q(api_name= "flutterwave"))
+                paypal_client_id = ''
+                flutter_client_id = ''
+                for api in api_details:
+                    if(api.api_name == "paypal"):
+                        paypal_client_id = api.private_key
+                    elif(api.api_name == "flutterwave"):
+                        flutter_client_id = api.private_key
+                available_credit = float(float(userDetails.avail_bal) + float(userDetails.availcredit_bal)) - float(userDetails.refund_credits_used_amount)
+                base_url = request.build_absolute_uri('/')
+                return render(request , 'Dashboard/tips.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"seller_username":ordered_to_user.username,"previous_page":previous_page,"order_no":orderid,"seller_descp_count":seller_char,"serv_fees_val":serv_fees_val,"paypal_client_id":paypal_client_id,"flutterwave_client_id":flutter_client_id,"userDetails":userDetails,"available_credit":available_credit,"order_details":order_details,"base_url":base_url})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1902,7 +1955,6 @@ class order_activities_view(View):
                     seller_review.append({"review_id":seller_review_det.id,"review_message":seller_review_det.review_message,"average_val":average_list,"communication":comm_list,"recommendation":recomm_list,"service":serv_list,"seller_response":seller_review_det.seller_response,"s_review_from_username":seller_review_det.s_review_from.username,"s_review_from_img":seller_review_det.s_review_from.avatar,"review_date":seller_review_det.review_date,"s_review_to_username":seller_review_det.s_review_to.username,"s_review_to_img":seller_review_det.s_review_to.avatar})
                 else:
                     seller_review = []
-                print(buyer_review)
                 return render(request , 'Dashboard/order_activity.html',{'req_check': requirements,"delivery":delivered,"order_by":ordered_by_user,"order_to":ordered_to_user,"requirements":requirements_lists,"conversation":conversation,"seller_gig":s_gig_list,"order_details":order_details,"delivery_status":delivery_status,"current_user":current_user,"offer_details":offer_details,"delivery_details":delivery_details_list,"message_char":message_char,"delivery_char":delivery_char,"cancel_char":cancel_char,"seller_resp_char":seller_res_char,"extra_offer":extra_offer,"buyer_user_name":buyer_user_name,"seller_user_name":seller_user_name,"conversation_id":str(conversation.id),"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"buyer_review":buyer_review,"seller_review":seller_review})
             # except:
             #     return render(request , 'register.html')
@@ -3109,10 +3161,10 @@ def daily_routine():
             if(earn.credit_used != None):
                 if(earn.credit_used != ''):
                     with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-            if(earn.aval_with != None):
-                if(len(earn.aval_with) != 0):
+            if(earn.aval_with != None and earn.clearence_status == "cleared" ):
+                if(earn.withdrawn_amount != "" and earn.credit_used != "" ):
                     avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
-            else:
+            if(earn.clearence_status == "pending" ):
                 current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
             try:
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
@@ -3559,11 +3611,11 @@ def update_all_balancevalues(username):
         if(earn.credit_used != None):
             if(earn.credit_used != ''):
                 with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-        if(earn.aval_with != None):
-            if(len(earn.aval_with) != 0):
+        if(earn.aval_with != None and earn.clearence_status == "cleared" ):
+            if(earn.withdrawn_amount != "" and earn.credit_used != "" ):
                 avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
-        else:
-            current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
+        if(earn.clearence_status == "pending" ):
+            current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)    
         try:
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         except:
@@ -3595,7 +3647,7 @@ def update_all_balancevalues(username):
     userDetails.with_credits_used_amount = with_used_credit_val
     userDetails.refund_credits_used_amount = ref_used_credit_val
     userDetails.save()
-             
+                     
 def monthly_routine():
     print("345")
     
@@ -3811,8 +3863,10 @@ def post_flutterwave_transaction_view(request):
         offers_sent = Request_Offers.objects.get(pk= u_offer_id)
         pay_to_user = User.objects.get(pk = offers_sent.user_id.id)
         gig_details = UserGigs.objects.get(gig_title = offers_sent.gig_name.gig_title)
-        payment.token = 'FLWSECK_TEST-027992a01e7b87b0522d8b2141395a30-X'
+        api_details = Api_keys.objects.filter(api_name= "flutterwave").first()
+        payment.token = api_details.secrete_key
         details = payment.get_payment_details(u_trans_id)
+        data = []        
         flu_amout = details['data']['amount']
         flu_app_fee = details['data']['app_fee']
         flu_pay_type = details['data']['payment_type']
@@ -3821,11 +3875,55 @@ def post_flutterwave_transaction_view(request):
         meta_data =  details['data']['meta']['data_extra']
         order_amount =  details['data']['meta']['base_price_wsdf']
         u_service_fees =  details['data']['meta']['token']
+        u_credit_used =  round(float(details['data']['meta']['credit_used']),2)
         u_base_price = request.GET['u_base_price']
         u_total_price = request.GET['u_total_price']
         already_submitted = 0
-        data = []
-        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user).exists() == False):
+        current_val = u_credit_used
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user,paid_for='order').exists() == False):
+            if(float(u_credit_used) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=pay_by_user,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(current_val) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(current_val),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(current_val)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(u_credit_used) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=pay_by_user, )
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
             no_of_days = int(offers_sent.offer_time)
             Begindatestring = datetime.today()
             due_date = Begindatestring + timedelta(days=no_of_days)
@@ -3846,7 +3944,7 @@ def post_flutterwave_transaction_view(request):
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
             order_activity.save()
-            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
             user_trans.save()
             order_message = Order_Message(sender=pay_by_user,receiver=pay_to_user,text = "placed the order",conversation_id=cover_detls,order_no=order_details_get,message_type="chat")
             order_message.save()
@@ -3880,13 +3978,59 @@ def post_paypal_transaction_view(request):
         u_total_price = request.GET['u_total_price']
         u_service_fees = request.GET['u_service_fees']
         u_extra_gigs = request.GET['u_extra_gigs']
+        u_credit_used = round(float(request.GET['u_credits_used']),2)
         pay_by_user = User.objects.get(pk = u_user_id)
         offers_sent = Request_Offers.objects.get(pk= u_offer_id)
         pay_to_user = User.objects.get(pk = offers_sent.user_id.id)
         gig_details = UserGigs.objects.get(gig_title = offers_sent.gig_name.gig_title)
         already_submitted = 0
         data = []
-        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user).exists() == False):
+        current_val = u_credit_used
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user,paid_for='order').exists() == False):
+            if(float(u_credit_used) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=pay_by_user,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(current_val) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(current_val),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(current_val)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(u_credit_used) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=pay_by_user, )
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
+
             no_of_days = int(offers_sent.offer_time)
             Begindatestring = datetime.today()
             due_date = Begindatestring + timedelta(days=no_of_days)
@@ -3907,7 +4051,7 @@ def post_paypal_transaction_view(request):
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
             order_activity.save()
-            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='paypal',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paypal_id=u_paypal_id,paypal_email=u_paypal_email,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get)
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='paypal',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paypal_id=u_paypal_id,paypal_email=u_paypal_email,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
             user_trans.save()
             meta_data_list = u_extra_gigs.split(",")
             for meta in meta_data_list:
@@ -3923,6 +4067,111 @@ def post_paypal_transaction_view(request):
             else:
                 already_submitted = 2
             data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        return JsonResponse(json.dumps(data),safe=False)
+
+
+
+def post_credit_transaction_view(request):
+    if request.method == 'GET':
+        u_offer_id = request.GET['offer_id']
+        u_base_price = request.GET['base_price']
+        u_total_price =  round(float(request.GET['total_price']),2)
+        u_service_fees = request.GET['fees']
+        u_extra_gigs = request.GET['extra_gigs']
+        u_user_id = request.GET['pay_user']
+        u_pay_by = request.GET['pay_by']
+        u_credit_used = round(float(request.GET['used_credits']),2)
+        pay_by_user = User.objects.get(username = u_pay_by)
+        offers_sent = Request_Offers.objects.get(pk= u_offer_id)
+        pay_to_user = User.objects.get(pk = offers_sent.user_id.id)
+        gig_details = UserGigs.objects.get(gig_title = offers_sent.gig_name.gig_title)
+        already_submitted = 0
+        data = []
+        current_val = u_credit_used
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user,paid_for='order').exists() == False):
+            if(float(u_credit_used) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=pay_by_user,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(current_val) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(current_val),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(current_val)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(u_credit_used) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=pay_by_user, )
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
+            u_trans_status = "successful"
+            s = shortuuid.ShortUUID(alphabet="0123456789")
+            u_trans_id = s.random(length=8)
+            no_of_days = int(offers_sent.offer_time)
+            Begindatestring = datetime.today()
+            due_date = Begindatestring + timedelta(days=no_of_days)
+            order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=u_base_price,due_date=due_date,completed_date=None)
+            order_details.save()
+            order_details_get = User_orders.objects.get(pk = order_details.pk)
+            if(offers_sent.ask_requirements == True):
+                already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details_get).count()
+            else:
+                already_submitted = 2
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            print(cover_detls)
+            if(cover_detls == None):
+                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                cover_detls.save()
+            cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
+            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
+            order_activity.save()
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='credit',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
+            user_trans.save()
+            meta_data_list = u_extra_gigs.split(",")
+            for meta in meta_data_list:
+                if(meta != "None"):
+                    extra_gig = UserExtra_gigs.objects.get(pk = int(meta))
+                    user_extra_gig = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= extra_gig)
+                    user_extra_gig.save()
+            data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        else:
+            order_details = User_orders.objects.get(package_gig_name= gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user)
+            if(offers_sent.ask_requirements == True):
+                already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details).count()
+            else:
+                already_submitted = 2
+            data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})                  
         return JsonResponse(json.dumps(data),safe=False)
 
 
@@ -4524,44 +4773,333 @@ def post_earning_details_view(request):
 def post_credit_tip_details_view(request):
     if request.method == 'GET':
         order_no = request.GET['order_no']
-        s_comm = request.GET['s_comm']
-        s_serv = request.GET['s_serv']
-        s_recomm = request.GET['s_recomm']
-        s_review_txt = request.GET['s_review_txt']
+        base_price = request.GET['base_price']
+        total_price = request.GET['total_price']
+        fees = request.GET['fees']
+        used_credits = request.GET['used_credits']
         ord_details = User_orders.objects.get(order_no = order_no)
+        order_to = User.objects.get(username = ord_details.order_to.username)
+        order_by = User.objects.get(username = ord_details.order_by.username)
+        refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+        current_val = float(base_price)
+        if(User_Earnings.objects.filter(order_amount= base_price,order_no=ord_details,user_id=order_to,earning_type='tip').exists() == False):
+            if(float(current_val) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(base_price) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(base_price),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(base_price)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(base_price) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=order_by)
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
+            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
+            for ext in withdrawal_ext:
+                if(ext.parameter_name == "withdrawal_clearence_days"):
+                    withdrwal_val = ext.no_of_days
+                    today_date = datetime.today()
+                    clearencedate = today_date + timedelta(days=int(withdrwal_val)) 
+            earning_val = 0
+            if(float(base_price) <=40.0):
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((int(base_price)* int(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            else:
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((float(base_price)* float(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            earning_val = float(earning_val) + (round(float(round(float(base_price),2) - service_fees_price),2)) 
+            refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
+            refund_details.save()
+            order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+            order_message.save()
+            get_message =  Order_Message.objects.get(pk = order_message.pk)
+            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+            order_ativity1.save()
+            order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+            order_ativity1.save()
+            update_all_balancevalues(order_by)
+            update_all_balancevalues(order_to)
         return HttpResponse('sucess')
 
 
-def post_credit_tip_details_view(request):
-    if request.method == 'GET':
-        order_no = request.GET['order_no']
-        s_comm = request.GET['s_comm']
-        s_serv = request.GET['s_serv']
-        s_recomm = request.GET['s_recomm']
-        s_review_txt = request.GET['s_review_txt']
-        ord_details = User_orders.objects.get(order_no = order_no)
-        return HttpResponse('sucess')
-    
-def post_paypal_tip_details_view(request):
-    if request.method == 'GET':
-        order_no = request.GET['order_no']
-        s_comm = request.GET['s_comm']
-        s_serv = request.GET['s_serv']
-        s_recomm = request.GET['s_recomm']
-        s_review_txt = request.GET['s_review_txt']
-        ord_details = User_orders.objects.get(order_no = order_no)
-        return HttpResponse('sucess')
-    
 def post_flutter_tip_details_view(request):
     if request.method == 'GET':
         order_no = request.GET['order_no']
-        s_comm = request.GET['s_comm']
-        s_serv = request.GET['s_serv']
-        s_recomm = request.GET['s_recomm']
-        s_review_txt = request.GET['s_review_txt']
+        order_to_user = request.GET['order_to_user']
+        status = request.GET['status']
+        trans_ref = request.GET['trans_ref']
+        trans_id = request.GET['trans_id']
         ord_details = User_orders.objects.get(order_no = order_no)
+        order_to = User.objects.get(username = ord_details.order_to.username)
+        order_by = User.objects.get(username = ord_details.order_by.username)
+        refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+        gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)
+        offer_details = Request_Offers.objects.get(pk = ord_details.offer_id.pk)
+        api_details = Api_keys.objects.filter(api_name= "flutterwave").first()
+        payment.token = api_details.secrete_key
+        details = payment.get_payment_details(trans_id)
+        flu_amout = details['data']['amount']
+        flu_app_fee = details['data']['app_fee']
+        flu_pay_type = details['data']['payment_type']
+        flu_accnt_id = details['data']['account_id']
+        flutt_flw_ref = details['data']['flw_ref']
+        meta_data =  details['data']['meta']['data_extra']
+        order_amount =  details['data']['meta']['base_price_wsdf']
+        u_service_fees =  details['data']['meta']['token']
+        current_val = float(meta_data)
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offer_details,paid_by=order_by,paid_to=order_to,paid_for='tip').exists() == False):
+            if(float(meta_data) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(order_amount) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(order_amount),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(order_amount)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(order_amount) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=order_by)
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
+            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days"))
+            earning_val = 0
+            if(float(order_amount) <=40.0):
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            else:
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+                earning_val = float(earning_val) + (round(float(round(float(order_amount),2) - service_fees_price),2))
+                for ext in withdrawal_ext:
+                    if(ext.parameter_name == "withdrawal_clearence_days"):
+                        withdrwal_val = ext.no_of_days
+                        today_date = datetime.today()
+                        clearencedate = today_date + timedelta(days=int(withdrwal_val))
+                refund_details = User_Earnings(order_amount=order_amount,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
+                refund_details.save()
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+                order_message.save()
+                get_message =  Order_Message.objects.get(pk = order_message.pk)
+                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+                order_ativity1.save()
+                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+                order_ativity1.save()
+                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
+                user_trans.save()
+                update_all_balancevalues(order_by)
+                update_all_balancevalues(order_to)
         return HttpResponse('sucess')
+
     
+def post_paypal_tip_details_view(request):
+    if request.method == 'GET':
+        order_to_user = request.GET['order_to_user']
+        order_no = request.GET['order_no']
+        payer_id = request.GET['payer_id']
+        payer_email = request.GET['payer_email']
+        trans_id = request.GET['trans_id']
+        trans_status = request.GET['trans_status']
+        base_price = request.GET['base_price']
+        total_price = request.GET['total_price']
+        service_fees = request.GET['service_fees']
+        used_credits = request.GET['used_credits']
+        ord_details = User_orders.objects.get(order_no = order_no)
+        order_to = User.objects.get(username = ord_details.order_to.username)
+        order_by = User.objects.get(username = ord_details.order_by.username)
+        refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+        gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)
+        offer_details = Request_Offers.objects.get(pk = ord_details.offer_id.pk)
+        current_val = float(used_credits)
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offer_details,paid_by=order_by,paid_to=order_to,paid_for='tip').exists() == False):
+            if(float(used_credits) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(base_price) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(base_price),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(base_price)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(base_price) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                    r_earn.credit_used = str(round(float(previous_credit),2))
+                                    r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    r_earn.save()
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=order_by)
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
+                                    if(float(current_val) != 0.0):
+                                        current_val1 =  float(actual_available) - float(current_val)
+                                        previous_credit = round(float(actual_available),2) + float(prev_credit)
+                                        earn.credit_used = str(round(float(previous_credit),2))
+                                        earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                        earn.save()
+                                        current_val = round(float(current_val) - float(current_val1),2)
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+            except:
+                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
+            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days"))
+            earning_val = 0
+            if(float(base_price) <=40.0):
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+            else:
+                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                for p in payment_parameters:
+                    serv_fees_val = p.service_fees
+                    serv_fees_type = p.fees_type
+                    if(serv_fees_type == "flat"):
+                        service_fees_price =  float(serv_fees_val)
+                    else:
+                        perceof_budg = float((float(base_price)* float(serv_fees_val))/100)
+                        service_fees_price = round(perceof_budg,2)
+                earning_val = float(earning_val) + (round(float(round(float(base_price),2) - service_fees_price),2))
+                for ext in withdrawal_ext:
+                    if(ext.parameter_name == "withdrawal_clearence_days"):
+                        withdrwal_val = ext.no_of_days
+                        today_date = datetime.today()
+                        clearencedate = today_date + timedelta(days=int(withdrwal_val))
+                refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
+                refund_details.save()
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+                order_message.save()
+                get_message =  Order_Message.objects.get(pk = order_message.pk)
+                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+                order_ativity1.save()
+                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+                order_ativity1.save()
+                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
+                user_trans.save()
+                update_all_balancevalues(order_by)
+                update_all_balancevalues(order_to)
+        return HttpResponse('sucess')
+
+        
 def post_seller_response_view(request):
     if request.method == 'GET':
         seller_rev_id = request.GET['seller_rev_id']

@@ -812,6 +812,7 @@ class Buyer_Reviews(models.Model):
 
 class User_Transactions(models.Model):
     BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave'),('credit', 'Credit')]
+    BOOL_CHOICES_PAID_FOR = [('order', 'Order'),('tip', 'Tip')]
     BOOL_CHOICES_Status = [('active', 'Active'),('rufunded', 'Rufunded')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=False,blank=False)
@@ -825,6 +826,7 @@ class User_Transactions(models.Model):
     processing_fees = models.CharField(max_length=300,blank=True,default="",null=True)
     total_amount = models.CharField(max_length=300,blank=True,default="",null=True)
     paypal_id = models.CharField(max_length=500,blank=True,default="",null=True)
+    credits_used = models.CharField(max_length=500,blank=True,default="",null=True)
     paypal_email = models.CharField(max_length=500,blank=True,default="",null=True)
     flutter_account_id = models.CharField(max_length=500,blank=True,default="",null=True)
     flutter_app_fee = models.CharField(max_length=500,blank=True,default="",null=True)
@@ -835,6 +837,7 @@ class User_Transactions(models.Model):
     paid_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="paid_to",null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     credit_ref_numbers = models.CharField(max_length=500,blank=True,default="",null=True)
+    paid_for = models.CharField(max_length=300,choices=BOOL_CHOICES_PAID_FOR,blank=True,default="",null=True)
     
     class Meta:
         verbose_name = _("Transaction")
@@ -985,6 +988,7 @@ class User_Earnings(models.Model):
     clearence_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
     cleared_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
     withdrawn_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
+    withdrawn_status = models.BooleanField(default=False)
     withdrawn_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="earning_user",)
     earning_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
