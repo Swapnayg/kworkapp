@@ -130,6 +130,19 @@
    {
       color: green !important;
    }
+   .breadcrumbs
+   {
+      display:none;
+   }
+   .ico-info
+   {
+      width:100%;
+   }
+   .articleDesc .attention .ico-info
+   {
+      left: 8px;
+      position: absolute;
+   }
 </style>
 <script>
    $(document).ready(function() {
@@ -199,7 +212,7 @@
          {  
             $("#main_support").empty();
             $.each(data, function(i, v) {
-               $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-name="'+v.actual_name+'" data-parent="start"><div class="article-title"><span>'+v.actual_name+'</span></div><div class="goto-childs-icon"></div></div>');
+               $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-name="'+v.slug_name+'" data-parent="start"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
             });
             $("#back_btn").attr("data-label","start");
             $("#back_btn").hide();
@@ -223,10 +236,10 @@
                $.each(data, function(i, v) {
                   if(v.has_child == 1)
                   {
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
                   }
                   else{
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
                   }
                });
                parentNamefull =  $("#back_btn").attr("data-label");
@@ -277,7 +290,7 @@
             success: function(data) 
             {  
                $("#main_support").empty();
-               $("#main_support").append('<div class="articleDesc"><div class="question d-flex align-items-center justify-content-between"><div>'+data[0].title.toString()+'</div><div class="attention ml-3"><i class="ico-info"/></div></div><div class="answer fr-view"><p id="isPasted">'+data[0].contents.toString()+'</p></div></div>');
+               $("#main_support").append('<div class="articleDesc"><div class="question d-flex align-items-center justify-content-between"><div>'+data[0].title.toString()+'</div><div class="attention ml-3"><i class="ico-info"/></div></div><div class="answer fr-view"><div id="isPasted">'+data[0].contents.toString()+'</div></div></div>');
                parentNamefull =  $("#back_btn").attr("data-label");
                if(parentName != "start")
                {
@@ -331,14 +344,15 @@
          data: {'umenuname': actName.trim()},
          success: function(data) 
          {  
+            console.log(data);
             $("#main_support").empty();
             $.each(data, function(i, v) {
                if(v.has_child == 1)
                {
-                  $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                  $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
                }
                else{
-                  $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                  $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
                }
             });
             lbl_header_val = $("#back_btn").attr("data-label").split(",");
@@ -392,6 +406,7 @@
          data: {'article_name':ev.value.trim()},
          success: function( data ) 
          {  
+            console.log(data);
             $("#suggetions").empty();
             $.each(data, function(i, v) {
                $("#suggetions").append('<div class="suggestion d-flex justify-content-start"><div class="d-inline-block" data-label="'+data[i].title.toString()+'" onclick="searchClick(this);"><span>'+data[i].title.toString()+'</span></div></div>');
@@ -409,6 +424,7 @@
          data: {'umenuname': titleval.trim()},
          success: function(data) 
          {  
+            console.log(data);
             $("#search_article_name").val("");
             $("#main_support").empty();
             $(".dropdown-suggestions").hide();

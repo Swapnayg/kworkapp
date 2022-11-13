@@ -216,7 +216,7 @@ class PageEditor(models.Model):
 
 class supportTopic(models.Model):
     support_topic_Name = models.CharField(max_length=500)
-    topic_category = models.CharField(max_length=500)
+    topic_category = models.ForeignKey('self', on_delete=models.CASCADE,related_name="supoprt_category",blank=True, null=True)
     slug = models.CharField(max_length=500,blank=True, null=True,unique=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
@@ -668,6 +668,8 @@ class Referral_Users(models.Model):
     refferal_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="referral_user",null=True,blank=True,default="")
     seller_affi_amount =  models.CharField(max_length=300,blank=True,default="",null=True)
     buyer_affi_amount =  models.CharField(max_length=300,blank=True,default="",null=True)
+    buyer_affi_done =  models.BooleanField(default=False)
+    seller_affi_done =  models.BooleanField(default=False)
     
     class Meta:
         verbose_name = _("Referral")
@@ -847,12 +849,14 @@ class User_Transactions(models.Model):
         return str(self.payment_type)
 
 class User_Order_Activity(models.Model):
-    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending'),('tip', 'tip')]
+    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending'),('cleared', 'Cleared'),('tip', 'tip'),('affiliate', 'Affiliate')]
     order_message =  models.CharField(max_length=1000,blank=True,null=True)
     order_amount =   models.CharField(max_length=200,blank=True,null=True)
     activity_date = models.DateTimeField(default=timezone.now, blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     activity_type =  models.CharField(max_length=300,choices=BOOL_CHOICES,blank=True,default="",null=True)
+    activity_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="activity_by",null=True,blank=True)
+    activity_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="activity_to",null=True,blank=True)
     
     class Meta:
         verbose_name = _("Order Activity")
@@ -861,6 +865,7 @@ class User_Order_Activity(models.Model):
     def __str__(self):
         return str(self.order_message)
     
+
 
 
 class Order_Conversation(models.Model):
@@ -1075,6 +1080,42 @@ class Order_Delivery(models.Model):
 
     def __str__(self):
         return str(self.delivery_date)
+
+class Withdrwal_initiated(models.Model):
+    BOOL_CHOICES_TYPES = [('initiated', 'Initiated'),('pending', 'Pending'),('partial', 'Partial'),('sucess', 'Sucess')]
+    withdrawal_amount =models.CharField(max_length=500,blank=True,null=True)
+    withdrawal_message =models.CharField(max_length=1000,blank=True,null=True)
+    iniated_date = models.DateTimeField(default=timezone.now, blank=True)
+    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="withdrawn_by",null=True,blank=True)
+    withdrawan_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    withdrawn_date = models.DateTimeField( blank=True,default="",null=True)
+    
+    class Meta:
+        verbose_name = _("Withdrawals")
+        verbose_name_plural = _("Withdrawals")
+
+    def __str__(self):
+        return str(self.iniated_date)
+
+class Notification_commands(models.Model):
+    notification = models.CharField(max_length=500,blank=True,null=True)
+    slug = models.CharField(max_length=300,blank=True,null=True)
+    is_active = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+
+    def __str__(self):
+        return str(self.notification)
+
+
+
+
+
+
+
 
 
 

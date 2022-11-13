@@ -28,7 +28,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,UploadFile,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 
@@ -2162,12 +2162,12 @@ def get_menus_view(request):
         umenuname = request.GET['umenuname']
         data = []
         if(umenuname == "start"):
-            menulist = list(supportTopic.objects.order_by().values_list('topic_category').distinct())
+            menulist = supportTopic.objects.filter(topic_category=None)
             for m in menulist:
-                if ''.join(map(str, m)).find("- ") == -1:
-                    data.append({"title":str(''.join(map(str, m))),"actual_name":str(''.join(map(str, m))),"has_child":1})
+                data.append({"title":str(m.support_topic_Name),"slug_name":str(m.slug),"has_child":1})
         else:
-            suport_topic = supportTopic.objects.get(support_topic_Name = umenuname)
+            
+            suport_topic = supportTopic.objects.get(slug = umenuname)
             menulist = list(supportMapping.objects.filter(suport_topic = suport_topic))
             for m in menulist:
                 child = ''
@@ -2183,7 +2183,7 @@ def get_menus_view(request):
                 else:
                     title_namelist = m.map_to.support_topic_Name.split("-")
                     title_name = title_namelist[1].strip()
-                data.append({"title":title_name,"actual_name":m.map_to.support_topic_Name,"has_child":child})
+                data.append({"title":title_name,"slug_name":m.map_to.slug,"has_child":child})
         data.sort(key=operator.itemgetter('title'))
         return JsonResponse(data,safe=False)
 
@@ -2192,15 +2192,15 @@ def get_menus_view(request):
 def get_menus_data_view(request):
     if request.method == 'GET':
         umenuname = request.GET['umenuname']
-        data = []
+        data_contents = []
         try:
-            suport_topic = supportTopic.objects.get(support_topic_Name = umenuname)
+            suport_topic = supportTopic.objects.get(slug = umenuname)
             data1 = TopicDetails.objects.filter(topic_Name = suport_topic)
             for d in data1:
-                data.append({"title":d.topic_Name.support_topic_Name,"contents":d.topic_Desc})
+                data_contents.append({"title":d.topic_Name.support_topic_Name,"contents":d.topic_Desc})
         except:
-            data = []
-        return JsonResponse(data,safe=False)
+            data_contents = []
+        return JsonResponse(data_contents,safe=False)
 
 def SendEmailAct(sendto,message,subject):
     sender_address = 'info@letworkbedone.com'
@@ -3161,8 +3161,8 @@ def daily_routine():
             if(earn.credit_used != None):
                 if(earn.credit_used != ''):
                     with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-            if(earn.aval_with != None and earn.clearence_status == "cleared" ):
-                if(earn.withdrawn_amount != "" and earn.credit_used != "" ):
+            if(earn.aval_with != None or earn.clearence_status == "cleared" ):
+                if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
                     avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
             if(earn.clearence_status == "pending" ):
                 current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
@@ -3215,16 +3215,23 @@ def every_minute():
                 UserAvailable.objects.filter(user_id=userDetails).delete()
         todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         for earn in total_earnng:
-            if(earn.clearence_date != None):
+            if(earn.clearence_date != None or earn.clearence_status == "pending" ):
                 try:
                     clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
                 except:
 	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f")
-                if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour) and int(todays_date.minute) == int(clearence_date.minute) and int(todays_date.second) == int(clearence_date.second)):
+                if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour) and int(todays_date.minute) == int(clearence_date.minute)):
                     earn.aval_with = earn.earning_amount
                     earn.clearence_status = "cleared"
                     earn.cleared_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                    earn.save()    
+                    earn.save()
+                    order_details = User_orders.objects.get(order_no= earn.order_no)
+                    order_by = User.objects.get(username = order_details.order_by.username)
+                    order_to = User.objects.get(username = order_details.order_to.username)
+                    order_activity = order_activity.objects.get(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
+                    order_activity.activity_type = "cleared"
+                    order_activity.save()
+                    update_all_balancevalues(userDetails) 
         orders_count = User_orders.objects.filter(order_to=userDetails,order_status="active" ).count()
         user_orders = User_orders.objects.filter(order_to=userDetails)
         orders_deliv_lists = []
@@ -3292,7 +3299,7 @@ def every_minute():
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
                         order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                         order_message.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel")
+                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
                         earning_val = 0
                         if(int(order_details.order_amount) <=40):
@@ -3316,7 +3323,7 @@ def every_minute():
                                     perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
                                     service_fees_price = round(perceof_budg,2)
                         earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel")
+                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity1.save()
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username)
@@ -3372,7 +3379,7 @@ def every_minute():
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
                         order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                         order_message.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel")
+                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
                         earning_val = 0
                         if(int(order_details.order_amount) <=40):
@@ -3396,7 +3403,7 @@ def every_minute():
                                     perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
                                     service_fees_price = round(perceof_budg,2)
                         earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel")
+                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity1.save()
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username)
@@ -3441,7 +3448,7 @@ def every_minute():
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
                 except:
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
-                if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour) and int(todays_date.minute) == int(resolution_last_date.minute) and int(todays_date.second) == int(resolution_last_date.second)):
+                if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour) and int(todays_date.minute) == int(resolution_last_date.minute)):
                     if(res.resolution_type=="cancel"):
                         res.resolution_status = 'accepted'
                         res.save()
@@ -3460,7 +3467,7 @@ def every_minute():
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
                         order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                         order_message.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel")
+                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
                         earning_val = 0
                         if(int(order_details.order_amount) <=40):
@@ -3484,7 +3491,7 @@ def every_minute():
                                     perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
                                     service_fees_price = round(perceof_budg,2)
                         earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel")
+                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity1.save()
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username)
@@ -3520,10 +3527,10 @@ def every_minute():
                         order_details = User_orders.objects.get(order_no = res_details.order_no)
                         order_details.due_date = next_date
                         order_details.save()   
-                        order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension")
-                        order_ativity.save()
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
+                        order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=order_by_user,activity_to=order_to_user)
+                        order_ativity.save()
                         update_all_balancevalues(order_by_user)
                         update_all_balancevalues(order_to_user)
                     elif(res.resolution_type=="delivered"):
@@ -3577,9 +3584,9 @@ def every_minute():
                         get_message =  Order_Message.objects.get(pk = order_message.pk)
                         resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
                         resolution.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed")
+                        order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
                         order_ativity.save()
-                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending")
+                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
                         order_ativity1.save()
         userDetails.ordersin_progress = orders_count
         userDetails.avg_delivery_time = average_delivery_str
@@ -3611,11 +3618,11 @@ def update_all_balancevalues(username):
         if(earn.credit_used != None):
             if(earn.credit_used != ''):
                 with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-        if(earn.aval_with != None and earn.clearence_status == "cleared" ):
-            if(earn.withdrawn_amount != "" and earn.credit_used != "" ):
+        if(earn.aval_with != None or earn.clearence_status == "cleared" ):
+            if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
                 avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
         if(earn.clearence_status == "pending" ):
-            current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)    
+            current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
         try:
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         except:
@@ -3942,7 +3949,7 @@ def post_flutterwave_transaction_view(request):
                 cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
                 cover_detls.save()
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
-            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
+            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
             user_trans.save()
@@ -3954,7 +3961,7 @@ def post_flutterwave_transaction_view(request):
                     extra_gig = UserExtra_gigs.objects.get(pk = int(meta))
                     user_extra_gig = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= extra_gig)
                     user_extra_gig.save()
-                    order_activity = User_Order_Activity(order_message="×1"+ str(extra_gig.extra_gig_title),order_amount=extra_gig.extra_gig_price,order_no = order_details_get,activity_type="active")
+                    order_activity = User_Order_Activity(order_message="×1"+ str(extra_gig.extra_gig_title),order_amount=extra_gig.extra_gig_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
                     order_activity.save()
             data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
         else:
@@ -4049,7 +4056,7 @@ def post_paypal_transaction_view(request):
                 cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
                 cover_detls.save()
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
-            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
+            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='paypal',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paypal_id=u_paypal_id,paypal_email=u_paypal_email,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
             user_trans.save()
@@ -4149,12 +4156,11 @@ def post_credit_transaction_view(request):
                 cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
             except:
                 cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-            print(cover_detls)
             if(cover_detls == None):
                 cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
                 cover_detls.save()
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
-            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active")
+            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
             user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='credit',transaction_id=u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=u_base_price,total_amount=u_total_price,processing_fees= u_service_fees,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
             user_trans.save()
@@ -4310,7 +4316,7 @@ def post_draft_object_view(request):
         get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
         orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution)
         orde_delivery.save()
-        order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered")
+        order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
         order_ativity.save()
         return HttpResponse('sucess')
     
@@ -4338,7 +4344,7 @@ def post_delivered_object_view(request):
         get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
         orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution)
         orde_delivery.save()
-        order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered")
+        order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
         order_ativity.save()
         return HttpResponse('sucess')
 
@@ -4534,8 +4540,10 @@ def post_accept_click_view(request):
         if(res_type == "extention"):
             order_details = User_orders.objects.get(order_no = res_details.order_no)
             order_details.due_date = next_date
-            order_details.save()   
-            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension")
+            order_details.save()
+            ordered_by  = User.objects.get(pk=order_details.order_to.id)
+            ordered_to  = User.objects.get(pk=order_details.order_by.id)
+            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=ordered_by,activity_to=ordered_to)
             order_ativity.save()
             order_by_user = User.objects.get(username= order_details.order_by.username)
             order_to_user = User.objects.get(username= order_details.order_to.username)
@@ -4557,7 +4565,7 @@ def post_accept_click_view(request):
                 cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
             order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
             order_message.save()
-            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel")
+            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
             order_ativity.save()
             earning_val = 0
             if(int(order_details.order_amount) <=40):
@@ -4581,7 +4589,7 @@ def post_accept_click_view(request):
                         perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
                         service_fees_price = round(perceof_budg,2)
             earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel")
+            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
             order_ativity1.save()
             order_by =  User.objects.get(username= order_details.order_by.username)   
             order_to =  User.objects.get(username= order_details.order_to.username)
@@ -4636,6 +4644,7 @@ def post_accept_click_view(request):
                         service_fees_price = round(perceof_budg,2)
             earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
             withdrwal_val = 0
+            buyer_refferal = None
             withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
             for ext in withdrawal_ext:
                 if(ext.parameter_name == "withdrawal_clearence_days"):
@@ -4645,8 +4654,48 @@ def post_accept_click_view(request):
             order_details.order_status = 'completed'
             order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             order_details.save()
+            offer_details = Request_Offers.objects.get(pk = order_details.pk)
             order_by =  User.objects.get(username= order_details.order_by.username)   
-            order_to =  User.objects.get(username= order_details.order_to.username) 
+            order_to =  User.objects.get(username= order_details.order_to.username)
+            try:
+                buyer_refferal = Referral_Users.objects.get(user_id =order_by)
+            except:
+                buyer_refferal = None
+            if(buyer_refferal != None):
+                affiliate_amount = 0
+                if(buyer_refferal.buyer_affi_done == False):
+                    if(float(order_details.order_amount) > 40):
+                        affiliate_amount = 5
+                        earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=order_by)
+                        refund_details.save()
+                        order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=order_by,activity_to=refferal_user)
+                        order_ativity.save()
+                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=order_by,activity_to=refferal_user)
+                        order_ativity1.save()
+                    refferal_user = User.objects.get(user_id =buyer_refferal.refferal_user)
+                    refferal_user.buyer_affi_amount = affiliate_amount
+                    buyer_refferal.buyer_affi_done = True
+                    buyer_refferal.save()
+            seller_refferal = None
+            try:
+                seller_refferal = Referral_Users.objects.get(user_id =order_to)
+            except:
+                seller_refferal = None
+            if(seller_refferal != None):
+                s_affiliate_amount = 0
+                if(seller_refferal.seller_affi_done == False):
+                    if(float(order_details.order_amount) > 40):
+                        affiliate_amount = 5
+                        earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=order_by)
+                        refund_details.save()
+                        order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=order_by,activity_to=refferal_user)
+                        order_ativity.save()
+                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=order_by,activity_to=refferal_user)
+                        order_ativity1.save()
+                    refferal_user = User.objects.get(user_id =seller_refferal.refferal_user)
+                    refferal_user.seller_affi_amount = affiliate_amount
+                    seller_refferal.seller_affi_done = True
+                    seller_refferal.save()
             order_to.last_delivery= str(datetime.today().strftime('%d-%m-%Y'))
             order_to.save()
             try:    
@@ -4654,15 +4703,15 @@ def post_accept_click_view(request):
             except:
                 cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
             earnings_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
-            refund_details.save()
+            earnings_details.save()
             order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity")
             order_message.save()
             get_message =  Order_Message.objects.get(pk = order_message.pk)
             resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
             resolution.save()
-            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed")
+            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
             order_ativity.save()
-            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending")
+            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
             order_ativity1.save()
         return HttpResponse('sucess')
     
@@ -4717,7 +4766,7 @@ def post_earning_details_view(request):
         data_details = []
         if(param_type == "transactions" and parameter == 'all_t'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip") | Q(activity_type= "affiliate"))
                 for e_activity in order_activity:
                     activity_type = ''
                     if(e_activity.activity_type == "e_cancel"):
@@ -4727,44 +4776,50 @@ def post_earning_details_view(request):
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'withdrawal'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "withdrawal"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "withdrawal"))
                 for e_activity in order_activity:
                     activity_type = 'withdrawal'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'tip'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "tip"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "tip"))
                 for e_activity in order_activity:
                     activity_type = 'tip'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'pending'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "pending"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "pending"))
                 for e_activity in order_activity:
                     activity_type = 'pending'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter == 'e_cancel'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "e_cancel"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "e_cancel"))
                 for e_activity in order_activity:
                     activity_type = 'e_cancel'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "transactions" and parameter =='credit'):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order).filter(Q(activity_type= "credit"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "credit"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
+        elif(param_type == "transactions" and parameter =='affiliate'):
+            for order in ord_details:
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details).filter(Q(activity_type= "affiliate"))
+                for e_activity in order_activity:
+                    activity_type = 'affiliate'
+                    data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_order_no":order.order_no,"a_amount":e_activity.order_amount,"a_type":activity_type})
         elif(param_type == "year"):
             for order in ord_details:
-                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__year = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details,activity_date__year = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip")| Q(activity_type= "affiliate"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_order_no":order.order_no,"a_type":activity_type})
         elif(param_type == "month"):
             for order in ord_details:
                 my_date = date(2022, int(parameter), 2)
-                order_activity = User_Order_Activity.objects.filter(order_no=order,activity_date__month = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip"))
+                order_activity = User_Order_Activity.objects.filter(order_no=order, activity_to=user_details,activity_date__month = int(parameter)).filter(Q(activity_type="e_cancel") | Q(activity_type= "withdrawal") | Q(activity_type= "credit") | Q(activity_type= "pending") | Q(activity_type= "tip")| Q(activity_type= "affiliate"))
                 for e_activity in order_activity:
                     activity_type = 'credit'
                     data_details.append({"a_date":e_activity.activity_date,"a_message":e_activity.order_message,"a_amount":e_activity.order_amount,"a_order_no":order.order_no,"a_type":activity_type})
@@ -4863,9 +4918,9 @@ def post_credit_tip_details_view(request):
             order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
             order_message.save()
             get_message =  Order_Message.objects.get(pk = order_message.pk)
-            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
             order_ativity1.save()
-            order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+            order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
             order_ativity1.save()
             update_all_balancevalues(order_by)
             update_all_balancevalues(order_to)
@@ -4978,9 +5033,9 @@ def post_flutter_tip_details_view(request):
                 order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
-                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
-                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
                 user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
                 user_trans.save()
@@ -5089,9 +5144,9 @@ def post_paypal_tip_details_view(request):
                 order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
-                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending")
+                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
-                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip")
+                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
                 user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
                 user_trans.save()

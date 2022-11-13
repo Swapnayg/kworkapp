@@ -48,7 +48,7 @@
             <h1 class="articles-title mt-5 mb-4">Frequently Asked Questions</h1>
             <div class="tree tree-1 container-fluid" id="main_topics">
                <div class="row no-gutters">
-                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Orders" data-parent="start">
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="orders" data-parent="start">
                        <div class="question-wrapper">
                            <div class="article-icon article-icon-327"></div>
                            <div class="question">
@@ -57,7 +57,7 @@
                        </div>
                      <div class="goto-childs-icon hidden"></div>
                    </div>
-                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Letworkbedone" data-parent="start">
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="letworkbedone" data-parent="start">
                        <div class="question-wrapper">
                            <div class="article-icon article-icon-329"></div>
                            <div class="question">
@@ -66,7 +66,7 @@
                        </div>
                      <div class="goto-childs-icon hidden"></div>
                    </div>
-                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="Account & Profile" data-parent="start">
+                   <div class="col-6 col-md-4" onclick="articleHeader(this);" data-name="account_profile" data-parent="start">
                        <div class="question-wrapper" >
                            <div class="article-icon article-icon-330"></div>
                            <div class="question">
@@ -75,7 +75,7 @@
                        </div>
                      <div class="goto-childs-icon hidden"></div>
                    </div>
-                   <div class="col-6 col-md-4 offset-md-2" onclick="articleHeader(this);" data-name="Payments" data-parent="start">
+                   <div class="col-6 col-md-4 offset-md-2" onclick="articleHeader(this);" data-name="payments" data-parent="start">
                        <div class="question-wrapper">
                            <div class="article-icon article-icon-331"></div>
                            <div class="question">
@@ -84,7 +84,7 @@
                        </div>
                      <div class="goto-childs-icon hidden"></div>
                    </div>
-                   <div class="col-6 col-md-4 offset-3 offset-md-0" onclick="articleHeader(this);" data-name="Affiliate Program" data-parent="start">
+                   <div class="col-6 col-md-4 offset-3 offset-md-0" onclick="articleHeader(this);" data-name="affiliate_program" data-parent="start">
                        <div class="question-wrapper">
                            <div class="article-icon article-icon-332"></div>
                            <div class="question">
@@ -180,6 +180,19 @@
    {
       color: green !important;
    }
+   .breadcrumbs
+   {
+      display:none;
+   }
+   .ico-info
+   {
+      width:100%;
+   }
+   .articleDesc .attention .ico-info
+   {
+      left: 8px;
+      position: absolute;
+   }
 </style>
 <script>
    $(document).ready(function() {
@@ -264,10 +277,10 @@
                $.each(data, function(i, v) {
                   if(v.has_child == 1)
                   {
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
                   }
                   else{
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
                   }
                });
                parentNamefull =  $("#back_btn").attr("data-label");
@@ -383,10 +396,10 @@
                $.each(data, function(i, v) {
                   if(v.has_child == 1)
                   {
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div><div class="goto-childs-icon"></div></div>');
                   }
                   else{
-                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.actual_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
+                     $("#main_support").append('<div class="article-header" onclick="articleHeader(this);" data-label="'+$(ev).text()+'" data-name="'+v.slug_name+'" data-parent="'+actName.trim()+'"><div class="article-title"><span>'+v.title+'</span></div></div>');
                   }
                });
             }

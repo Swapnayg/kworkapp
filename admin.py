@@ -11,7 +11,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,UploadFile,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -44,7 +44,88 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'username', 'name')
     ordering = ('email',)
     filter_horizontal = ()
-    
+
+def get_app_list(self, request):
+    """
+    Return a sorted list of all the installed apps that have been
+    registered in this site.
+    """
+    # Retrieve the original list
+    app_dict = self._build_app_dict(request)
+    app_list = sorted(app_dict.values(), key=lambda x: x['name'].lower())
+
+    # Sort the models customably within each app.
+    for app in app_list:
+        if app['app_label'] == 'kworkapp':
+            ordering = {
+                'Users': 1,
+                'Page Editor': 2,
+                'User_Earnings': 3,
+                'User_Refund': 4,
+                'Seller Levels':5,
+                'Support Topics':6,
+                'Support Mapping':7,
+                'Contacts':8,
+                'Topic Details':9,
+                'Learning Topics':10,
+                'Category Packages':11,
+                'Add On Gig Params':12,
+                'Orders':13,
+                'Order Activities':14,
+                'Chat Words':15,
+                'Upload files':16,
+                'Order Refunds':17,
+                'Order Earnings':18,
+                'Order Resolution Center':19,
+                'Seller Reviews':20,
+                'Buyer Reviews':21,
+                'Category Extra Services':22,
+                'Gig Favourites':23,
+                'User Warnings':24,
+                'Spam Detections ':25,
+                'Learning Topic Details':26,
+                'Order Conversations':27,
+                'Conversations':28,
+                'Messages':29,
+                'Message Response Analysys':30,
+                'Order Extra Offer':31,
+                'Order Delivery':32,
+                'Order Messages':33,
+                'Learning Topic Counts':34,
+                'Categories':35,
+                'Sub Categories':36,
+                'Main Menus':37,
+                'Character Limits':38,
+                'User Profile':39,
+                'Languages':40,
+                'User Languages':41,
+                'User Search Terms':42,
+                'Gig Details':43,
+                'Gig Impressions':44,
+                'User Available':45,
+                'Post Requests':46,
+                'Gig Packages':47,
+                'Gig Package Extra':48,
+                'Buyer Requirements':49,
+                'Request Offers':50,
+                'Gig Extra Delivery':51,
+                'Extra Gigs':51,
+                'Gig Faqs':52,
+                'Gig Images':53,
+                'Gig Requirements':54,
+                'Gig Tags':55,
+                'Referrals':56,
+                'Api Keys':57,
+                'Add On Parameters':58,
+                'Transactions':60,
+                'Payment Parameters':59
+            }
+            app['models'].sort(key=lambda x: ordering[x['name']])
+
+    return app_list
+
+admin.AdminSite.get_app_list = get_app_list
+
 @receiver(post_save, sender=User)
 def add_user(sender, **kwargs):
     if kwargs['created']: 
@@ -89,9 +170,20 @@ class AdminSellerLevels(admin.ModelAdmin):
 admin.site.register(SellerLevels, AdminSellerLevels)
 
 class AdminsupportTopic(admin.ModelAdmin):
-    list_display = ['support_topic_Name','topic_category','timestamp']
+    list_display = ['support_topic_Name','topic_category','timestamp','slug']
 
 admin.site.register(supportTopic, AdminsupportTopic)
+
+
+class AdminWithdrwal_initiated(admin.ModelAdmin):
+    list_display = ['withdrawal_amount','withdrawal_message','iniated_date','order_no','user_id','withdrawan_status','withdrawn_date']
+
+admin.site.register(Withdrwal_initiated, AdminWithdrwal_initiated)
+
+class AdminNotification_commands(admin.ModelAdmin):
+    list_display = ['notification','slug','is_active']
+
+admin.site.register(Notification_commands, AdminNotification_commands)
 
 class AdminsupportMapping(admin.ModelAdmin):
     list_display = ['suport_topic','map_to','timestamp']
@@ -134,7 +226,7 @@ admin.site.register(User_orders, AdminUser_orders)
 
 
 class AdminUser_Order_Activity(admin.ModelAdmin):
-    list_display = ['order_message','order_amount','activity_date','order_no','activity_type']
+    list_display = ['order_message','order_amount','activity_date','order_no','activity_type','activity_by','activity_to']
 
 admin.site.register(User_Order_Activity, AdminUser_Order_Activity)
 
@@ -408,7 +500,7 @@ class AdminUserGigsTags(admin.ModelAdmin):
 admin.site.register(UserGigsTags, AdminUserGigsTags)
 
 class AdminReferral_Users(admin.ModelAdmin):
-    list_display = ['affiliate_code','ip_address','user_id','refferal_user','seller_affi_amount','buyer_affi_amount']
+    list_display = ['affiliate_code','ip_address','user_id','refferal_user','seller_affi_amount','buyer_affi_amount','buyer_affi_done','seller_affi_done']
 
 admin.site.register(Referral_Users, AdminReferral_Users)
 
