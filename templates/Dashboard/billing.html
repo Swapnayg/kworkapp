@@ -16,6 +16,7 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li><a href="#billinghistorytab" role="tab" class="active" data-toggle="tab">Billing History </a></li>
                         <li><a href="#balancestab" role="tab" data-toggle="tab">Balances </a></li>
+                        <li><a href="#withdrawntab" role="tab" data-toggle="tab">Withdrawal Transactions </a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="billinghistorytab">
@@ -213,6 +214,39 @@
                                    </div>
                                 </div>
                         </div>
+
+                        <div class="tab-pane" id="withdrawntab">
+                            <h4 class="m-t-40 m-b-40">Withdrawal Transactions</h4>
+                            <div class="table-main">
+                               <div class="table-body table-body-border">
+                                  <table class="table table-selectable" id="tbl_withdrawa">
+                                     <thead class="table-thead">
+                                        <tr class="table-tr">
+                                           <th class="table-th table-col" colspan="3">Date</th>
+                                           <th class="table-th table-col table-hide-sm" colspan="4">Amount</th>
+                                           <th class="table-th table-col table-hide-md" colspan="5">Message</th>
+                                           <th class="table-th table-col table-hide-md" colspan="3">Status</th>
+                                           <th class="table-th table-col table-hide-md" colspan="3">Cleared On</th>
+                                           <th class="table-th table-col table-hide-sm table-align-right" colspan="2">Currency</th>
+                                        </tr>
+                                     </thead>
+                                     <tbody class="table-tbody">
+                                        {% for list in withdrawal_list %}
+                                            <tr class="table-tr"> 
+                                                <td class="table-td" colspan="3">{{list.initiated_date| date:"M d, Y" }}</td>
+                                                <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc"></p> {{list.withdrawal_amount|floatformat:2}}</td>
+                                                <td class="table-td table-hide-md" colspan="5"> {{list.withdrawal_message|title}}</td> 
+                                                <td class="table-td table-hide-md" colspan="3"> {{list.withdrawan_status|upper}} </td> 
+                                                <td class="table-td table-hide-md" colspan="3"> {{list.withdrawn_date| date:"M d, Y" }} </td> 
+                                                <td class="table-td table-hide-md" colspan="2"> USD </td> 
+                                            </tr>
+                                        {% endfor %}
+                                     </tbody>
+                                  </table>
+                               </div>
+                              
+                            </div>
+                    </div>
                     </div>
                 </div>     
              </div>
@@ -402,7 +436,7 @@
     .table-menubar-filter-wrapper {
         margin-right: 16px;
     }
-    #billinghistorytab .m-b-40,#balancestab .m-b-40
+    #billinghistorytab .m-b-40,#balancestab .m-b-40,#withdrawntab .m-b-40
     {
         text-align: left;
         font-size: 20px;
@@ -899,6 +933,9 @@
     #date_select
     {
         color:black;
+    }
+    .nav-tabs li:last-child{
+        width:25%;
     }
 
 </style>

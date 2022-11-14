@@ -961,7 +961,8 @@ class billing_view(View):
                 bal_available = float((float(userDetails.availcredit_bal))) - float((float(userDetails.refund_credits_used_amount)))
                 for tran in user_trans:
                     category_list.append({"cat_id":tran.offer_id.gig_name.gig_sub_category.id,"cat_name":tran.offer_id.gig_name.gig_sub_category.sub_sub_category_Name})
-                return render(request , 'Dashboard/billing.html',{"avail_bal": round(float(bal_available),2),"earning_bal": round(float((float(userDetails.total_earning))),2),"cancel_bal": round(float((float(userDetails.cancelled_earning))),2),"cat_lists":category_list,"balance_used":round(float((float(userDetails.refund_credits_used_amount))),2)})
+                all_withdrawals = Withdrwal_initiated.objects.filter(user_id = userDetails)
+                return render(request , 'Dashboard/billing.html',{"avail_bal": round(float(bal_available),2),"earning_bal": round(float((float(userDetails.total_earning))),2),"cancel_bal": round(float((float(userDetails.cancelled_earning))),2),"cat_lists":category_list,"balance_used":round(float((float(userDetails.refund_credits_used_amount))),2),"withdrawal_list":all_withdrawals})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1757,7 +1758,18 @@ class earnings_view(View):
                 prev_year = int(current_year)-1
                 number_of_years.append({"year":prev_year})
                 number_of_years.append({"year":current_year})
-                return render(request , 'Dashboard/earnings.html',{"user_details":userDetails,"earning_val":earning_val,"number_of_years":number_of_years})
+                mini_withdrawal = 0
+                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_withdrawal_limit") )
+                for ext in resolution_ext:
+                    if(ext.parameter_name == "min_withdrawal_limit"):
+                        mini_withdrawal = ext.no_of_days
+                already_iniated = ""
+                initiate_count = Withdrwal_initiated.objects.filter(user_id=userDetails).exclude(Q(withdrawan_status="sucess")).count()
+                if(initiate_count > 0):
+                    already_iniated = "yes"
+                else:
+                    already_iniated = "no"
+                return render(request , 'Dashboard/earnings.html',{"user_details":userDetails,"earning_val":earning_val,"number_of_years":number_of_years,"mini_withdrawal":round(float(mini_withdrawal),2),"avail_withdrawal":round(float(userDetails.avail_bal),2),"already_initiated":already_iniated})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -3134,10 +3146,6 @@ def daily_routine():
     all_users = []
     all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
     for us in all_users:
-        userDetails = User.objects.get(username = us.username)
-        seller_object = SellerLevels.objects.get(level_name= us.seller_level)
-        userDetails.offers_left = seller_object.No_of_offers
-        userDetails.save()
         total_earning_val = 0
         current_earning_val = 0
         cancelled_earning_val = 0
@@ -3164,8 +3172,8 @@ def daily_routine():
             if(earn.aval_with != None or earn.clearence_status == "cleared" ):
                 if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
                     avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
-            if(earn.clearence_status == "pending" ):
-                current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
+                if(earn.clearence_status == "pending" ):
+                    current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
             try:
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
             except:
@@ -3228,9 +3236,14 @@ def every_minute():
                     order_details = User_orders.objects.get(order_no= earn.order_no)
                     order_by = User.objects.get(username = order_details.order_by.username)
                     order_to = User.objects.get(username = order_details.order_to.username)
-                    order_activity = order_activity.objects.get(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                    order_activity.activity_type = "cleared"
-                    order_activity.save()
+                    try:
+                        earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    order_activity = User_Order_Activity.objects.filter(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to,activity_date__year=earned_date.year,activity_date__month=earned_date.month, activity_date__day=earned_date.day)
+                    for order_ac in order_activity:
+                        order_ac.activity_type = "cleared"
+                        order_ac.save()
                     update_all_balancevalues(userDetails) 
         orders_count = User_orders.objects.filter(order_to=userDetails,order_status="active" ).count()
         user_orders = User_orders.objects.filter(order_to=userDetails)
@@ -4305,7 +4318,7 @@ def post_draft_object_view(request):
         order_message.save()
         resolution_interval_gap = 2
         get_message =  Order_Message.objects.get(pk = order_message.pk)
-        resolution_ext = Addon_Parameters.objects.filter(Q(Char_category_Name="resolution_days") )
+        resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="resolution_days") )
         for ext in resolution_ext:
             if(ext.parameter_name == "resolution_days"):
                 resolution_interval_gap = ext.no_of_days
@@ -5176,3 +5189,17 @@ def post_buyer_review_view(request):
         buyer_reviews = Buyer_Reviews(review_message=b_review_txt,rating_val=b_rating,order_no=ord_details,package_gig_name=gig_details,b_review_from=orderedto_user,b_review_to=orderedby_user)
         buyer_reviews.save()
         return HttpResponse('sucess')
+    
+    
+def post_initiate_withdrawl_view(request):
+    if request.method == 'GET':
+        username = request.GET['username']
+        available_balance = request.GET['available_balance'] 
+        userDetails = User.objects.get(username = username)
+        withdrawal_initiated = Withdrwal_initiated(withdrawal_amount=round(float(available_balance),2),user_id= userDetails,withdrawan_status="initiated",withdrawn_date=None)
+        withdrawal_initiated.save()
+        return HttpResponse('sucess')
+    
+    
+
+

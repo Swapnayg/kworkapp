@@ -159,22 +159,18 @@
                   </div>
                </div>
             </div>
-
-            <div class="sync-workspace-intro-popover js-sync-workspace-intro-popover hidden">
-               <a href="#" class="sync-to-workspace js-revenues-sync-to-workspace">
-               </a>
-               <header><a href="#" class="sync-to-workspace js-revenues-sync-to-workspace">
-                  </a><a href="#" class="btn-close js-btn-close">×</a>
-               </header>
-               <div class="popup-content">
-                  <div class="new-badge">NEW</div>
-                  <h2 class="tbody-2 co-grey-1200 m-b-12">Get the full picture</h2>
-                  <p class="tbody-4 co-gray-1100">Track your business performance in one place—from your Letworkbedone earnings to invoices to your offline income.</p>
-                  <div class="intro-img"></div>
-               </div>
+            <div class="withdrawal_button">
+               {% if mini_withdrawal < avail_withdrawal %}
+                  {% if already_initiated == "no" %}
+                     <a  class="withdrawal_btn" id="withdrawal_btn" onclick="withdrawal_click();"><i class="fa fa-paypal" aria-hidden="true"></i> Withdraw Now</a>
+                  {% else %}
+                     <a  class="withdrawal_btn" id="withdrawal_btn" onclick="withdrawal_click();" disabled="yes" title = "You already initiated an withdrawal request."><i class="fa fa-paypal" aria-hidden="true"></i> Withdraw Now</a>
+                  {% endif %}
+               {% endif %}
+               <a  class="csv-export js-revenues-csv-export" id="export_csv">Export to CSV</a>
             </div>
-            <a  class="csv-export js-revenues-csv-export" id="export_csv">Export to CSV</a>
-            <div class="csv-export-notif hidden"></div>
+           
+
          </div>
          <div class="db-new-main-table js-db-table">
             <table id="reports_table">
@@ -193,8 +189,46 @@
       </article>
    </div>
 </div>
+
+
+
 {% include  'Dashboard/base_seller.html' %}
 <script src="{% static 'assets/js/csvExport.js' %}"></script>
+
+<div class="modal" id="modal_withdrawal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+           <h1></h1>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       </div>
+       <div class="modal-body">
+         <div class="row tab1" id="publish_social_div">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-10">
+               <div class="">
+                  <div class="share-text">
+                   <h2 class="sharing-title">Withdrawal Confirmation</h2>
+                   <div class="sharing-description"><p>Are you sure you want to withdraw your earnings?</p></div>
+                  </div>                
+               </div>
+            </div>
+            <div class="col-lg-1">   
+         </div>
+       </div>
+       <div class="row tab1" >
+         <div class="col-lg-6">
+         </div>
+         <div class="col-lg-6">
+            <div class="buttons-containers flex-end">
+               <button class="ORLWF8p _7pUBXz- co-green-700 YxOH7gm bg-co-white" id="btn_cancel" data-dismiss="modal" aria-label="Close">Cancel</button>
+               <button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" id="btn_confirm_submit" onclick="initiate_withdrawal();">Confirm</button></div>   
+      </div>
+     </div>
+   </div>
+ </div>
+</div>
 <style>
     #manage_earning
     {
@@ -348,6 +382,10 @@
 .earnings-package .withdraw-buttons-list .withdraw-button.disabled {
     border-color: #c5c6c9;
     color: #b5b6ba;
+}
+.money-out
+{
+   color:red;
 }
 .earnings-package .withdraw-buttons-list .withdraw-button {
     background: #fff;
@@ -555,6 +593,97 @@ table {
 .db-new-main-table table td.ellipsis-wrap .ellipsis a {
     color: #555;
 }
+.order_no
+{
+   color:green;
+}
+.withdrawal_button
+{
+   float:right;
+   position: relative;
+   width: 25%;
+}
+.withdrawal_btn:hover{
+   text-decoration: none;
+   color: #0070BA;
+}
+.withdrawal_btn
+{
+   color: #0070BA;
+    text-decoration: none;
+    text-align: center;
+    border: 1px #b2b2b2 solid;
+    position: absolute;
+    left: 0px;
+    right: 106px;
+    top: 0px;
+    line-height: 30px;
+    cursor:pointer;
+}
+.withdrawal_btn .fa{
+   margin-right: 3%;
+   color:#0070BA;
+}
+#publish_social_div .sharing-description
+{
+   color: green;
+   margin-top: 4%;
+}
+
+.custom-order-package .budget-wrapper button {
+   background-color: transparent;
+   padding-top: 8px;
+   display: block;
+   color: #2E5DC5;
+   border: none;
+   font-size: 12px;
+   padding: 2%;
+   display: inline-block;
+   font-size: 17px;
+}
+.buttons-containers 
+{
+   display:flex;
+   margin-bottom:10%;
+   margin-top:8%;
+}
+.buttons-containers button:hover,.buttons-containers button:focus{
+   outline:none;
+}
+.buttons-containers button{
+   margin-right: 6%;
+   height: 35px;
+   line-height: 30px;
+   width: 50%;
+   border:none;
+   font-weight:600;
+}
+.buttons-containers .co-green-700
+{
+   color:#2E5DC5;
+   border:1px solid #2E5DC5;
+   border-radius:3px;
+   background:white;
+}
+
+.buttons-containers .bg-co-green-700
+{
+   color:white;
+   border-radius:3px;
+   border:1px solid #2E5DC5;
+   background:#2E5DC5
+}
+.modal-header .close:hover, .modal-header .close:focus
+{
+   outline:none;
+}
+
+#withdrawal_btn:disabled,
+#withdrawal_btn[disabled]{
+   cursor:not-allowed;
+   pointer:none;
+}
+
 </style>
 
 <script>
@@ -595,10 +724,10 @@ table {
             $("#reports_table tbody").empty();
             $.each(data, function(i, v) {
                if(v.a_type=="cancel"){
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td><td class="amount"> <span class="money-out"> <span>#'+v.a_order_no+' </span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' </span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td><td class="amount"> <span class="order_no"> <span>#'+v.a_order_no+' </span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' </span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
                }
                else{
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="amount"> <span class="money-out"> <span>#'+v.a_order_no+'</span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td><td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+'</span> </div> </td> <td class="amount"> <span class="money-out"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
+                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="amount"> <span class="order_no"> <span>#'+v.a_order_no+'</span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td><td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+'</span> </div> </td> <td class="amount"> <span class="money-in"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
                }
                
             });
@@ -616,6 +745,26 @@ table {
    function year_click(ev)
    {
       refresh_table(ev,'year');
+   }
+   function withdrawal_click(ev)
+   {
+      $("#modal_withdrawal").modal('show');
+   }
+
+
+   function initiate_withdrawal()
+   {
+      $.ajax({
+         type:"GET",
+         url: "/post_initiate_withdrawl/",
+         data: {'username': '{{request.user.username}}',"available_balance":'{{avail_withdrawal}}'},
+         success: function(data)
+         {  
+            $("#modal_withdrawal").modal('hide');
+            $("#withdrawal_btn").attr("disabled","disabled");
+            location.reload();
+         }
+      });
    }
 </script>
 {% endblock %}

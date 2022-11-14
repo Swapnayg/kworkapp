@@ -717,7 +717,7 @@ class Payment_Parameters(models.Model):
 
 class Addon_Parameters(models.Model):
     parameter_name =   models.CharField(max_length=200,blank=True,null=True)
-    no_of_days = models.CharField(max_length=500,blank=True,default="",null=True)
+    no_of_days = models.CharField(max_length=500,blank=True,default="",verbose_name="Value",null=True,)
     
     class Meta:
         verbose_name = _("Add On Parameter")
@@ -962,7 +962,7 @@ class User_Order_Resolution(models.Model):
 class User_Refund(models.Model):
     BOOL_CHOICES_STATUS = [('cancelled', 'Cancelled'),('refunded', 'Refunded')]
     refund_amount = models.CharField(max_length=500,blank=True,default="",null=True)
-    credit_used = models.CharField(max_length=500,blank=True,default="",null=True)
+    credit_used = models.CharField(max_length=500,blank=True,default=None,null=True)
     used_on = models.DateTimeField(default=timezone.now, blank=True)
     used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     refund_date = models.DateTimeField(default=timezone.now, blank=True)
@@ -980,12 +980,12 @@ class User_Refund(models.Model):
         return str(self.refund_amount)
 
 class User_Earnings(models.Model):
-    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending'),('cancelled', 'Cancelled')]
+    BOOL_CHOICES_STATUS = [('cleared', 'Cleared'),('pending', 'Pending'),('cancelled', 'Cancelled'),('completed', 'Completed')]
     BOOL_CHOICES_TYPES = [('order', 'Order'),('affiliate', 'Affiliate'),('tip', 'Tip'),('cancelled', 'Cancelled')]
     order_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     earning_amount = models.CharField(max_length=500,blank=True,default="",null=True)
     platform_fees = models.CharField(max_length=500,blank=True,default="",null=True)
-    aval_with = models.CharField(max_length=500,blank=True,default="",null=True)
+    aval_with = models.CharField(max_length=500,blank=True,default=None,null=True)
     earning_date = models.DateTimeField(default=timezone.now, blank=True)
     resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
@@ -994,11 +994,11 @@ class User_Earnings(models.Model):
     cleared_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
     withdrawn_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
     withdrawn_status = models.BooleanField(default=False)
-    withdrawn_amount = models.CharField(max_length=500,blank=True,default="",null=True)
+    withdrawn_amount = models.CharField(max_length=500,blank=True,default=None,null=True)
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="earning_user",)
     earning_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     affiliate_user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="affiliate_user",)
-    credit_used = models.CharField(max_length=500,blank=True,default="",null=True)
+    credit_used = models.CharField(max_length=500,blank=True,default=None,null=True)
     used_on = models.DateTimeField(default=timezone.now, blank=True)
     used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     
@@ -1085,8 +1085,7 @@ class Withdrwal_initiated(models.Model):
     BOOL_CHOICES_TYPES = [('initiated', 'Initiated'),('pending', 'Pending'),('partial', 'Partial'),('sucess', 'Sucess')]
     withdrawal_amount =models.CharField(max_length=500,blank=True,null=True)
     withdrawal_message =models.CharField(max_length=1000,blank=True,null=True)
-    iniated_date = models.DateTimeField(default=timezone.now, blank=True)
-    order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
+    initiated_date = models.DateTimeField(default=timezone.now, blank=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="withdrawn_by",null=True,blank=True)
     withdrawan_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     withdrawn_date = models.DateTimeField( blank=True,default="",null=True)
@@ -1096,7 +1095,7 @@ class Withdrwal_initiated(models.Model):
         verbose_name_plural = _("Withdrawals")
 
     def __str__(self):
-        return str(self.iniated_date)
+        return str(self.initiated_date)
 
 class Notification_commands(models.Model):
     notification = models.CharField(max_length=500,blank=True,null=True)

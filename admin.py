@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.admin import AdminSite
 from django.dispatch import receiver
 from django.shortcuts import redirect, render
+from datetime import datetime, timedelta,date
 import whatismyip
 from django.views import View
 from django.db.models.signals import post_save,pre_delete
@@ -118,7 +119,9 @@ def get_app_list(self, request):
                 'Api Keys':57,
                 'Add On Parameters':58,
                 'Transactions':60,
-                'Payment Parameters':59
+                'Payment Parameters':59,
+                'Withdrawals':60,
+                'Notifications':61
             }
             app['models'].sort(key=lambda x: ordering[x['name']])
 
@@ -174,12 +177,114 @@ class AdminsupportTopic(admin.ModelAdmin):
 
 admin.site.register(supportTopic, AdminsupportTopic)
 
-
 class AdminWithdrwal_initiated(admin.ModelAdmin):
-    list_display = ['withdrawal_amount','withdrawal_message','iniated_date','order_no','user_id','withdrawan_status','withdrawn_date']
-
+    list_display = ['withdrawal_amount','withdrawal_message','initiated_date','user_id','withdrawan_status','withdrawn_date']
+    readonly_fields = ['withdrawal_amount','initiated_date','user_id','withdrawn_date']
+    
 admin.site.register(Withdrwal_initiated, AdminWithdrwal_initiated)
 
+
+@receiver(pre_save, sender=Withdrwal_initiated)
+def update_pay_status(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        if(instance.withdrawan_status == "sucess"):
+            userDetails = User.objects.get(username = instance.user_id.username)
+            user_earnings = User_Earnings.objects.filter(user_id=userDetails, clearence_status="cleared")
+            for earn in user_earnings:
+                if(earn.aval_with != None):
+                    if(round(float(earn.aval_with),2) != 0.00):
+                        if(earn.withdrawn_amount == None):
+                            with_draw_amount = round(float(earn.aval_with),2)
+                            earn.withdrawn_amount = round(float(earn.aval_with),2)
+                            earn.aval_with = 0.00
+                            earn.withdrawn_status = True
+                            earn.withdrawn_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                            earn.clearence_status = "completed"
+                            earn.save()
+                            order_details = User_orders.objects.get(pk = earn.order_no.pk)
+                            order_by = User.objects.get(pk = order_details.order_by.pk)
+                            order_to = User.objects.get(pk = order_details.order_to.pk)
+                            order_ativity1 = User_Order_Activity(order_message = "Withdrawal Completed !",order_amount = with_draw_amount, order_no=order_details,activity_type="withdrawal",activity_by=order_by,activity_to=order_to)
+                            order_ativity1.save()
+
+
+@receiver(post_save, sender=Withdrwal_initiated)
+def update_trasactions_status(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        previous = Withdrwal_initiated.objects.get(id=instance.id)
+        if(previous.withdrawan_status == "sucess"):
+            userDetails = User.objects.get(username = instance.user_id.username)
+            update_all_balancevalues(userDetails)
+                            
+
+def update_all_balancevalues(username):
+    userDetails = User.objects.get(username = username)
+    total_earning_val = 0
+    current_earning_val = 0
+    cancelled_earning_val = 0
+    avail_bal_val = 0
+    availcredit_bal_val = 0
+    affilite_earn_val = 0
+    withdrawed_credit_val = 0
+    with_used_credit_val = 0
+    ref_used_credit_val = 0
+    total_earnng = User_Earnings.objects.filter(user_id=userDetails) 
+    for earn in total_earnng:
+        if(earn.earning_type == "cancelled"):
+            cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
+        if(earn.earning_type == "affiliate"):
+            affilite_earn_val = round(float(float(affilite_earn_val) + float(earn.earning_amount)),2)
+        if(earn.earning_type != "cancelled"):
+            total_earning_val = round(float(float(total_earning_val) + float(earn.earning_amount)),2)
+        if(earn.withdrawn_amount != None):
+            if(earn.withdrawn_amount != ''):
+                withdrawed_credit_val = round(float(float(withdrawed_credit_val) + float(earn.withdrawn_amount)),2)
+        if(earn.credit_used != None):
+            if(earn.credit_used != ''):
+                with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
+        if(earn.aval_with != None or earn.clearence_status == "cleared" ):
+            if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
+                avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+        if(earn.clearence_status == "pending" ):
+            current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
+        try:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
+        except:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+        if(int(todays_date.month) == int(earned_date.month)):
+            cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
+    refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
+    for r_earn in refund_earning:
+        availcredit_bal_val = round(float(float(availcredit_bal_val) + float(r_earn.refund_amount)),2)
+        if(r_earn.credit_used != None):
+            if(r_earn.credit_used != ''):
+                ref_used_credit_val = round(float(float(ref_used_credit_val) + float(r_earn.credit_used)),2)
+    if(UserAvailable.objects.filter(user_id=userDetails).exists() == True):
+        user_avail_details = UserAvailable.objects.get(user_id=userDetails)
+        try:
+            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S").date()
+        except:
+	        availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
+        if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
+            UserAvailable.objects.filter(user_id=userDetails).delete()
+    userDetails.total_earning = total_earning_val
+    userDetails.current_earning = current_earning_val
+    userDetails.cancelled_earning = cancelled_earning_val
+    userDetails.avail_bal = avail_bal_val
+    userDetails.availcredit_bal = availcredit_bal_val
+    userDetails.referrals_earnings = affilite_earn_val
+    userDetails.withdrawn_amount = withdrawed_credit_val
+    userDetails.with_credits_used_amount = with_used_credit_val
+    userDetails.refund_credits_used_amount = ref_used_credit_val
+    userDetails.save()
+
+
+                        
 class AdminNotification_commands(admin.ModelAdmin):
     list_display = ['notification','slug','is_active']
 

@@ -142,4 +142,5 @@ urlpatterns  = [
     path("post_flutter_tip_details/",views.post_flutter_tip_details_view,name = 'post_flutter_tip_details'),
     path("post_seller_response/",views.post_seller_response_view,name = 'post_seller_response'),
     path("post_buyer_review/",views.post_buyer_review_view,name = 'post_buyer_review'),
+    path("post_initiate_withdrawl/",views.post_initiate_withdrawl_view,name = 'post_initiate_withdrawl'),
 ]
