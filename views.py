@@ -31,7 +31,6 @@ import json
 from kworkapp.models import Categories,UserGigPackages,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
-
 class indexView(View):
     return_url = None
     def get(self , request,username=''):
@@ -972,7 +971,30 @@ class billing_view(View):
 class inbox_view(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'Dashboard/chat.html')
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try:
+                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                all_conversations = Conversation.objects.filter(Q(initiator=userDetails) | Q(receiver= userDetails))
+                conversation_lists = []
+                for all_c in all_conversations:
+                    receiver_name = ''
+                    if(all_c.convers_type == "active"):
+                        if(userDetails.username == all_c.initiator.username):
+                            conversation_lists.append({"user_Name":all_c.receiver.username,"user_imag":all_c.receiver.avatar})
+                        else:
+                            conversation_lists.append({"user_Name":all_c.initiator.username,"user_imag":all_c.initiator.avatar})
+                inbox_char = 0
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "inbox_message"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "inbox_message"):
+                        inbox_char = c.Max_No_of_char_allowed  
+                chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
+                chat_words_5_words = list(ChatWords.objects.order_by().values_list('name').distinct())[:5]
+                return render(request , 'Dashboard/chat.html',{"all_contacts":conversation_lists,"inbox_char":inbox_char,"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words)})
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
     
 class buyer_review_view(View):
     return_url = None
@@ -3957,10 +3979,19 @@ def post_flutterwave_transaction_view(request):
             try:    
                 cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
             except:
-                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-            if(cover_detls == None):
-                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-                cover_detls.save()
+                try:
+                    cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+                except:
+                    cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                    cover_detls.save()
+            try:    
+                message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                try:
+                    message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+                except:
+                    message_cover_detls = Conversation(initiator=pay_by_user,receiver = pay_to_user,convers_type="active")
+                    message_cover_detls.save()    
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
@@ -4064,10 +4095,18 @@ def post_paypal_transaction_view(request):
             try:    
                 cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
             except:
-                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-            if(cover_detls == None):
-                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-                cover_detls.save()
+                try:
+                    cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+                except:
+                    cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                    cover_detls.save()
+            try:    
+                message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                message_cover_detls = Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            if(message_cover_detls == None):
+                message_cover_detls = Conversation(initiator=pay_by_user,receiver=pay_to_user,convers_type="active")
+                message_cover_detls.save()    
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
@@ -4168,10 +4207,18 @@ def post_credit_transaction_view(request):
             try:    
                 cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
             except:
-                cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-            if(cover_detls == None):
-                cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-                cover_detls.save()
+                try:
+                    cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+                except:
+                    cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                    cover_detls.save()
+            try:    
+                message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                message_cover_detls = Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            if(message_cover_detls == None):
+                message_cover_detls = Conversation(initiator=pay_by_user,receiver=pay_to_user,convers_type="active")
+                message_cover_detls.save()  
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
@@ -5200,6 +5247,87 @@ def post_initiate_withdrawl_view(request):
         withdrawal_initiated.save()
         return HttpResponse('sucess')
     
+def post_check_conver_view(request):
+    if request.method == 'GET':
+        initiator = request.GET['initiator']
+        receiver = request.GET['receiver'] 
+        initiator = User.objects.get(username = initiator)
+        receiver = User.objects.get(username = receiver)
+        try:    
+            message_cover_detls = Conversation.objects.get(initiator=initiator,receiver = receiver)
+        except:
+            try:
+                message_cover_detls = Conversation.objects.get(initiator=receiver,receiver = initiator)
+            except:
+                message_cover_detls = Conversation(initiator=initiator,receiver=receiver,convers_type="active")
+                message_cover_detls.save()    
+        return HttpResponse('sucess')
+    
+def get_conv_user_details_view(request):
+    if request.method == 'GET':
+        receiver_user = request.GET['receiver_user']
+        initiator_user = request.GET['initiator_user'] 
+        initiator = User.objects.get(username = initiator_user)
+        receiver = User.objects.get(username = receiver_user)
+        try:    
+            message_cover_detls = Conversation.objects.get(initiator=initiator,receiver = receiver)
+        except:
+            try:
+                message_cover_detls = Conversation.objects.get(initiator=receiver,receiver = initiator)
+            except:
+                message_cover_detls = Conversation(initiator=initiator,receiver=receiver,convers_type="active")
+                message_cover_detls.save()  
+        conversational_details =   Conversation.objects.get(pk = message_cover_detls.pk)
+        user_details =[]
+        language_inst = Languages.objects.get(lng_Name = "English")
+        user_langauges = UserLanguages.objects.filter(user_id= receiver, language_name=language_inst).first()
+        seller_rating = 0
+        buyer_rating = 0
+        seller_reviews = 0
+        buyer_reviews = 0
+        seller_all_reviews = Seller_Reviews.objects.filter(s_review_to=receiver)
+        for sa_review in seller_all_reviews:
+            seller_rating = seller_rating + float(sa_review.average_val)
+        try:
+            seller_rating = int(round(seller_rating/len(seller_all_reviews),0))
+        except:
+            seller_count = 0
+        seller_reviews = len(seller_all_reviews)
+        buyer_all_reviews = Buyer_Reviews.objects.filter(b_review_to=receiver)
+        for by_review in buyer_all_reviews:
+            buyer_rating = seller_rating + float(by_review.rating_val)
+        try:
+            buyer_rating = int(round(buyer_rating/len(buyer_all_reviews),0))
+        except:
+            buyer_rating = 0
+        buyer_reviews = len(buyer_all_reviews)
+        seller_level_string = ''
+        if(receiver.seller_level == "level1"):
+            seller_level_string = "New or higher"
+        elif(receiver.seller_level == "level2"):
+            seller_level_string = "Advanced or higher"
+        elif(receiver.seller_level == "level3"):
+            seller_level_string = "Professional"
+        user_details.append({"user_id":receiver.pk,"username":receiver.username,"userimg":receiver.avatar,"user_location":receiver.country.name,"user_start":receiver.created_at.strftime('%b %Y'),"user_english":user_langauges.lang_prof,"seller_level":seller_level_string,"response_time":receiver.avg_respons,"seller_rating":seller_rating,"buyer_rating":buyer_rating,"seller_reviews":seller_reviews,"buyer_reviews":buyer_reviews})
+        order_details = []
+        order_data = []
+        try:    
+            order_details = User_orders.objects.filter(order_by=initiator,order_to = receiver , order_status="active")
+        except:
+            order_details = User_orders.objects.filter(order_by=receiver,order_to = initiator, order_status="active")
+        for order in order_details:
+            gig_details = UserGigs.objects.get(gig_title=order.package_gig_name.gig_title)
+            gig_image_url = ''
+            gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+            if(gig_image != None):
+                gig_image_url = gig_image.gig_image
+            order_data.append({"order_id":order.pk,"order_no":order.order_no,"order_amount":order.order_amount,"order_due_date":order.due_date.strftime('%b %d, %Y'),"gig_img":gig_image_url,"order_status":order.order_status,"gig_title":order.package_gig_name.gig_title})
+        response_data = {"response_userDetails":user_details,"no_of_orders":len(order_details),"order_details":order_data}
+        return JsonResponse(response_data,safe=False)
+    
+    
+
+
     
 
 

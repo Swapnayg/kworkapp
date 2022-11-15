@@ -543,9 +543,9 @@
                                 <footer class="inbox-link">
                                     <div>
                                        {% if  current_user == "Buyer" %}
-                                          View <a class="blue-link" href="/inbox/{{order_to.username}}/"> conversation </a> with {{order_to.username}} in your inbox
+                                          View <a class="blue-link" onclick="inbox_click('+{{order_to.username}}+');"> conversation </a> with {{order_to.username}} in your inbox
                                        {% elif  current_user == "Seller" %}
-                                          View <a class="blue-link" href="/inbox/{{order_by.username}}/"> conversation </a> with {{order_by.username}} in your inbox
+                                          View <a class="blue-link" onclick="inbox_click('+{{order_by.username}}+');"> conversation </a> with {{order_by.username}} in your inbox
                                        {% endif %}
                                        
                                     </div>
@@ -4746,7 +4746,7 @@ small {
       });
       $('#text_order_mssg').emojiPicker({
          position: 'right'
-       });
+      });
 
       $('#text_delivery_messsg').keyup(function() { 
          var thisChars = this.value.replace(/{.*}/g, '').length; 
@@ -5191,5 +5191,20 @@ small {
       location_href =  $(location).attr('href').split("/");
       window.open( location_href[0]+"//"+location_href[2] + $(ev).attr("data-label"),"_blank");
    }
+   function inbox_click(username)
+   {
+      $.ajax({
+         type:"GET",
+         url: "/post_check_conver/",
+         data: {'initiator':'{{request.user.username}}','receiver':username},
+         success: function(data) 
+         {  
+            location_href =  $(location).attr('href').split("/");
+            window.location.href = location_href[0]+"//"+location_href[2] +"/inbox/"+ username;
+         }   
+     });
+      
+   }
+
 </script>
 {% endblock %}

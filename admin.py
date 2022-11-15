@@ -430,7 +430,7 @@ class AdminOrder_Conversation(admin.ModelAdmin):
 admin.site.register(Order_Conversation, AdminOrder_Conversation)
 
 class AdminConversation(admin.ModelAdmin):
-    list_display = ['initiator','receiver','timestamp']
+    list_display = ['initiator','receiver','timestamp','convers_type']
 
 admin.site.register(Conversation, AdminConversation)
 

@@ -72,7 +72,7 @@
                            </div>
                            {% if userDetails.username != request.user.username %}
                                 <div class="buttons-wrapper">
-                                    <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" href="/inbox/{{request.user.username}}">Contact Me</a>
+                                    <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" onclick="inbox_click('+{{userDetails.username}}+');">Contact Me</a>
                                     <button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" onclick="getquoteclick();" id="get_quote_btn">Get a Quote</button>
                                 <div id="react-first-message-popup"></div>
                                 </div>
@@ -989,5 +989,20 @@
     {
         $(ev).parent().remove();
     }
+    function inbox_click(username)
+    {
+       $.ajax({
+          type:"GET",
+          url: "/post_check_conver/",
+          data: {'initiator':'{{request.user.username}}','receiver':username},
+          success: function(data) 
+          {  
+             location_href =  $(location).attr('href').split("/");
+             window.location.href = location_href[0]+"//"+location_href[2] +"/inbox/"+ username;
+          }   
+      });
+       
+    }
+
 </script>
 {% endblock %}

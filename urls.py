@@ -27,7 +27,7 @@ urlpatterns  = [
 	path('user/<str:username>/manage_orders/<str:orderid>/activities', order_activities_view.as_view(), name='activities'),
 	path('billing', billing_view.as_view(), name='billing' ),
 	path('manage_orders', buyer_manage_orders_view.as_view(), name='manage_orders' ),
-	path('inbox', inbox_view.as_view(), name='inbox' ),
+	path('inbox/', inbox_view.as_view(), name='inbox' ),
  	path('inbox/<str:username>/', inbox_view.as_view(), name='inbox' ),
 	path('favourites', favourites_view.as_view(), name='favourites' ),
 	path('term_service', term_serviceView.as_view(), name='term_service' ),
@@ -143,4 +143,6 @@ urlpatterns  = [
     path("post_seller_response/",views.post_seller_response_view,name = 'post_seller_response'),
     path("post_buyer_review/",views.post_buyer_review_view,name = 'post_buyer_review'),
     path("post_initiate_withdrawl/",views.post_initiate_withdrawl_view,name = 'post_initiate_withdrawl'),
+    path("post_check_conver/",views.post_check_conver_view,name = 'post_check_conver'),
+    path("get_conv_user_details/",views.get_conv_user_details_view,name = 'get_conv_user_details'),
 ]

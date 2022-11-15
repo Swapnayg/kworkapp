@@ -153,8 +153,10 @@ class User(AbstractBaseUser):
         return self.is_admin
 
 class Conversation(models.Model):
+    BOOL_CHOICES_TYPES = [('block', 'Blocked'),('delete', 'Delete'),('active', 'Active')]
     initiator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="convo_starter")
     receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="convo_participant")
+    convers_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
 
     class Meta:
