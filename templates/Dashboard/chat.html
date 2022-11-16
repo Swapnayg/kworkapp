@@ -33,28 +33,73 @@
                      <nav class="contacts-list" data-testid="contacts-list">
                         <div></div>
                         {% for contact in all_contacts %}
-                        <a class="contact read" onclick="user_conversation_click('{{contact.user_Name}}');">
-                           <span class="image-container">
-                              <figure class="profile-image">
-                                 <img src="{{contact.user_imag}}" alt="a">
-                              </figure>
-                              <span class="online-indicator"><i></i></span>
-                           </span>
-                           <div class="user-info">
-                              <div class="username-container"><strong> {{contact.user_Name}} </strong></div>
-                              <p class="text-trunc"><i class=""></i>Me: message</p>
-                           </div>
-                           <aside>
+                           {% if contact.user_Name == request.user.username %}
+                              <a class="contact read" onclick="user_conversation_click('{{contact.user_receName}}');">
+                                 <span class="image-container">
+                                    <figure class="profile-image">
+                                       <img src="{{contact.user_receImg}}" alt="a">
+                                    </figure>
+                                    <span class="online-indicator"><i></i></span>
+                                 </span>
+                                 <div class="user-info">
+                                    <div class="username-container"><strong> {{contact.user_receName |title}} </strong></div>
+                                    <p class="text-trunc"><i class=""></i>
+                                       {% if contact.last_message_str|length != 0 %}
+                                          {% if contact.last_message_sender == request.user.username %}
+                                             <span class="last_message">Me: {{contact.last_message_str}}</span>
+                                          {% else %}
+                                             <span class="last_message">{{contact.last_message_str}}</span>
+                                          {% endif %}
+                                       {% else %}
+                                          <span class="last_message">{{contact.last_message_str}}</span>
+                                       {% endif %}
+                                    </p>
+                                 </div>
+                                 <aside>
+                                 <div>
+                                    <time datetime="Sun Aug 28 2022 12:16:47 GMT+0530 (India Standard Time)">time</time>  
+                                 </div>
+                                 <div>
+                                    <button class="button-link tooltip hint--top-right action-read" data-hint="Mark as Unread">
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    </button>
+                                 </div>
+                              </aside>
+                              </a>
+                           {% else %}
+                           <a class="contact read" onclick="user_conversation_click('{{contact.user_Name}}');">
+                              <span class="image-container">
+                                 <figure class="profile-image">
+                                    <img src="{{contact.user_imag}}" alt="a">
+                                 </figure>
+                                 <span class="online-indicator"><i></i></span>
+                              </span>
+                              <div class="user-info">
+                                 <div class="username-container"><strong> {{contact.user_Name |title}} </strong></div>
+                                 <p class="text-trunc"><i class=""></i>
+                                    {% if contact.last_message_str|length != 0 %}
+                                       {% if contact.last_message_sender == request.user.username %}
+                                          <span class="last_message">Me: {{contact.last_message_str}}</span>
+                                       {% else %}
+                                          <span class="last_message">{{contact.last_message_str}}</span>
+                                       {% endif %}
+                                    {% else %}
+                                       <span class="last_message">{{contact.last_message_str}}</span>
+                                    {% endif %}
+                                 </p>
+                              </div>
+                              <aside>
                               <div>
                                  <time datetime="Sun Aug 28 2022 12:16:47 GMT+0530 (India Standard Time)">time</time>  
                               </div>
                               <div>
                                  <button class="button-link tooltip hint--top-right action-read" data-hint="Mark as Unread">
-                                  <i class="fa fa-star-o" aria-hidden="true"></i>
+                                 <i class="fa fa-star-o" aria-hidden="true"></i>
                                  </button>
                               </div>
                            </aside>
-                        </a>
+                           </a>
+                           {% endif %}
                         {% endfor %}
                      </nav>
                  </aside>
@@ -86,976 +131,139 @@
                           <aside class="butter-toast-tray top-center">
                              <div class="wrapper"></div>
                           </aside>
-                          <div class="content">
-                             <div></div>
-                             <div class="message-wrapper">
-                                <div id="632c97d54e158d0019ed009d" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Thu Sep 22 2022 22:43:57 GMT+0530 (India Standard Time)">Sep 22, 2022, 10:43 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hi</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632d075511d5520016cc0a41" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Fri Sep 23 2022 06:39:41 GMT+0530 (India Standard Time)">Sep 23, 2022, 6:39 AM</time>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hii</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632d075ae60b8b0022b5c977" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Fri Sep 23 2022 06:39:46 GMT+0530 (India Standard Time)">Sep 23, 2022, 6:39 AM</time>
-                                         <div></div>
-                                        
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Good morning</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632d3ff586fec1001d5d2734" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Fri Sep 23 2022 10:41:17 GMT+0530 (India Standard Time)">Sep 23, 2022, 10:41 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hi</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632dd7c530a74b001af94e24" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Fri Sep 23 2022 21:29:01 GMT+0530 (India Standard Time)">Sep 23, 2022, 9:29 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hii
-                                                  Bolo na
-                                                  Due to training I m busy today
-                                               </p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632dda0602dc1f006583807d" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Fri Sep 23 2022 21:38:38 GMT+0530 (India Standard Time)">Sep 23, 2022, 9:38 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">nothing, wo jo second hand laptops wal wrrencty kitn deyeg ek br poocho n jr plese</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632dda8da736570016f78e81" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Fri Sep 23 2022 21:40:54 GMT+0530 (India Standard Time)">Sep 23, 2022, 9:40 PM</time>
-                                        
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Chalega puchata hu</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ddab4f9425c00624d304e" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Fri Sep 23 2022 21:41:32 GMT+0530 (India Standard Time)">Sep 23, 2022, 9:41 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">ok kab tkh p bt skte ho?</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ddf142403f50019309023" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Fri Sep 23 2022 22:00:12 GMT+0530 (India Standard Time)">Sep 23, 2022, 10:00 PM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Kal puchata hu...chalega na??</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ddf37d01a3d00620afd21" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Fri Sep 23 2022 22:00:47 GMT+0530 (India Standard Time)">Sep 23, 2022, 10:00 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">ok</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632e9210ed8db100192ca5cd" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 10:43:52 GMT+0530 (India Standard Time)">Sep 24, 2022, 10:43 AM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hii
-                                                  He gives warranty on only battery for second hand laptops 
-                                                  And prises depends on processor and configuration..
-                                                  Normally prise start from 16k.
-                                               </p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632e98c181308f001cd52797" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:12:25 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:12 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Ok leave it i have ordered the ups</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea0f073bd5c00166c073d" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:47:20 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:47 AM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Ok...from where??</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea0f8ad3717001f648f69" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:47:28 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:47 AM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Amazon??</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea11ab6b8bb001e1da94a" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:48:02 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:48 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Flipkart</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1323fbc2d001fe85443" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:48:26 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:48 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Both are running with deals and i got free delivery on all products</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea143ad3717001c649067" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:48:43 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:48 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Ordered some other things also from both platforms</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea16f7950040020599bce" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:49:27 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:49 AM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body houmongi">👍👍</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea17dad37170016648ffa" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:49:41 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:49 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Yaa tell me anything</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1b234eb18001fc613ac" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:50:34 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:50 AM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Tum batao kya chal raha hai</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1c0a45458001f06552b" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:50:48 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:50 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Nothing just woke up</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1cdb6b8bb00181da889" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:51:02 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:51 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">U say what's going on and what are u doing?</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1e94acf3b001999ab84" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:51:29 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:51 AM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">In office</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea1fdde041f0020699814" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:51:49 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:51 AM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">And now lunch time</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea20500db490019aba13b" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:51:57 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:51 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Okay great kya hua tumhare project ka kuch dusra b karna tha na</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea20eca7e230019a2c5c7" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:52:06 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:52 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Yes yes it's lunch time</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea29c5c8fc900217137e0" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:54:28 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:54 AM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Haa wo dusare laptop pe install karna hai</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea2b030a74b0020f989cc" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:54:48 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:54 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Install hi kuch banana nahi hai kya?</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea318a6dcba002036757d" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 11:56:32 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:56 AM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Haa banana hai..mai uss data ka reliability check kar raha hu</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea32dad3717001f648ffc" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 11:56:53 GMT+0530 (India Standard Time)">Sep 24, 2022, 11:56 AM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Ok ok bata dena kab kya banana hai</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea7f773bd5c001f6c074a" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 12:17:19 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:17 PM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Yes</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea827bc3ac0001a55cee5" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 12:18:07 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:18 PM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Evening ko Time rahega kya tume??</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ea832fd65a6006c5f41f9" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 12:18:18 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:18 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">kyu?</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632eac8f00db49001caba0cf" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 12:36:55 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:36 PM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Hello</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632ead45c2781c000e9ce00f" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 12:39:57 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:39 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">i said kyu ?</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632eb069289600001ee6b77a" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 12:53:22 GMT+0530 (India Standard Time)">Sep 24, 2022, 12:53 PM</time>
-                                         <div></div>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Dusare laptop me install karke do muze..please</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632eb785470b1d001f504fc7" class="message ">
-                                   <span class="">
-                                      <figure class="profile-image">
-                                         <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                         <figcaption class="font-accent">S</figcaption>
-                                      </figure>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <span class="sender">Me</span><time datetime="Sat Sep 24 2022 13:23:42 GMT+0530 (India Standard Time)">Sep 24, 2022, 1:23 PM</time>
-                                         <div></div>
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Dekhte hai sham ko time hai na</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div class="message-wrapper">
-                                <div id="632eb827511daf0016c73493" class="message ">
-                                   <span class="">
-                                      <a href="/akshaypatil3" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                         <figure class="profile-image">
-                                            <img alt="a">
-                                            <figcaption class="font-accent">A</figcaption>
-                                         </figure>
-                                      </a>
-                                   </span>
-                                   <div class="message-content">
-                                      <div class="header">
-                                         <a href="/akshaypatil3" target="_blank" class="sender" rel="noopener noreferrer">akshaypatil3</a><time datetime="Sat Sep 24 2022 13:26:23 GMT+0530 (India Standard Time)">Sep 24, 2022, 1:26 PM</time>
-                                         
-                                      </div>
-                                      <span class="">
-                                         <div>
-                                            <div>
-                                               <p class="message-body">Ok</p>
-                                            </div>
-                                         </div>
-                                      </span>
-                                      <span class=""></span>
-                                   </div>
-                                </div>
-                             </div>
-                             <div></div>
-                             <div id="autoscroll-anchor"></div>
+                          <div class="content" id="message_content">
+                           <div class="message-wrapper">
+                              <div id="6374d8a32a883f0001d7f4a3" class="message ">
+                                 <span class="">
+                                    <a href="/beinganaatiidu1" target="_blank" rel="noopener noreferrer" class="profile-image-link">
+                                       <figure class="profile-image">
+                                          <img src="https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" alt="b">
+                                          <figcaption class="font-accent">B</figcaption>
+                                       </figure>
+                                    </a>
+                                 </span>
+                                 <div class="message-content">
+                                    <div class="header">
+                                       <a href="/beinganaatiidu1" target="_blank" class="sender" rel="noopener noreferrer">beinganaatiidu1</a>
+                                    </div>
+                                    <span class="">
+                                       <div>
+                                          <p class="title italic">
+                                             Here's your Custom Offer
+                                          </p>
+                                          <div class="+LNAmyM">
+                                             <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer">
+                                                <header class="KUW+QwR _3YNlATc">
+                                                   <div class="flex-center">
+                                                      <h3 class="text-display-7"><a href="http://www.fiverr.com/beinganaatiidu1/install-microjobengine-freelancing-website-theme-in-24-hrs?funnel=1e4ed5e6fdad55d0ba904e4ab89ae7f1" target="_blank">I will install microjobengine freelancing website theme in 24 hrs</a></h3>
+                                                   </div>
+                                                   <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">₹2,564</b></div>
+                                                </header>
+                                                <div class="main">
+                                                   <div class="description">
+                                                      <div>
+                                                         <div class="fg5FMWv" style="height: auto;">
+                                                            <p class="sanitized-text">I will create website</p>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                   <div class="package-content">
+                                                      <h6 class="text-display-7 p-b-8">Your offer includes</h6>
+                                                      <div class="includes">
+                                                         <div class="package-item flex flex-items-center tbody-default co-text-darker">
+                                                            <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(29, 191, 115);">
+                                                               <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                                  <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path>
+                                                                  <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
+                                                               </svg>
+                                                            </span>
+                                                            7 Revisions
+                                                         </div>
+                                                         <div class="package-item flex flex-items-center tbody-default co-text-darker">
+                                                            <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(29, 191, 115);">
+                                                               <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+                                                                  <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
+                                                                  <path d="M9 4H7v5h5V7H9V4z"></path>
+                                                               </svg>
+                                                            </span>
+                                                            7 Days Delivery
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                                <footer class="custom-package-footer flex flex-items-center">
+                                                   <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" >Decline</button><button class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700">Accept</button></div>
+                                                </footer>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </span>
+                                    <span class=""></span>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="message-wrapper">
+                              <div id="6374c7ccc293320014d546e0" class="message ">
+                                 <span class="">
+                                    <figure class="profile-image">
+                                       <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
+                                       <figcaption class="font-accent">S</figcaption>
+                                    </figure>
+                                 </span>
+                                 <div class="message-content">
+                                    <div class="header">
+                                       <span class="sender">Me</span><time datetime="Wed Nov 16 2022 16:51:48 GMT+0530 (India Standard Time)">Nov 16, 2022, 4:51 PM</time>
+                                       <div></div>
+                                    </div>
+                                    <span class="">
+                                       <div>
+                                          <p class="tbody-6">Custom Order Request</p>
+                                          <div class="_4aalYpY tbody-6" data-testid="brief-entry">
+                                             <article>
+                                                <div class="W6rA1Yv" data-testid="brief-body">
+                                                   <ul class="SJvuSVq">
+                                                      <li class="BhSqh3g flex flex-between">
+                                                         <b class="vtb+Dcs">Specification</b>
+                                                         <div class="ryQqgSG">
+                                                            <section>
+                                                               <div class="GQtv-8L">
+                                                                  <div class="flex flex-center m-r-4">
+                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#1DBF73">
+                                                                        <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path>
+                                                                     </svg>
+                                                                  </div>
+                                                                  <div>
+                                                                     <p>Budget ₹8,546.19</p>
+                                                                  </div>
+                                                               </div>
+                                                               <div class="GQtv-8L">
+                                                                  <div class="flex flex-center m-r-4">
+                                                                     <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#1DBF73">
+                                                                        <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path>
+                                                                     </svg>
+                                                                  </div>
+                                                                  <div>
+                                                                     <p>3 days delivery (Nov 19, 2022)</p>
+                                                                  </div>
+                                                               </div>
+                                                            </section>
+                                                         </div>
+                                                      </li>
+                                                      <li class="BhSqh3g flex flex-between">
+                                                         <b class="vtb+Dcs">Criteria</b>
+                                                         <div class="ryQqgSG"></div>
+                                                      </li>
+                                                   </ul>
+                                                   <p class="p-t-12">here is the test quote to check the UI of this within inbox</p>
+                                                </div>
+                                             </article>
+                                          </div>
+                                       </div>
+                                    </span>
+                                    <span class=""></span>
+                                 </div>
+                              </div>
+                           </div>
                           </div>
                           <footer class="conversation-footer">
                              <div class="message-box ">
@@ -1063,15 +271,20 @@
                                    <div class="message-container " style="padding: 15px;">
                                       <div class="textarea-container" style="height: 70px; min-height: 0px; max-height: 192px;">
                                        <textarea class="" data-testid="message-box" id="chat_message" maxlength="{{inbox_char}}"></textarea>
+                                       <div class="help_div"> <div class="helptext_desc">Message should contain {{inbox_char}} characters minimum.</div> <span class="help_text_span"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>
                                        <span class="text-counter" id="span_chat_mssg">0 / {{inbox_char}}</span>
                                        <span class="ruler"> </span></div>
                                    </div>
                                 </div>
+                                <div class="terms-error" id="message_errors">
+                                 <i class="fa fa-exclamation-triangle"></i>
+                                 <p>Terms of Service reminder: Providing <span class="detected_mssg"></span> is only allowed if it is needed as part of the service. Otherwise, all communication must go through Letworkbedone.</p>
+                              </div>
                                 <div class="message-action-bar">
                                    <ul>
                                        <li class="attachmentsdiv"><span class="tooltip hint--top" data-hint="Max 5GB">
                                           <i class="icn attachment"></i>
-                                          <input  type="file" id="chat_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
+                                          <input  type="file" id="inbox_chat_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
                                           </span>
                                        </li>
                                        <li>
@@ -1085,15 +298,23 @@
                                          </div>
                                        </li>
                                    </ul>
-                                   <span><span class="send-action"><button class="button-link toggle"><i class="fa fa-chevron-down link-action"></i></button></span><span class="message-action green">Send</span></span>
+                                   <span><span class="send-action"><button class="button-link toggle"><i class="fa fa-chevron-down link-action"></i></button></span><button class="message-action green" id="inbox_chat_mssg_send">Send</button></span>
                                 </div>
+                                <div class="wrap-box" id="wrap_files_list">
+                                 <div class="message-box-cta" id="files_list"> 
+                                 </div>
+                              </div>
+                              <div class="wrap-box" id="wrap_progress_list">
+                                 <div class="message-box-cta" id="file_progress_div"> 
+                                 </div>
+                              </div>
                              </div>
                           </footer>
                        </div>
                        <aside class="details-pane" data-testid="details-pane">
                           <div class="p-t-8 p-16">
                              <div class="pS6OOeY p-t-24 p-b-24">
-                                 <div class="flex-between flex-items-baseline tbody-5 text-semi-bold co-text-darker">Orders with you<a class="tbody-6 RQbOZmB" href="/activities/search/conversation?act_search_query=akshaypatil3&amp;orders_only=true" target="_blank" rel="noopener noreferrer">Total <span id="order_total"></span></a></div>
+                                 <div class="flex-between flex-items-baseline tbody-5 text-semi-bold co-text-darker">Orders with you<a class="tbody-6 RQbOZmB" href="" target="_blank" rel="noopener noreferrer" id="order_total_link">Total <span id="order_total"></span></a></div>
                                  <div id="order_card_div"></div>
                              </div>
                              <div class="dUaTNpt p-t-16 p-b-16">
@@ -1153,6 +374,9 @@
                                     <li class="-ApdB1q"><span>Rating</span><strong class="Z0-w-cm" id="detail_buyer_rating">4.9</strong></li>
                                  </ul>
                               </div>
+                              <input type="hidden"  value="" id="chat_receiver" />
+                              <input type="hidden"  value="{{request.user.username}}" id="chat_initiator" />
+                              <input type="hidden"  value="{{request.user.username}}" id="chat_conversation_id" />
                              </div>
                           </div>
                        </aside>
@@ -1350,11 +574,7 @@ button.search-toggle {
     height: 75px;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    position: absolute;
-    top: 0;
-    left: 0;
     cursor:pointer;
-    right: 0;
     z-index: 1;
     border-bottom: 1px solid #e4e5e7;
     display: -webkit-box;
@@ -2006,6 +1226,7 @@ aside.actions-menu .divider {
    color: #222325;
    font-size: 14px;
    font-weight: 600;
+   text-transform:capitalize;
 }
 .message .header time {
    color: #95979d;
@@ -2985,14 +2206,588 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
 {
    position: absolute;
    color: #74767e;
-   right: 5px;
+   right: 15px;
    border: 8px;
    bottom: 1px;
+}
+.terms-error {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-flow: row;
+   padding-right: 2%;
+    text-align: justify;
+    padding-left: 3%;
+   flex-flow: row;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   padding-top: 14px;
+   border-top: 1px solid #e7e7e7;
+   margin-top: 8px;
+   margin-bottom: 3%;
+}
+.terms-error .fa {
+   font-size: 28px;
+   color: #b5b6ba;
+   margin-right: 12px;
+}
+.terms-error p {
+   font-size: 11px;
+   line-height: 14px;
+   font-weight: 500;
+   color: #95979d;
+}
+.progress {
+   background-color: #ddd;
+   margin-top: 5px;
+   height: 6px;
+   width: 95%;
+}
+.progress-bar{
+      background-color: #177de5 !important;
+}
+#file_progress_div
+{
+   position:relative;
+}
+#wrap_files_list, #wrap_progress_list {
+   border: none;
+   box-shadow: none;
+   margin-top: 2%;
+   padding-bottom: 2%;
+}
+#files_list .imagediv {
+   height: 80px;
+   width: 62px;
+   display: block;
+   text-align: center;
+   position: relative;
+   display: inline-block;
+   text-align: left;
+   float: left;
+   margin-right: 2%;
+}
+#files_list .imagediv .fa {
+   display: inline-block;
+   float: right;
+   position: absolute;
+   color: red;
+   font-size: 14px;
+   padding-left: 15%;
+}
+#files_list .imagediv .fileicon {
+   text-align: center;
+   font-size: 40px;
+   color: #333;
+   margin-bottom: 7%;
+   position: absolute;
+   left: 24%;
+   padding-left: 5%;
+}
+#files_list .imagediv .file_name {
+   font-size: 8px;
+   line-height: 8px;
+   display: block;
+   bottom: 15px;
+   width: 100%;
+   float: left;
+   position: absolute;
+   text-align: center;
+   font-weight: 700;
+}
+#detail_username
+{
+   text-transform:capitalize;
+}
+#inbox_chat_mssg_send
+{
+   cursor: pointer;
+   background: none;
+   border: none;
+   font-weight: 700;
+}
+.min_width
+{
+   width:150px;
+}
+
+.error_help .help_text_span
+{
+color:red;
+}
+.help_div
+{
+   position: absolute;
+   right: -9px;
+   bottom: 1px;
+}
+.help_txt
+{
+   font-size: 12px;
+   color: green;
+   font-weight: 400;
+   text-align: left;
+}
+.helptext_desc, .offers-left-tooltip {
+   font-size: 12px;
+   width: 150px;
+   text-align: left;
+   bottom: 0px;
+   left: -150px;
+}
+.help_text_span
+{
+color:red;
+}
+
+.help_text_span, .help_text_span
+{
+color:#2E5DC5;
+}
+
+.attachments-preview-component {
+   margin: 0;
+   padding: 0;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+}
+
+.attachments-preview-component {
+   z-index: 1000;
+   margin-top: 24px;
+}
+.attachments-preview-component .thumbnails-header {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+}
+.attachments-preview-component .thumbnails-header h3 {
+   font-size: 13px;
+   margin-left: 2px;
+   margin-right: 24px;
+   font-weight: 700;
+   line-height: 34px;
+   color: #404145;
+}
+.attachments-preview-component .attchments-container {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -ms-flex-wrap: wrap;
+   flex-wrap: wrap;
+}
+.attachments-preview-component .attchments-container .thumbnail-preview {
+   position: relative;
+   height: 140px;
+   width: 178px;
+   border: 1px solid #efeff0;
+   border-radius: 4px;
+   background-color: #fff;
+   margin: 12px 12px 0 0;
+   cursor: pointer;
+}
+.attachments-preview-component .attchments-container .thumbnail-preview .thumbnail-link {
+   height: 104px;
+   display: block;
+   cursor: pointer;
+}
+.thumbnail-preview .fileicon {
+   font-size: 70px !important;
+   line-height: 124px !important;
+   text-align: center;
+   width: 100%;
+}
+.thumbnail-preview .fa {
+   font-size: 15px;
+   color: #446ee7;
+   line-height: 30px;
+}
+.attachments-preview-component .action-bar {
+   max-width: 163px;
+   padding-left: 15px;
+   position: relative;
+   height: 150%;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+}
+.attachments-preview-component .action-bar .attachment-name-container {
+   max-width: 91px;
+   overflow: hidden;
+   padding-right: 5px;
+   display: inline-block;
+}
+.attachments-preview-component .attachment-size {
+   display: inline;
+   color: #74767e;
+   font-size: 13px;
+}
+.attachments-preview-component .action-bar .attachment-name-container .attachment-name {
+   font-size: 13px;
+   font-weight: 700;
+   color: #62646a;
+   line-height: 32px;
+   overflow: hidden;
+   max-width: 85px;
+   white-space: nowrap;
+}
+.attachments-preview-component .action-bar .download-button {
+   background: url() no-repeat;
+   width: 12px;
+   height: 14px;
+}
+#message_content ul li a {
+   font-size: 20px;
+   color: #333;
+   font-weight: 500;
+   line-height: 30px;
+   height: 30px;
+   text-decoration: none;
+   background: none;
+}
+#conversation .message-flow .message-content .title {
+   font-size: 14px;
+   line-height: 145%;
+}
+.\+LNAmyM {
+   max-width: 540px;
+   margin-top: 15px;
+}
+.custom-offer-message-package {
+   font-size: 14px;
+   line-height: 140%;
+   border: 1px solid #e4e5e7;
+   border-radius: 3px;
+   padding: 20px;
+   background-color: #fff;
+   color: #62646a;
+}
+.KUW\+QwR {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-pack: justify;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+   background-color: #fafafa;
+   border-bottom: 1px solid #e4e5e7;
+   margin: -20px -20px 0;
+   padding: 17px 20px 12px;
+   -ms-flex-flow: wrap;
+   flex-flow: wrap;
+}
+.custom-offer-message-package .main {
+   padding: 10px 0;
+   position: relative;
+}
+.custom-offer-message-package .custom-package-footer {
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   padding-top: 16px;
+   border-top: 1px solid #e4e5e7;
+}
+.custom-offer-message-package .custom-package-footer {
+   -webkit-box-align: start;
+   -ms-flex-align: start;
+   align-items: flex-start;
+}
+.custom-offer-message-package .McOrFfb {
+   padding-bottom: 16px;
+   margin-bottom: 16px;
+   width: 25%;
+   display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+}
+
+.GBwyMi1 {
+   line-height: 100%;
+   color: #222325;
+   width: 100%;
+}
+.custom-offer-message-package h3 {
+   margin-bottom: 3px;
+   word-break: break-word;
+}
+.custom-offer-message-package h3 a {
+   color: #222325;
+   font-size: 16px;
+   font-weight: 700;
+}
+.custom-offer-message-package .main .description {
+   min-height: 70px;
+   -webkit-box-sizing: border-box;
+   box-sizing: border-box;
+   padding: 6px 0 20px;
+   margin-bottom: 16px;
+   border-bottom: 1px solid #e4e5e7;
+}
+.fg5FMWv {
+   position: relative;
+}
+.sanitized-text {
+   overflow-wrap: break-word;
+   white-space: pre-wrap;
+}
+
+.custom-offer-message-package h6 {
+   color: #404145;
+   font-weight: 700;
+}
+.custom-package-content .package-content .includes {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-flow: row wrap;
+   flex-flow: row wrap;
+   color: #95979d;
+}
+.custom-package-content .package-item, .side-panel-custom-package-content .package-item {
+   margin: 4px 16px 4px 0;
+   word-break: break-word;
+   overflow-wrap: break-word;
+   font-size: 14px;
+}
+.custom-offer-message-package .custom-package-footer {
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   padding-top: 16px;
+   border-top: 1px solid #e4e5e7;
+}
+.custom-offer-message-package .custom-package-footer {
+   -webkit-box-align: start;
+   -ms-flex-align: start;
+   align-items: flex-start;
+}
+.FW1syM7 {
+   display: inline-block;
+   -webkit-box-sizing: border-box;
+   box-sizing: border-box;
+   position: relative;
+   padding: 12px 24px;
+   border: 1px solid transparent;
+   border-radius: 4px;
+   font-weight: 600;
+   font-size: 16px;
+   line-height: 100%;
+   text-decoration: none;
+   text-align: center;
+   cursor: pointer;
+   -webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+   -o-transition: 70ms cubic-bezier(.75,0,.25,1);
+   transition: 70ms cubic-bezier(.75,0,.25,1);
+}
+.bg-co-green-700 {
+   background-color: #2E5DC5;
+}
+.co-white {
+   color: #fff;
+}
+.custom-offer-message-package .custom-package-footer .package-buttons {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: block;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-align: baseline;
+   -ms-flex-align: baseline;
+   align-items: baseline;
+   width: auto;
+   margin-left: auto;
+   text-align:right;
+}
+.XQskgrQ {
+   display: inline-block;
+   background: none;
+   border: none;
+   padding: 0;
+   margin: 0;
+   fill: #74767e;
+}
+._3YNlATc {
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: reverse;
+   -ms-flex-flow: row-reverse;
+   flex-flow: row-reverse;
+}
+.KUW\+QwR {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-pack: justify;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+   background-color: #fafafa;
+   border-bottom: 1px solid #e4e5e7;
+   margin: -20px -20px 0;
+   padding: 17px 20px 12px;
+   -ms-flex-flow: wrap;
+   flex-flow: wrap;
+}
+.McOrFfb {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-pack: justify;
+   -ms-flex-pack: justify;
+   justify-content: space-between;
+}
+.GBwyMi1 {
+   line-height: 100%;
+   color: #222325;
+   margin-right: 5px;
+   padding-left: 8px;
+   font-size:20px;
+}
+.custom-package-content .flex-center {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   width:75%;
+   -webkit-box-pack: center;
+   -ms-flex-pack: center;
+   justify-content: center;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+}
+.decline_offer
+{
+   margin-right:3%;
+}
+.text-body-2, .tbody-6 {
+   font-size: 14px;
+   line-height: 21px;
+}
+._4aalYpY {
+   margin-top: 16px;
+   max-width: 582px;
+}
+.W6rA1Yv {
+   background: #fff;
+   padding: 24px;
+   border: 1px solid #e4e5e7;
+   border-radius: 4px;
+}
+.SJvuSVq {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: vertical;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: column;
+   flex-direction: column;
+   border-bottom: 1px solid #e4e5e7;
+   padding-bottom: 24px;
+}
+.BhSqh3g {
+   display: grid;
+   grid-column-gap: 8px;
+   grid-row-gap: 8px;
+   grid-template-columns: repeat(1,minmax(0,1fr));
+}
+
+.BhSqh3g {
+   grid-row-gap: 24px;
+   grid-template-columns: repeat(3,minmax(0,1fr));
+}
+.BhSqh3g:first-child .vtb\+Dcs {
+   margin-top: 0;
+}
+.ryQqgSG {
+   grid-column: 2/3;
+   white-space: nowrap;
+}
+.GQtv-8L:first-child {
+   margin-top: 0;
+}
+.GQtv-8L {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+   margin-top: 8px;
+}
+.GQtv-8L svg{
+   padding-right: 5px;
 }
 </style>
 
 <script>
+
+   function formatDate(date) {
+      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var _date = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var d = new Date();
+      var curr_year = d.getFullYear();    
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = '';
+      strTime =  monthNames[month] + " " + _date+ ", " + year ;  
+      return strTime;
+    }
+   
+   function formatAMPM(date) {
+      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+      var _date = date.getDate();
+      var month = date.getMonth();
+      var year = date.getFullYear();
+      var d = new Date();
+      var curr_year = d.getFullYear();    
+      var ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12;
+      hours = hours ? hours : 12; // the hour '0' should be '12'
+      minutes = minutes < 10 ? '0'+minutes : minutes;
+      var strTime = '';
+      if(curr_year != year)
+      {
+         strTime =  monthNames[month] + " " + _date+ ", " + year + hours + ':' + minutes + ' ' + ampm; 
+      }
+      else{
+         strTime = monthNames[month]  + " " + _date+ ", " + hours + ':' + minutes + ' ' + ampm;  
+      }   
+      return strTime;
+    }
+
    $(document).ready(function(){
+      $(".help_div").hover(function (e) {
+         $('.helptext_desc').toggle();
+      });
       jsonObj1 = eval($("#chat_words_hidd").val());
       five_jsonObj1 = eval($("#five_chat_words_hidd").val());
       location_href =  $(location).attr('href').split("/");
@@ -3009,7 +2804,7 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
       $("#seller_rating_div").hide();
       $("#buyer_rating_div").hide();
       $(".subnav--new").hide();
-      $("#color_mode").on("change", function ()     {
+      $("#color_mode").on("change", function (){
          if($(this).prop("checked") == true){
             $("#seller_rating_div").show();
             $("#buyer_rating_div").hide();
@@ -3044,6 +2839,182 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
          $("#span_chat_mssg").text( maxlength - thisChars + " /"+maxlength ); 
       }
    });
+   const get = (selector, root = document) => root.querySelector(selector);
+   let attachment;
+
+   const roomName = "chat_896";
+   const chatSocket = new WebSocket(
+     'ws://'
+     + window.location.host
+     + '/ws/chat/'
+     + roomName
+     + '/'
+   );
+   chatSocket.onmessage = e => {
+      const data = JSON.parse(e.data);
+      $("#chat_message").val("");
+      $("#files_list").empty();
+      $("#message_errors").hide();
+      var sender_user = $("#chat_initiator").val();
+      var receiver_user = $("#chat_receiver").val();
+      if(data.attachment.length != 0)
+      {
+         attachments = data.attachment.trim().split(",");
+         attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+         $.each(attachments, function (key, value) {
+            if(value.trim().length != 0)
+            {
+               file_path = '/media/chat_files/'+value.trim();
+               attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+            }
+         });
+         attachment_txt += '</ul></div>';
+      }
+      else{
+         attachment_txt = ''
+      }
+      if(sender_user == data.sender)
+      {
+         $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+      }
+      else if(receiver_user.trim() == data.sender.trim())
+      {
+         $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+data.sender+'</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+      }
+   };
+   chatSocket.onclose = e => console.error(e);
+   $( "#inbox_chat_mssg_send" ).click(function() {
+      event.preventDefault();
+      if($("#chat_message").val().trim().length  != 0)
+      {
+         var sender_user = $("#chat_initiator").val();
+         var receiver_user = $("#chat_receiver").val();
+         let message;
+         imgList= '';
+         $("#files_list").find('.imagediv').each(function(ev){ 
+            imgList = imgList +", "+  $(this).find('.img_file_name').val();
+         });
+         const msgText = $("#chat_message").val().trim();
+         sender_mssg = '';
+         receiver_mssg = '';
+         if('{{request.user.username}}' == sender_user)
+         {
+            sender_mssg = sender_user;
+            receiver_mssg = receiver_user;
+         }            
+         else if('{{request.user.username}}' == receiver_user)
+         {
+            sender_mssg = receiver_user;
+            receiver_mssg = sender_user;
+         }
+         message = JSON.stringify({
+            'message': msgText,
+            'recepient': receiver_mssg,
+            'sender': sender_mssg,   
+            'attachment': imgList,
+            'message_type':'chat',
+            'time': Date.now()
+         });
+         chatSocket.send(message);
+      }
+      else{
+         $(".help_div").removeClass("min_width").addClass("error_help");
+         $(".help_div").show();
+         $(".help_div").find(".helptext_desc").text('This field is required.').addClass("min_width");
+      }
+   });
+   class FileUpload {
+      constructor(input) {
+         this.input = input
+         this.max_length = 1024 * 1024 * 10;
+      }
+      create_progress_bar() {
+         var progress = `<div class="file-icon">
+                           <i class="fa fa-file-o" aria-hidden="true"></i>
+                       </div>
+                       <div class="file-details">
+                           <p class="filename"></p>
+                           <div class="progress" style="margin-top: 5px;">
+                               <div class="progress-bar bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%">
+                               </div>
+                           </div>
+                       </div>`
+         document.getElementById('file_progress_div').innerHTML = progress
+      }
+      upload() {
+         this.create_progress_bar();
+         this.initFileUpload();
+      }
+      initFileUpload() {
+         this.file = this.input.files[0];
+         this.upload_file(0, null);
+      }
+      upload_file(start, model_id) {
+         var end;
+         var self = this;
+         var existingPath = model_id;
+         var formData = new FormData();
+         var nextChunk = start + this.max_length + 1;
+         var currentChunk = this.file.slice(start, nextChunk);
+         var uploadedChunk = start + currentChunk.size
+         if (uploadedChunk >= this.file.size) {
+            end = 1;
+         } else {
+            end = 0;
+         }
+         formData.append('file', currentChunk)
+         formData.append('filename', this.file.name)
+         $('.filename').text(this.file.name)
+         formData.append('end', end)
+         formData.append('existingPath', existingPath);
+         formData.append('nextSlice', nextChunk);
+         $.ajax({
+            xhr: function () {
+               var xhr = new XMLHttpRequest();
+               xhr.upload.addEventListener('progress', function (e) {
+               if (e.lengthComputable) {
+                  if (self.file.size < self.max_length) {
+                     var percent = Math.round((e.loaded / e.total) * 100);
+                  } else {
+                     var percent = Math.round((uploadedChunk / self.file.size) * 100);
+                  }
+                  $('.progress-bar').css('width', percent + '%')
+                  $('.progress-bar').text(percent + '%')
+               }
+            });
+            return xhr;
+         },
+         url: '/post_inbox_upload/',
+         type: 'POST',
+         dataType: 'json',
+         cache: false,
+         processData: false,
+         contentType: false,
+         data: formData,
+         error: function (xhr) {
+            alert(xhr.statusText);
+         },
+         success: function (res) {
+            if (nextChunk < self.file.size) {
+               existingPath = res.existingPath
+               self.upload_file(nextChunk, existingPath);
+               $("#inbox_chat_mssg_send").prop("disabled",true);
+            } else {
+               $("#file_progress_div").empty();
+               var no_of_imgs = $("#files_list").find(".imagediv").length;
+               $("#files_list").append('<div class="mssg_img'+(no_of_imgs+1)+' imagediv" id="mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');
+               $("#inbox_chat_mssg_send").prop("disabled",false);
+            }
+         }
+      });
+   };
+}
+
+   $("#inbox_chat_file").change(function() {
+      var uploader = new FileUpload(document.querySelector('#inbox_chat_file'));
+      uploader.upload();
+   });
+
    });
    function onclick_filter()
    {
@@ -3063,6 +3034,7 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
          {
             $("#data_delete").attr("data-label",data.response_userDetails[0]['user_id']);
             $("#data_block").attr("data-label",data.response_userDetails[0]['user_id']);
+            $("#chat_receiver").val(data.response_userDetails[0]['username']);
             $("#data_username").text(data.response_userDetails[0]['username']);
             $("#data_last_seen").text("have to calculate");
             $("#detail_country").text(data.response_userDetails[0]['user_location']);
@@ -3070,8 +3042,8 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
             $("#detail_english").text(data.response_userDetails[0]['user_english']);
             $("#detail_seller_level").text(data.response_userDetails[0]['seller_level']);
             $("#detail_response_time").text(data.response_userDetails[0]['response_time']);
-            $("#detail_seller_rating").innerHTML(data.response_userDetails[0]['seller_rating'] + '<small> (<a id="details_seller_review" href="/user/profile/+' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['seller_reviews']+'</a>)</small>');
-            $("#detail_buyer_rating").innerHTML(data.response_userDetails[0]['buyer_rating'] + '<small> (<a id="details_buyer_review" href="/user/profile/+' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['buyer_reviews']+'</a>)</small>');
+            $("#detail_seller_rating").html(data.response_userDetails[0]['seller_rating'] + '<small> (<a id="details_seller_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['seller_reviews']+'</a>)</small>');
+            $("#detail_buyer_rating").html(data.response_userDetails[0]['buyer_rating'] + '<small> (<a id="details_buyer_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['buyer_reviews']+'</a>)</small>');
             $("#data_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
             $("#detail_username").text(data.response_userDetails[0]['username']);
             $("#detail_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
@@ -3081,9 +3053,62 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
             $("#conversation").show();
             $("#color_mode").prop("checked",false).trigger("change");
             $("#order_total").text(data.no_of_orders);
+            $("#chat_conversation_id").val(data.conversation_id);
             $("#order_card_div").empty();
             $.each(data.order_details, function(i, v) {
                $("#order_card_div").append(' <div class="CfL5AJd tbody-6 m-t-12" role="order-card"> <div class="xflEYMx cf"> <img class="Ts1SPzc m-r-8" src="'+v.gig_img+'" alt="'+v.gig_title+'" id="order_gig_title"> <div class="text-semi-bold co-text-darker order_amount" role="amount" id="order_amount">$ '+v.order_amount+'</div> <div class="TNCPqsk"> <div class="W46fKfn k-kBZXW GU4H+Y8"> <span class="_5-fo9i5 GU4H+Y8"> <div class="text-trunc _8nupQ3Q tbody-6 order_date" data-testid="tooltip-child" delay="120" position="top" boxclassname="_8UHHk5Q hidden" boxcontentclassname="Yn90o2E" contentclassname="GU4H+Y8" id="order_due_date" >Due '+v.order_due_date+'</div> </span> </div> </div> </div> <div class="flex-between flex-items-center p-t-8"><a class="xe5S0vU tbody-6" role="order-link" href="/user/'+data.response_userDetails[0]['username']+'/manage_orders/'+v.order_no+'/activities" target="_blank" rel="noopener noreferrer" id="see_order_link">See order</a><span class="order-status-badge in_revision" id="order_status">'+v.order_status.trim().toString().toUpperCase()+'</span></div> </div>');
+            });
+            if(data.curre_User == "Buyer")
+            {
+               $("#order_total_link").attr("href","/manage_orders");
+            }
+            else{
+               $("#order_total_link").attr("href","/user/" + data.response_userDetails[0]['username'] + "/manage_orders");
+            }
+            $("#message_errors").hide();
+            $.each(data.data_messages, function(j, vv) {
+               if(vv.attachment != "None")
+               {
+                  attachments = vv.attachment.trim().split(",");
+                  attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                  $.each(attachments, function (key, value) {
+                     if(value.trim().length != 0)
+                     {
+                        file_path = '/media/chat_files/'+value.trim();
+                        attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                     }
+                  });
+                  attachment_txt += '</ul></div>';
+                  if('{{request.user.username}}' == vv.sender_username)
+                  {
+                     //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                  }
+                  else{
+                     //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                  }
+               }
+               else{
+                  if(vv.mssg_type != "chat")
+                  {
+                     if('{{request.user.username}}' == vv.reciever_username)
+                     {
+
+                     }
+                     else{
+
+                     }
+                  }
+                  else
+                  {
+                     if('{{request.user.username}}' == vv.sender_username)
+                     {
+                        //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p></div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     }
+                     else{
+                        //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     }
+                  }
+               }
             });
          }
       });
@@ -3096,6 +3121,11 @@ aside.actions-menu .action-archive, aside.actions-menu .action-archive svg, asid
    function data_on_blockclick(ev)
    {
       alert("345");
+   }
+   function post_img_message_delete(ev)
+   {
+      div_id = $(ev).attr("data-label");
+      $("#files_list").find("#" +div_id).remove();
    }
 </script>
 {% endblock %}

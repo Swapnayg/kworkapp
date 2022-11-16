@@ -124,49 +124,51 @@ class gig_View_View(View):
                 recc_count = recc_count + int(s_review.recommendation)
                 serv_count = serv_count + int(s_review.service)
                 seller_count = seller_count + float(s_review.average_val)
+                s_resp_date = ''
                 try:
                     start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
                 except:
                     start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
-                try:
-                    s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
-                except:
-                    s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
-                end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                diff = relativedelta.relativedelta(end_date, start_date)
-                diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
-                if(diff.years == 0 and diff.months == 0):
-                    if(diff.days == 0):
-                        s_review_date = 'today'
-                    else:
-                        s_review_date = str(diff.days) + ' days'
-                elif(diff.months != 0 and diff.years == 0):
-                    if(diff.months == 1):
-                        s_review_date = str(diff.months) + ' month'
-                    else:
-                        s_review_date = str(diff.months) + ' months'
-                elif(diff.years != 0):
-                    if(diff.years == 1):
-                        s_review_date = str(diff.years) + ' year'
-                    else:
-                        s_review_date = str(diff.years) + ' years'
-                if(diff1.years == 0 and diff1.months == 0):
-                    if(diff1.days == 0):
-                        s_resp_date = 'today'
-                    else:
-                        s_resp_date = str(diff1.days) + ' days'
-                elif(diff1.months != 0 and diff1.years == 0):
-                    if(diff1.months == 1):
-                        s_resp_date = str(diff1.months) + ' month'
-                    else:
-                        s_resp_date = str(diff1.months) + ' months'
-                elif(diff1.years != 0):
-                    if(diff1.years == 1):
-                        s_resp_date = str(diff1.years) + ' year'
-                    else:
-                        s_resp_date = str(diff1.years) + ' years'
+                if(s_review.buyer_resp_date != None):
+                    try:
+                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
+                    except:
+                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
+                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    diff = relativedelta.relativedelta(end_date, start_date)
+                    diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
+                    if(diff.years == 0 and diff.months == 0):
+                        if(diff.days == 0):
+                            s_review_date = 'today'
+                        else:
+                            s_review_date = str(diff.days) + ' days ago'
+                    elif(diff.months != 0 and diff.years == 0):
+                        if(diff.months == 1):
+                            s_review_date = str(diff.months) + ' month ago'
+                        else:
+                            s_review_date = str(diff.months) + ' months ago'
+                    elif(diff.years != 0):
+                        if(diff.years == 1):
+                            s_review_date = str(diff.years) + ' year ago'
+                        else:
+                            s_review_date = str(diff.years) + ' years ago'
+                    if(diff1.years == 0 and diff1.months == 0):
+                        if(diff1.days == 0):
+                            s_resp_date = 'today'
+                        else:
+                            s_resp_date = str(diff1.days) + ' days'
+                    elif(diff1.months != 0 and diff1.years == 0):
+                        if(diff1.months == 1):
+                            s_resp_date = str(diff1.months) + ' month'
+                        else:
+                            s_resp_date = str(diff1.months) + ' months'
+                    elif(diff1.years != 0):
+                        if(diff1.years == 1):
+                            s_resp_date = str(diff1.years) + ' year'
+                        else:
+                            s_resp_date = str(diff1.years) + ' years'
                 country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.buyer_response,"country_flag":country_flag_icon})                 
+                seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
             try:
                 seller_count = int(round(seller_count/len(seller_reviews),0))
             except:
@@ -208,8 +210,8 @@ class gig_View_View(View):
             else:
                 curr_fav = 'no'
             if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
-                userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details, user_id=userDetails)
+                userDetails1 = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details, user_id=userDetails1)
                 impressions.save()
             else:   
                 impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details)
@@ -354,29 +356,51 @@ class profile_view(View):
                     recc_count = recc_count + int(s_review.recommendation)
                     serv_count = serv_count + int(s_review.service)
                     seller_count = seller_count + float(s_review.average_val)
+                s_resp_date = ''
+                try:
+                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
+                except:
+                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
+                if(s_review.buyer_resp_date != None):
                     try:
-                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
+                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
                     except:
-                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
+                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(end_date, start_date)
+                    diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
                     if(diff.years == 0 and diff.months == 0):
                         if(diff.days == 0):
                             s_review_date = 'today'
                         else:
-                            s_review_date = str(diff.days) + ' days'
+                            s_review_date = str(diff.days) + ' days ago'
                     elif(diff.months != 0 and diff.years == 0):
                         if(diff.months == 1):
-                            s_review_date = str(diff.months) + ' month'
+                            s_review_date = str(diff.months) + ' month ago'
                         else:
-                            s_review_date = str(diff.months) + ' months'
+                            s_review_date = str(diff.months) + ' months ago'
                     elif(diff.years != 0):
                         if(diff.years == 1):
-                            s_review_date = str(diff.years) + ' year'
+                            s_review_date = str(diff.years) + ' year ago'
                         else:
-                            s_review_date = str(diff.years) + ' years'
-                    country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                    seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"country_flag":country_flag_icon})
+                            s_review_date = str(diff.years) + ' years ago'
+                    if(diff1.years == 0 and diff1.months == 0):
+                        if(diff1.days == 0):
+                            s_resp_date = 'today'
+                        else:
+                            s_resp_date = str(diff1.days) + ' days'
+                    elif(diff1.months != 0 and diff1.years == 0):
+                        if(diff1.months == 1):
+                            s_resp_date = str(diff1.months) + ' month'
+                        else:
+                            s_resp_date = str(diff1.months) + ' months'
+                    elif(diff1.years != 0):
+                        if(diff1.years == 1):
+                            s_resp_date = str(diff1.years) + ' year'
+                        else:
+                            s_resp_date = str(diff1.years) + ' years'
+                country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
+                seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
                 for b_review in buyer_reviews:
                     buyer_count = buyer_count + int(b_review.rating_val)
                     try:
@@ -978,11 +1002,20 @@ class inbox_view(View):
                 conversation_lists = []
                 for all_c in all_conversations:
                     receiver_name = ''
+                    last_messages = Message.objects.filter(conversation_id= all_c).last()
+                    if(last_messages != None):
+                        lastmessage_str = last_messages.text
+                        last_message_sender = last_messages.sender.username
+                        last_message_receiver = last_messages.receiver.username
+                    else:
+                        lastmessage_str = ''
+                        last_message_sender = ''
+                        last_message_receiver = ''
                     if(all_c.convers_type == "active"):
                         if(userDetails.username == all_c.initiator.username):
-                            conversation_lists.append({"user_Name":all_c.receiver.username,"user_imag":all_c.receiver.avatar})
+                            conversation_lists.append({"user_Name":all_c.receiver.username,'user_receName':all_c.initiator.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.receiver.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_receiver":last_message_receiver})
                         else:
-                            conversation_lists.append({"user_Name":all_c.initiator.username,"user_imag":all_c.initiator.avatar})
+                            conversation_lists.append({"user_Name":all_c.initiator.username,'user_receName':all_c.receiver.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.initiator.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_receiver":last_message_receiver})
                 inbox_char = 0
                 charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "inbox_message"))
                 for c in charcterlimits:
@@ -3026,6 +3059,18 @@ def post_service_request_view(request):
             send_to_user = User.objects.get(pk=userid)
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,send_to=send_to_user,service_type=service_type)
             post_bu_req.save()
+            get_buyer_request = Buyer_Post_Request.objects.get(pk = post_bu_req.pk)
+            try:    
+                message_cover_detls = Conversation.objects.get(initiator=userDetails,receiver = send_to_user)
+            except:
+                try:
+                    message_cover_detls = Conversation.objects.get(initiator=userDetails,receiver = send_to_user)
+                except:
+                    message_cover_detls = Conversation(initiator=userDetails,receiver = send_to_user,convers_type="active")
+                    message_cover_detls.save()
+            conversational_details =   Conversation.objects.get(pk = message_cover_detls.pk)
+            create_message = Message.objects.create(sender=userDetails,receiver=send_to_user,text = "Custom Order Request",attachment = None,conversation_id=conversational_details,message_type = 'quote',buyer_request_id=get_buyer_request)
+            create_message.save()
         else:
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,service_type=service_type)
             post_bu_req.save()
@@ -4499,6 +4544,8 @@ def post_order_upload_view(request):
                     return HttpResponse(res)
         
 
+
+
 @csrf_exempt
 def post_delivery_order_upload_view(request):
     if request.method == 'POST':
@@ -5221,6 +5268,7 @@ def post_seller_response_view(request):
         seller_rev_response = request.GET['seller_rev_response']
         seller_reviews = Seller_Reviews.objects.get(pk = seller_rev_id)
         seller_reviews.seller_response = seller_rev_response
+        seller_reviews.buyer_resp_date =  datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         seller_reviews.save()
         return HttpResponse('sucess')
     
@@ -5310,24 +5358,100 @@ def get_conv_user_details_view(request):
             seller_level_string = "Professional"
         user_details.append({"user_id":receiver.pk,"username":receiver.username,"userimg":receiver.avatar,"user_location":receiver.country.name,"user_start":receiver.created_at.strftime('%b %Y'),"user_english":user_langauges.lang_prof,"seller_level":seller_level_string,"response_time":receiver.avg_respons,"seller_rating":seller_rating,"buyer_rating":buyer_rating,"seller_reviews":seller_reviews,"buyer_reviews":buyer_reviews})
         order_details = []
-        order_data = []
-        try:    
-            order_details = User_orders.objects.filter(order_by=initiator,order_to = receiver , order_status="active")
-        except:
+        order_data = [] 
+        all_messages = Message.objects.filter(conversation_id= conversational_details)
+        message_data = []
+        for all_m in all_messages:
+            if(all_m.message_type == "chat"):
+                attachment_str = ''
+                if(all_m.attachment != None):
+                    if(len(all_m.attachment.strip()) != 0):
+                        attachment_str = all_m.attachment.strip()
+                    else:
+                        attachment_str = "None"
+                else:
+                    attachment_str = "None"
+                message_data.append({"mssg_type":"chat","mssg_id":all_m.pk,"sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
+            else:
+                pass
+                # reolution_details = User_Order_Resolution.objects.filter(message=all_m).first()
+                # if(reolution_details != None):
+                #     delivery_description= ''
+                #     delivery_images= ''
+                #     message_str = ''
+                #     if(reolution_details.resolution_type == "delivered"):
+                #         order_del_details = Order_Delivery.objects.get(resolution = reolution_details)
+                #         delivery_description = order_del_details.delivery_message
+                #         delivery_images= order_del_details.attachment
+                #         message_str = ''
+                #         delivery_no = delivery_no + 1
+                #     else:
+                #         message_str = reolution_details.resolution_desc
+                    # message_data.append({"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
+        message_data.sort(key=operator.itemgetter('mssg_id'))
+        order_details = User_orders.objects.filter(order_by=initiator,order_to = receiver , order_status="active")
+        if(len(order_details) == 0):
             order_details = User_orders.objects.filter(order_by=receiver,order_to = initiator, order_status="active")
+        current_User = ''
         for order in order_details:
+            if(initiator.username == order.order_by.username):
+                current_User = "Buyer"
+            else:
+                current_User = "Seller"
             gig_details = UserGigs.objects.get(gig_title=order.package_gig_name.gig_title)
             gig_image_url = ''
             gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
             if(gig_image != None):
                 gig_image_url = gig_image.gig_image
-            order_data.append({"order_id":order.pk,"order_no":order.order_no,"order_amount":order.order_amount,"order_due_date":order.due_date.strftime('%b %d, %Y'),"gig_img":gig_image_url,"order_status":order.order_status,"gig_title":order.package_gig_name.gig_title})
-        response_data = {"response_userDetails":user_details,"no_of_orders":len(order_details),"order_details":order_data}
+            order_data.append({"order_id":order.pk,"order_no":order.order_no,"order_amount":order.order_amount,"order_due_date":order.due_date.strftime('%b %d, %Y'),"gig_img":gig_image_url,"order_status":order.order_status,"gig_title":order.package_gig_name.gig_title}) 
+        response_data = {"response_userDetails":user_details,"conversation_id":conversational_details.pk,"no_of_orders":len(order_details),"curre_User":current_User,"order_details":order_data,"data_messages":message_data}
         return JsonResponse(response_data,safe=False)
     
-    
-
-
-    
-
-
+@csrf_exempt
+def post_inbox_upload_view(request):
+    if request.method == 'POST':
+        file = request.FILES['file'].read()
+        fileName= request.POST['filename']
+        existingPath = request.POST['existingPath']
+        end = request.POST['end']
+        nextSlice = request.POST['nextSlice']
+        if file=="" or fileName=="" or existingPath=="" or end=="" or nextSlice=="":
+            res = JsonResponse({'data':'Invalid Request'})
+            return HttpResponse(res)
+        else:
+            if existingPath == 'null':
+                fileName = str(shortuuid.ShortUUID().random(length=15)) +"_"+ str(fileName)[0:8]  + pathlib.Path(fileName).suffix 
+                path = 'media/chat_files/' + fileName
+                with open(path, 'wb+') as destination: 
+                    destination.write(file)
+                FileFolder = UploadFile()
+                FileFolder.existingPath = fileName
+                FileFolder.eof = end
+                FileFolder.name = fileName
+                FileFolder.save()
+                if int(end):
+                    res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
+                else:
+                    res = JsonResponse({'existingPath': fileName})
+                return HttpResponse(res)
+            else:
+                path = 'media/chat_files/' + existingPath
+                model_id = UploadFile.objects.get(existingPath=existingPath)
+                if model_id.existingPath == existingPath:
+                    if not model_id.eof:
+                        with open(path, 'ab+') as destination: 
+                            destination.write(file)
+                        if int(end):
+                            model_id.eof = int(end)
+                            model_id.save()
+                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':existingPath})
+                        else:
+                            res = JsonResponse({'existingPath':existingPath})    
+                        return HttpResponse(res)
+                    else:
+                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        return HttpResponse(res)
+                else:
+                    res = JsonResponse({'data':'No such file exists in the existingPath'})
+                    return HttpResponse(res)
+        

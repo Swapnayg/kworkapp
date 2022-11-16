@@ -435,7 +435,7 @@ class AdminConversation(admin.ModelAdmin):
 admin.site.register(Conversation, AdminConversation)
 
 class AdminMessage(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','message_type']
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','message_type','buyer_request_id']
 
 admin.site.register(Message, AdminMessage)
 

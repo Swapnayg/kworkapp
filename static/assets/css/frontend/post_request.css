@@ -512,25 +512,54 @@ input[type="radio"].post_time:checked + label {
     color:#2E5DC5;
     font-weight: bold;
 }
-#image_list div{
-    display:inline-flex;
+#image_list
+{
+    border: none;
+    box-shadow: none;
+    margin-top: 2%;
+    padding-bottom: 2%;
+}
+#image_list .imagediv {
+    height: 80px;
+    width: 62px;
+    display: block;
+    text-align: center;
     position: relative;
-    padding: 2%;
+    display: inline-block;
+    text-align: left;
+    float: left;
+    margin-right: 2%;
 }
-#image_list img{
-    width:80px;
-    height:80px;
-    position:relative;
-    margin-left:3%;
-    margin-right: 10%;
+#image_list .imagediv .fa {
+    display: inline-block;
+    float: right;
+    position: absolute;
+    color: red;
+    font-size: 14px;
+    padding-left: 15%;
+    cursor: pointer;
 }
-#image_list i{
-    margin-right:3%;
-    position:absolute;
-    color:red;
-    cursor:pointer;
-    right:0;
+#image_list .imagediv .fileicon {
+    text-align: center;
+    font-size: 40px;
+    color: #333;
+    margin-bottom: 7%;
+    position: absolute;
+    left: 24%;
+    padding-left: 5%;
 }
+#image_list .imagediv .file_name {
+    font-size: 8px;
+    line-height: 8px;
+    display: block;
+    bottom: 15px;
+    width: 100%;
+    float: left;
+    position: absolute;
+    text-align: center;
+    font-weight: 700;
+}
+
 .FW1syM7 {
     border: 1px solid transparent;
     border-radius: 4px;
@@ -587,3 +616,4 @@ input[type="radio"].post_time:checked + label {
     font-size:15px;
     font-weight:700;
 }
+

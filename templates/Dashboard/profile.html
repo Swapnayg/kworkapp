@@ -974,7 +974,8 @@
                     data1 = JSON.parse(data);
                     $.each(data1, function (key, value) {
                         $.each(value, function (key1, value1){
-                            $("#image_list").append('<div class="img'+(key1+1)+' imagediv"><img src='+value1+' id="img'+(key1+1)+'"><i class="fa fa-trash" onclick="post_img_delete(this);"></i></img></div>');
+                           $("#image_list").css("height", "100px");
+                           $("#image_list").append('<div class="img'+(key1+1)+' imagediv" id="mssg_img'+(key1+1)+'"><input type="hidden" value="'+value1+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(key1+1)+' "></i></span><span class="file_name">...'+value1.slice(-20)+'</span>');
                         });
                     });
 				}};
@@ -1003,6 +1004,10 @@
       });
        
     }
-
+    function post_img_message_delete(ev)
+    {
+       div_id = $(ev).attr("data-label");
+       $("#image_list").find("#" +div_id).remove();
+    }
 </script>
 {% endblock %}

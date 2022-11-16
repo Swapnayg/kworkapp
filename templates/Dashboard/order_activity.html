@@ -4891,80 +4891,93 @@ small {
       });
 
       const get = (selector, root = document) => root.querySelector(selector);
-
-    let attachment;
-
+      let attachment;
       const roomName = $("#conversation_id").val();
-    const chatSocket = new WebSocket(
+      const chatSocket = new WebSocket(
         'ws://'
         + window.location.host
         + '/ws/order_chat/'
         + roomName
         + '/'
-    );
-
-    var buyer_user = $("#buyer_username").val();
-    var seller_user = $("#seller_username").val();
-    chatSocket.onmessage = e => {
-        const data = JSON.parse(e.data);
-        $("#text_order_mssg").val("");
-        $("#files_list").empty();
-        $("#message_errors").hide();
-        if('{{request.user.username}}' == data.sender)
-        {
-            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
-        }
-        else 
-        {
-            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
-        }
-    };
-    chatSocket.onclose = e => console.error(e);
-    $( "#chat_message_send" ).click(function() {
-        event.preventDefault();
-        if($("#text_order_mssg").val().trim()  != 0)
-        {
-         let message;
-         imgList= '';
-         $("#files_list").find('.imagediv').each(function(ev){ 
-             imgList = imgList +", "+  $(this).find('.img_file_name').val();
-         });
-         const msgText = $("#text_order_mssg").val().trim() 
-         sender_mssg = '';
-         receiver_mssg = '';
-         if('{{request.user.username}}' == buyer_user)
+      );
+      var buyer_user = $("#buyer_username").val();
+      var seller_user = $("#seller_username").val();
+      chatSocket.onmessage = e => {
+         const data = JSON.parse(e.data);
+         $("#text_order_mssg").val("");
+         $("#files_list").empty();
+         $("#message_errors").hide();
+         if(data.attachment.length != 0)
          {
-            sender_mssg = buyer_user;
-            receiver_mssg = seller_user;
+            attachments = data.attachment.trim().split(",");
+            attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+            $.each(attachments, function (key, value) {
+               if(value.trim().length != 0)
+               {
+                  file_path = '/media/order_files/'+value.trim();
+                  attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+               }
+            });
+            attachment_txt += '</ul></div>';
          }
-         else if('{{request.user.username}}' == seller_user)
+         else{
+            attachment_txt = ''
+         }
+         if('{{request.user.username}}' == data.sender)
          {
-            sender_mssg = seller_user;
-            receiver_mssg = buyer_user;
+            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p>'+attachment_txt+'  </div> </div> </div> </article> </div> </article> </section>');
          }
-         message = JSON.stringify({
-            'message': msgText,
-            'recepient': receiver_mssg,
-            'sender': sender_mssg,   
-            'order_no': '{{seller_gig.0.order_no}}' ,
-            'attachment': imgList,
-            'time': Date.now()
-         });
-         chatSocket.send(message);
-        }
-        else{
-         $(".help_div").removeClass("min_width").addClass("error_help");
-         $(".help_div").show();
-         $(".help_div").find(".helptext_desc").text('This field is required.').addClass("min_width");
-        }
-    });
-    class FileUpload {
+         else 
+         {
+            $("#message_wrap_box").append(' <section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/beinganaatiidu1?source=order_page_user_stamp_link" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+data.sender_img+'" class="profile-pict-img" alt="beinganaatiidu1"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+data.sender+'" class="username-url">'+data.sender+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(data.time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+data.message+'</p> '+attachment_txt+' </div> </div> </div> </article> </div> </article> </section>');
+         }
+      };
+      chatSocket.onclose = e => console.error(e);
+      $( "#chat_message_send" ).click(function() {
+         event.preventDefault();
+         if($("#text_order_mssg").val().trim().length  != 0)
+         {
+            let message;
+            imgList= '';
+            $("#files_list").find('.imagediv').each(function(ev){ 
+               imgList = imgList +", "+  $(this).find('.img_file_name').val();
+            });
+            const msgText = $("#text_order_mssg").val().trim();
+            sender_mssg = '';
+            receiver_mssg = '';
+            if('{{request.user.username}}' == buyer_user)
+            {
+               sender_mssg = buyer_user;
+               receiver_mssg = seller_user;
+            }            
+            else if('{{request.user.username}}' == seller_user)
+            {
+               sender_mssg = seller_user;
+               receiver_mssg = buyer_user;
+            }
+            message = JSON.stringify({
+               'message': msgText,
+               'recepient': receiver_mssg,
+               'sender': sender_mssg,   
+               'order_no': '{{seller_gig.0.order_no}}' ,
+               'attachment': imgList,
+               'time': Date.now()
+            });
+            chatSocket.send(message);
+         }
+         else{
+            $(".help_div").removeClass("min_width").addClass("error_help");
+            $(".help_div").show();
+            $(".help_div").find(".helptext_desc").text('This field is required.').addClass("min_width");
+         }
+      });
+   class FileUpload {
       constructor(input) {
-          this.input = input
-          this.max_length = 1024 * 1024 * 10;
+         this.input = input
+         this.max_length = 1024 * 1024 * 10;
       }
       create_progress_bar() {
-          var progress = `<div class="file-icon">
+         var progress = `<div class="file-icon">
                               <i class="fa fa-file-o" aria-hidden="true"></i>
                           </div>
                           <div class="file-details">
@@ -4974,76 +4987,75 @@ small {
                                   </div>
                               </div>
                           </div>`
-          document.getElementById('file_progress_div').innerHTML = progress
+         document.getElementById('file_progress_div').innerHTML = progress
       }
       upload() {
-          this.create_progress_bar();
-          this.initFileUpload();
+         this.create_progress_bar();
+         this.initFileUpload();
       }
-  
       initFileUpload() {
-          this.file = this.input.files[0];
-          this.upload_file(0, null);
+         this.file = this.input.files[0];
+         this.upload_file(0, null);
       }
       upload_file(start, model_id) {
-          var end;
-          var self = this;
-          var existingPath = model_id;
-          var formData = new FormData();
-          var nextChunk = start + this.max_length + 1;
-          var currentChunk = this.file.slice(start, nextChunk);
-          var uploadedChunk = start + currentChunk.size
-          if (uploadedChunk >= this.file.size) {
-              end = 1;
-          } else {
-              end = 0;
-          }
-          formData.append('file', currentChunk)
-          formData.append('filename', this.file.name)
-          $('.filename').text(this.file.name)
-          formData.append('end', end)
-          formData.append('existingPath', existingPath);
-          formData.append('nextSlice', nextChunk);
-          $.ajax({
-              xhr: function () {
-                  var xhr = new XMLHttpRequest();
-                  xhr.upload.addEventListener('progress', function (e) {
-                      if (e.lengthComputable) {
-                          if (self.file.size < self.max_length) {
-                              var percent = Math.round((e.loaded / e.total) * 100);
-                          } else {
-                              var percent = Math.round((uploadedChunk / self.file.size) * 100);
-                          }
-                          $('.progress-bar').css('width', percent + '%')
-                          $('.progress-bar').text(percent + '%')
-                      }
-                  });
-                  return xhr;
-              },
-              url: '/post_order_upload/',
-              type: 'POST',
-              dataType: 'json',
-              cache: false,
-              processData: false,
-              contentType: false,
-              data: formData,
-              error: function (xhr) {
-                  alert(xhr.statusText);
-              },
-              success: function (res) {
-                  if (nextChunk < self.file.size) {
-                      existingPath = res.existingPath
-                      self.upload_file(nextChunk, existingPath);
-                      $("#chat_message_send").prop("disabled",true);
+         var end;
+         var self = this;
+         var existingPath = model_id;
+         var formData = new FormData();
+         var nextChunk = start + this.max_length + 1;
+         var currentChunk = this.file.slice(start, nextChunk);
+         var uploadedChunk = start + currentChunk.size
+         if (uploadedChunk >= this.file.size) {
+            end = 1;
+         } else {
+            end = 0;
+         }
+         formData.append('file', currentChunk)
+         formData.append('filename', this.file.name)
+         $('.filename').text(this.file.name)
+         formData.append('end', end)
+         formData.append('existingPath', existingPath);
+         formData.append('nextSlice', nextChunk);
+         $.ajax({
+            xhr: function () {
+               var xhr = new XMLHttpRequest();
+               xhr.upload.addEventListener('progress', function (e) {
+               if (e.lengthComputable) {
+                  if (self.file.size < self.max_length) {
+                     var percent = Math.round((e.loaded / e.total) * 100);
                   } else {
-                     $("#file_progress_div").empty();
-                     var no_of_imgs = $("#files_list").find(".imagediv").length;
-                      $("#files_list").append('<div class="mssg_img'+(no_of_imgs+1)+' imagediv" id="mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');
-                      $("#chat_message_send").prop("disabled",false);
+                     var percent = Math.round((uploadedChunk / self.file.size) * 100);
                   }
-              }
-          });
-      };
+                  $('.progress-bar').css('width', percent + '%')
+                  $('.progress-bar').text(percent + '%')
+               }
+            });
+            return xhr;
+         },
+         url: '/post_order_upload/',
+         type: 'POST',
+         dataType: 'json',
+         cache: false,
+         processData: false,
+         contentType: false,
+         data: formData,
+         error: function (xhr) {
+            alert(xhr.statusText);
+         },
+         success: function (res) {
+            if (nextChunk < self.file.size) {
+               existingPath = res.existingPath
+               self.upload_file(nextChunk, existingPath);
+               $("#chat_message_send").prop("disabled",true);
+            } else {
+               $("#file_progress_div").empty();
+               var no_of_imgs = $("#files_list").find(".imagediv").length;
+               $("#files_list").append('<div class="mssg_img'+(no_of_imgs+1)+' imagediv" id="mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');
+               $("#chat_message_send").prop("disabled",false);
+            }
+         }
+      });
+   };
   }
 
    $("#chat_file").change(function() {

@@ -234,7 +234,7 @@
                                            </span>
                                         </div>
                                      </div>
-                                     <a class="ZQi_S8t YmeteBT a1WZUBV co-grey-1000 btn-contact-me" onclick="inbox_click('+{{userDetails.username}}+');">Contact Me</a>
+                                     <a class="ZQi_S8t YmeteBT a1WZUBV co-grey-1000 btn-contact-me" onclick="inbox_click('{{userDetails.username}}');">Contact Me</a>
                                   </div>
                                </div>
                                <div class="stats-desc">
@@ -512,7 +512,7 @@
                                               <p class="text-body-2">{{review.message}}</p>
                                            </div>
                                            <section><span></span></section>
-                                           <span class="summarize"><time class="text-body-2">{{review.review_date}} ago</time></span>
+                                           <span class="summarize"><time class="text-body-2">{{review.review_date}} </time></span>
                                            <span class="review_seller_comment_is_shown-wrapper">
                                               <div class="response-item">
                                                  <div class="user-profile-image"><label class="profile-pict" for="profile_image_9752182660853" style="width: 32px; height: 32px; font-size: 1em;"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90" loading="lazy"></label></div>
@@ -522,7 +522,7 @@
                                                  <div class="review-description">
                                                     <p class="text-body-2">{{review.buyer_resp}} </p>
                                                  </div>
-                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date}}  ago</time></span>
+                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date}}  </time></span>
                                               </div>
                                            </span>
                                         </li>
@@ -590,7 +590,7 @@
                                          
                                        </ul>
                                     </article>
-                                    <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('+{{userDetails.username}}+');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
+                                    <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
                                  </div>
                                  <div class="package-content zxTHQ6r mt-4" id="standard_contents">
                                     <header class="header-default">
@@ -627,7 +627,7 @@
                                           
                                         </ul>
                                      </article>
-                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('+{{userDetails.username}}+');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
+                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
                                  </div>
                                  <div class="package-content zxTHQ6r mt-4" id="premium_contents">
                                     <header class="header-default">
@@ -664,7 +664,7 @@
                                           
                                         </ul>
                                      </article>
-                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank"  onclick="inbox_click('+{{userDetails.username}}+');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
+                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank"  onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
                                  </div>
                                 
                              </div>
@@ -869,6 +869,12 @@
   .stats-desc
   {
    border: 1px solid #dadbdd;
+  }
+  .btn-contact-me:hover
+  {
+   color:#62646a;
+   border: 1px solid #62646a;
+   text-decoration:none;
   }
 </style>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />

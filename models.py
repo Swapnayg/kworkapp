@@ -164,7 +164,7 @@ class Conversation(models.Model):
         verbose_name_plural = _("Conversations")
 
     def __str__(self):
-        return str(self.timestamp)
+        return str(self.initiator)
     
 class ChatWords(models.Model):
     name =  models.CharField(max_length=200,blank=True,default="",null=True)
@@ -177,25 +177,6 @@ class ChatWords(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
-
-class Message(models.Model):
-    BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('activity', 'Activity Message')]
-    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_sender")
-    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_receiver")
-    text = models.CharField(max_length=1000,blank=True,null=True)
-    attachment = models.CharField(max_length=500,blank=True,null=True)
-    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(default=timezone.now, blank=True)
-    message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
-
-    class Meta:
-        verbose_name = _("Message")
-        verbose_name_plural = _("Messages")
-
-    def __str__(self):
-        return str(self.timestamp)
-
-
 
 class PageEditor(models.Model):
     page_name = models.CharField(max_length=500)
@@ -1110,6 +1091,25 @@ class Notification_commands(models.Model):
 
     def __str__(self):
         return str(self.notification)
+
+
+class Message(models.Model):
+    BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('quote', 'Quote'),('offer', 'Offer')]
+    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_sender")
+    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_receiver")
+    text = models.CharField(max_length=1000,blank=True,null=True)
+    attachment = models.CharField(max_length=500,blank=True,null=True)
+    conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(default=timezone.now, blank=True)
+    buyer_request_id = models.ForeignKey(Buyer_Post_Request, on_delete=models.CASCADE,null=True,blank=True,default= None)
+    message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+
+    class Meta:
+        verbose_name = _("Message")
+        verbose_name_plural = _("Messages")
+
+    def __str__(self):
+        return str(self.timestamp)
 
 
 
