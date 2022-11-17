@@ -1029,6 +1029,7 @@
     }
     .expander 
     {
+        cursor:default;
         margin-bottom: 4px;
         font-weight: 700;
         font-size: 16px;

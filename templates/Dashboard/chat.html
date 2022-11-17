@@ -20,7 +20,7 @@
                               <div class="popover-filters" id="show_all_filters">
                                  <div class="filters-scroll-wrap">
                                     <ul>
-                                       <li class="active-filter"><a onclick="filter_click('all');" class="link-action">All Conversations</a></li>
+                                       <li class="active-filter"><a onclick="filter_click('active');" class="link-action">All Conversations</a></li>
                                        <li ><a onclick="filter_click('block');" class="link-action">Unread</a></li>
                                        <li><a onclick="filter_click('unread');" class="link-action">Unread</a></li>
                                        <li><a onclick="filter_click('offers');" class="link-action">Custom Offers</a></li>
@@ -30,11 +30,11 @@
                            </span>
                         </div>
                      </header>
-                     <nav class="contacts-list" data-testid="contacts-list">
+                     <nav class="contacts-list" data-testid="contacts-list" id="contacts-list">
                         <div></div>
                         {% for contact in all_contacts %}
                            {% if contact.user_Name == request.user.username %}
-                              <a class="contact read" onclick="user_conversation_click('{{contact.user_receName}}');">
+                           <a class="contact read" data-label="{{contact.user_receName}}" onclick="user_conversation_click('{{contact.user_receName}}');">
                                  <span class="image-container">
                                     <figure class="profile-image">
                                        <img src="{{contact.user_receImg}}" alt="a">
@@ -47,11 +47,14 @@
                                        {% if contact.last_message_str|length != 0 %}
                                           {% if contact.last_message_sender == request.user.username %}
                                              <span class="last_message">Me: {{contact.last_message_str}}</span>
+                                             <span class="unread-count">1</span>
                                           {% else %}
                                              <span class="last_message">{{contact.last_message_str}}</span>
+                                             <span class="unread-count">1</span>
                                           {% endif %}
                                        {% else %}
                                           <span class="last_message">{{contact.last_message_str}}</span>
+                                          <span class="unread-count">1</span>
                                        {% endif %}
                                     </p>
                                  </div>
@@ -67,7 +70,7 @@
                               </aside>
                               </a>
                            {% else %}
-                           <a class="contact read" onclick="user_conversation_click('{{contact.user_Name}}');">
+                           <a class="contact read" data-label="{{contact.user_Name}}" onclick="user_conversation_click('{{contact.user_Name}}');">
                               <span class="image-container">
                                  <figure class="profile-image">
                                     <img src="{{contact.user_imag}}" alt="a">
@@ -80,11 +83,14 @@
                                     {% if contact.last_message_str|length != 0 %}
                                        {% if contact.last_message_sender == request.user.username %}
                                           <span class="last_message">Me: {{contact.last_message_str}}</span>
+                                          <span class="unread-count">1</span>
                                        {% else %}
                                           <span class="last_message">{{contact.last_message_str}}</span>
+                                          <span class="unread-count">1</span>
                                        {% endif %}
                                     {% else %}
                                        <span class="last_message">{{contact.last_message_str}}</span>
+                                       <span class="unread-count">1</span>
                                     {% endif %}
                                  </p>
                               </div>
@@ -132,144 +138,14 @@
                              <div class="wrapper"></div>
                           </aside>
                           <div class="content" id="message_content">
-                           <div class="message-wrapper">
-                              <div id="6374d8a32a883f0001d7f4a3" class="message ">
-                                 <span class="">
-                                    <a href="/beinganaatiidu1" target="_blank" rel="noopener noreferrer" class="profile-image-link">
-                                       <figure class="profile-image">
-                                          <img src="https://fiverr-res.cloudinary.com/t_profile_original,q_auto,f_auto/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg" alt="b">
-                                          <figcaption class="font-accent">B</figcaption>
-                                       </figure>
-                                    </a>
-                                 </span>
-                                 <div class="message-content">
-                                    <div class="header">
-                                       <a href="/beinganaatiidu1" target="_blank" class="sender" rel="noopener noreferrer">beinganaatiidu1</a>
-                                    </div>
-                                    <span class="">
-                                       <div>
-                                          <p class="title italic">
-                                             Here's your Custom Offer
-                                          </p>
-                                          <div class="+LNAmyM">
-                                             <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer">
-                                                <header class="KUW+QwR _3YNlATc">
-                                                   <div class="flex-center">
-                                                      <h3 class="text-display-7"><a href="http://www.fiverr.com/beinganaatiidu1/install-microjobengine-freelancing-website-theme-in-24-hrs?funnel=1e4ed5e6fdad55d0ba904e4ab89ae7f1" target="_blank">I will install microjobengine freelancing website theme in 24 hrs</a></h3>
-                                                   </div>
-                                                   <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">₹2,564</b></div>
-                                                </header>
-                                                <div class="main">
-                                                   <div class="description">
-                                                      <div>
-                                                         <div class="fg5FMWv" style="height: auto;">
-                                                            <p class="sanitized-text">I will create website</p>
-                                                         </div>
-                                                      </div>
-                                                   </div>
-                                                   <div class="package-content">
-                                                      <h6 class="text-display-7 p-b-8">Your offer includes</h6>
-                                                      <div class="includes">
-                                                         <div class="package-item flex flex-items-center tbody-default co-text-darker">
-                                                            <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(29, 191, 115);">
-                                                               <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                                  <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path>
-                                                                  <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
-                                                               </svg>
-                                                            </span>
-                                                            7 Revisions
-                                                         </div>
-                                                         <div class="package-item flex flex-items-center tbody-default co-text-darker">
-                                                            <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(29, 191, 115);">
-                                                               <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                                  <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path>
-                                                                  <path d="M9 4H7v5h5V7H9V4z"></path>
-                                                               </svg>
-                                                            </span>
-                                                            7 Days Delivery
-                                                         </div>
-                                                      </div>
-                                                   </div>
-                                                </div>
-                                                <footer class="custom-package-footer flex flex-items-center">
-                                                   <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" >Decline</button><button class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700">Accept</button></div>
-                                                </footer>
-                                             </div>
-                                          </div>
-                                       </div>
-                                    </span>
-                                    <span class=""></span>
-                                 </div>
-                              </div>
-                           </div>
-                           <div class="message-wrapper">
-                              <div id="6374c7ccc293320014d546e0" class="message ">
-                                 <span class="">
-                                    <figure class="profile-image">
-                                       <img src="https://fiverr-res.cloudinary.com/image/upload/t_profile_original,q_auto,f_auto/v1/attachments/profile/photo/919e8583145a237d89a306439b8944c3-1624448516805/8d75b586-ee3a-4e24-bc4f-8c6b3e21046e.jpg" alt="s">
-                                       <figcaption class="font-accent">S</figcaption>
-                                    </figure>
-                                 </span>
-                                 <div class="message-content">
-                                    <div class="header">
-                                       <span class="sender">Me</span><time datetime="Wed Nov 16 2022 16:51:48 GMT+0530 (India Standard Time)">Nov 16, 2022, 4:51 PM</time>
-                                       <div></div>
-                                    </div>
-                                    <span class="">
-                                       <div>
-                                          <p class="tbody-6">Custom Order Request</p>
-                                          <div class="_4aalYpY tbody-6" data-testid="brief-entry">
-                                             <article>
-                                                <div class="W6rA1Yv" data-testid="brief-body">
-                                                   <ul class="SJvuSVq">
-                                                      <li class="BhSqh3g flex flex-between">
-                                                         <b class="vtb+Dcs">Specification</b>
-                                                         <div class="ryQqgSG">
-                                                            <section>
-                                                               <div class="GQtv-8L">
-                                                                  <div class="flex flex-center m-r-4">
-                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#1DBF73">
-                                                                        <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path>
-                                                                     </svg>
-                                                                  </div>
-                                                                  <div>
-                                                                     <p>Budget ₹8,546.19</p>
-                                                                  </div>
-                                                               </div>
-                                                               <div class="GQtv-8L">
-                                                                  <div class="flex flex-center m-r-4">
-                                                                     <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#1DBF73">
-                                                                        <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path>
-                                                                     </svg>
-                                                                  </div>
-                                                                  <div>
-                                                                     <p>3 days delivery (Nov 19, 2022)</p>
-                                                                  </div>
-                                                               </div>
-                                                            </section>
-                                                         </div>
-                                                      </li>
-                                                      <li class="BhSqh3g flex flex-between">
-                                                         <b class="vtb+Dcs">Criteria</b>
-                                                         <div class="ryQqgSG"></div>
-                                                      </li>
-                                                   </ul>
-                                                   <p class="p-t-12">here is the test quote to check the UI of this within inbox</p>
-                                                </div>
-                                             </article>
-                                          </div>
-                                       </div>
-                                    </span>
-                                    <span class=""></span>
-                                 </div>
-                              </div>
-                           </div>
+                              
                           </div>
                           <footer class="conversation-footer">
                              <div class="message-box ">
                                 <div class="message-uploader-container ">
                                    <div class="message-container " style="padding: 15px;">
                                       <div class="textarea-container" style="height: 70px; min-height: 0px; max-height: 192px;">
+                                       <input type="hidden" value="chat" id= "message_type">
                                        <textarea class="" data-testid="message-box" id="chat_message" maxlength="{{inbox_char}}"></textarea>
                                        <div class="help_div"> <div class="helptext_desc">Message should contain {{inbox_char}} characters minimum.</div> <span class="help_text_span"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>
                                        <span class="text-counter" id="span_chat_mssg">0 / {{inbox_char}}</span>
@@ -289,7 +165,7 @@
                                        </li>
                                        <li>
                                          <div class="W46fKfn +cX12Jm k-kBZXW">
-                                            <span class="_5-fo9i5"><button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 k-kBZXW" data-testid="create-custom-offer-button" delay="120" content="Create and send your customer a unique offer based on their specific requests." position="top" boxclassname="_8UHHk5Q TTIjdUR" boxcontentclassname="Yn90o2E">Create an Offer</button></span>
+                                            <span class="_5-fo9i5"><button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 k-kBZXW" id="btn_create_offer" data-label="" onclick="btn_create_offer_click(this);">Create an Offer</button></span>
                                             <div class="k-kBZXW Gcze-fJ">
                                                <aside class="_77O-JH4 zBHi7jg _7t6M82a _8UHHk5Q TTIjdUR" data-position="top" style="left: -57.4667px; top: -95px; padding-bottom: 8px;">
                                                   <div class="_5KluhlZ Yn90o2E">Create and send your customer a unique offer based on their specific requests.</div>
@@ -392,7 +268,127 @@
         </div>
     </div>
  </div>
-{% include  'Dashboard/base_buyer.html' %}
+{% if request.session.userpage == "buyer" %}
+   {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+<div class="modal fade" id="modal_send_offer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+   <div class="modal-dialog  modal-lg" role="document">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4>Select a Gig to Offer</h4>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+       </div>
+       <div class="modal-body">
+         <div class="row tab1" id="send_offer_div">
+            <div class="col-lg-11">
+               <div class="popup-content ">
+                  <input type="hidden" value="" id= "custom_sender">
+                  <input type="hidden" value="" id= "custom_receiver">
+                  <input type="hidden" value="" id= "cus_offer_id">
+                  <input type="hidden" value="" id= "buyer_request_id">
+                  <div id="model_gig_choose">
+                     <div class="js-offer-gigs-list">
+                        <div class="offer-gigs-list1 antiscroll-wrap1">
+                           <ul class="antiscroll-inner scroll-shadow" id="gig_ul_li">
+                           </ul>
+                        </div>
+                     </div>
+                  </div>
+                  <form id="offer_gig_req_form">
+                     <input type="hidden" value="" id= "tbl_row_id">
+                     <input type="hidden" value="" id= "tbl_req_id">
+                     <input type="hidden" value="" id= "tbl_gig_id">
+                  <div class="offer-extras-list conditions js-conditions" id="gig_details">
+                     <ul class="antiscroll-inner scroll-shadow">
+                        <li class="sel selected-gig">
+                           <label class="fake-radio-black radio-text">
+                              <p id="sel_gig_title"></p>
+                              <span class="gig-pict-74"><img src="" class="" id="sel_gig_img" ></span>
+                              <div class="js-personal-message offer-personal-message">
+                                 <div class="write-wrap cf">
+                                    <textarea name="offer[custom_offer][description]" required maxlength="{{offer_description}}" placeholder="Describe Your Offer" id="text_offer_desc"></textarea>
+                                    <span class="char-count rf" id="offer-char-count"><em>0</em> / {{offer_description}} Chars Max</span>
+                                    <div class="js-desc-error-text error-text p-t-0 p-b-0 hidden">Please provide a description.</div>
+                                 </div>
+                              </div>
+                           </label>
+                        </li> 
+                     </ul>
+                     <ul>
+                        <li>
+                           <label>
+                              <small class="extra-text">Total Offer Amount</small>
+                              <div class="js-price-error-text error-text lf hidden">Define a price between ₹433-₹432401</div>
+                           </label>
+                           <div class="input-wrap">
+                              <small>$</small>
+                              <input type="text" name="offer[custom_offer][price]" required class="js-custom-offer-price js-force-digits"  id="text_offer_price" maxlength="5" placeholder="5000 max." value="">
+                           </div>
+                        </li>
+                        <li>
+                           <label><small class="extra-text">Delivery Time</small></label>
+                           <select name="offer[custom_offer][duration]" class="js-ddown-delivery" id="delivery_time" required>
+                              {% for del in delivery_time %}
+                                 {% if forloop.first %}
+                                    <option value="{{del.parameter_value}}" selected="">{{del.parameter_value}} Days</option>
+                                 {% else %}
+                                    <option value="{{del.parameter_value}}">{{del.parameter_value}} Days</option>
+                                 {% endif %}
+                              {% endfor %}
+                           </select>
+                        </li>
+                        <li class="js-revisions">
+                           <label><small class="extra-text">Number of Revisions (optional)</small></label>
+                           <select name="offer[num_of_revisions]" class="js-ddown-revisions" id="no_revisions" required>
+                              <option value="" selected="">Select</option>
+                              {% for rev in no_revisions %}
+                                    <option value="{{rev.parameter_value}}">{{rev.parameter_value}}</option>
+                              {% endfor %}
+                           </select>
+                        </li>
+                        <li class="toggle-li">
+                           <div class="toggle-wrapper">
+                              <label class="switch" for="req_gig">
+                                 <small class="extra-text">Ask for Gig Requirements</small>
+                                 <input type="checkbox" name="req_gig" id="req_gig" class="sel">
+                                 <span class="slider round"></span>
+                              </label>
+                           </div>
+                        </li>
+                     </ul>
+                  </div>
+                  <div class="js-gig-items offer-gig-items show" id="gig_offer_scopes">
+                     <a  class="expander js-gig-items-expander js-gtm-event-auto" data-gtm-category="offers-popup" data-gtm-action="click" data-gtm-label="extras-expander"><p>Define the Offer Scope:</p></a>
+                     <div class="offer-extras-list">
+                        <ul id="offer_extra_li">
+
+                        </ul>
+                     </div>
+                     <p class="label-helper">
+                        <i class="fa fa-exclamation-circle"></i>
+                        The order will start immediately upon payment.<br><span>Make sure you have all of the required information to start working.</span>
+                     </p>
+                  </div>
+                 
+                  <footer class="cf p-20 modal_footer">
+                     <div class="error-container hidden js-error-container">
+                        <p class="msg-error t-a-center">Something went wrong, please try again.</p>
+                     </div>
+                     <input type="submit" class="btn-standard btn-green-grad js-fiverr-form-submit js-gtm-event-auto" value="Submit Offer"  />
+                     <a onclick="gig_back_click();" class="btn-back lf m-t-10 p-r-20 js-btn-back">Back</a>
+                  </footer>
+                  </form>
+               </div>
+            </div>
+           
+       </div>
+     </div>
+   </div>
+ </div>
+
+
 
 <script src="{% static 'assets/js/select2.min.js' %}"></script>
 <script src="{% static 'assets/js/jquery.flipper-responsive.js' %}"></script>
@@ -663,6 +659,7 @@ button.search-toggle {
 }
 .contacts-list>.contact.read p {
     font-weight: 400;
+    width: 100%;
 }
 .contacts-list>.contact strong {
     color: #222325;
@@ -753,9 +750,7 @@ button.search-toggle {
 }
 
 
-.contacts-list>.contact.active-contact {
-   background-color: #e5f8e6;
-}
+
 
 
 .profile-image figcaption {
@@ -1461,6 +1456,7 @@ aside.actions-menu .divider {
    margin-right: 15px !important;
    -webkit-font-smoothing: antialiased;
     margin-left: 8px;
+    z-index:1;
 }
 .search
 {
@@ -2527,6 +2523,7 @@ color:#2E5DC5;
 .custom-offer-message-package h3 {
    margin-bottom: 3px;
    word-break: break-word;
+   width:100%;
 }
 .custom-offer-message-package h3 a {
    color: #222325;
@@ -2738,6 +2735,514 @@ color:#2E5DC5;
 .GQtv-8L svg{
    padding-right: 5px;
 }
+.active-contact {
+   background-color: #f3efef !important;
+}
+.popup-content .offer-gigs-list1 {
+   border: none;
+}
+.offer-gigs-list1 {
+   border-bottom: 1px solid #ddd;
+}
+.popup-content .scroll-shadow {
+   background: -webkit-linear-gradient(#fff 30%,rgba(255,255,255,0)),-webkit-linear-gradient(rgba(255,255,255,0),#fff 70%) 0 100%,-webkit-radial-gradient(50% 0,farthest-side,rgba(0,0,0,0.1),transparent),-webkit-radial-gradient(50% 100%,farthest-side,rgba(0,0,0,0.1),transparent) 0 100%;
+   background: linear-gradient(#fff 30%,rgba(255,255,255,0)),linear-gradient(rgba(255,255,255,0),#fff 70%) 0 100%,radial-gradient(50% 0,farthest-side,rgba(0,0,0,0.1),transparent),radial-gradient(50% 100%,farthest-side,rgba(0,0,0,0.1),transparent) 0 100%;
+   background: linear-gradient(#fff 30%,rgba(255,255,255,0)),linear-gradient(rgba(255,255,255,0),#fff 70%) 0 100%,radial-gradient(farthest-side at 50% 0,rgba(0,0,0,0.1),transparent),radial-gradient(farthest-side at 50% 100%,rgba(0,0,0,0.1),transparent) 0 100%;
+   background-repeat: no-repeat;
+   background-size: 100% 20px,100% 20px,100% 7px,100% 7px;
+   background-attachment: local,local,scroll,scroll;
+}
+.offer-gigs-list1>ul, .offer-extras-list>ul {
+   overflow-x: hidden;
+}
+.offer-gigs-list1>ul>li {
+   overflow: hidden;
+   border-top: 0 solid #ddd;
+   -webkit-transition: height .2s,border-width .2s;
+   transition: height .2s,border-width .2s;
+   height:100px;
+}
+.offer-gigs-list1 ul li:first-child {
+   border-width: 0;
+}
+
+.message-action-bar, .message-action-bar>ul {
+   display: -webkit-box;
+   display: -ms-flexbox;
+   display: flex;
+   -webkit-box-orient: horizontal;
+   -webkit-box-direction: normal;
+   -ms-flex-direction: row;
+   flex-direction: row;
+   -webkit-box-align: center;
+   -ms-flex-align: center;
+   align-items: center;
+}
+.offer-gigs-list1 ul li label, #model_gig_choose .offer-extras-list ul li label {
+   display: inline-flex;
+   height: auto;
+   width: 100%;
+   padding: 20px;
+   font-size: 14px;
+   line-height: 17px;
+   color: #0e0e0f;
+   cursor: pointer;
+   box-sizing: border-box;
+}
+
+.fake-radio-black input[type=radio] {
+   position: absolute;
+   opacity: 0;
+   top: -20px;
+   left: -20px;
+}
+
+.offer-gigs-list1>ul>li label .gig-pict-74, .offer-gigs-list1>ul>li label .gig-pict-130, .offer-extras-list>ul>li label .gig-pict-74 {
+   border: none;
+}
+
+.gig-pict-74 {
+   float: left;
+   margin-right: 12px;
+   border-radius: 5px;
+   background-color: #fff;
+   display: block;
+   width: 74px;
+   height: 53px;
+   overflow: hidden;
+}
+.selected-gig img {
+   width: 130px;
+   max-width: 130px !important;
+   max-height: 100px !important;
+}
+textarea {
+   color: #000 !important;
+   font-family: Open Sans, sans-serif !important;
+   font-size: 15px !important;
+   line-height: 18px !important;
+   outline: none;
+   padding-top: 5px !important;
+}
+.offer-extras-list>ul>li .toggle-wrapper, .offer-extras-list>ul>li .toggle-wrapper label
+{
+    width: 100%;
+    margin-top: 1%;
+    position:relative;
+}
+.offer-extras-list>ul>li .toggle-wrapper label .fake-toggle
+{
+    float: right;
+    margin-top: 2%;
+}
+.toggle-li
+{
+    height: 90px !important;
+}
+.label-helper
+{
+    font-size: 12px !important;
+    text-transform: capitalize;
+    width: 100%;
+    color: green !important;
+}
+.label-helper i{
+    color: #2E5DC5;
+    margin-right: 1%;
+}
+.label-helper span{
+    font-size: 10px !important;
+    padding-left: 3%;
+}
+
+.popup-content .offer-extras-list ul li label small{
+   font-weight: 600;
+}
+.switch input {
+   opacity: 0;
+   width: 0;
+   height: 0;
+}
+.toggle-wrapper label input[type=checkbox] {
+   display: none;
+}
+input:checked + .slider {
+    background-color: #2E5DC5;
+}
+.slider.round {
+   border-radius: 34px;
+   width: 10%;
+}
+
+.slider {
+   position: absolute;
+   cursor: pointer;
+   top: 0;
+   right: 0;
+   bottom: 0;
+   background-color: #ccc;
+   -webkit-transition: .4s;
+   transition: .4s;
+   height: 30px;
+}
+.slider:before {
+   position: absolute;
+   content: "";
+   height: 20px;
+   width: 20px;
+   left: 10px;
+   bottom: 5px;
+   background-color: white;
+   -webkit-transition: .4s;
+   transition: .4s;
+}
+.slider.round:before {
+   border-radius: 50%;
+}
+.offer-extras-list>ul>li .input-wrap small {
+   margin-left: 0%;
+   position: absolute;
+   left: 15%;
+   font-size: 17px;
+   top: 12px;
+}
+input:checked + .slider:before {
+   -webkit-transform: translateX(26px);
+   -ms-transform: translateX(26px);
+   transform: translateX(26px);
+   left:15px;
+}
+.toggle-wrapper label {
+   display: inline-block;
+   vertical-align: middle;
+   font-size: 14px;
+   color: #222325;
+   text-transform: capitalize;
+   cursor: pointer;
+}
+
+.char-count {
+   font-size: 12px;
+   font-weight: 600;
+   text-transform: uppercase;
+   color: #999;
+   line-height: 20px;
+   padding-top: 0;
+   padding-bottom: 0;
+   text-align: right;
+   float: right;
+}
+.js-gig-items {
+   margin-top: 4%;
+}
+.modal_footer {
+   margin-bottom: 2%;
+   float: right;
+}
+.expander {
+   margin-bottom: 4px;
+   font-weight: 700;
+   font-size: 16px;
+   color: #404145;
+   line-height: 40px;
+   height: 40px;
+   position: relative;
+   cursor:default;
+}
+.expander p {
+   padding-left: 3%;
+}
+.expander:hover{
+   color:#404145;
+   text-decoration:none;
+}
+.offer-gigs-list1>ul, .offer-extras-list>ul {
+   overflow-x: hidden;
+}
+.offer-extras-list>ul>li {
+   overflow: hidden;
+   border-top: 1px solid #ddd;
+   -webkit-transition: height .2s,border-width .2s;
+   transition: height .2s,border-width .2s;
+   width: 100%;
+   height: 50px;
+}
+.input-wrap input {
+   padding-left: 15%;
+   width: 84%;
+   float: right;
+   height: 30px;
+   line-height: 30px;
+   border: 1px solid #dadbdd;
+   border-radius: 3px;
+   color: #7a7d85;
+}
+.popup-content .offer-extras-list ul li label {
+   font-size: 16px;
+   text-transform: uppercase;
+   color: #999;
+   line-height: 33px;
+   padding-top: 0;
+   padding-bottom: 0;
+}
+.popup-content .offer-extras-list ul li label small {
+   font-weight: 600;
+}
+.gig-pict-74 img{
+   width:100%;
+   height:100%;
+}
+.offer-extras-list>ul>li .input-wrap {
+   float: right;
+   position: relative;
+   height: 25px;
+   padding: 8px;
+   margin-right: 0%;
+   width:160px;
+}
+
+.btn-back {
+   font-size: 14px;
+   display: block;
+   text-align: right;
+   margin-top: 20px;
+   margin-left: auto;
+   width: 100%;
+   font-weight: 500;
+}
+.modal-body
+{
+   padding: 5px 20px;
+    height: 500px;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+.js-extra-chkbox label input[type="number"] {
+   height: 30px;
+   border: 1px solid #b5b6ba;
+   border-radius: 3px;
+   float: right;
+   margin-top: 1%;
+   padding-left: 2%;
+   font-size: 12px;
+}
+.popup-content .offer-extras-list ul li label {
+   font-size: 16px;
+   text-transform: uppercase;
+   color: #999;
+   line-height: 33px;
+   padding-top: 0;
+   padding-bottom: 0;
+}
+.fake-check-black.check-text {
+   height: 15px;
+   width: 15px;
+   margin-right: 2%;
+   width: 100%;
+   position: relative;
+}
+.fake-check-black.check-text .extra-text {
+   padding-left: 4%;
+}
+.popup-content .offer-extras-list ul li label small {
+   font-weight: 600;
+}
+.selected-gig .gig-pict-74 {
+   width: 130px;
+   height: 100px;
+}
+.btn-green-grad {
+   background-image: none;
+   background-color: #2E5DC5 !important;
+   font-weight: 700;
+   text-transform: none;
+   color: #fff!important;
+   border: 1px solid #2E5DC5 !important;
+   padding-left: 10px;
+   padding-right: 10px;
+   text-shadow: 0 -1px 1px rgba(0,0,0,.2);
+   box-shadow: none;
+   text-decoration: none;
+}
+
+.btn-standard {
+   background-color: #fff;
+   font-size: 12px;
+   line-height: 12px;
+   font-weight: 600;
+   display: inline-block;
+   letter-spacing: 0;
+   color: #777;
+   white-space: nowrap;
+   text-transform: uppercase;
+   border: 1px #ccc solid;
+   padding: 9px 20px 8px;
+   margin: 0;
+   cursor: pointer;
+   -webkit-transition: color .2s,background-color .2s,box-shadow .2s,border .2s;
+   transition: color .2s,background-color .2s,box-shadow .2s,border .2s;
+   border-radius: 3px;
+}
+.fake-check-black.check-text input[type="checkbox"] {
+   height: 15px;
+   width: 15px;
+   margin-right: 1%;
+   position: absolute;
+   top: 10px;
+}
+.offer-extras-list>ul>li .input-wrap input {
+   padding-left: 15%;
+   width: 78%;
+   float: right;
+   height: 30px;
+   line-height: 30px;
+   border: 1px solid #dadbdd;
+   border-radius: 3px;
+   color: #7a7d85;
+}
+.offer-extras-list>ul>li select {
+   float: right;
+   width: 20%;
+   height: 30px;
+   border: 1px solid #dadbdd;
+   margin-top: 1%;
+   color: #7a7d85;
+   margin-right: 1%;
+   padding-left: 2%;
+}
+.popup-content .offer-extras-list ul li label.radio-text textarea {
+   color: #404145;
+   text-indent: 10px;
+   height: 64px;
+   margin-bottom: 0;
+   font-size: 18px;
+   font-weight: 700;
+   line-height: 25px;
+   position: static;
+   width: 100%;
+   resize: none;
+   padding: 0;
+   border: none;
+   font: inherit;
+   z-index: 1;
+   top: 1px;
+   left: 1px;
+   right: 1px;
+   bottom: 50px;
+   outline: none;
+   display: block;
+   border-radius: 4px;
+   box-shadow: none;
+   border: 1px solid #c5c6c9;
+   width: 76%;
+}
+.offer-gigs-list1  ul li label img, .offer-extras-list ul li label img {
+   border-radius: 3px;
+}
+.offer-gigs-list1 ul li label p {
+   color: #555;
+   font-weight: 700;
+   display: inline-block;
+   padding: 6px 0 0;
+}
+.gig-pict-74 img {
+   max-width: 74px;
+   max-height: 53px;
+}
+.selected-gig img {
+   width: 130px;
+   max-width: 130px !important;
+   max-height: 100px !important;
+}
+
+.offer-gigs-list1 ul li label, #model_gig_choose .offer-extras-list ul li label {
+   display: inline-flex;
+   height: auto;
+   width: 100%;
+   padding: 20px;
+   font-size: 14px;
+   line-height: 17px;
+   color: #0e0e0f;
+   cursor: pointer;
+   box-sizing: border-box;
+}
+
+.offer-extras-list ul li {
+   overflow: hidden;
+   border-top: 1px solid #ddd;
+   -webkit-transition: height .2s,border-width .2s;
+   transition: height .2s,border-width .2s;
+   width: 100%;
+   height: 50px;
+}
+
+.selected-gig {
+   height: 150px !important;
+}
+.popup-content .offer-extras-list ul li label.radio-text {
+   height: 150px;
+}
+
+.offer-gigs-list1>ul>li label.fake-radio-black.radio-text, .offer-extras-list>ul>li label.fake-radio-black.radio-text {
+   width: 100%;
+}
+.popup-content .offer-extras-list ul li label {
+   font-size: 16px;
+   text-transform: uppercase;
+   color: #999;
+   line-height: 33px;
+   padding-top: 0;
+   padding-bottom: 0;
+}
+.offer-extras-list>ul>li label p {
+   display: block;
+}
+.selected-gig p {
+   margin-bottom: 1%;
+   padding-bottom: 1%;
+   margin-top: 2%;
+   font-size: 14px;
+   font-weight: 600;
+   text-transform: capitalize;
+}
+
+.expander {
+   margin-bottom: 4px;
+   font-weight: 700;
+   font-size: 16px;
+   color: #404145;
+   line-height: 40px;
+   height: 40px;
+   position: relative;
+}
+
+.quote_btn
+{
+   width: 100%;
+   text-align: right;
+}
+.quote_btn button
+{
+   background: #2E5DC5;
+   color: white;
+}
+.contacts-list .unread-count
+{
+   background-color:#2E5DC5;
+   display:inline-block;
+   color:#fff;
+   font-size:12px;
+   font-weight:500;
+   padding:2px 8px;
+   border-radius:8px;
+   text-align:center;
+   position:absolute;
+}
+.last_message
+{
+   margin-right: -15px;
+}
 </style>
 
 <script>
@@ -2821,6 +3326,7 @@ color:#2E5DC5;
       var thisChars = this.value.replace(/{.*}/g, '').length; 
       var maxlength = $(this).attr("maxlength");
       messages =  jsonObj1.some(substring=>this.value.includes(substring));
+      $("#message_type").val("chat");
       if(messages == true)
       {
          array_string =  five_jsonObj1.join(", ");
@@ -2853,6 +3359,8 @@ color:#2E5DC5;
    chatSocket.onmessage = e => {
       const data = JSON.parse(e.data);
       $("#chat_message").val("");
+      $("#message_type").val("");
+      $("#cus_offer_id").val("");
       $("#files_list").empty();
       $("#message_errors").hide();
       var sender_user = $("#chat_initiator").val();
@@ -2875,12 +3383,41 @@ color:#2E5DC5;
       }
       if(sender_user == data.sender)
       {
-         $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+         if(data.message_type == "chat")
+         {
+            $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+         }
+         else{
+            $.ajax({
+               type:"GET",
+               url: "/get_offer_details/",
+               data: {'o_offer_id': data.offer_id},
+               success: function(data1) 
+               {
+                  $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+data.sender+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+data.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+data.sender+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+data.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+data1[0].offer_sender+'/'+data1[0].gig_title+'" target="_blank">'+data1[0].gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+data1[0].offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+data1[0].offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+data1[0].offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+data1[0].offer_time+' Days Delivery </div> </div> </div> </div></div> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+               }
+            });
+         }  
       }
       else if(receiver_user.trim() == data.sender.trim())
       {
-         $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+data.sender+'</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+         if(data.message_type == "chat")
+         {
+            $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+data.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+data.sender+'</span><time>'+formatAMPM(new Date(data.time))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+data.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+         }
+         else{
+            $.ajax({
+               type:"GET",
+               url: "/get_offer_details/",
+               data: {'o_offer_id': data.offer_id},
+               success: function(data1) 
+               {
+                  $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+data.sender+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+data.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+data.sender+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+data.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+data1[0].offer_sender+'/'+data1[0].gig_title+'" target="_blank">'+data1[0].gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+data1[0].offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+data1[0].offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+data1[0].offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+data1[0].offer_time+' Days Delivery </div> </div> </div> </div> <footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="decline_onclick(this);" data-label="'+data.offer_id+'" >Decline</button><a class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700" data-label="'+data.offer_id+'" target="_blank" href="/payments/0/'+ data.offer_id+'">Accept</a></div> </footer> </div> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+               }
+            });           
+         }  
       }
+      $('#message_content').scrollTop($('#message_content')[0].scrollHeight);
    };
    chatSocket.onclose = e => console.error(e);
    $( "#inbox_chat_mssg_send" ).click(function() {
@@ -2895,6 +3432,8 @@ color:#2E5DC5;
             imgList = imgList +", "+  $(this).find('.img_file_name').val();
          });
          const msgText = $("#chat_message").val().trim();
+         const message_type = $("#message_type").val().trim();
+         const offer_id = $("#cus_offer_id").val().trim();
          sender_mssg = '';
          receiver_mssg = '';
          if('{{request.user.username}}' == sender_user)
@@ -2912,7 +3451,8 @@ color:#2E5DC5;
             'recepient': receiver_mssg,
             'sender': sender_mssg,   
             'attachment': imgList,
-            'message_type':'chat',
+            'message_type':message_type,
+            'offer_id':offer_id,
             'time': Date.now()
          });
          chatSocket.send(message);
@@ -3014,6 +3554,65 @@ color:#2E5DC5;
       var uploader = new FileUpload(document.querySelector('#inbox_chat_file'));
       uploader.upload();
    });
+   $('#text_offer_desc').keyup(function() { 
+      var thisChars = this.value.replace(/{.*}/g, '').length; 
+      var maxlength = $(this).attr("maxlength");
+      if(thisChars > maxlength) 
+      {
+         var CharsToDel = (thisChars-maxlength); 
+         this.value = this.value.substring(0,this.value.length-CharsToDel); 
+      }else{
+         $("#offer-char-count").text( maxlength - thisChars + " /"+maxlength  +" Chars Max" ); 
+      }
+   });
+
+   $("#offer_gig_req_form").submit(function(e)
+   {
+       e.preventDefault();
+       o_gig_id =  $("#tbl_gig_id").val();
+       o_b_req_id =  $("#tbl_req_id").val();
+       o_buyer_req_id =  $("#buyer_request_id").val();
+       o_user_id = '{{request.user.id}}'
+       o_text_desc = $("#text_offer_desc").val();
+       o_text_price = $("#text_offer_price").val();
+       o_text_del_time = $("#delivery_time").val();
+       o_text_no_revs = $("#no_revisions").val();
+       o_text_req_gig = $("#req_gig").val();
+       o_chat_initiator = $("#custom_sender").val();
+       o_chat_receiver = $("#custom_receiver").val();
+       o_text_req_gig = '';
+       if($("#req_gig").is(':checked')){
+         o_text_req_gig = "true";
+      } else {
+         o_text_req_gig = "false";
+      }
+      o_extra_params = []
+      $("#offer_extra_li li").each(function (i, vt) {
+         if($(vt).find("input[type='checkbox']").is(':checked')){
+            if($(vt).attr("data-type")== "input")
+            {
+               o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":$(vt).find(".js-extra-quantity").val()});
+            }
+            else
+            {
+               o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":"true"});
+            }
+         }
+      });
+      $.ajax({
+         type:"POST",
+         url: "/post_custom_offer_details/",
+         data: {'o_gig_id': o_gig_id,'o_b_req_id': o_b_req_id,"o_user_id":o_user_id,"o_text_desc":o_text_desc,"o_text_price":o_text_price,"o_text_del_time":o_text_del_time,"o_text_no_revs":o_text_no_revs,"o_text_req_gig":o_text_req_gig,"o_offer_type":"custom","o_extra_params":JSON.stringify( o_extra_params ),"offer_sender":o_chat_initiator,"offer_receiver":o_chat_receiver,"o_buyer_req_id":o_buyer_req_id},
+         success: function(data) 
+         {  
+            $("#chat_message").val("Here's your Custom Offer");
+            $("#message_type").val("offer");
+            $("#cus_offer_id").val(data);
+            $("#inbox_chat_mssg_send").trigger('click');
+            $("#modal_send_offer").modal("hide");
+         }
+      });
+   });
 
    });
    function onclick_filter()
@@ -3032,8 +3631,11 @@ color:#2E5DC5;
          data: {'receiver_user': username.replace(/\?/g, ''),'initiator_user': '{{request.user.username}}'},
          success: function(data)
          {
-            $("#data_delete").attr("data-label",data.response_userDetails[0]['user_id']);
-            $("#data_block").attr("data-label",data.response_userDetails[0]['user_id']);
+            $("#contacts-list").find("a").removeClass("active-contact");
+            $("#contacts-list").find("a[data-label='"+username.replace(/\?/g, '')+"']").addClass("active-contact");
+            $("#data_delete").attr("data-label",data.conversation_id);
+            $("#data_block").attr("data-label",data.conversation_id);
+            $("#btn_create_offer").attr("data-label",data.response_userDetails[0]['username']);
             $("#chat_receiver").val(data.response_userDetails[0]['username']);
             $("#data_username").text(data.response_userDetails[0]['username']);
             $("#data_last_seen").text("have to calculate");
@@ -3081,51 +3683,219 @@ color:#2E5DC5;
                   attachment_txt += '</ul></div>';
                   if('{{request.user.username}}' == vv.sender_username)
                   {
-                     //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
                   }
                   else{
-                     //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
                   }
                }
                else{
                   if(vv.mssg_type != "chat")
                   {
-                     if('{{request.user.username}}' == vv.reciever_username)
+                     if('{{request.user.username}}' == vv.sender_username)
                      {
-
+                        if(vv.mssg_type == "offer")
+                        {
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div>  </div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
+                        }
+                        else if(vv.mssg_type == "quote")
+                        {
+                           $("#message_content").append(' <div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" > <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p> </div> </article> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        }
                      }
                      else{
+                        if(vv.mssg_type == "offer")
+                        {
+                           if(vv.offer_status == "ordered")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" href="user/{{request.user.username}}/manage_orders/'+vv.order_no+'/activities" >View Order</a> </div> </footer>'
+                           }
+                           else if(vv.offer_status == "deleted")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks">Offer Declined</button> </div> </footer>'
+                           }
+                           else if(vv.offer_status == "active")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="decline_onclick(this);" data-label="'+vv.offer_id+'" >Decline</button><a class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700" data-label="'+vv.offer_id+'" target="_blank" href="/payments/0/'+ vv.offer_id+'">Accept</a></div> </footer>'
+                           }                           
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div> '+ btn_offer_txt +'</div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
+                        }
+                        else if(vv.mssg_type == "quote")
+                        {
+                           btn_quote_txt = '';
+                           if(vv.offer_created_sta == "created")
+                           {
+                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks"  >Offer Created</button></div> </footer>';
+                           }
+                           else if(vv.offer_created_sta == "active")
+                           {
 
+                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="create_offer(this);" data-username ="'+vv.receiver_name+'"  data-label="'+vv.request_id+'" >Create Offer</button></div> </footer>';
+                           }
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="s"> <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p>'+btn_quote_txt+' </div> </article>  </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        }
                      }
                   }
                   else
                   {
                      if('{{request.user.username}}' == vv.sender_username)
                      {
-                        //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p></div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p></div> </div> </span> <span class=""></span> </div> </div> </div>');
                      }
                      else{
-                        //$("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p> </div> </div> </span> <span class=""></span> </div> </div> </div>');
                      }
                   }
                }
             });
+            $('#message_content').scrollTop($('#message_content')[0].scrollHeight);
          }
       });
       $("#conversation").show();
    }
    function data_on_deleteclick(ev)
    {
-      alert("123");
+      $.ajax({
+         type:"GET",
+         url: "/post_conv_delete/",
+         data: {"conver_id":$(ev).attr("data-label")},
+         success: function(data)
+         {
+
+         }
+      });
    }
    function data_on_blockclick(ev)
    {
-      alert("345");
+      $.ajax({
+         type:"GET",
+         url: "/post_conv_block/",
+         data: {"conver_id":$(ev).attr("data-label")},
+         success: function(data)
+         {
+
+         }
+      });
    }
    function post_img_message_delete(ev)
    {
       div_id = $(ev).attr("data-label");
       $("#files_list").find("#" +div_id).remove();
+   }
+   function btn_create_offer_click(ev)
+   {
+      username = $(ev).attr("data-label");
+      $.ajax({
+         type:"GET",
+         url: "/get_modal_show_gig_details/",
+         data: {"username":username},
+         success: function(data)
+         {
+            jsonObject = JSON.parse(data);
+            $("#model_gig_choose").show();
+            $("#gig_details").hide();
+            $("#gig_offer_scopes").hide();
+            $(".modal_footer").hide();
+            $("#gig_ul_li").empty();
+            $.each(jsonObject.user_gig_details, function(i, vvv2) {
+               $("#gig_ul_li").append('<li class="sel"> <label class="fake-radio-black radio-text"> <input type="radio" name="offer[gig_id]" onclick="gig_onclick(this);" class="js-offered-gig" value="'+vvv2.gig_id+'" data-label="'+vvv2.gig_image+'" data-title="'+vvv2.gig_title+'"> <span class="gig-pict-74"><img src="'+vvv2.gig_image+'" class="" alt="'+vvv2.gig_title+'" data-reload="inprogress"></span> <p>'+vvv2.gig_title+'</p> </label> </li>');
+            });
+            $("#custom_sender").val($("#chat_initiator").val());
+            $("#custom_receiver").val($("#chat_receiver").val());
+            $("#buyer_request_id").val(0);
+            $("#modal_send_offer").modal("show");
+         }
+      });
+   }
+   function decline_onclick(ev)
+   {
+      offer_id = $(ev).attr("data-label");
+      $.ajax({
+         type:"GET",
+         url: "/post_decline_offer/",
+         data: {"o_offer_id":offer_id},
+         success: function(data)
+         {
+            if(data == "sucess")
+            {
+               $(ev).parent().html('<button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks">Offer Declined</button> ')
+            }
+         }
+      });
+   }
+   function create_offer(ev)
+   {
+      request_id = $(ev).attr("data-label");
+      username = $(ev).attr("data-username");
+      $.ajax({
+         type:"GET",
+         url: "/get_modal_show_gig_details/",
+         data: {"username":username},
+         success: function(data)
+         {
+            jsonObject = JSON.parse(data);
+            $("#model_gig_choose").show();
+            $("#gig_details").hide();
+            $("#gig_offer_scopes").hide();
+            $(".modal_footer").hide();
+            $("#gig_ul_li").empty();
+            $.each(jsonObject.user_gig_details, function(i, vvv2) {
+               $("#gig_ul_li").append('<li class="sel"> <label class="fake-radio-black radio-text"> <input type="radio" name="offer[gig_id]" onclick="gig_onclick(this);" class="js-offered-gig" value="'+vvv2.gig_id+'" data-label="'+vvv2.gig_image+'" data-title="'+vvv2.gig_title+'"> <span class="gig-pict-74"><img src="'+vvv2.gig_image+'" class="" alt="'+vvv2.gig_title+'" data-reload="inprogress"></span> <p>'+vvv2.gig_title+'</p> </label> </li>');
+            });
+            $("#custom_sender").val($("#chat_initiator").val());
+            $("#custom_receiver").val($("#chat_receiver").val());
+            $("#buyer_request_id").val(request_id);
+            $("#modal_send_offer").modal("show");
+         }
+      });
+   }
+
+
+   function gig_onclick(ev)
+   {
+     gig_id = $(ev).val();
+     $.ajax({
+        type:"GET",
+        url: "/get_gig_parameters/",
+        data: {'gig_id': gig_id, "user_id":'{{request.user.id}}'},
+        success: function(data)
+        {
+           var intRegex = /^\d+$/;
+           img_url = $(ev).attr("data-label");
+           gig_title = $(ev).attr("data-title");
+           $("#sel_gig_title").text(gig_title);
+           $("#sel_gig_img").attr("src",img_url);
+           jsonObject = JSON.parse(data);
+           json_parse1 =  eval(jsonObject[0]["data"]);
+           $("#offer_extra_li").empty();
+           $.each(json_parse1, function(i, v5) {
+              if(intRegex.test(v5.value.toString()))
+              {
+                 $("#offer_extra_li").append('<li class="js-extra-chkbox" data-type="input"> <label class="fake-check-black check-text"> <input type="checkbox" > <span class="chk-img"></span> <span class="extra-text"> <small>'+v5.name+'</small> </span> <input type="number" class="js-extra-quantity"  value="0"> </label> </li>');
+              }
+              else{
+                 $("#offer_extra_li").append(' <li class="js-extra-chkbox" data-type="boolean"> <label class="fake-check-black check-text"> <input type="checkbox" > <span class="chk-img"></span> <span class="extra-text"> <small>'+v5.name+'</small> </span> </label> </li>')
+              }
+           });
+           $("#model_gig_choose").hide();
+           $("#gig_details").show();
+           $("#gig_offer_scopes").show();
+           $(".modal_footer").show();
+           $("#text_offer_desc").val("");
+           $("#tbl_gig_id").val(gig_id);
+           $("#text_offer_price").val("");
+           $("#delivery_time").prop("selectedIndex", 0);
+           $("#no_revisions").val("");
+           $('#req_gig').prop('checked', true);
+        }
+     });
+   }
+   function gig_back_click()
+   {
+     $("#model_gig_choose").show();
+     $("#gig_details").hide();
+     $("#gig_offer_scopes").hide();
+     $(".modal_footer").hide();
    }
 </script>
 {% endblock %}

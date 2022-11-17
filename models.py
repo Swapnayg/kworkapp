@@ -613,6 +613,7 @@ class Usergig_image(models.Model):
 class Buyer_Post_Request(models.Model):
     BOOL_CHOICES =[('24hours', '24 Hours'),('3days', '3 Days'),('7days', '7 Days'),('other', 'Others')]
     BOOL_CHOICES_TYPES =[('individual', 'Individual'),('all', 'All')]
+    BOOL_CHOICES_INDIVIDUAL =[('accepted', 'Accepted'),('decline', 'Decline'),('withdrawn', 'Withdrawn')]
     BOOL_CHOICES_STATUS =[('active', 'Active'),('paused', 'Paused'),('pending', 'Pending'),('rejected', 'Rejected')]
     service_desc = models.TextField(blank=True,default="",null=True)
     service_images = models.TextField(blank=True,default="",null=True)
@@ -625,6 +626,7 @@ class Buyer_Post_Request(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
     send_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="post_send_to",null=True,blank=True,default="")
     service_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="all",null=True)
+    individual_request_status = models.CharField(max_length=300,choices=BOOL_CHOICES_INDIVIDUAL,blank=True,default=None,null=True)
     service_status = models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="pending",null=True)
     
     class Meta:
@@ -665,8 +667,9 @@ class Request_Offers(models.Model):
     BOOL_CHOICES_TYPES =[('custom', 'Custom'),('request', 'Request')]
     BOOL_CHOICES_STATUS = [('active', 'Active'),('deleted', 'Removed')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
-    buyer_request = models.ForeignKey(Buyer_Post_Request, on_delete=models.CASCADE,null=False,blank=False)
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False)
+    buyer_request = models.ForeignKey(Buyer_Post_Request, on_delete=models.CASCADE,null=True,blank=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_id",null=False,blank=False)
+    custom_user = models.ForeignKey(User, on_delete=models.CASCADE,related_name="custom_user",null=True,blank=True)
     offer_desc =  models.TextField(blank=True,default="",null=True)
     offer_budget = models.CharField(max_length=300,blank=True,default="",null=True)
     offer_time = models.CharField(max_length=300,blank=True,default="",null=True)
@@ -1102,7 +1105,9 @@ class Message(models.Model):
     conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
     buyer_request_id = models.ForeignKey(Buyer_Post_Request, on_delete=models.CASCADE,null=True,blank=True,default= None)
+    request_offers_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True,default= None)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
+    is_read = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Message")

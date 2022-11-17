@@ -72,7 +72,7 @@
                            </div>
                            {% if userDetails.username != request.user.username %}
                                 <div class="buttons-wrapper">
-                                    <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" onclick="inbox_click('+{{userDetails.username}}+');">Contact Me</a>
+                                    <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" onclick="inbox_click('{{userDetails.username}}');">Contact Me</a>
                                     <button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" onclick="getquoteclick();" id="get_quote_btn">Get a Quote</button>
                                 <div id="react-first-message-popup"></div>
                                 </div>
@@ -332,7 +332,7 @@
                                                    <p class="text-body-2"> {{s_review.message}}</p>
                                                 </div>
                                                 <span class="summarize">
-                                                   <time class="text-body-2">Published {{s_review.review_date}} ago</time>
+                                                   <time class="text-body-2">Published {{s_review.review_date}}</time>
                                                    <span class="translate-btn-wrapper visibility-hidden">
                                                       <span class="separator"> | </span>
                                                       <div class="machine-translation-package machine_translation-package machine-translation-button">
@@ -389,7 +389,7 @@
                                                    <p class="text-body-2"> {{b_review.message}}</p>
                                                 </div>
                                                 <span class="summarize">
-                                                   <time class="text-body-2">Published {{b_review.review_date}} ago</time>
+                                                   <time class="text-body-2">Published {{b_review.review_date}}</time>
                                                    <span class="translate-btn-wrapper visibility-hidden">
                                                       <span class="separator"> | </span>
                                                       <div class="machine-translation-package machine_translation-package machine-translation-button">
@@ -722,7 +722,7 @@
             $.ajax({
                 type:"POST",
                 url: "/post_service_request/",
-                data: {'userid':'{{request.user.id}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"individual",'send_to': window.location.pathname.split("/")[3]},
+                data: {'userid':'{{request.user.id}}',"profile_user":'{{userDetails.username}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"individual",'send_to': window.location.pathname.split("/")[3]},
                 success: function(data) 
                 {  
                     if(data == "sucess")

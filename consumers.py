@@ -7,7 +7,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
 from notifications.signals import notify
 from .models import User
-from .models import Message, Conversation,Order_Message, Order_Conversation,User_orders,ChatWords,SpamDetection
+from .models import Message, Conversation,Order_Message,Request_Offers, Order_Conversation,User_orders,ChatWords,SpamDetection
 from django.db.models import Q
 import itertools
 
@@ -30,21 +30,21 @@ class ChatConsumer(WebsocketConsumer):
     def receive(self, text_data=None, bytes_data=None):
         text_data_json = json.loads(text_data)
 
-        message, sender, receiver, time, attachment , order_no= (
+        message, sender, receiver, time, attachment , message_type, offer_id= (
             text_data_json["message"],
             text_data_json["sender"],
             text_data_json["recepient"],
             datetime.utcfromtimestamp(text_data_json["time"] / 1000.0),
             text_data_json.get("attachment"),
             text_data_json["message_type"],
+            text_data_json["offer_id"],
         )
-        #conversation = Order_Conversation.objects.get(id=int(self.room_name))
         sender = User.objects.get(username=sender)
         sender_prof = sender.avatar
         receiver = User.objects.get(username=receiver)
         receiver_prof =  receiver.avatar
         conversation = Conversation.objects.get(Q(initiator=sender,receiver=receiver) | Q(initiator=receiver,receiver=sender))
-        chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
+        chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())     
         chat_list_words = []
         for chat in chat_words:
             chat_list_words.append(''.join(chat))
@@ -52,14 +52,27 @@ class ChatConsumer(WebsocketConsumer):
             res = [ele for ele in chat_list_words if(ele in message)]
             spam_detection = SpamDetection(user_id=sender,detected_word=str(res))
             spam_detection.save()
-        _message = Message.objects.create(
-            sender=sender,
-            receiver=receiver,
-            text = message,
-            attachment = attachment,
-            conversation_id=conversation,
-            message_type = 'chat',
-        )
+        Message.objects.filter(sender=sender,receiver=receiver).update(is_read=True)
+        if(len(offer_id.strip()) == 0):
+            _message = Message.objects.create(
+                sender=sender,
+                receiver=receiver,
+                text = message,
+                attachment = attachment,
+                conversation_id=conversation,
+                message_type = message_type,
+            )
+        else:
+            request_offer = Request_Offers.objects.get(pk = offer_id)
+            _message = Message.objects.create(
+                sender=sender,
+                receiver=receiver,
+                text = message,
+                attachment = attachment,
+                conversation_id=conversation,
+                message_type = message_type,
+                request_offers_id = request_offer,
+            )  
         notify.send(sender, recipient=receiver, verb='chat',description=message)
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
@@ -71,7 +84,9 @@ class ChatConsumer(WebsocketConsumer):
                 "attachment": _message.attachment,
                 "time": str(_message.timestamp),
                 "sender_img":str(sender_prof),
-                "receiver_img": str(receiver_prof), 
+                "receiver_img": str(receiver_prof),
+                "offer_id": str(offer_id),  
+                "message_type": str(message_type),  
                 "conv_id": str(conversation.id),
             },
         )
@@ -89,7 +104,9 @@ class ChatConsumer(WebsocketConsumer):
                     "time": event["time"],
                     "attachment": event["attachment"],
                     "sender_img":event["sender_img"],
-                    "receiver_img":event["receiver_img"], 
+                    "receiver_img":event["receiver_img"],
+                    "offer_id": event["offer_id"],
+                    "message_type": event["message_type"],  
                     "room_no": event["conv_id"], 
                 }
             )

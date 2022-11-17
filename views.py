@@ -50,8 +50,8 @@ class indexView(View):
             active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id})
         active_works = User_orders.objects.filter(order_status="active").count()  
         last_week = datetime.today() - timedelta(days=7)    
-        buyers_request_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week).count()
-        buyers_this_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week).distinct('user_id').count()
+        buyers_request_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').count()
+        buyers_this_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').distinct('user_id').count()
         return render(request , 'index.html',{"gig_details":active_gigs_data,"active_orders":active_works,"new_buyers":buyers_this_week,"buyer_reqyests":buyers_request_week,"cat_list":category_list,"cat_list_json":json.dumps(category_list)})
 
 class menu_pageView(View):
@@ -156,17 +156,17 @@ class gig_View_View(View):
                         if(diff1.days == 0):
                             s_resp_date = 'today'
                         else:
-                            s_resp_date = str(diff1.days) + ' days'
+                            s_resp_date = str(diff1.days) + ' days ago'
                     elif(diff1.months != 0 and diff1.years == 0):
                         if(diff1.months == 1):
-                            s_resp_date = str(diff1.months) + ' month'
+                            s_resp_date = str(diff1.months) + ' month ago'
                         else:
-                            s_resp_date = str(diff1.months) + ' months'
+                            s_resp_date = str(diff1.months) + ' months ago'
                     elif(diff1.years != 0):
                         if(diff1.years == 1):
-                            s_resp_date = str(diff1.years) + ' year'
+                            s_resp_date = str(diff1.years) + ' year ago'
                         else:
-                            s_resp_date = str(diff1.years) + ' years'
+                            s_resp_date = str(diff1.years) + ' years ago'
                 country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
                 seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
             try:
@@ -356,51 +356,51 @@ class profile_view(View):
                     recc_count = recc_count + int(s_review.recommendation)
                     serv_count = serv_count + int(s_review.service)
                     seller_count = seller_count + float(s_review.average_val)
-                s_resp_date = ''
-                try:
-                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
-                except:
-                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
-                if(s_review.buyer_resp_date != None):
+                    s_resp_date = ''
                     try:
-                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
+                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
                     except:
-                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
-                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                    diff = relativedelta.relativedelta(end_date, start_date)
-                    diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
-                    if(diff.years == 0 and diff.months == 0):
-                        if(diff.days == 0):
-                            s_review_date = 'today'
-                        else:
-                            s_review_date = str(diff.days) + ' days ago'
-                    elif(diff.months != 0 and diff.years == 0):
-                        if(diff.months == 1):
-                            s_review_date = str(diff.months) + ' month ago'
-                        else:
-                            s_review_date = str(diff.months) + ' months ago'
-                    elif(diff.years != 0):
-                        if(diff.years == 1):
-                            s_review_date = str(diff.years) + ' year ago'
-                        else:
-                            s_review_date = str(diff.years) + ' years ago'
-                    if(diff1.years == 0 and diff1.months == 0):
-                        if(diff1.days == 0):
-                            s_resp_date = 'today'
-                        else:
-                            s_resp_date = str(diff1.days) + ' days'
-                    elif(diff1.months != 0 and diff1.years == 0):
-                        if(diff1.months == 1):
-                            s_resp_date = str(diff1.months) + ' month'
-                        else:
-                            s_resp_date = str(diff1.months) + ' months'
-                    elif(diff1.years != 0):
-                        if(diff1.years == 1):
-                            s_resp_date = str(diff1.years) + ' year'
-                        else:
-                            s_resp_date = str(diff1.years) + ' years'
-                country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
+                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
+                    if(s_review.buyer_resp_date != None):
+                        try:
+                            s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
+                        except:
+                            s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
+                        end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                        diff = relativedelta.relativedelta(end_date, start_date)
+                        diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
+                        if(diff.years == 0 and diff.months == 0):
+                            if(diff.days == 0):
+                                s_review_date = 'today'
+                            else:
+                                s_review_date = str(diff.days) + ' days ago'
+                        elif(diff.months != 0 and diff.years == 0):
+                            if(diff.months == 1):
+                                s_review_date = str(diff.months) + ' month ago'
+                            else:
+                                s_review_date = str(diff.months) + ' months ago'
+                        elif(diff.years != 0):
+                            if(diff.years == 1):
+                                s_review_date = str(diff.years) + ' year ago'
+                            else:
+                                s_review_date = str(diff.years) + ' years ago'
+                        if(diff1.years == 0 and diff1.months == 0):
+                            if(diff1.days == 0):
+                                s_resp_date = 'today'
+                            else:
+                                s_resp_date = str(diff1.days) + ' days ago'
+                        elif(diff1.months != 0 and diff1.years == 0):
+                            if(diff1.months == 1):
+                                s_resp_date = str(diff1.months) + ' month ago'
+                            else:
+                                s_resp_date = str(diff1.months) + ' months ago'
+                        elif(diff1.years != 0):
+                            if(diff1.years == 1):
+                                s_resp_date = str(diff1.years) + ' year ago'
+                            else:
+                                s_resp_date = str(diff1.years) + ' years ago'
+                    country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
+                    seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
                 for b_review in buyer_reviews:
                     buyer_count = buyer_count + int(b_review.rating_val)
                     try:
@@ -413,17 +413,17 @@ class profile_view(View):
                         if(diff.days == 0):
                             b_review_date = 'today'
                         else:
-                            b_review_date = str(diff.days) + ' days'
+                            b_review_date = str(diff.days) + ' days ago'
                     elif(diff.months != 0 and diff.years == 0):
                         if(diff.months == 1):
-                            b_review_date = str(diff.months) + ' month'
+                            b_review_date = str(diff.months) + ' month ago'
                         else:
-                            b_review_date = str(diff.months) + ' months'
+                            b_review_date = str(diff.months) + ' months ago'
                     elif(diff.years != 0):
                         if(diff.years == 1):
-                            b_review_date = str(diff.years) + ' year'
+                            b_review_date = str(diff.years) + ' year ago'
                         else:
-                            b_review_date = str(diff.years) + ' years'
+                            b_review_date = str(diff.years) + ' years ago'
                     b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
                     buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
                 try:
@@ -740,7 +740,11 @@ class payments_view(View):
             # try:
                 gigdetails_list = []
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                buyer_req_details = Buyer_Post_Request.objects.get(buyer_request_id= req_id)
+                buyer_req_details = []
+                try:
+                    buyer_req_details = Buyer_Post_Request.objects.get(buyer_request_id= req_id)
+                except: 
+                    buyer_req_details = ''
                 offer_details = Request_Offers.objects.get(pk= offer_id)
                 service_fees = 0
                 gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
@@ -825,7 +829,10 @@ class requirements_f_view(View):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
                 pay_user = User.objects.get(username = pay_to)
-                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                try:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                except:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,custom_user = pay_user )
                 gig_requirements = []
                 charcterlimits = []
                 gig_details = []
@@ -891,10 +898,10 @@ class Manage_request_view(View):
                 pending_request = []
                 rejected_request = []
                 paused_request = []
-                active_request_obj = Buyer_Post_Request.objects.filter(service_status="active", user_id=userDetails)
-                pending_request_obj = Buyer_Post_Request.objects.filter(service_status="pending", user_id=userDetails)
-                paused_request_obj = Buyer_Post_Request.objects.filter(service_status="paused", user_id=userDetails)
-                rejected_request_obj = Buyer_Post_Request.objects.filter(service_status="rejected" , user_id=userDetails)
+                active_request_obj = Buyer_Post_Request.objects.filter(service_status="active", user_id=userDetails,service_type='all')
+                pending_request_obj = Buyer_Post_Request.objects.filter(service_status="pending", user_id=userDetails,service_type='all')
+                paused_request_obj = Buyer_Post_Request.objects.filter(service_status="paused", user_id=userDetails,service_type='all')
+                rejected_request_obj = Buyer_Post_Request.objects.filter(service_status="rejected" , user_id=userDetails,service_type='all')
                 for a_req in active_request_obj:
                     acti_offers_count = Request_Offers.objects.filter(buyer_request=a_req, offer_status_by_buyer='active').count()
                     service_time_str= ''
@@ -1023,7 +1030,14 @@ class inbox_view(View):
                         inbox_char = c.Max_No_of_char_allowed  
                 chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
                 chat_words_5_words = list(ChatWords.objects.order_by().values_list('name').distinct())[:5]
-                return render(request , 'Dashboard/chat.html',{"all_contacts":conversation_lists,"inbox_char":inbox_char,"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words)})
+                delivery_time = Parameter.objects.filter(Q(parameter_name="delivery_time"))
+                no_revisions = Parameter.objects.filter(Q(parameter_name="no_revisions"))
+                offer_description = 0
+                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="offer_description"))
+                for c in charcterlimits:
+                    if(c.Char_category_Name == "offer_description"):
+                        offer_description = c.Max_No_of_char_allowed 
+                return render(request , 'Dashboard/chat.html',{"all_contacts":conversation_lists,"inbox_char":inbox_char,"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -3044,6 +3058,7 @@ def post_make_unfav_view(request):
 def post_service_request_view(request):
     if request.method == 'POST':
         userid = request.POST.get("userid")
+        profile_user = request.POST.get("profile_user")
         service_descp = request.POST.get("service_descp")
         service_images = request.POST.get("service_images")
         service_cat = request.POST.get("service_cat")
@@ -3056,7 +3071,7 @@ def post_service_request_view(request):
         category_details = Categories.objects.get(pk=service_cat)
         sub_category = SubSubCategories.objects.get(pk=service_sub_cat)
         if(service_type == 'individual'):
-            send_to_user = User.objects.get(pk=userid)
+            send_to_user = User.objects.get(username=profile_user)
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,send_to=send_to_user,service_type=service_type)
             post_bu_req.save()
             get_buyer_request = Buyer_Post_Request.objects.get(pk = post_bu_req.pk)
@@ -3751,7 +3766,7 @@ def get_buyer_request_view(request):
                     category_d = Categories.objects.get(id = g_c["gig_category"])
                     curr_date = datetime.today()
                     new_d = curr_date - timedelta(days=2)
-                    buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d ,service_status="active",service_date__range=(new_d, curr_date)).exclude(user_id= userDetails)
+                    buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d ,service_status="active",service_date__range=(new_d, curr_date),service_type='all').exclude(user_id= userDetails)
                     for b in buyer_requests:
                         offer_data = Request_Offers.objects.filter(user_id = userDetails,buyer_request=b).count()
                         offer_status = ''
@@ -3775,7 +3790,7 @@ def get_buyer_request_view(request):
             category_d = Categories.objects.get(category_Name =category_name)
             curr_date = datetime.today()
             new_d = curr_date - timedelta(days=2)
-            buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d,service_status="active",service_date__range=(new_d, curr_date)).exclude(user_id= userDetails)
+            buyer_requests = Buyer_Post_Request.objects.filter(service_category= category_d,service_status="active",service_date__range=(new_d, curr_date),service_type='all').exclude(user_id= userDetails)
             for b in buyer_requests:
                 offer_data = Request_Offers.objects.filter(user_id = userDetails).count()
                 offer_status = ''
@@ -3815,6 +3830,22 @@ def get_modal_show_request_details_view(request):
             user_gig_details.append({"gig_id":u_gig.id,"gig_image":gig_image_url,"gig_title":u_gig.gig_title})
         response_data = {"buyer_details":buyer_request_data,"user_gig_details":user_gig_details}
         return JsonResponse(json.dumps(response_data),safe=False)
+    
+def get_modal_show_gig_details_view(request):
+    if request.method == 'GET':
+        username = request.GET['username']
+        userDetails = User.objects.get(username=username)
+        user_gig_details = []
+        gigs_details = UserGigs.objects.filter(gig_status='active',user_id= userDetails)
+        for u_gig in gigs_details:
+            gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
+            gig_image_url = ''
+            if(gig_image != None):
+                gig_image_url = gig_image.gig_image
+            user_gig_details.append({"gig_id":u_gig.id,"gig_image":gig_image_url,"gig_title":u_gig.gig_title})
+        response_data = {"user_gig_details":user_gig_details}
+        return JsonResponse(json.dumps(response_data),safe=False)
+
     
 def get_gig_parameters_view(request):
     if request.method == 'GET':
@@ -3866,6 +3897,38 @@ def post_offer_details_view(request):
         userDetails.offers_left = int(last_offer_num) - 1
         userDetails.save()
         return HttpResponse(str(int(last_offer_num) - 1))
+    
+    
+@csrf_exempt
+def post_custom_offer_details_view(request):
+    if request.method == 'POST':
+        o_gig_id = request.POST.get("o_gig_id")
+        o_user_id = request.POST.get("o_user_id")
+        o_text_desc = request.POST.get("o_text_desc")
+        o_text_price = request.POST.get("o_text_price")
+        o_text_del_time = request.POST.get("o_text_del_time")
+        o_text_no_revs = request.POST.get("o_text_no_revs")
+        o_text_req_gig = request.POST.get("o_text_req_gig")
+        o_buyer_req_id = request.POST.get("o_buyer_req_id")
+        o_offer_sender = request.POST.get("offer_sender")
+        o_offer_receiver = request.POST.get("offer_receiver")
+        off_req= ''
+        if(o_text_req_gig == "true"):
+            off_req= True
+        else:
+            off_req= False
+        o_offer_type = request.POST.get("o_offer_type")
+        o_extra_params = request.POST['o_extra_params']
+        gigs_details = UserGigs.objects.get(id=o_gig_id)
+        user_off_sender = User.objects.get(username = o_offer_sender)
+        user_off_receiver = User.objects.get(username = o_offer_receiver)
+        if(o_buyer_req_id != 0):
+            buyer_req_details = Buyer_Post_Request.objects.get(pk = o_buyer_req_id)
+        else:
+            buyer_req_details = None
+        offer_details = Request_Offers(gig_name=gigs_details,user_id=user_off_sender,buyer_request=buyer_req_details,custom_user=user_off_receiver, offer_desc=o_text_desc, offer_budget=o_text_price, offer_time=o_text_del_time,no_revisions=o_text_no_revs, ask_requirements= off_req, extra_parameters=str(o_extra_params),offer_type=o_offer_type, )
+        offer_details.save()
+        return HttpResponse(offer_details.pk)
 
 
 def get_sorted_offers_view(request):
@@ -4032,11 +4095,10 @@ def post_flutterwave_transaction_view(request):
             try:    
                 message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
             except:
-                try:
-                    message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
-                except:
-                    message_cover_detls = Conversation(initiator=pay_by_user,receiver = pay_to_user,convers_type="active")
-                    message_cover_detls.save()    
+                message_cover_detls = Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+            if(message_cover_detls == None):
+                message_cover_detls = Conversation(initiator=pay_by_user,receiver=pay_to_user,convers_type="active")
+                message_cover_detls.save()  
             cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
             order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
             order_activity.save()
@@ -5362,6 +5424,8 @@ def get_conv_user_details_view(request):
         all_messages = Message.objects.filter(conversation_id= conversational_details)
         message_data = []
         for all_m in all_messages:
+            if(all_m.is_read == False):
+                all_m.is_read = True
             if(all_m.message_type == "chat"):
                 attachment_str = ''
                 if(all_m.attachment != None):
@@ -5373,21 +5437,53 @@ def get_conv_user_details_view(request):
                     attachment_str = "None"
                 message_data.append({"mssg_type":"chat","mssg_id":all_m.pk,"sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
             else:
-                pass
-                # reolution_details = User_Order_Resolution.objects.filter(message=all_m).first()
-                # if(reolution_details != None):
-                #     delivery_description= ''
-                #     delivery_images= ''
-                #     message_str = ''
-                #     if(reolution_details.resolution_type == "delivered"):
-                #         order_del_details = Order_Delivery.objects.get(resolution = reolution_details)
-                #         delivery_description = order_del_details.delivery_message
-                #         delivery_images= order_del_details.attachment
-                #         message_str = ''
-                #         delivery_no = delivery_no + 1
-                #     else:
-                #         message_str = reolution_details.resolution_desc
-                    # message_data.append({"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
+                if(all_m.message_type == "offer"):
+                    offer_details = Request_Offers.objects.get(pk= all_m.request_offers_id.pk)
+                    orders_details = User_orders.objects.filter(offer_id=offer_details).first()
+                    offer_status = ""
+                    order_no= ''
+                    if(offer_details.offer_status_by_buyer == "active"):
+                        offer_status = "active"
+                    elif(offer_details.offer_status_by_buyer == "deleted"):
+                        offer_status = "deleted"
+                    if((orders_details) != None): 
+                        offer_status = "ordered"
+                        order_no = orders_details.order_no
+                    gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+                    offer_data = []
+                    message_data.append({ "mssg_type":"offer","mssg_id":all_m.pk,"sender_username":all_m.sender.username,"attachment":"None","sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp,"offer_id":offer_details.pk,"buyer_request_id":0,"gig_title":gig_details.gig_title,"offer_amount":offer_details.offer_budget,"offer_time":offer_details.offer_time,"offer_revision":offer_details.no_revisions,"offer_desc":offer_details.offer_desc,"extra_parameters":offer_details.extra_parameters,"offer_sender":offer_details.custom_user.username,"offer_status":offer_status,"order_no":order_no})
+                elif(all_m.message_type == "quote"):
+                    buyer_request = Buyer_Post_Request.objects.get(pk= all_m.buyer_request_id.pk)
+                    service_time_str = ''
+                    no_of_days = ''
+                    due_date_str = ''
+                    today_date = datetime.today()
+                    if(buyer_request.service_time== "24hours"):
+                        service_time_str = "24 dours"
+                        no_of_days = 1
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "3days"):
+                        service_time_str = "3 days"
+                        no_of_days = 3
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "7days"):
+                        service_time_str = "7 days"
+                        no_of_days = 7
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "other"):
+                        service_time_str = "Other"
+                        due_date_str = ''
+                    offer_data = []
+                    offer_created_status = ''
+                    try:
+                        req_offers = Request_Offers.objects.get(buyer_request = buyer_request)
+                        offer_created_status = "created"
+                    except:
+                        offer_created_status = "active"
+                    message_data.append({"mssg_type":"quote","mssg_id":all_m.pk,"attachment":"None","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp,"request_id":buyer_request.pk,"req_desc":buyer_request.service_desc,"req_time":service_time_str,"req_budget":buyer_request.service_budget,"req_due_date":due_date_str,"req_status":buyer_request.service_status,"offer_created_sta":offer_created_status})
         message_data.sort(key=operator.itemgetter('mssg_id'))
         order_details = User_orders.objects.filter(order_by=initiator,order_to = receiver , order_status="active")
         if(len(order_details) == 0):
@@ -5455,3 +5551,36 @@ def post_inbox_upload_view(request):
                     res = JsonResponse({'data':'No such file exists in the existingPath'})
                     return HttpResponse(res)
         
+def get_offer_details_view(request):
+    if request.method == 'GET':
+        o_offer_id = request.GET['o_offer_id']
+        offer_details = Request_Offers.objects.get(pk= o_offer_id)
+        gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+        offer_data = []
+        offer_data.append({"offer_id":offer_details.pk,"gig_title":gig_details.gig_title,"offer_amount":offer_details.offer_budget,"offer_time":offer_details.offer_time,"offer_revision":offer_details.no_revisions,"offer_desc":offer_details.offer_desc,"extra_parameters":offer_details.extra_parameters,"offer_sender":offer_details.custom_user.username})
+        return JsonResponse(offer_data,safe=False)
+
+def post_decline_offer_view(request):
+    if request.method == 'GET':
+        o_offer_id = request.GET['o_offer_id']
+        offer_details = Request_Offers.objects.get(pk= o_offer_id)
+        offer_details.offer_status_by_buyer = "deleted"
+        offer_details.save()
+        return HttpResponse("sucess")
+    
+
+def post_conv_delete_view(request):
+    if request.method == 'GET':
+        o_conver_id = request.GET['conver_id']
+        conv_details = Conversation.objects.get(pk= o_conver_id)
+        conv_details.convers_type = "delete"
+        conv_details.save()
+        return HttpResponse("sucess")
+    
+def post_conv_block_view(request):
+    if request.method == 'GET':
+        o_conver_id = request.GET['conver_id']
+        conv_details = Conversation.objects.get(pk= o_conver_id)
+        conv_details.convers_type = "block"
+        conv_details.save()
+        return HttpResponse("sucess")

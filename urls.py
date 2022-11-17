@@ -115,6 +115,7 @@ urlpatterns  = [
     path("get_gig_parameters/",views.get_gig_parameters_view,name = 'get_gig_parameters'),
     path("post_remove_request/",views.post_remove_request_view,name = 'post_remove_request'),
     path("post_offer_details/",views.post_offer_details_view,name = 'post_offer_details'),
+    path("post_custom_offer_details/",views.post_custom_offer_details_view,name = 'post_custom_offer_details'),
     path("get_sorted_offers/",views.get_sorted_offers_view,name = 'get_sorted_offers'),
     path("get_sent_offers/",views.get_sent_offers_view,name = 'get_sent_offers'),
     path("post_remove_b_offer_req/",views.post_remove_b_offer_req_view,name = 'post_remove_b_offer_req'),
@@ -146,4 +147,9 @@ urlpatterns  = [
     path("post_initiate_withdrawl/",views.post_initiate_withdrawl_view,name = 'post_initiate_withdrawl'),
     path("post_check_conver/",views.post_check_conver_view,name = 'post_check_conver'),
     path("get_conv_user_details/",views.get_conv_user_details_view,name = 'get_conv_user_details'),
+    path("get_offer_details/",views.get_offer_details_view,name = 'get_offer_details'),
+    path("post_decline_offer/",views.post_decline_offer_view,name = 'post_decline_offer'),
+    path("post_conv_delete/",views.post_conv_delete_view,name = 'post_conv_delete'),
+    path("post_conv_block/",views.post_conv_block_view,name = 'post_conv_block'),
+    path("get_modal_show_gig_details/",views.get_modal_show_gig_details_view,name = 'get_modal_show_gig_details'),
 ]

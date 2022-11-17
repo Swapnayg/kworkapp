@@ -435,7 +435,7 @@ class AdminConversation(admin.ModelAdmin):
 admin.site.register(Conversation, AdminConversation)
 
 class AdminMessage(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','message_type','buyer_request_id']
+    list_display = ['sender','receiver','text','attachment','is_read','request_offers_id','conversation_id','timestamp','message_type','buyer_request_id']
 
 admin.site.register(Message, AdminMessage)
 
@@ -540,7 +540,7 @@ admin.site.register(UserAvailable, AdminUserAvailable)
 
 
 class AdminBuyer_Post_Request(admin.ModelAdmin):
-    list_display = ['service_desc','service_images','service_category','send_to','service_type','buyer_request_id','service_sub_category','service_time','service_budget','service_date','user_id','service_status']
+    list_display = ['service_desc','service_images','service_category','send_to','service_type','buyer_request_id','service_sub_category','service_time','service_budget','service_date','user_id','service_status','individual_request_status']
     class Media:
         css = {'all': ('assets/css/frontend/admin_post_request.css', )} 
 
@@ -562,9 +562,8 @@ class AdminBuyer_Requirements(admin.ModelAdmin):
 
 admin.site.register(Buyer_Requirements, AdminBuyer_Requirements)
 
-
 class AdminRequest_Offers(admin.ModelAdmin):
-    list_display = ['gig_name','buyer_request','user_id','offer_desc','offer_budget','offer_time','no_revisions','ask_requirements','extra_parameters','offer_type','offer_date','offer_status_by_buyer']
+    list_display = ['gig_name','buyer_request','user_id','custom_user','offer_desc','offer_budget','offer_time','no_revisions','ask_requirements','extra_parameters','offer_type','offer_date','offer_status_by_buyer']
     class Media:
         css = {'all': ('assets/css/frontend/admin_post_request.css', )}
 admin.site.register(Request_Offers, AdminRequest_Offers)

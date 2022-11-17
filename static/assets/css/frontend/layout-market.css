@@ -156,3 +156,7 @@ i.lnlog
     height: 100%;
     filter: invert(100%);
   }
+
+  .btn-standard:hover{
+    color:#2E5DC5;
+ }

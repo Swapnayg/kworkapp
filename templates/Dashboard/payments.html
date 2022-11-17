@@ -247,7 +247,7 @@
                                       <ul class="order-details-items-container" id="revisiondiv">
                                          <li class="order-details-item">
                                             <span class="item-title">
-                                               <span class="fit-icon order-details-item-icon" style="width: 16px; height: 16px; fill: rgb(29, 191, 115);">
+                                               <span class="fit-icon order-details-item-icon" style="width: 16px; height: 16px; fill: rgb(46, 93, 197);">
                                                   <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                                                      <path d="M13.6202 2.6083L5.4001 10.8284L2.37973 7.80805C2.23329 7.66161 1.99585 7.66161 1.84939 7.80805L0.96551 8.69193C0.819073 8.83836 0.819073 9.0758 0.96551 9.22227L5.13492 13.3917C5.28135 13.5381 5.51879 13.5381 5.66526 13.3917L15.0344 4.02252C15.1809 3.87608 15.1809 3.63865 15.0344 3.49218L14.1505 2.6083C14.0041 2.46186 13.7667 2.46186 13.6202 2.6083Z"></path>
                                                   </svg>
@@ -275,7 +275,9 @@
                                       <div class="table-row delivery-date"><span class="row-title">Total Delivery Time</span><span class="date" id="serv_days">{{gig_details.0.offer_revisions}} days</span></div>
 
                                       <div class="table-row fee-row pf-row" >
-                                       <div class="factor-title mb-3 mt-2" id="available_credit_check"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="avail_click"> <input type="checkbox" class="add_on_click" id="avail_click"  value="{{available_credit}}"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span></label> 
+                                       <div class="factor-title mb-3 mt-2" id="available_credit_check"> 
+                                          <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="avail_click"> <input type="checkbox" class="add_on_click" id="avail_click"  value="{{available_credit}}"> 
+                                             <span class="checkmark-box" id="avail_click_checkmark"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span></label> 
                                            <span class="row-title">
                                                Available Credits
                                                <div class="fit-popover fit-popover-top fit-tooltip tooltip" data-position="top"><span class="fit-popover-content"><i class="fa fa-question-circle" content="[object Object]" position="top"></i></span></div>
@@ -338,12 +340,12 @@
                                                 <input type="hidden" name="customer[email]" value="{{gig_details.0.pay_to_user_email}}" />
                                                 <input type="hidden" name="customer[name]" value="{{gig_details.0.pay_to_user}}" />
                                                 <input type="hidden" name="tx_ref" value="{{gig_details.0.tax_ref_name}}" />
-                                                <input type="hidden" id="flutter_amount" name="amount" value="0" />
+                                                <input type="hidden" id="flutter_amount" name="amount" value="{{gig_details.0.total_amount}}" />
                                                 <input type="hidden" name="currency" value="USD" />
-                                                <input type="hidden" name="meta[token]" value="0"  id="flutter_service_fees_wsdf" />
+                                                <input type="hidden" name="meta[token]" value="{{gig_details.0.service_fees}}"  id="flutter_service_fees_wsdf" />
                                                 <input type="hidden" name="meta[data_extra]" id="flutter_extra_gigs" value="0" />
                                                 <input type="hidden" name="meta[credit_used]" id="flutter_credit_used" value="0" >
-                                                <input type="hidden" name="meta[base_price_wsdf]" id="flutter_base_price_wsdf" value="0"/>
+                                                <input type="hidden" name="meta[base_price_wsdf]" id="flutter_base_price_wsdf" value="{{gig_details.0.offer_price}}"/>
                                                 <input type="hidden" name="redirect_url" value="{{base_url}}requirements/flutter/{{gig_details.0.offer_id}}/{{gig_details.0.offer_price}}/{{gig_details.0.total_amount}}/{{gig_details.0.service_fees}}/{{gig_details.0.pay_to_user}}/" />
                                                 <button type="submit" id="start-payment-button" class="agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700"><span class="button-message">Confirm &amp; Pay</span></button>
                                               </form>
@@ -506,9 +508,33 @@
 {
    cursor:not-allowed;
 }
+
+#avail_click:disabled  ~ #avail_click_checkmark,
+#avail_click[disabled] ~ #avail_click_checkmark{
+
+  cursor:not-allowed;
+}
+
+button:disabled,
+button[disabled]{
+   cursor:not-allowed;
+}
+
 </style>
 <script>
     $(document).ready(function(){
+
+      if(parseInt($("#available_credit_hidden").val()) == 0)
+      {
+          $("#avail_click").prop("disabled",true);
+          $("#avail_click_checkmark").addClass("disabled");
+      }
+      else
+      {
+         $("#avail_click_checkmark").removeClass("disabled");
+         $("#avail_click").prop("disabled",false);
+      }
+
       $('#available_credit_check').find('input[type=checkbox]').change(function() {
          Add_credit_click();
       }); 
