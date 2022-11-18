@@ -8,6 +8,7 @@
     <div id="fox_notification_block"></div>
     <input type="hidden"  value="{{chat_words}}" id="chat_words_hidd" />
     <input type="hidden"  value="{{five_chat_words}}" id="five_chat_words_hidd" />
+    <input type="hidden"  value="{{session_users}}" id="session_users" />
     <div class="mp-box inbox_perseus">
         <div id="perseus-app" class="inbox_perseus">
            <article class="index inbox_perseus_wrapper" data-testid="index-container">
@@ -16,14 +17,14 @@
                     <header>
                         <div class="search-bar">
                            <span>
-                              <button class="button-link filters-toggle link-action"  id="filtered_val" onclick="onclick_filter(this);">All Conversations <span class="triangle-down"></span></button>
+                              <button class="button-link filters-toggle link-action"  id="filtered_val" onclick="onclick_filter();" >All Conversations <span class="triangle-down"></span></button>
                               <div class="popover-filters" id="show_all_filters">
                                  <div class="filters-scroll-wrap">
                                     <ul>
-                                       <li class="active-filter"><a onclick="filter_click('active');" class="link-action">All Conversations</a></li>
-                                       <li ><a onclick="filter_click('block');" class="link-action">Unread</a></li>
-                                       <li><a onclick="filter_click('unread');" class="link-action">Unread</a></li>
-                                       <li><a onclick="filter_click('offers');" class="link-action">Custom Offers</a></li>
+                                       <li class="active-filter"><a onclick="filter_click(this);" data-label="active" class="link-action">All Conversations</a></li>
+                                       <li ><a onclick="filter_click(this);" data-label="block" class="link-action">Blocked</a></li>
+                                       <li><a onclick="filter_click(this);" data-label="unread" class="link-action">Unread</a></li>
+                                       <li><a onclick="filter_click(this);" data-label="offers" class="link-action">Custom Offers</a></li>
                                     </ul>
                                  </div>
                               </div>
@@ -31,82 +32,7 @@
                         </div>
                      </header>
                      <nav class="contacts-list" data-testid="contacts-list" id="contacts-list">
-                        <div></div>
-                        {% for contact in all_contacts %}
-                           {% if contact.user_Name == request.user.username %}
-                           <a class="contact read" data-label="{{contact.user_receName}}" onclick="user_conversation_click('{{contact.user_receName}}');">
-                                 <span class="image-container">
-                                    <figure class="profile-image">
-                                       <img src="{{contact.user_receImg}}" alt="a">
-                                    </figure>
-                                    <span class="online-indicator"><i></i></span>
-                                 </span>
-                                 <div class="user-info">
-                                    <div class="username-container"><strong> {{contact.user_receName |title}} </strong></div>
-                                    <p class="text-trunc"><i class=""></i>
-                                       {% if contact.last_message_str|length != 0 %}
-                                          {% if contact.last_message_sender == request.user.username %}
-                                             <span class="last_message">Me: {{contact.last_message_str}}</span>
-                                             <span class="unread-count">1</span>
-                                          {% else %}
-                                             <span class="last_message">{{contact.last_message_str}}</span>
-                                             <span class="unread-count">1</span>
-                                          {% endif %}
-                                       {% else %}
-                                          <span class="last_message">{{contact.last_message_str}}</span>
-                                          <span class="unread-count">1</span>
-                                       {% endif %}
-                                    </p>
-                                 </div>
-                                 <aside>
-                                 <div>
-                                    <time datetime="Sun Aug 28 2022 12:16:47 GMT+0530 (India Standard Time)">time</time>  
-                                 </div>
-                                 <div>
-                                    <button class="button-link tooltip hint--top-right action-read" data-hint="Mark as Unread">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    </button>
-                                 </div>
-                              </aside>
-                              </a>
-                           {% else %}
-                           <a class="contact read" data-label="{{contact.user_Name}}" onclick="user_conversation_click('{{contact.user_Name}}');">
-                              <span class="image-container">
-                                 <figure class="profile-image">
-                                    <img src="{{contact.user_imag}}" alt="a">
-                                 </figure>
-                                 <span class="online-indicator"><i></i></span>
-                              </span>
-                              <div class="user-info">
-                                 <div class="username-container"><strong> {{contact.user_Name |title}} </strong></div>
-                                 <p class="text-trunc"><i class=""></i>
-                                    {% if contact.last_message_str|length != 0 %}
-                                       {% if contact.last_message_sender == request.user.username %}
-                                          <span class="last_message">Me: {{contact.last_message_str}}</span>
-                                          <span class="unread-count">1</span>
-                                       {% else %}
-                                          <span class="last_message">{{contact.last_message_str}}</span>
-                                          <span class="unread-count">1</span>
-                                       {% endif %}
-                                    {% else %}
-                                       <span class="last_message">{{contact.last_message_str}}</span>
-                                       <span class="unread-count">1</span>
-                                    {% endif %}
-                                 </p>
-                              </div>
-                              <aside>
-                              <div>
-                                 <time datetime="Sun Aug 28 2022 12:16:47 GMT+0530 (India Standard Time)">time</time>  
-                              </div>
-                              <div>
-                                 <button class="button-link tooltip hint--top-right action-read" data-hint="Mark as Unread">
-                                 <i class="fa fa-star-o" aria-hidden="true"></i>
-                                 </button>
-                              </div>
-                           </aside>
-                           </a>
-                           {% endif %}
-                        {% endfor %}
+
                      </nav>
                  </aside>
 
@@ -116,7 +42,7 @@
                        <div class="upper-row">
                           <div class="user-info">
                              <span class="online-indicator"><i></i></span>
-                             <h1><a href="#" class="username" id="data_username" target="_blank" rel="noopener noreferrer">akshaypatil3</a></h1>
+                             <h1><a href="#" class="username" id="data_username" target="_blank" rel="noopener noreferrer"></a></h1>
                           </div>
                           <aside class="actions-menu open">
                              <nav>
@@ -189,7 +115,7 @@
                        </div>
                        <aside class="details-pane" data-testid="details-pane">
                           <div class="p-t-8 p-16">
-                             <div class="pS6OOeY p-t-24 p-b-24">
+                             <div class="pS6OOeY p-t-24 p-b-24" id="orders_with_u">
                                  <div class="flex-between flex-items-baseline tbody-5 text-semi-bold co-text-darker">Orders with you<a class="tbody-6 RQbOZmB" href="" target="_blank" rel="noopener noreferrer" id="order_total_link">Total <span id="order_total"></span></a></div>
                                  <div id="order_card_div"></div>
                              </div>
@@ -874,6 +800,7 @@ aside.actions-menu {
 #conversation>header .upper-row .user-info h1 a.username {
    color: #404145;
    text-decoration: underline;
+   text-transform: capitalize;
 }
 
 
@@ -3243,6 +3170,11 @@ input:checked + .slider:before {
 {
    margin-right: -15px;
 }
+.green i
+{
+   background-color: #2E5DC5;
+}
+
 </style>
 
 <script>
@@ -3293,6 +3225,13 @@ input:checked + .slider:before {
       $(".help_div").hover(function (e) {
          $('.helptext_desc').toggle();
       });
+      sessionObj = eval($("#session_users").val());
+      setTimeout(function () {
+         setInterval(function() {
+            refersh_notifications();
+         }, 20000); 
+      }, 180000);
+      $("#show_all_filters").find("ul li a:first").trigger("click");
       jsonObj1 = eval($("#chat_words_hidd").val());
       five_jsonObj1 = eval($("#five_chat_words_hidd").val());
       location_href =  $(location).attr('href').split("/");
@@ -3619,140 +3558,6 @@ input:checked + .slider:before {
    {
       $("#show_all_filters").toggle(800);
    }
-   function user_conversation_click(username)
-   {
-      location_href =  $(location).attr('href').split("/");
-      pathname = window.location.pathname.split('/')
-      var currentURL = window.location.protocol + "//" + window.location.host + "/" + pathname[1] + '/?' +username.replace(/\?/g, '');  
-      window.history.pushState({ path: currentURL }, '', currentURL);
-      $.ajax({
-         type:"GET",
-         url: "/get_conv_user_details/",
-         data: {'receiver_user': username.replace(/\?/g, ''),'initiator_user': '{{request.user.username}}'},
-         success: function(data)
-         {
-            $("#contacts-list").find("a").removeClass("active-contact");
-            $("#contacts-list").find("a[data-label='"+username.replace(/\?/g, '')+"']").addClass("active-contact");
-            $("#data_delete").attr("data-label",data.conversation_id);
-            $("#data_block").attr("data-label",data.conversation_id);
-            $("#btn_create_offer").attr("data-label",data.response_userDetails[0]['username']);
-            $("#chat_receiver").val(data.response_userDetails[0]['username']);
-            $("#data_username").text(data.response_userDetails[0]['username']);
-            $("#data_last_seen").text("have to calculate");
-            $("#detail_country").text(data.response_userDetails[0]['user_location']);
-            $("#detail_since").text(data.response_userDetails[0]['user_start']);
-            $("#detail_english").text(data.response_userDetails[0]['user_english']);
-            $("#detail_seller_level").text(data.response_userDetails[0]['seller_level']);
-            $("#detail_response_time").text(data.response_userDetails[0]['response_time']);
-            $("#detail_seller_rating").html(data.response_userDetails[0]['seller_rating'] + '<small> (<a id="details_seller_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['seller_reviews']+'</a>)</small>');
-            $("#detail_buyer_rating").html(data.response_userDetails[0]['buyer_rating'] + '<small> (<a id="details_buyer_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['buyer_reviews']+'</a>)</small>');
-            $("#data_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
-            $("#detail_username").text(data.response_userDetails[0]['username']);
-            $("#detail_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
-            $("#details_buyer_review").text();
-            $("#details_buyer_review").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
-            $("#empty_conversation").hide();
-            $("#conversation").show();
-            $("#color_mode").prop("checked",false).trigger("change");
-            $("#order_total").text(data.no_of_orders);
-            $("#chat_conversation_id").val(data.conversation_id);
-            $("#order_card_div").empty();
-            $.each(data.order_details, function(i, v) {
-               $("#order_card_div").append(' <div class="CfL5AJd tbody-6 m-t-12" role="order-card"> <div class="xflEYMx cf"> <img class="Ts1SPzc m-r-8" src="'+v.gig_img+'" alt="'+v.gig_title+'" id="order_gig_title"> <div class="text-semi-bold co-text-darker order_amount" role="amount" id="order_amount">$ '+v.order_amount+'</div> <div class="TNCPqsk"> <div class="W46fKfn k-kBZXW GU4H+Y8"> <span class="_5-fo9i5 GU4H+Y8"> <div class="text-trunc _8nupQ3Q tbody-6 order_date" data-testid="tooltip-child" delay="120" position="top" boxclassname="_8UHHk5Q hidden" boxcontentclassname="Yn90o2E" contentclassname="GU4H+Y8" id="order_due_date" >Due '+v.order_due_date+'</div> </span> </div> </div> </div> <div class="flex-between flex-items-center p-t-8"><a class="xe5S0vU tbody-6" role="order-link" href="/user/'+data.response_userDetails[0]['username']+'/manage_orders/'+v.order_no+'/activities" target="_blank" rel="noopener noreferrer" id="see_order_link">See order</a><span class="order-status-badge in_revision" id="order_status">'+v.order_status.trim().toString().toUpperCase()+'</span></div> </div>');
-            });
-            if(data.curre_User == "Buyer")
-            {
-               $("#order_total_link").attr("href","/manage_orders");
-            }
-            else{
-               $("#order_total_link").attr("href","/user/" + data.response_userDetails[0]['username'] + "/manage_orders");
-            }
-            $("#message_errors").hide();
-            $.each(data.data_messages, function(j, vv) {
-               if(vv.attachment != "None")
-               {
-                  attachments = vv.attachment.trim().split(",");
-                  attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
-                  $.each(attachments, function (key, value) {
-                     if(value.trim().length != 0)
-                     {
-                        file_path = '/media/chat_files/'+value.trim();
-                        attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
-                     }
-                  });
-                  attachment_txt += '</ul></div>';
-                  if('{{request.user.username}}' == vv.sender_username)
-                  {
-                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
-                  }
-                  else{
-                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
-                  }
-               }
-               else{
-                  if(vv.mssg_type != "chat")
-                  {
-                     if('{{request.user.username}}' == vv.sender_username)
-                     {
-                        if(vv.mssg_type == "offer")
-                        {
-                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div>  </div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
-                        }
-                        else if(vv.mssg_type == "quote")
-                        {
-                           $("#message_content").append(' <div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" > <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p> </div> </article> </div> </div> </span> <span class=""></span> </div> </div> </div>');
-                        }
-                     }
-                     else{
-                        if(vv.mssg_type == "offer")
-                        {
-                           if(vv.offer_status == "ordered")
-                           {
-                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" href="user/{{request.user.username}}/manage_orders/'+vv.order_no+'/activities" >View Order</a> </div> </footer>'
-                           }
-                           else if(vv.offer_status == "deleted")
-                           {
-                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks">Offer Declined</button> </div> </footer>'
-                           }
-                           else if(vv.offer_status == "active")
-                           {
-                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="decline_onclick(this);" data-label="'+vv.offer_id+'" >Decline</button><a class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700" data-label="'+vv.offer_id+'" target="_blank" href="/payments/0/'+ vv.offer_id+'">Accept</a></div> </footer>'
-                           }                           
-                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div> '+ btn_offer_txt +'</div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
-                        }
-                        else if(vv.mssg_type == "quote")
-                        {
-                           btn_quote_txt = '';
-                           if(vv.offer_created_sta == "created")
-                           {
-                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks"  >Offer Created</button></div> </footer>';
-                           }
-                           else if(vv.offer_created_sta == "active")
-                           {
-
-                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="create_offer(this);" data-username ="'+vv.receiver_name+'"  data-label="'+vv.request_id+'" >Create Offer</button></div> </footer>';
-                           }
-                           $("#message_content").append('<div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="s"> <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p>'+btn_quote_txt+' </div> </article>  </div> </div> </span> <span class=""></span> </div> </div> </div>');
-                        }
-                     }
-                  }
-                  else
-                  {
-                     if('{{request.user.username}}' == vv.sender_username)
-                     {
-                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p></div> </div> </span> <span class=""></span> </div> </div> </div>');
-                     }
-                     else{
-                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p> </div> </div> </span> <span class=""></span> </div> </div> </div>');
-                     }
-                  }
-               }
-            });
-            $('#message_content').scrollTop($('#message_content')[0].scrollHeight);
-         }
-      });
-      $("#conversation").show();
-   }
    function data_on_deleteclick(ev)
    {
       $.ajax({
@@ -3896,6 +3701,249 @@ input:checked + .slider:before {
      $("#gig_details").hide();
      $("#gig_offer_scopes").hide();
      $(".modal_footer").hide();
+   }
+   function filter_click(ev)
+   {
+      data_label = $(ev).attr("data-label");
+      $("#show_all_filters").find("ul li").removeClass("active-filter");
+      $(ev).parent().addClass("active-filter");
+      $("#filtered_val").html($(ev).text() + '<span class="triangle-down"></span>');
+      $("#show_all_filters").hide(200);
+      $.ajax({
+         type:"GET",
+         url: "/get_all_contacts/",
+         data: {"category":data_label,"username":"{{request.user.username}}"},
+         success: function(data) 
+         {  
+            $("#contacts-list").empty();
+            $.each(data, function(i, vvv) {
+               last_message_txt = ''
+               notification_txt = ''
+               time_txt = ''
+               var user_list = sessionObj.filter(function (item) {
+                  return item.name == vvv.user_Name;
+               });
+               indicator = '';
+               if(user_list.length != 0)
+               {
+                  indicator = "green"
+               }
+               if(vvv.last_message_str.trim().length >= 0)
+               {
+                  if('{{request.user.username}}' == vvv.user_Name)
+                  {
+                     last_message_txt = 'Me: ' + vvv.last_message_str.trim();
+                  }
+                  else{
+                     last_message_txt = vvv.last_message_str.toString().trim();
+                  }
+               }
+               if(parseInt(vvv.unread_count) > 0)
+               {
+                  notification_txt = '<span class="unread-count">'+parseInt(vvv.unread_count)+'</span>'
+               }
+               $("#contacts-list").append('<a class="contact read" data-label="'+ vvv.user_Name +'" onclick="user_conversation_click(this)"> <span class="image-container"> <figure class="profile-image"> <img src="'+ vvv.user_imag +'" alt="a"> </figure> <span class="online-indicator '+indicator+'"><i></i></span> </span> <div class="user-info"> <div class="username-container"><strong> '+ vvv.user_Name +' </strong></div> <p class="text-trunc"><i class=""></i> <span class="last_message">' + last_message_txt + notification_txt +' </span> </p> </div> <aside> <div> <time >'+vvv.last_message_time.trim()+'</time> </div> <div>  </div> </aside></a>');
+            });
+            if(data.length > 0)
+            {
+               $("#empty_conversation").hide();
+               $("#conversation").show();
+               location_href =  $(location).attr('href').split("/");
+               if(location_href[4].length == 0)
+               {
+                  $("#contacts-list").find("ul li a:first").trigger("click");
+               }
+               else{
+                  $("#empty_conversation").hide();
+                  user_conversation_click(location_href[4].trim());
+               }
+            }
+            else{
+               $("#empty_conversation").show();
+               $("#conversation").hide();
+            }
+         }
+      });
+   }
+
+   function user_conversation_click(username)
+   {
+      if (typeof username == 'string') {
+         username = username.replace(/\?/g, '');
+      }
+      else{
+         username = $(username).attr("data-label");
+      }
+      var user_list = sessionObj.filter(function (item) {
+         return item.name == username.replace(/\?/g, '');
+      });
+      indicator = '';
+      if(user_list.length != 0)
+      {
+         indicator = "green"
+      }
+      location_href =  $(location).attr('href').split("/");
+      pathname = window.location.pathname.split('/');
+      var currentURL = window.location.protocol + "//" + window.location.host + "/" + pathname[1] + '/?' +username.replace(/\?/g, '');  
+      window.history.pushState({ path: currentURL }, '', currentURL);
+      $.ajax({
+         type:"GET",
+         url: "/get_conv_user_details/",
+         data: {'receiver_user': username.replace(/\?/g, ''),'initiator_user': '{{request.user.username}}'},
+         success: function(data)
+         {
+            $("#contacts-list").find("a").removeClass("active-contact");
+            parentdiv =  $("#contacts-list").find("a[data-label='"+username.replace(/\?/g, '')+"']");
+            $(parentdiv).find(".unread-count").remove();
+            $("#contacts-list").find("a[data-label='"+username.replace(/\?/g, '')+"']").addClass("active-contact");
+            $("#data_delete").attr("data-label",data.conversation_id);
+            $("#data_block").attr("data-label",data.conversation_id);
+            $("#btn_create_offer").attr("data-label",data.response_userDetails[0]['username']);
+            $("#chat_receiver").val(data.response_userDetails[0]['username']);
+            $("#data_username").text(data.response_userDetails[0]['username']);
+            $("#data_last_seen").text("have to calculate");
+            $("#detail_country").text(data.response_userDetails[0]['user_location']);
+            $("#detail_since").text(data.response_userDetails[0]['user_start']);
+            $("#detail_english").text(data.response_userDetails[0]['user_english']);
+            $("#detail_seller_level").text(data.response_userDetails[0]['seller_level']);
+            $("#detail_response_time").text(data.response_userDetails[0]['response_time']);
+            $("#detail_seller_rating").html(data.response_userDetails[0]['seller_rating'] + '<small> (<a id="details_seller_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['seller_reviews']+'</a>)</small>');
+            $("#detail_buyer_rating").html(data.response_userDetails[0]['buyer_rating'] + '<small> (<a id="details_buyer_review" href="/user/profile/' + data.response_userDetails[0]['username']+'" target="_blank" rel="noreferrer">'+data.response_userDetails[0]['buyer_reviews']+'</a>)</small>');
+            $("#data_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
+            $("#detail_username").text(data.response_userDetails[0]['username']);
+            $("#detail_username").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
+            $("#details_buyer_review").text();
+            $("#details_buyer_review").attr("href","/user/profile/" + data.response_userDetails[0]['username']);
+            $("#empty_conversation").hide();
+            $("#conversation").show();
+            $("#color_mode").prop("checked",false).trigger("change");
+            $("#order_total").text(data.no_of_orders);
+            $("#chat_conversation_id").val(data.conversation_id);
+            $("#order_card_div").empty();
+            if(data.order_details.length >0)
+            {
+               $("#orders_with_u").show();
+               $.each(data.order_details, function(i, v) {
+                  $("#order_card_div").append(' <div class="CfL5AJd tbody-6 m-t-12" role="order-card"> <div class="xflEYMx cf"> <img class="Ts1SPzc m-r-8" src="'+v.gig_img+'" alt="'+v.gig_title+'" id="order_gig_title"> <div class="text-semi-bold co-text-darker order_amount" role="amount" id="order_amount">$ '+v.order_amount+'</div> <div class="TNCPqsk"> <div class="W46fKfn k-kBZXW GU4H+Y8"> <span class="_5-fo9i5 GU4H+Y8"> <div class="text-trunc _8nupQ3Q tbody-6 order_date" data-testid="tooltip-child" delay="120" position="top" boxclassname="_8UHHk5Q hidden" boxcontentclassname="Yn90o2E" contentclassname="GU4H+Y8" id="order_due_date" >Due '+v.order_due_date+'</div> </span> </div> </div> </div> <div class="flex-between flex-items-center p-t-8"><a class="xe5S0vU tbody-6" role="order-link" href="/user/'+data.response_userDetails[0]['username']+'/manage_orders/'+v.order_no+'/activities" target="_blank" rel="noopener noreferrer" id="see_order_link">See order</a><span class="order-status-badge in_revision" id="order_status">'+v.order_status.trim().toString().toUpperCase()+'</span></div> </div>');
+               });
+            }
+            else{
+               $("#orders_with_u").hide();
+            }
+            console.log(indicator);
+            $("#conversation").find(".online-indicator").addClass(indicator);
+            if(data.curre_User == "Buyer")
+            {
+               $("#order_total_link").attr("href","/manage_orders");
+            }
+            else{
+               $("#order_total_link").attr("href","/user/" + data.response_userDetails[0]['username'] + "/manage_orders");
+            }
+            $("#message_errors").hide();
+            $("#message_content").empty();
+            $.each(data.data_messages, function(j, vv) {
+               if(vv.attachment != "None")
+               {
+                  attachments = vv.attachment.trim().split(",");
+                  attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                  $.each(attachments, function (key, value) {
+                     if(value.trim().length != 0)
+                     {
+                        file_path = '/media/chat_files/'+value.trim();
+                        attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                     }
+                  });
+                  attachment_txt += '</ul></div>';
+                  if('{{request.user.username}}' == vv.sender_username)
+                  {
+                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                  }
+                  else{
+                     $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p>'+attachment_txt+' </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                  }
+               }
+               else{
+                  if(vv.mssg_type != "chat")
+                  {
+                     if('{{request.user.username}}' == vv.sender_username)
+                     {
+                        if(vv.mssg_type == "offer")
+                        {
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div>  </div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
+                        }
+                        else if(vv.mssg_type == "quote")
+                        {
+                           $("#message_content").append(' <div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" > <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p> </div> </article> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        }
+                     }
+                     else{
+                        if(vv.mssg_type == "offer")
+                        {
+                           if(vv.offer_status == "ordered")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" href="user/{{request.user.username}}/manage_orders/'+vv.order_no+'/activities" >View Order</a> </div> </footer>'
+                           }
+                           else if(vv.offer_status == "deleted")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks">Offer Declined</button> </div> </footer>'
+                           }
+                           else if(vv.offer_status == "active")
+                           {
+                              btn_offer_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="decline_onclick(this);" data-label="'+vv.offer_id+'" >Decline</button><a class="FW1syM7 L1yjt43 co-white action-button bg-co-green-700" data-label="'+vv.offer_id+'" target="_blank" href="/payments/0/'+ vv.offer_id+'">Accept</a></div> </footer>'
+                           }                           
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374d8a32a883f0001d7f4a3" class="message "> <span class=""> <a href="/user/profile/'+vv.sender_username+'" target="_blank" rel="noopener noreferrer" class="profile-image-link"> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="b"> <figcaption class="font-accent"></figcaption> </figure> </a> </span> <div class="message-content"> <div class="header"> <a href="/user/profile/'+vv.sender_username+'" target="_blank" class="sender" rel="noopener noreferrer">Me</a> </div> <span class=""> <div> <p class="title italic"> '+vv.message+'</p> <div class="+LNAmyM"> <div class="custom-offer-message-package custom-package-content" data-testid="custom-offer"> <header class="KUW+QwR _3YNlATc"> <div class="flex-center"> <h3 class="text-display-7"><a href="/gigs/'+vv.offer_sender+'/'+vv.gig_title+'" target="_blank">'+vv.gig_title+'</a></h3> </div> <div class="McOrFfb"><b class="GBwyMi1 _0-pU6pf">$ '+vv.offer_amount+'</b></div> </header> <div class="main"> <div class="description"> <div> <div class="fg5FMWv" style="height: auto;"> <p class="sanitized-text">'+vv.offer_desc+'</p> </div> </div> </div> <div class="package-content"> <h6 class="text-display-7 p-b-8">Your offer includes</h6> <div class="includes"> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M4.50001 11.4999C6.40001 13.3999 9.60001 13.3999 11.5 11.4999C12.2 10.7999 12.7 9.7999 12.9 8.7999L14.9 9.0999C14.7 10.5999 14 11.8999 13 12.8999C10.3 15.5999 5.90001 15.5999 3.10001 12.8999L0.900012 15.0999L0.200012 8.6999L6.60001 9.3999L4.50001 11.4999Z"></path> <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path> </svg> </span> '+vv.offer_revision +'  Revisions </div> <div class="package-item flex flex-items-center tbody-default co-text-darker"> <span class="XQskgrQ icon" aria-hidden="true" style="width: 17px; height: 17px; fill: rgb(46, 93, 197);"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8s3.6 8 8 8 8-3.6 8-8-3.6-8-8-8zm0 14c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"></path> <path d="M9 4H7v5h5V7H9V4z"></path> </svg> </span> '+vv.offer_time+' Days Delivery </div> </div> </div> </div> '+ btn_offer_txt +'</div> </div> </div> </span> <span class=""></span> </div> </div> </div>'); 
+                        }
+                        else if(vv.mssg_type == "quote")
+                        {
+                           btn_quote_txt = '';
+                           if(vv.offer_created_sta == "created")
+                           {
+                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks"  >Offer Created</button></div> </footer>';
+                           }
+                           else if(vv.offer_created_sta == "active")
+                           {
+
+                              btn_quote_txt = '<footer class="custom-package-footer flex flex-items-center"> <div class="package-buttons quote_btn"><button class="FW1syM7 ZyiRdeA co-grey-1100 action-button tbody-default btn-order-no-thanks offer-decline-button bg-co-grey-300 decline_offer" data-hook="no-thanks" onclick="create_offer(this);" data-username ="'+vv.receiver_name+'"  data-label="'+vv.request_id+'" >Create Offer</button></div> </footer>';
+                           }
+                           $("#message_content").append('<div class="message-wrapper"> <div id="6374c7ccc293320014d546e0" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt="s"> <figcaption class="font-accent">S</figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time >'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <p class="tbody-6">'+vv.message+'</p> <div class="_4aalYpY tbody-6" data-testid="brief-entry"> <article> <div class="W6rA1Yv" data-testid="brief-body"> <ul class="SJvuSVq"> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Specification</b> <div class="ryQqgSG"> <section> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="#2E5DC5"> <path clip-rule="evenodd" fill-rule="evenodd" d="M4.421 2.415c-.945.43-1.171.87-1.171 1.085 0 .215.226.655 1.171 1.085.878.399 2.142.665 3.579.665 1.437 0 2.701-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085 0-.215-.226-.655-1.171-1.085C10.7 2.016 9.437 1.75 8 1.75c-1.437 0-2.701.266-3.579.665zm-.62-1.366C4.914.543 6.399.25 8 .25c1.6 0 3.086.293 4.2.8 1.045.475 2.05 1.285 2.05 2.45 0 .73-.394 1.32-.944 1.775A.75.75 0 0 1 14.25 6v.5c0 .73-.393 1.32-.944 1.775A.75.75 0 0 1 14.25 9v.5c0 .73-.393 1.32-.944 1.775a.749.749 0 0 1 .944.725v.5c0 1.165-1.005 1.975-2.05 2.45-1.114.507-2.6.8-4.2.8s-3.086-.293-4.2-.8c-1.045-.475-2.05-1.285-2.05-2.45V12a.75.75 0 0 1 .944-.725c-.55-.456-.944-1.046-.944-1.775V9a.75.75 0 0 1 .944-.725C2.144 7.82 1.75 7.23 1.75 6.5V6a.75.75 0 0 1 .945-.725C2.144 4.82 1.75 4.23 1.75 3.5c0-1.165 1.005-1.975 2.05-2.45zm-.674 4.54A.74.74 0 0 1 3.25 6v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V6c0-.152.045-.294.123-.412a5.504 5.504 0 0 1-.674.363c-1.113.506-2.598.799-4.199.799-1.6 0-3.086-.293-4.2-.8a5.512 5.512 0 0 1-.673-.362zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V9c0-.152.045-.293.123-.411a5.51 5.51 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.511 5.511 0 0 1-.673-.361zm0 3c.078.118.123.26.123.411v.5c0 .216.226.656 1.171 1.085.877.399 2.142.665 3.579.665 1.437 0 2.702-.266 3.579-.665.945-.43 1.171-.87 1.171-1.085V12c0-.152.045-.293.123-.411a5.517 5.517 0 0 1-.673.362c-1.114.506-2.6.799-4.2.799s-3.086-.293-4.2-.8a5.517 5.517 0 0 1-.673-.361z"></path> </svg> </div> <div> <p>Budget $ '+vv.req_budget+'</p> </div> </div> <div class="GQtv-8L"> <div class="flex flex-center m-r-4"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="#2E5DC5"> <path d="M8 .25A7.749 7.749 0 0 0 .25 8 7.749 7.749 0 0 0 8 15.75 7.749 7.749 0 0 0 15.75 8 7.749 7.749 0 0 0 8 .25Zm0 14A6.248 6.248 0 0 1 1.75 8 6.248 6.248 0 0 1 8 1.75 6.248 6.248 0 0 1 14.25 8 6.248 6.248 0 0 1 8 14.25Zm1.931-3.262L7.278 9.059a.377.377 0 0 1-.153-.303V3.625c0-.206.169-.375.375-.375h1c.206 0 .375.169.375.375v4.428l2.088 1.519a.375.375 0 0 1 .08.525l-.587.81a.378.378 0 0 1-.525.08Z"></path> </svg> </div> <div> <p>'+vv.req_time+' delivery ('+vv.req_due_date+')</p> </div> </div> </section> </div> </li> <li class="BhSqh3g flex flex-between"> <b class="vtb+Dcs">Criteria</b> <div class="ryQqgSG"></div> </li> </ul> <p class="p-t-12">'+vv.req_desc+'</p>'+btn_quote_txt+' </div> </article>  </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                        }
+                     }
+                  }
+                  else
+                  {
+                     if('{{request.user.username}}' == vv.sender_username)
+                     {
+                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">Me</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p></div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     }
+                     else{
+                        $("#message_content").append('<div class="message-wrapper"> <div id="632ead45c2781c000e9ce00f" class="message "> <span class=""> <figure class="profile-image"> <img src="'+vv.sender_img+'" alt=""> <figcaption class="font-accent"></figcaption> </figure> </span> <div class="message-content"> <div class="header"> <span class="sender">'+vv.sender_username+'</span><time>'+formatAMPM(new Date(vv.timestamp))+'</time> <div></div> </div> <span class=""> <div> <div> <p class="message-body">'+vv.message+'</p> </div> </div> </span> <span class=""></span> </div> </div> </div>');
+                     }
+                  }
+               }
+            });
+            $('#message_content').scrollTop($('#message_content')[0].scrollHeight);
+         }
+      });
+      $("#conversation").show();
+   }
+   function refersh_notifications()
+   {
+      $.ajax({
+         type:"GET",
+         url: "/get_notifications/",
+         data: {"username":"{{request.user.username}}"},
+         success: function(data)
+         {
+            $.each(data, function(j, nn) {
+               if(parseInt(nn.unread_count)  > 0)
+               {
+                  parentdiv =  $("#contacts-list").find("a[data-label='"+nn.user_Name.replace(/\?/g, '')+"']");
+                  $(parentdiv).find(".text-trunc").append('<span class="unread-count">'+parseInt(nn.unread_count)+'</span> ')
+
+               }
+            });
+         }
+      });
    }
 </script>
 {% endblock %}

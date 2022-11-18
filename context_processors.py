@@ -1,8 +1,10 @@
 from kworkapp.models import  Conversation,Message,User
 from django.db.models import Q
-from kworkapp.models import Categories,SubCategories,SubSubCategories,Api_keys,User_warning
+from kworkapp.models import Categories,SubCategories,SubSubCategories,Api_keys,User_warning,User
 import json
 from django.conf import settings
+from django.contrib.sessions.models import Session
+from django.utils import timezone
 
 def message_processor(request):
     frndData =[]
@@ -80,6 +82,19 @@ def message_processor(request):
         'friends' : frndData
     }
 
+def get_current_users():
+    active_sessions = Session.objects.filter(expire_date__gte=timezone.now())
+    user_id_list = []
+    for session in active_sessions:
+        data = session.get_decoded()
+        user_id_list.append(data.get('_auth_user_id', None))
+    logged_usesList = User.objects.filter(id__in=user_id_list)
+    users_data = []
+    for u in logged_usesList:
+        if(u.username != "admin"):
+            users_data.append({"name":u.username})
+    return json.dumps(users_data)
+
 def menu_procesor(request):
     sub_menulist = []
     menu_list = []
@@ -110,7 +125,8 @@ def menu_procesor(request):
         'main_menu' : menu_list,
         'sub_menu' : json.dumps(sub_menulist),
         "warning_message":user_warning,
-        "block_message":user_blocked
+        "block_message":user_blocked,
+        "session_users":get_current_users()
     }
 
 

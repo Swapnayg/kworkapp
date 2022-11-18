@@ -152,4 +152,6 @@ urlpatterns  = [
     path("post_conv_delete/",views.post_conv_delete_view,name = 'post_conv_delete'),
     path("post_conv_block/",views.post_conv_block_view,name = 'post_conv_block'),
     path("get_modal_show_gig_details/",views.get_modal_show_gig_details_view,name = 'get_modal_show_gig_details'),
+    path("get_all_contacts/",views.get_all_contacts_view,name = 'get_all_contacts'),
+    path("get_notifications/",views.get_notifications_view,name = 'get_notifications'),
 ]

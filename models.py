@@ -1059,6 +1059,8 @@ class Order_Delivery(models.Model):
     delivered_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="delivered_to",null=True,blank=True)
     delivery_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     resolution = models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
+    total_revision = models.CharField(max_length=1000,blank=True,null=True)
+    current_revision = models.CharField(max_length=1000,blank=True,null=True)
     
     class Meta:
         verbose_name = _("Order Delivery")
@@ -1089,8 +1091,8 @@ class Notification_commands(models.Model):
     is_active = models.BooleanField(default=False)
     
     class Meta:
-        verbose_name = _("Notification")
-        verbose_name_plural = _("Notifications")
+        verbose_name = _("Notification Setting")
+        verbose_name_plural = _("Notification Settings")
 
     def __str__(self):
         return str(self.notification)

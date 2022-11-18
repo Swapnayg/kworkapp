@@ -4481,7 +4481,9 @@ def post_draft_object_view(request):
         resolution= User_Order_Resolution(resolution_type="draft",resolution_text = "Delivery",resolution_message="Delivered",resolution_desc="successfuly delivered",resolution_status="pending",order_no=order_details,raised_by=delivered_by,raised_to=delivered_to,message=get_message , resolution_last_date= last_date)
         resolution.save()
         get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
-        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution)
+        order_offer_details = Request_Offers.objects.get(pk = order_details.offer_id.pk)
+        delivery_count = Order_Delivery.objects.filter(order_no=order_details).count()
+        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution,total_revision= order_offer_details.no_revisions,current_revision = int(delivery_count) + 1)
         orde_delivery.save()
         order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
         order_ativity.save()
@@ -4509,7 +4511,9 @@ def post_delivered_object_view(request):
         resolution = User_Order_Resolution(resolution_type="delivered",resolution_text = "Delivery",resolution_message="Delivered",resolution_desc="successfuly delivered",resolution_status="pending",order_no=order_details,raised_by=delivered_by,raised_to=delivered_to,message=get_message, resolution_last_date= last_date)
         resolution.save()
         get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
-        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution)
+        order_offer_details = Request_Offers.objects.get(pk = order_details.offer_id.pk)
+        delivery_count = Order_Delivery.objects.filter(order_no=order_details).count()
+        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution,total_revision= order_offer_details.no_revisions,current_revision = int(delivery_count) + 1)
         orde_delivery.save()
         order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
         order_ativity.save()
@@ -5426,6 +5430,7 @@ def get_conv_user_details_view(request):
         for all_m in all_messages:
             if(all_m.is_read == False):
                 all_m.is_read = True
+                all_m.save()
             if(all_m.message_type == "chat"):
                 attachment_str = ''
                 if(all_m.attachment != None):
@@ -5584,3 +5589,103 @@ def post_conv_block_view(request):
         conv_details.convers_type = "block"
         conv_details.save()
         return HttpResponse("sucess")
+      
+def get_all_contacts_view(request):
+    if request.method == 'GET':
+        o_category = request.GET['category']
+        o_username = request.GET['username']
+        data = []
+        userDetails = User.objects.get(username = o_username)
+        all_conversations = Conversation.objects.filter(Q(initiator=userDetails) | Q(receiver= userDetails))
+        conversation_lists = []
+        for all_c in all_conversations:
+            receiver_name = ''
+            last_messages = Message.objects.filter(conversation_id= all_c).last()
+            if(last_messages != None):
+                lastmessage_str = last_messages.text
+                last_message_sender = last_messages.sender.username
+                last_message_receiver = last_messages.receiver.username
+                last_message_time = ''
+                try:
+                    last_mssg_time = datetime.strptime(str(last_messages.timestamp), "%Y-%m-%d %H:%M:%S")
+                except:
+                    last_mssg_time = datetime.strptime(str(last_messages.timestamp), "%Y-%m-%d %H:%M:%S.%f")
+                end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                diff = relativedelta.relativedelta(end_date, last_mssg_time)
+                if(diff.years == 0 and diff.months == 0):
+                    if(diff.days == 0):
+                        if(diff.hours > 5):
+                            last_message_time = '1 day'
+                        else:
+                            last_message_time = 'today' 
+                    else:
+                        last_message_time = str(diff.days) + ' days'
+                elif(diff.months != 0 and diff.years == 0):
+                    if(diff.months == 1):
+                        last_message_time = str(diff.months) + ' month'
+                    else:
+                        last_message_time = str(diff.months) + ' months'
+                elif(diff.years != 0):
+                    if(diff.years == 1):
+                        last_message_time = str(diff.years) + ' year'
+                    else:
+                        last_message_time = str(diff.years) + ' years'
+            else:
+                lastmessage_str = ''
+                last_message_sender = ''
+                last_message_receiver = ''
+                last_message_time = ''
+            if(all_c.convers_type == o_category and o_category=="active"):
+                unread_count = Message.objects.filter(conversation_id= all_c,is_read= False).count()
+                if(userDetails.username == all_c.initiator.username):
+                    data.append({"user_Name":all_c.receiver.username,'user_receName':all_c.initiator.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.receiver.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+                else:
+                    data.append({"user_Name":all_c.initiator.username,'user_receName':all_c.receiver.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.initiator.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+            elif(all_c.convers_type == o_category and o_category=="block"):
+                if(userDetails.username == all_c.initiator.username):
+                    data.append({"user_Name":all_c.receiver.username,'user_receName':all_c.initiator.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.receiver.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver})
+                else:
+                    data.append({"user_Name":all_c.initiator.username,'user_receName':all_c.receiver.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.initiator.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver})
+            elif(all_c.convers_type == "active" and o_category == "unread"):
+                unread_count = Message.objects.filter(conversation_id= all_c,is_read= False).count()
+                if(unread_count >0):
+                    if(userDetails.username == all_c.initiator.username):
+                        data.append({"user_Name":all_c.receiver.username,'user_receName':all_c.initiator.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.receiver.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+                    else:
+                        data.append({"user_Name":all_c.initiator.username,'user_receName':all_c.receiver.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.initiator.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+            elif(all_c.convers_type == "active" and o_category == "offers"):
+                unread_count = Message.objects.filter(conversation_id= all_c,is_read= False).count()
+                if(userDetails.username == all_c.initiator.username):
+                    receiver_user = User.objects.get(username = all_c.receiver.username)
+                    custom_orders = Request_Offers.objects.filter(offer_type= "custom",user_id= userDetails, custom_user= receiver_user).count()
+                    if(custom_orders == 0):
+                        custom_orders = Request_Offers.objects.filter(offer_type= "custom",user_id= receiver_user, custom_user= userDetails).count()
+                    if(custom_orders >0):
+                        data.append({"user_Name":all_c.receiver.username,'user_receName':all_c.initiator.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.receiver.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+                else:
+                    initiator_user = User.objects.get(username = all_c.initiator.username)
+                    custom_orders = Request_Offers.objects.filter(offer_type= "custom",user_id= userDetails, custom_user= initiator_user).count()
+                    if(custom_orders == 0):
+                        custom_orders = Request_Offers.objects.filter(offer_type= "custom",user_id= initiator_user, custom_user= userDetails).count()
+                    if(custom_orders >0):
+                        data.append({"user_Name":all_c.initiator.username,'user_receName':all_c.receiver.username,'user_receImg':all_c.initiator.avatar,"user_imag":all_c.initiator.avatar,"last_message_str":lastmessage_str,"last_message_sender":last_message_sender,"last_message_time":last_message_time,"last_message_receiver":last_message_receiver,"unread_count":unread_count})
+        return JsonResponse(data,safe=False)
+
+
+def get_notifications_view(request):
+    if request.method == 'GET':
+        o_username = request.GET['username']
+        data = []
+        userDetails = User.objects.get(username = o_username)
+        all_conversations = Conversation.objects.filter(Q(initiator=userDetails) | Q(receiver= userDetails))
+        conversation_lists = []
+        for all_c in all_conversations:
+            if(all_c.convers_type == "active"):
+                unread_count = Message.objects.filter(conversation_id= all_c,is_read= False).count()
+                if(userDetails.username == all_c.initiator.username):
+                    data.append({"user_Name":all_c.receiver.username,"unread_count":unread_count})
+                else:
+                    data.append({"user_Name":all_c.initiator.username,"unread_count":unread_count})
+        return JsonResponse(data,safe=False)
+
+

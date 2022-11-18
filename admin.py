@@ -121,7 +121,7 @@ def get_app_list(self, request):
                 'Transactions':60,
                 'Payment Parameters':59,
                 'Withdrawals':60,
-                'Notifications':61
+                'Notification Settings':61
             }
             app['models'].sort(key=lambda x: ordering[x['name']])
 
@@ -452,7 +452,7 @@ admin.site.register(User_orders_Extra_Gigs, AdminUser_orders_Extra_Gigs)
 
 
 class AdminOrder_Delivery(admin.ModelAdmin):
-    list_display = ['delivery_message','attachment','delivery_date','order_no','delivered_by','delivered_to','delivery_status','resolution']
+    list_display = ['delivery_message','attachment','delivery_date','order_no','delivered_by','delivered_to','delivery_status','resolution','total_revision','current_revision']
 
 admin.site.register(Order_Delivery, AdminOrder_Delivery)
 
