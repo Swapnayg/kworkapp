@@ -154,4 +154,9 @@ urlpatterns  = [
     path("get_modal_show_gig_details/",views.get_modal_show_gig_details_view,name = 'get_modal_show_gig_details'),
     path("get_all_contacts/",views.get_all_contacts_view,name = 'get_all_contacts'),
     path("get_notifications/",views.get_notifications_view,name = 'get_notifications'),
+    path("get_message_notify/",views.get_message_notify_view,name = 'get_message_notify'),
+    path("get_all_notify/",views.get_all_notify_view,name = 'get_all_notify'),
+    path("post_mark_as_read/",views.post_mark_as_read_view,name = 'post_mark_as_read'),
+    path("post_mark_as_unread/",views.post_mark_as_unread_view,name = 'post_mark_as_unread'),
+    path("post_mssg_mark_as_read/",views.post_mssg_mark_as_read_view,name = 'post_mssg_mark_as_read'),
 ]

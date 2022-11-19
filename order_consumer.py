@@ -7,7 +7,7 @@ from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
 from notifications.signals import notify
 from .models import User
-from .models import Message, Conversation,Order_Message, Order_Conversation,User_orders,ChatWords,SpamDetection
+from .models import Message, Conversation,Order_Message, CustomNotifications,Order_Conversation,User_orders,ChatWords,SpamDetection
 from django.db.models import Q
 import itertools
 
@@ -62,7 +62,8 @@ class Order_ChatConsumer(WebsocketConsumer):
             order_no = order_details,
             message_type = 'chat',
         )
-        notify.send(sender, recipient=receiver, verb='order_chat',description=message)
+        noti_create = CustomNotifications(sender = sender, recipient=receiver, verb='order_chat',description=message,order_no =order_details )
+        noti_create.save()   
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {

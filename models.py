@@ -790,6 +790,7 @@ class Buyer_Reviews(models.Model):
     b_review_to = models.ForeignKey(User, on_delete=models.CASCADE,null=False,blank=False,related_name="b_review_to")
     review_date = models.DateTimeField(default=timezone.now, blank=True)
     
+    
     class Meta:
         verbose_name = _("Buyer Review")
         verbose_name_plural = _("Buyer Reviews")
@@ -870,8 +871,8 @@ class Order_Conversation(models.Model):
     
 class Order_Message(models.Model):
     BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('activity', 'Activity Message')]
-    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="order_message_sender")
-    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="order_message_receiver")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_message_sender")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="order_message_receiver")
     text =models.CharField(max_length=1000,blank=True,null=True)
     attachment = models.CharField(max_length=500,blank=True,null=True)
     conversation_id = models.ForeignKey(Order_Conversation, on_delete=models.CASCADE)
@@ -1100,8 +1101,8 @@ class Notification_commands(models.Model):
 
 class Message(models.Model):
     BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('quote', 'Quote'),('offer', 'Offer')]
-    sender = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_sender")
-    receiver = models.ForeignKey(User, on_delete=models.PROTECT, related_name="message_receiver")
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message_sender")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="message_receiver")
     text = models.CharField(max_length=1000,blank=True,null=True)
     attachment = models.CharField(max_length=500,blank=True,null=True)
     conversation_id = models.ForeignKey(Conversation, on_delete=models.CASCADE)
@@ -1117,6 +1118,25 @@ class Message(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
+
+
+class CustomNotifications(models.Model):
+    BOOL_CHOICES_TYPES = [('chat', 'Chat Message'),('quote', 'Quote'),('offer', 'Offer')]
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notification_sender",null=True,blank=True)
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name="notification_receiver",null=True,blank=True)
+    verb = models.CharField(max_length=100,blank=True,null=True)
+    description = models.CharField(max_length=1000,blank=True,null=True)
+    order_no = models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True,default= None)
+    timestamp = models.DateTimeField(default=timezone.now, blank=True)
+    is_read = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = _("Notification")
+        verbose_name_plural = _("Notifications")
+
+    def __str__(self):
+        return str(self.timestamp)
+
 
 
 

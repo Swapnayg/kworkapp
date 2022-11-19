@@ -101,7 +101,7 @@
                               </figure>
                            </div>
                            <div class="AL1ZOr7">
-                              <div class="LBuVtkY">{{userDetails.username}}</div>
+                              <div class="LBuVtkY"><a href="/user/profile/{{userDetails.username}}" >{{userDetails.username|title}}</a></div>
                               <div class="tmELUJj P_h9XGC user-profile-image n2BDwY8">
                                  <span class="vpfXdaJ">
                                     <div class="d4fHuVP">{{seller_level}}</div>
@@ -135,7 +135,7 @@
                                        </svg>
                                     </span>
                                  </div>
-                                 <b class="rating-score">{{seller_count}}</b>
+                                 <b class="rating-score">{{seller_count|floatformat:0}}</b>
                                  <span class="ratings-count">
                                     (<!-- -->{{gig_reviews|length}}<!-- -->)
                                  </span>
@@ -228,7 +228,7 @@
                                                  </svg>
                                               </span>
                                            </div>
-                                           <b class="rating-score">{{seller_all_count}}</b>
+                                           <b class="rating-score">{{seller_all_count | floatformat:0}}</b>
                                            <span class="ratings-count">
                                               (<!-- -->{{seller_all_review|length}}<!-- -->)
                                            </span>
@@ -416,7 +416,7 @@
                                                  </svg>
                                               </span>
                                            </div>
-                                           <b class="rating-score">{{seller_count}}</b>
+                                           <b class="rating-score">{{seller_count |floatformat:0}}</b>
                                         </div>
                                      </span>
                                   </h2>
@@ -440,7 +440,7 @@
                                                           </svg>
                                                        </span>
                                                     </div>
-                                                    <b class="rating-score">{{comm_count}}</b>
+                                                    <b class="rating-score">{{comm_count |floatformat:0}}</b>
                                                  </div>
                                               </span>
                                            </li>
@@ -455,7 +455,7 @@
                                                           </svg>
                                                        </span>
                                                     </div>
-                                                    <b class="rating-score">{{recc_count}}</b>
+                                                    <b class="rating-score">{{recc_count|floatformat:0}}</b>
                                                  </div>
                                               </span>
                                            </li>
@@ -470,7 +470,7 @@
                                                           </svg>
                                                        </span>
                                                     </div>
-                                                    <b class="rating-score">{{serv_count}}</b>
+                                                    <b class="rating-score">{{serv_count|floatformat:0}}</b>
                                                  </div>
                                               </span>
                                            </li>
@@ -498,7 +498,7 @@
                                                           </svg>
                                                        </span>
                                                     </div>
-                                                    <b class="rating-score">{{review.review}}</b>
+                                                    <b class="rating-score">{{review.review|floatformat:0}}</b>
                                                  </div>
                                               </div>
                                               <div class="reviewer-sub-details">
@@ -512,7 +512,7 @@
                                               <p class="text-body-2">{{review.message}}</p>
                                            </div>
                                            <section><span></span></section>
-                                           <span class="summarize"><time class="text-body-2">{{review.review_date}} </time></span>
+                                           <span class="summarize"><time class="text-body-2">{{review.review_date|timesince}} </time></span>
                                            <span class="review_seller_comment_is_shown-wrapper">
                                               <div class="response-item">
                                                  <div class="user-profile-image"><label class="profile-pict" for="profile_image_9752182660853" style="width: 32px; height: 32px; font-size: 1em;"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90" loading="lazy"></label></div>
@@ -522,7 +522,7 @@
                                                  <div class="review-description">
                                                     <p class="text-body-2">{{review.buyer_resp}} </p>
                                                  </div>
-                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date}}  </time></span>
+                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date|timesince}}  </time></span>
                                               </div>
                                            </span>
                                         </li>
@@ -875,6 +875,10 @@
    color:#62646a;
    border: 1px solid #62646a;
    text-decoration:none;
+  }
+  .rating-score
+  {
+      margin-left: 8px;
   }
 </style>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />

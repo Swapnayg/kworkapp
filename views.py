@@ -1,6 +1,7 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from re import sub
+from django.utils import timesince
 import smtplib
 import shortuuid
 from paypalrestsdk import Payment,Refund,Sale
@@ -28,7 +29,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 class indexView(View):
@@ -124,49 +125,8 @@ class gig_View_View(View):
                 recc_count = recc_count + int(s_review.recommendation)
                 serv_count = serv_count + int(s_review.service)
                 seller_count = seller_count + float(s_review.average_val)
-                s_resp_date = ''
-                try:
-                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
-                except:
-                    start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
-                if(s_review.buyer_resp_date != None):
-                    try:
-                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
-                    except:
-                        s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
-                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                    diff = relativedelta.relativedelta(end_date, start_date)
-                    diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
-                    if(diff.years == 0 and diff.months == 0):
-                        if(diff.days == 0):
-                            s_review_date = 'today'
-                        else:
-                            s_review_date = str(diff.days) + ' days ago'
-                    elif(diff.months != 0 and diff.years == 0):
-                        if(diff.months == 1):
-                            s_review_date = str(diff.months) + ' month ago'
-                        else:
-                            s_review_date = str(diff.months) + ' months ago'
-                    elif(diff.years != 0):
-                        if(diff.years == 1):
-                            s_review_date = str(diff.years) + ' year ago'
-                        else:
-                            s_review_date = str(diff.years) + ' years ago'
-                    if(diff1.years == 0 and diff1.months == 0):
-                        if(diff1.days == 0):
-                            s_resp_date = 'today'
-                        else:
-                            s_resp_date = str(diff1.days) + ' days ago'
-                    elif(diff1.months != 0 and diff1.years == 0):
-                        if(diff1.months == 1):
-                            s_resp_date = str(diff1.months) + ' month ago'
-                        else:
-                            s_resp_date = str(diff1.months) + ' months ago'
-                    elif(diff1.years != 0):
-                        if(diff1.years == 1):
-                            s_resp_date = str(diff1.years) + ' year ago'
-                        else:
-                            s_resp_date = str(diff1.years) + ' years ago'
+                s_review_date = s_review.review_date
+                s_resp_date = s_review.buyer_resp_date
                 country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
                 seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
             try:
@@ -347,7 +307,6 @@ class profile_view(View):
                 serv_count = 0
                 seller_count = 0
                 buyer_count = 0
-                s_review_date = ''
                 b_review_date = ''
                 seller_rev_data = []
                 buyer_rev_data = []
@@ -356,74 +315,13 @@ class profile_view(View):
                     recc_count = recc_count + int(s_review.recommendation)
                     serv_count = serv_count + int(s_review.service)
                     seller_count = seller_count + float(s_review.average_val)
-                    s_resp_date = ''
-                    try:
-                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S")
-                    except:
-                        start_date = datetime.strptime(str(s_review.review_date), "%Y-%m-%d %H:%M:%S.%f")
-                    if(s_review.buyer_resp_date != None):
-                        try:
-                            s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S")
-                        except:
-                            s_res_start_date = datetime.strptime(str(s_review.buyer_resp_date), "%Y-%m-%d %H:%M:%S.%f")
-                        end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                        diff = relativedelta.relativedelta(end_date, start_date)
-                        diff1 = relativedelta.relativedelta(end_date, s_res_start_date)
-                        if(diff.years == 0 and diff.months == 0):
-                            if(diff.days == 0):
-                                s_review_date = 'today'
-                            else:
-                                s_review_date = str(diff.days) + ' days ago'
-                        elif(diff.months != 0 and diff.years == 0):
-                            if(diff.months == 1):
-                                s_review_date = str(diff.months) + ' month ago'
-                            else:
-                                s_review_date = str(diff.months) + ' months ago'
-                        elif(diff.years != 0):
-                            if(diff.years == 1):
-                                s_review_date = str(diff.years) + ' year ago'
-                            else:
-                                s_review_date = str(diff.years) + ' years ago'
-                        if(diff1.years == 0 and diff1.months == 0):
-                            if(diff1.days == 0):
-                                s_resp_date = 'today'
-                            else:
-                                s_resp_date = str(diff1.days) + ' days ago'
-                        elif(diff1.months != 0 and diff1.years == 0):
-                            if(diff1.months == 1):
-                                s_resp_date = str(diff1.months) + ' month ago'
-                            else:
-                                s_resp_date = str(diff1.months) + ' months ago'
-                        elif(diff1.years != 0):
-                            if(diff1.years == 1):
-                                s_resp_date = str(diff1.years) + ' year ago'
-                            else:
-                                s_resp_date = str(diff1.years) + ' years ago'
+                    s_review_date = s_review.review_date
+                    s_resp_date = s_review.buyer_resp_date
                     country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
                     seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
                 for b_review in buyer_reviews:
                     buyer_count = buyer_count + int(b_review.rating_val)
-                    try:
-                        due_date = datetime.strptime(str(b_review.review_date),"%Y-%m-%d %H:%M:%S").date()
-                    except:
-                        due_date = datetime.strptime(str(b_review.review_date),"%Y-%m-%d %H:%M:%S.%f").date()
-                    end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                    diff = relativedelta.relativedelta(end_date, due_date)
-                    if(diff.years == 0 and diff.months == 0):
-                        if(diff.days == 0):
-                            b_review_date = 'today'
-                        else:
-                            b_review_date = str(diff.days) + ' days ago'
-                    elif(diff.months != 0 and diff.years == 0):
-                        if(diff.months == 1):
-                            b_review_date = str(diff.months) + ' month ago'
-                        else:
-                            b_review_date = str(diff.months) + ' months ago'
-                    elif(diff.years != 0):
-                        if(diff.years == 1):
-                            b_review_date = str(diff.years) + ' year ago'
-                        else:
-                            b_review_date = str(diff.years) + ' years ago'
+                    b_review_date = b_review.review_date
                     b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
                     buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
                 try:
@@ -3118,27 +3016,7 @@ def get_buyer_reviews_view(request):
             buyer_revs = Buyer_Reviews.objects.filter(package_gig_name=g)
             review_date = ''
             for buyer_r in buyer_revs:
-                try:
-                    start_date = datetime.strptime(str(buyer_r.review_date),"%Y-%m-%d %H:%M:%S").date()
-                except:
-                    start_date = datetime.strptime(str(buyer_r.review_date),"%Y-%m-%d %H:%M:%S.%f").date()
-                end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                diff = relativedelta.relativedelta(end_date, start_date)
-                if(diff.years == 0 and diff.months == 0):
-                    if(diff.days == 0):
-                        review_date = 'today'
-                    else:
-                        review_date = str(diff.days) + ' days'
-                elif(diff.months != 0 and diff.years == 0):
-                    if(diff.months == 1):
-                        review_date = str(diff.months) + ' month'
-                    else:
-                        review_date = str(diff.months) + ' months'
-                elif(diff.years != 0):
-                    if(diff.years == 1):
-                        review_date = str(diff.years) + ' year'
-                    else:
-                        review_date = str(diff.years) + ' years'
+                review_date = timesince.timesince(buyer_r.review_date)  
                 data.append({"message":buyer_r.review_message,"review_date":review_date,"rev_username":buyer_r.b_review_from.username,"user_profile":buyer_r.b_review_from.avatar}) 
         return JsonResponse(data,safe=False)
     
@@ -3554,6 +3432,12 @@ def every_minute():
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
                         transaction = User_Transactions.objects.get(order_no=order_details)
+                        raised_by = User.objects.get(username = res.raised_by.username)
+                        raised_to = User.objects.get(username = res.raised_to.username)
+                        notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                        if(notification_cancel.is_active == True):
+                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
+                            noti_create.save()
                         refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                         refund_details.save()
                         try:    
@@ -3619,19 +3503,29 @@ def every_minute():
                     elif(res.resolution_type=="extention"):
                         res.resolution_status = 'accepted'
                         res.save()
+                        raised_by = User.objects.get(username = res.raised_by.username)
+                        raised_to = User.objects.get(username = res.raised_to.username)
                         order_details = User_orders.objects.get(order_no = res_details.order_no)
                         order_details.due_date = next_date
                         order_details.save()   
-                        order_by_user = User.objects.get(username= order_details.order_by.username)
-                        order_to_user = User.objects.get(username= order_details.order_to.username)
-                        order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=order_by_user,activity_to=order_to_user)
+                        order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
                         order_ativity.save()
-                        update_all_balancevalues(order_by_user)
-                        update_all_balancevalues(order_to_user)
+                        notification_extension = Notification_commands.objects.get(slug = "order_extended")
+                        if(notification_extension.is_active == True):
+                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
+                            noti_create.save()
+                        update_all_balancevalues(raised_by)
+                        update_all_balancevalues(raised_to)
                     elif(res.resolution_type=="delivered"):
                         res.resolution_status = 'accepted'
                         res.save()
+                        raised_by = User.objects.get(username = res.raised_by.username)
+                        raised_to = User.objects.get(username = res.raised_to.username)
+                        notification_delivery = Notification_commands.objects.get(slug = "order_delivered")
                         order_details = User_orders.objects.get(order_no = res_details.order_no)
+                        if(notification_delivery.is_active == True):
+                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order Automatically Marked as completed.")
+                            noti_create.save()
                         service_fees_price = 0
                         if(int(order_details.order_amount) <=40):
                             payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
@@ -4122,6 +4016,15 @@ def post_flutterwave_transaction_view(request):
             else:
                 already_submitted = 2  
             data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+        if(notification_settings.is_active == True):
+            sender = User.objects.get(username = 'admin')
+            noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Card payment is sucessful.")
+            noti_create.save()
+        notification_order = Notification_commands.objects.get(slug = "order_received")
+        if(notification_order.is_active == True):
+            noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
+            noti_create.save()
         return JsonResponse(json.dumps(data),safe=False)
 
 def post_paypal_transaction_view(request):
@@ -4233,6 +4136,15 @@ def post_paypal_transaction_view(request):
             else:
                 already_submitted = 2
             data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+        if(notification_settings.is_active == True):
+            sender = User.objects.get(username = 'admin')
+            noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Paypal payment is sucessful.") 
+            noti_create.save()
+        notification_order = Notification_commands.objects.get(slug = "order_received")
+        if(notification_order.is_active == True):
+            noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")   
+            noti_create.save()
         return JsonResponse(json.dumps(data),safe=False)
 
 
@@ -4711,17 +4623,19 @@ def post_accept_click_view(request):
         res_details.resolution_status = 'accepted'
         res_details.save()
         if(res_type == "extention"):
+            raised_by = User.objects.get(username = res_details.raised_by.username)
+            raised_to = User.objects.get(username = res_details.raised_to.username)
             order_details = User_orders.objects.get(order_no = res_details.order_no)
             order_details.due_date = next_date
             order_details.save()
-            ordered_by  = User.objects.get(pk=order_details.order_to.id)
-            ordered_to  = User.objects.get(pk=order_details.order_by.id)
-            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=ordered_by,activity_to=ordered_to)
+            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
             order_ativity.save()
-            order_by_user = User.objects.get(username= order_details.order_by.username)
-            order_to_user = User.objects.get(username= order_details.order_to.username)
-            update_all_balancevalues(order_by_user)
-            update_all_balancevalues(order_to_user)
+            update_all_balancevalues(raised_by)
+            update_all_balancevalues(raised_to)
+            notification_extension = Notification_commands.objects.get(slug = "order_extended")
+            if(notification_extension.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= str(raised_to.username).title() + " agreed to extend Due Date.")
+                noti_create.save()
         elif(res_type == "cancel"):
             order_details = User_orders.objects.get(order_no = res_details.order_no)
             order_details.order_status = 'cancel'
@@ -4790,10 +4704,22 @@ def post_accept_click_view(request):
             earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
             refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
             refund_details.save()
+            raised_by = User.objects.get(username = res_details.raised_by.username)
+            raised_to = User.objects.get(username = res_details.raised_to.username)
+            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+            if(notification_cancel.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " cancelled the Order.")
+                noti_create.save()
             update_all_balancevalues(order_by_user)
             update_all_balancevalues(order_to_user)
         elif(res_type == "delivered"):
+            raised_by = User.objects.get(username = res_details.raised_by.username)
+            raised_to = User.objects.get(username = res_details.raised_to.username)
+            notification_delivery = Notification_commands.objects.get(slug = "order_delivered")
             order_details = User_orders.objects.get(order_no = res_details.order_no)
+            if(notification_delivery.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " Marked your Order as complete.")
+                noti_create.save()
             service_fees_price = 0
             if(int(order_details.order_amount) <=40):
                 payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
@@ -4897,6 +4823,24 @@ def post_decline_click_view(request):
         res_details.resolution_status = 'rejected'
         res_details.resolution_cancel_mssg = res_text
         res_details.save()
+        raised_by = User.objects.get(username = res_details.raised_by.username)
+        raised_to = User.objects.get(username = res_details.raised_to.username)
+        order_details = User_orders.objects.get(order_no = res_details.order_no)
+        if(res_details.resolution_type == "cancel"):
+            notification_cancel_req = Notification_commands.objects.get(slug = "order_cancellation_request_declined")
+            if(notification_cancel_req.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= "Your Order Cancellation Request has been Declined.")
+                noti_create.save()
+        elif(res_details.resolution_type == "extention"):
+            notification_extension_req = Notification_commands.objects.get(slug = "order_extesnion_cancelled")
+            if(notification_extension_req.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= "Your Order Extension Request has been Declined.")
+                noti_create.save()
+        elif(res_details.resolution_type == "delivered"):
+            notification_extension_req = Notification_commands.objects.get(slug = "order_delivery_declined")
+            if(notification_extension_req.is_active == True):
+                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= str(raised_to.username).title() + " requested an Revision.")
+                noti_create.save()
         return HttpResponse('sucess')
     
 
@@ -4927,6 +4871,10 @@ def post_seller_review_view(request):
         average_val =  round(float(int(int(s_comm) + int(s_serv)+ int(s_recomm)) / 3),2)
         seller_reviews = Seller_Reviews(communication=s_comm,recommendation=s_recomm,service=s_serv,average_val=average_val,seller_response="",review_message=s_review_txt,order_no=ord_details,package_gig_name= gig_details,s_review_from=orderedby_user,s_review_to=orderedto_user,buyer_resp_date=None)
         seller_reviews.save()
+        notification_seller = Notification_commands.objects.get(slug = "order_seller_reviews")
+        if(notification_seller.is_active == True):
+            noti_create = CustomNotifications(sender = orderedby_user, recipient=orderedto_user,order_no= ord_details, verb='reviews',description= str(orderedby_user.username).title() + " left a " +round(average_val) + " star review.")  
+            noti_create.save()
         return HttpResponse('sucess')
     
 def post_earning_details_view(request):
@@ -5195,25 +5143,34 @@ def post_flutter_tip_details_view(request):
                     else:
                         perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
                         service_fees_price = round(perceof_budg,2)
-                earning_val = float(earning_val) + (round(float(round(float(order_amount),2) - service_fees_price),2))
-                for ext in withdrawal_ext:
-                    if(ext.parameter_name == "withdrawal_clearence_days"):
-                        withdrwal_val = ext.no_of_days
-                        today_date = datetime.today()
-                        clearencedate = today_date + timedelta(days=int(withdrwal_val))
-                refund_details = User_Earnings(order_amount=order_amount,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
-                refund_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
-                order_message.save()
-                get_message =  Order_Message.objects.get(pk = order_message.pk)
-                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                order_ativity1.save()
-                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
-                order_ativity1.save()
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
-                user_trans.save()
-                update_all_balancevalues(order_by)
-                update_all_balancevalues(order_to)
+            earning_val = float(earning_val) + (round(float(round(float(order_amount),2) - service_fees_price),2))
+            for ext in withdrawal_ext:
+                if(ext.parameter_name == "withdrawal_clearence_days"):
+                    withdrwal_val = ext.no_of_days
+                    today_date = datetime.today()
+                    clearencedate = today_date + timedelta(days=int(withdrwal_val))
+            refund_details = User_Earnings(order_amount=order_amount,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
+            refund_details.save()
+            order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+            order_message.save()
+            get_message =  Order_Message.objects.get(pk = order_message.pk)
+            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
+            order_ativity1.save()
+            order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
+            order_ativity1.save()
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
+            user_trans.save()
+            notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+            if(notification_settings.is_active == True):
+                sender = User.objects.get(username = 'admin')
+                noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Card payment is sucessful.") 
+                noti_create.save()
+            notification_tip = Notification_commands.objects.get(slug = "order_tip_recieved")
+            if(notification_tip.is_active == True):
+                noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
+                noti_create.save()
+            update_all_balancevalues(order_by)
+            update_all_balancevalues(order_to)
         return HttpResponse('sucess')
 
     
@@ -5306,25 +5263,34 @@ def post_paypal_tip_details_view(request):
                     else:
                         perceof_budg = float((float(base_price)* float(serv_fees_val))/100)
                         service_fees_price = round(perceof_budg,2)
-                earning_val = float(earning_val) + (round(float(round(float(base_price),2) - service_fees_price),2))
-                for ext in withdrawal_ext:
-                    if(ext.parameter_name == "withdrawal_clearence_days"):
-                        withdrwal_val = ext.no_of_days
-                        today_date = datetime.today()
-                        clearencedate = today_date + timedelta(days=int(withdrwal_val))
-                refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
-                refund_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
-                order_message.save()
-                get_message =  Order_Message.objects.get(pk = order_message.pk)
-                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                order_ativity1.save()
-                order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
-                order_ativity1.save()
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
-                user_trans.save()
-                update_all_balancevalues(order_by)
-                update_all_balancevalues(order_to)
+            earning_val = float(earning_val) + (round(float(round(float(base_price),2) - service_fees_price),2))
+            for ext in withdrawal_ext:
+                if(ext.parameter_name == "withdrawal_clearence_days"):
+                    withdrwal_val = ext.no_of_days
+                    today_date = datetime.today()
+                    clearencedate = today_date + timedelta(days=int(withdrwal_val))
+            refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
+            refund_details.save()
+            order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+            order_message.save()
+            get_message =  Order_Message.objects.get(pk = order_message.pk)
+            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
+            order_ativity1.save()
+            order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
+            order_ativity1.save()
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip')
+            user_trans.save()
+            notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+            if(notification_settings.is_active == True):
+                sender = User.objects.get(username = 'admin')
+                noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Paypal payment is sucessful.")
+                noti_create.save()
+            notification_tip = Notification_commands.objects.get(slug = "order_tip_recieved")
+            if(notification_tip.is_active == True):
+                noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
+                noti_create.save()
+            update_all_balancevalues(order_by)
+            update_all_balancevalues(order_to)
         return HttpResponse('sucess')
 
         
@@ -5349,6 +5315,10 @@ def post_buyer_review_view(request):
         gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)  
         buyer_reviews = Buyer_Reviews(review_message=b_review_txt,rating_val=b_rating,order_no=ord_details,package_gig_name=gig_details,b_review_from=orderedto_user,b_review_to=orderedby_user)
         buyer_reviews.save()
+        notification_buyer = Notification_commands.objects.get(slug = "order_buyer_reviews")
+        if(notification_buyer.is_active == True):
+            noti_create = CustomNotifications(sender = orderedto_user, recipient=orderedby_user,order_no= ord_details, verb='reviews',description= str(orderedto_user.username).title() + " left a " +round(b_rating) + " star review.")  
+            noti_create.save()
         return HttpResponse('sucess')
     
     
@@ -5606,30 +5576,7 @@ def get_all_contacts_view(request):
                 last_message_sender = last_messages.sender.username
                 last_message_receiver = last_messages.receiver.username
                 last_message_time = ''
-                try:
-                    last_mssg_time = datetime.strptime(str(last_messages.timestamp), "%Y-%m-%d %H:%M:%S")
-                except:
-                    last_mssg_time = datetime.strptime(str(last_messages.timestamp), "%Y-%m-%d %H:%M:%S.%f")
-                end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                diff = relativedelta.relativedelta(end_date, last_mssg_time)
-                if(diff.years == 0 and diff.months == 0):
-                    if(diff.days == 0):
-                        if(diff.hours > 5):
-                            last_message_time = '1 day'
-                        else:
-                            last_message_time = 'today' 
-                    else:
-                        last_message_time = str(diff.days) + ' days'
-                elif(diff.months != 0 and diff.years == 0):
-                    if(diff.months == 1):
-                        last_message_time = str(diff.months) + ' month'
-                    else:
-                        last_message_time = str(diff.months) + ' months'
-                elif(diff.years != 0):
-                    if(diff.years == 1):
-                        last_message_time = str(diff.years) + ' year'
-                    else:
-                        last_message_time = str(diff.years) + ' years'
+                last_message_time = timesince.timesince(last_messages.timestamp)  
             else:
                 lastmessage_str = ''
                 last_message_sender = ''
@@ -5688,4 +5635,94 @@ def get_notifications_view(request):
                     data.append({"user_Name":all_c.initiator.username,"unread_count":unread_count})
         return JsonResponse(data,safe=False)
 
+def get_message_notify_view(request):
+    if request.method == 'GET':
+        data = []
+        o_username = request.GET['username']
+        userDetails = User.objects.get(username = o_username)
+        all_nots_list = CustomNotifications.objects.filter(recipient=userDetails)
+        last_message_time = ''
+        unread_count = 0
+        username_list = []
+        order_username_list = []
+        ordre_no = ''
+        for noty in all_nots_list:
+            if(len(data) < 10):
+                if(noty.verb.strip() == "chat"): 
+                    if noty.sender.username not in username_list:
+                        last_message = CustomNotifications.objects.filter(recipient=userDetails,sender = noty.sender.pk,verb= "chat").last()
+                        message_date = timesince.timesince(last_message.timestamp) 
+                        if(last_message.is_read == False):
+                            unread_count = unread_count + 1
+                        last_message_time = last_message.timestamp.strftime('%Y-%m-%d %H:%M')
+                        username_list.append(last_message.sender.username)
+                        data.append({"mssg_id":last_message.pk,"sender_username":last_message.sender.username,"sender_img":last_message.sender.avatar,"receiver_username":last_message.recipient.username,"receiver_img":last_message.recipient.avatar,"verb":last_message.verb,"text":last_message.description,"message_date":message_date,"isread":last_message.is_read,"order_no":ordre_no})
+                elif(noty.verb.strip() == "order_chat"): 
+                    ordre_no = str(noty.order_no.order_no)
+                    if noty.sender.username not in order_username_list:
+                        last_message = CustomNotifications.objects.filter(recipient=userDetails,sender = noty.sender.pk ,verb= "order_chat").last()
+                        message_date = timesince.timesince(last_message.timestamp) 
+                        if(last_message.is_read == False):
+                            unread_count = unread_count + 1
+                        last_message_time = last_message.timestamp.strftime('%Y-%m-%d %H:%M')
+                        order_username_list.append(last_message.sender.username)
+                        data.append({"mssg_id":last_message.pk,"sender_username":last_message.sender.username,"sender_img":last_message.sender.avatar,"receiver_username":last_message.recipient.username,"receiver_img":last_message.recipient.avatar,"verb":last_message.verb,"text":last_message.description,"message_date":message_date,"isread":last_message.is_read,"order_no":ordre_no})
+        response_data= {"data":data,"unread_count":unread_count,"last_time":last_message_time}
+        return JsonResponse(response_data,safe=False)
 
+def get_all_notify_view(request):
+    if request.method == 'GET':
+        data = []
+        last_message_time = ''
+        o_username = request.GET['username']
+        userDetails = User.objects.get(username = o_username)
+        unread_count = 0
+        order_nots_list = CustomNotifications.objects.filter(recipient=userDetails).exclude(Q(verb="order_chat") | Q(verb= "chat"))
+        for noty in order_nots_list:
+            if(noty.is_read == False):
+                unread_count = unread_count + 1
+            last_message_time = noty.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            if(noty.verb == "order" or noty.verb == "reviews"):
+                order_details = User_orders.objects.get(order_no = noty.order_no.order_no)
+                gig_details = UserGigs.objects.get(gig_title= order_details.package_gig_name.gig_title)
+                imp_gig_image_url = ''
+                imp_gig_image = Usergig_image.objects.filter(package_gig_name=gig_details).first() 
+                if(imp_gig_image != None):
+                    imp_gig_image_url = imp_gig_image.gig_image 
+                message_date = timesince.timesince(noty.timestamp)  
+                data.append({"mssg_id":noty.pk,"sender_username":noty.sender.username,"sender_img":noty.sender.avatar,"receiver_username":noty.recipient.username,"receiver_img":noty.recipient.avatar,"verb":noty.verb,"text":noty.description,"message_date":message_date,"isread":noty.is_read,"gig_img":imp_gig_image_url,"category":gig_details.gig_category.category_Name,"order_no":order_details.order_no})
+            else:
+                message_date = timesince.timesince(noty.timestamp)  
+                data.append({"mssg_id":noty.pk,"sender_username":noty.sender.username,"sender_img":noty.sender.avatar,"receiver_username":noty.recipient.username,"receiver_img":noty.recipient.avatar,"verb":noty.verb,"text":noty.description,"message_date":message_date,"isread":noty.is_read})
+        response_data= {"data":data,"unread_count":unread_count,"last_time":last_message_time}
+        return JsonResponse(response_data,safe=False)
+
+def post_mark_as_read_view(request):
+    if request.method == 'GET':
+        not_id = request.GET['not_id']
+        not_sender = request.GET['not_sender']
+        getnotif = CustomNotifications.objects.get(pk = not_id)
+        getnotif.is_read = True
+        getnotif.save()
+        return HttpResponse('sucess')
+    
+def post_mark_as_unread_view(request):
+    if request.method == 'GET':
+        not_id = request.GET['not_id']
+        not_sender = request.GET['not_sender']
+        getnotif = CustomNotifications.objects.get(pk = not_id)
+        getnotif.is_read = False
+        getnotif.save()
+        return HttpResponse('sucess')
+    
+def post_mssg_mark_as_read_view(request):
+    if request.method == 'GET':
+        not_id = request.GET['not_id']
+        not_sender = request.GET['not_sender']
+        not_type = request.GET['not_type']
+        username = request.GET['username']
+        sender_user = User.objects.get(username = not_sender)
+        sender_receiver = User.objects.get(username = username)
+        not_list = CustomNotifications.objects.filter(sender=sender_user,recipient=sender_receiver,verb=not_type).update(is_read=True)
+        return HttpResponse('sucess')
+    

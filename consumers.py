@@ -5,9 +5,8 @@ from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
-from notifications.signals import notify
 from .models import User
-from .models import Message, Conversation,Order_Message,Request_Offers, Order_Conversation,User_orders,ChatWords,SpamDetection
+from .models import Message, Conversation,Order_Message,CustomNotifications,Request_Offers, Order_Conversation,User_orders,ChatWords,SpamDetection
 from django.db.models import Q
 import itertools
 
@@ -73,7 +72,9 @@ class ChatConsumer(WebsocketConsumer):
                 message_type = message_type,
                 request_offers_id = request_offer,
             )  
-        notify.send(sender, recipient=receiver, verb='chat',description=message)
+        noti_create = CustomNotifications(sender = sender, recipient=receiver, verb='chat',description=message)
+        noti_create.save()   
+        
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,
             {

@@ -761,7 +761,6 @@ aside.actions-menu {
 }
 
 .online-indicator.night-time {
-   background: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/inbox_perseus/apps/icn-night.5e62843.svg);
    background-size: cover;
 }
 
@@ -805,7 +804,6 @@ aside.actions-menu {
 
 
 aside.actions-menu .menu-toggle {
-   background: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/inbox_perseus/apps/elipsis.49ab5c7.svg) no-repeat 50%;
    background-position-y: 8px;
    width: 25px;
    padding: 12px 8px;
@@ -1417,7 +1415,6 @@ aside.actions-menu .divider {
 
 .message-action-bar .icn.emoji-trigger {
    width: 20px;
-   background-image: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/inbox_perseus/apps/emoji.5dea450.svg);
 }
 
 .message-action-bar .icn {
@@ -1475,7 +1472,6 @@ aside.actions-menu .divider {
    margin-bottom: -11px;
 }
 .message-action-bar .bolt {
-   background-image: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/inbox_perseus/apps/bolt.34b55cb.svg);
    width: 10px;
 }
 
@@ -1508,7 +1504,6 @@ aside.actions-menu .divider {
 
 .attachment {
    width: 10px;
-   background-image: url(https://fiverr-res.cloudinary.com/npm-assets/@fiverr/inbox_perseus/apps/attachment.86e2bab.svg);
 }
 
 .message-action-bar .message-action.green {
@@ -3156,15 +3151,18 @@ input:checked + .slider:before {
 }
 .contacts-list .unread-count
 {
-   background-color:#2E5DC5;
-   display:inline-block;
-   color:#fff;
-   font-size:12px;
-   font-weight:500;
-   padding:2px 8px;
-   border-radius:8px;
-   text-align:center;
-   position:absolute;
+   display: block ;
+   background-color: #2E5DC5;
+   color: #fff;
+   font-size: 12px;
+   font-weight: 500;
+   padding: 2px 8px;
+   border-radius: 8px;
+   text-align: right;
+   position: absolute;
+   float: right;
+   right: 19px;
+   top: 40px;
 }
 .last_message
 {
@@ -3174,7 +3172,10 @@ input:checked + .slider:before {
 {
    background-color: #2E5DC5;
 }
-
+.emojiPickerIconWrap
+{
+   width:100%;
+}
 </style>
 
 <script>
@@ -3742,7 +3743,7 @@ input:checked + .slider:before {
                {
                   notification_txt = '<span class="unread-count">'+parseInt(vvv.unread_count)+'</span>'
                }
-               $("#contacts-list").append('<a class="contact read" data-label="'+ vvv.user_Name +'" onclick="user_conversation_click(this)"> <span class="image-container"> <figure class="profile-image"> <img src="'+ vvv.user_imag +'" alt="a"> </figure> <span class="online-indicator '+indicator+'"><i></i></span> </span> <div class="user-info"> <div class="username-container"><strong> '+ vvv.user_Name +' </strong></div> <p class="text-trunc"><i class=""></i> <span class="last_message">' + last_message_txt + notification_txt +' </span> </p> </div> <aside> <div> <time >'+vvv.last_message_time.trim()+'</time> </div> <div>  </div> </aside></a>');
+               $("#contacts-list").append('<a class="contact read" data-label="'+ vvv.user_Name +'" onclick="user_conversation_click(this)"> <span class="image-container"> <figure class="profile-image"> <img src="'+ vvv.user_imag +'" alt="a"> </figure> <span class="online-indicator '+indicator+'"><i></i></span> </span> <div class="user-info"> <div class="username-container"><strong> '+ vvv.user_Name +' </strong></div> <p class="text-trunc"><i class=""></i> <span class="last_message">' + last_message_txt +' </span> </p> </div> <aside> <div> <time >'+vvv.last_message_time.trim()+'</time> <span class="notif_div">'+notification_txt+'</span></div> <div>  </div> </aside></a>');
             });
             if(data.length > 0)
             {
@@ -3830,7 +3831,6 @@ input:checked + .slider:before {
             else{
                $("#orders_with_u").hide();
             }
-            console.log(indicator);
             $("#conversation").find(".online-indicator").addClass(indicator);
             if(data.curre_User == "Buyer")
             {
@@ -3938,7 +3938,7 @@ input:checked + .slider:before {
                if(parseInt(nn.unread_count)  > 0)
                {
                   parentdiv =  $("#contacts-list").find("a[data-label='"+nn.user_Name.replace(/\?/g, '')+"']");
-                  $(parentdiv).find(".text-trunc").append('<span class="unread-count">'+parseInt(nn.unread_count)+'</span> ')
+                  $(parentdiv).find(".notif_div").append('<span class="unread-count">'+parseInt(nn.unread_count)+'</span> ')
 
                }
             });

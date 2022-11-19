@@ -307,9 +307,9 @@
                                          </span>
                                          <div class="summary">
                                             <ul class="header-stars">
-                                               <li>Seller communication level<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{comm_count}}</span></small></li>
-                                               <li>Recommend to a friend<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{recc_count}}</span></small></li>
-                                               <li>Service as described<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{serv_count}}</span></small></li>
+                                               <li>Seller communication level<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{comm_count|floatformat:0}}</span></small></li>
+                                               <li>Recommend to a friend<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{recc_count|floatformat:0}}</span></small></li>
+                                               <li>Service as described<small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{serv_count|floatformat:0}}</span></small></li>
                                             </ul>
                                          </div>
                                     </header>
@@ -321,7 +321,7 @@
                                                 <header>
                                                    <div class="reviewer-details">
                                                       <h5></h5>
-                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{s_review.review}}</span></small>
+                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{s_review.review|floatformat:0}}</span></small>
                                                    </div>
                                                    <div class="country">
                                                       <img class="country-flag" src="{{s_review.country_flag}}" alt="1f1fa-1f1f8.png">
@@ -332,7 +332,7 @@
                                                    <p class="text-body-2"> {{s_review.message}}</p>
                                                 </div>
                                                 <span class="summarize">
-                                                   <time class="text-body-2">Published {{s_review.review_date}}</time>
+                                                   <time class="text-body-2">Published {{s_review.review_date|timesince}}</time>
                                                    <span class="translate-btn-wrapper visibility-hidden">
                                                       <span class="separator"> | </span>
                                                       <div class="machine-translation-package machine_translation-package machine-translation-button">
@@ -360,7 +360,7 @@
                                 <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
                                     <header class="reviews-header">
                                         <div class="details">
-                                            <h2 class="text-display-5">Reviews as Buyer<small class="review-rating"><span class="review-star rate-9 show-one"></span><span><span class="total-rating-out-five header-average-rating" data-impression-collected="true">{{buyer_count}}</span></span><span><span class="total-rating header-total-rating" data-impression-collected="true">({{buyer_reviews|length}})</span></span></small></h2>
+                                            <h2 class="text-display-5">Reviews as Buyer<small class="review-rating"><span class="review-star rate-9 show-one"></span><span><span class="total-rating-out-five header-average-rating" data-impression-collected="true">{{buyer_count|floatformat:0}}</span></span><span><span class="total-rating header-total-rating" data-impression-collected="true">({{buyer_reviews|length}})</span></span></small></h2>
                                             <span class="fit-icon reviews-collapser" style="width: 16px; height: 16px;">
                                                <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
                                                   <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
@@ -378,7 +378,7 @@
                                                 <header>
                                                    <div class="reviewer-details">
                                                       <h5></h5>
-                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{b_review.review}}</span></small>
+                                                      <small class="review-rating"><span class="review-star rate-10 show-one"></span><span class="total-rating-out-five">{{b_review.review|floatformat:0}}</span></small>
                                                    </div>
                                                    <div class="country">
                                                       <img class="country-flag" src="{{b_review.country_flag}}" alt="1f1fa-1f1f8.png">
@@ -389,7 +389,7 @@
                                                    <p class="text-body-2"> {{b_review.message}}</p>
                                                 </div>
                                                 <span class="summarize">
-                                                   <time class="text-body-2">Published {{b_review.review_date}}</time>
+                                                   <time class="text-body-2">Published {{b_review.review_date|timesince}}</time>
                                                    <span class="translate-btn-wrapper visibility-hidden">
                                                       <span class="separator"> | </span>
                                                       <div class="machine-translation-package machine_translation-package machine-translation-button">

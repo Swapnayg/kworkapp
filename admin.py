@@ -12,7 +12,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -121,7 +121,8 @@ def get_app_list(self, request):
                 'Transactions':60,
                 'Payment Parameters':59,
                 'Withdrawals':60,
-                'Notification Settings':61
+                'Notification Settings':61,
+                'Notifications':62
             }
             app['models'].sort(key=lambda x: ordering[x['name']])
 
@@ -217,6 +218,12 @@ def update_trasactions_status(sender, instance, **kwargs):
     else:
         previous = Withdrwal_initiated.objects.get(id=instance.id)
         if(previous.withdrawan_status == "sucess"):
+            senderObj = User.objects.get(username = 'admin')
+            receiverObj =  User.objects.get(username = gig_details.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderObj, recipient=receiverObj, verb='withdrawal',description="Your Withdrawal of "+ str(previous.withdrawal_amount) + " is sucessful.")
+                noti_create.save()
             userDetails = User.objects.get(username = instance.user_id.username)
             update_all_balancevalues(userDetails)
                             
@@ -299,6 +306,11 @@ class AdminContactus(admin.ModelAdmin):
     list_display = ['id','email','message','status','created_at','updated_at']
 
 admin.site.register(Contactus, AdminContactus)
+
+class AdminCustomNotifications(admin.ModelAdmin):
+    list_display = ['sender','recipient','verb','description','order_no','timestamp','is_read']
+
+admin.site.register(CustomNotifications, AdminCustomNotifications)
 
 class AdminTopicDetails(SummernoteModelAdmin):
     list_display = ['topic_Name','topic_Desc','timestamp']
@@ -524,6 +536,34 @@ class AdminUserGigs(admin.ModelAdmin):
     class Media:
         css = {'all': ('assets/css/frontend/admin_post_request.css', )} 
 
+
+@receiver(post_save, sender=UserGigs)
+def update_gig_status(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        gig_details = UserGigs.objects.get(id=instance.id)
+        if(gig_details.gig_status == "active"):
+            senderobj = User.objects.get(username = 'admin')
+            receiverobj =  User.objects.get(username = gig_details.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "gig_active")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderobj, recipient=receiverobj, verb='gig',description="Your Gig is Approved")
+                noti_create.save()
+        elif(gig_details.gig_status == "modification"):
+            senderobj = User.objects.get(username = 'admin')
+            receiverobj =  User.objects.get(username = gig_details.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "gig_modification")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderobj, recipient=receiverobj, verb='gig',description="Your Gig requires Modifications")
+                noti_create.save()
+        elif(gig_details.gig_status == "denied"):
+            senderobj = User.objects.get(username = 'admin')
+            receiverobj =  User.objects.get(username = gig_details.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "gig_denied")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderobj, recipient=receiverobj, verb='gig',description="Your Gig is Denied")
+                noti_create.save()
 admin.site.register(UserGigs, AdminUserGigs)
 
 
@@ -542,8 +582,28 @@ admin.site.register(UserAvailable, AdminUserAvailable)
 class AdminBuyer_Post_Request(admin.ModelAdmin):
     list_display = ['service_desc','service_images','service_category','send_to','service_type','buyer_request_id','service_sub_category','service_time','service_budget','service_date','user_id','service_status','individual_request_status']
     class Media:
-        css = {'all': ('assets/css/frontend/admin_post_request.css', )} 
-
+        css = {'all': ('assets/css/frontend/admin_post_request.css', )}
+        
+@receiver(post_save, sender=Buyer_Post_Request)
+def update_post_status(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        post_request = Buyer_Post_Request.objects.get(id=instance.id)
+        if(post_request.service_status == "active"):
+            senderObj = User.objects.get(username = 'admin')
+            receiverObj =  User.objects.get(username = post_request.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "buyer_post_request_active")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderObj, recipient=receiverObj, verb='request',description="Your Request is Approved")
+                noti_create.save()
+        elif(post_request.service_status == "rejected"):
+            senderObj = User.objects.get(username = 'admin')
+            receiverObj =  User.objects.get(username = post_request.user_id.username)
+            notification_settings = Notification_commands.objects.get(slug = "buyer_post_request_rejected")
+            if(notification_settings.is_active == True):
+                noti_create = CustomNotifications(sender = senderObj, recipient=receiverObj, verb='request',description="Your Request is Rejected")
+                noti_create.save()
 admin.site.register(Buyer_Post_Request, AdminBuyer_Post_Request)
 
 

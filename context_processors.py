@@ -76,7 +76,6 @@ def message_processor(request):
             else:
                 frndData = []
         except:
-            print("error")
             frndData = []
     return {
         'friends' : frndData

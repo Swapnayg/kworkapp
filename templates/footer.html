@@ -138,6 +138,16 @@
 <script src="{% static 'assets/js/select2.min.js' %}"></script>
 <script>
    $(document).ready(function(){
+      $('#message_show_div').hide();
+      $('#notification_show_div').hide();
+      refresh_order_notifications();
+      refresh_message_notifications();
+      setTimeout(function () {
+         setInterval(function() {
+            refresh_order_notifications();
+            refresh_message_notifications();
+         }, 60000); 
+      }, 300000);
       if('{{warning_message}}' == "yes"){
          location_href =  $(location).attr('href').split("/");
          window.location.href = location_href[0]+"//"+location_href[2] +"/warning/{{request.user.username}}"
@@ -251,6 +261,206 @@
    function loginClick()
    {
       $("#ModalLogin").modal("show");
+   }
+
+   function refresh_order_notifications()
+   {
+      $.ajax({
+         type:"GET",
+         url: "/get_all_notify/",
+         data: {'username': '{{request.user.username}}'},
+         success: function(data)
+         {  
+            if($("#mssg_last_time").val().length != 0)
+            {
+               if($("#mssg_unread_count").val() != data.unread_count.trim() && $("#mssg_last_time").val() != data.last_time.trim())
+               {
+                  $("#span_not_count").text(data.unread_count);
+                  $("#not_unread_count").val(data.unread_count);
+                  $("#not_last_time").val(data.unread_count);
+                  $("#not_list").empty();
+                  $.each(data.data, function(i, vvv) {
+                     btn_txt = ''
+                     if(vvv.isread == false)
+                     {
+                        btn_txt = '<div class="item-gutter"><div class="controls"><span class="unread-container read"><div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><button class="toggle-read" delay="120" content="Mark as read" onclick="not_mark_as_read(this);" data-id="'+vvv.mssg_id+'" data-sender= "'+vvv.sender_username+'" position="left" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E" containerclassname="toggle-read-tooltip-container"></button></span></div></span></div><div class="preview-image-wrapper"></div></div>';
+                     }
+                     else{
+                        btn_txt = '<div class="item-gutter"><div class="controls"><span class="unread-container read"><div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><button class="toggle-read read" delay="120" content="Mark as Unread" position="left" onclick="not_mark_as_unread(this);" data-id="'+vvv.mssg_id+'" data-sender= "'+vvv.sender_username+'" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E" containerclassname="toggle-read-tooltip-container"></button></span></div></span></div><div class="preview-image-wrapper"></div></div>';
+                     }
+                     if(vvv.verb == "order")
+                     {
+                        $("#not_list").append('<li class="drawer-item read"> <a href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time>'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> <span>'+vvv.category+'</span> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> <div class="item-gutter"> '+btn_txt+' <div class="preview-image-wrapper"> <div class="preview-image" style="background-image: url('+vvv.gig_img+');"></div> </div> </div> </a> </li> ');  
+                     }
+                     else if(vvv.verb == "payment")
+                     {
+                        $("#not_list").append('<li class="drawer-item read"> <a href="/billing" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                     }
+                     else if(vvv.verb == "reviews")
+                     {
+                        $("#not_list").append(' <li class="drawer-item read"> <a href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                     }
+                     else if(vvv.verb == "tip")
+                     {
+                        $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/balance" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                     }
+                     else if(vvv.verb == "gig")
+                     {
+                        back_img = "/static/assets/images/trans_notification.png";
+                        $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/manage_gigs" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+back_img+'); background-size: 35px; background-repeat: no-repeat; "></div> </div> </div> <div class="item-content-wrapper"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div>'+btn_txt+' </a> </li> ');
+                     }
+                     else if(vvv.verb == "request")
+                     {
+                        back_img = "/static/assets/images/trans_notification.png";
+                        $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/manage_request" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+back_img+'); background-size: 35px; background-repeat: no-repeat;"></div> </div> </div> <div class="item-content-wrapper"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+'</a> </li> ');
+                     }
+                  });
+               }
+            }
+            else{
+               $("#span_not_count").text(data.unread_count);
+               $("#not_unread_count").val(data.unread_count);
+               $("#not_last_time").val(data.unread_count);
+               $("#not_list").empty();
+               $.each(data.data, function(i, vvv) {
+                  btn_txt = ''
+                  if(vvv.isread == false)
+                  {
+                     btn_txt = '<div class="item-gutter"><div class="controls"><span class="unread-container read"><div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><button class="toggle-read" delay="120" content="Mark as read" onclick="not_mark_as_read(this);" data-id="'+vvv.mssg_id+'" data-sender= "'+vvv.sender_username+'" position="left" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E" containerclassname="toggle-read-tooltip-container"></button></span></div></span></div><div class="preview-image-wrapper"></div></div>';
+                  }
+                  else{
+                     btn_txt = '<div class="item-gutter"><div class="controls"><span class="unread-container read"><div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><button class="toggle-read read" delay="120" content="Mark as Unread" position="left" onclick="not_mark_as_unread(this);" data-id="'+vvv.mssg_id+'" data-sender= "'+vvv.sender_username+'" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E" containerclassname="toggle-read-tooltip-container"></button></span></div></span></div><div class="preview-image-wrapper"></div></div>';
+                  }
+                  if(vvv.verb == "order")
+                  {
+                     $("#not_list").append('<li class="drawer-item read"> <a href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time>'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> <span>'+vvv.category+'</span> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> <div class="item-gutter"> '+btn_txt+' <div class="preview-image-wrapper"> <div class="preview-image" style="background-image: url('+vvv.gig_img+');"></div> </div> </div> </a> </li> ');  
+                  }
+                  else if(vvv.verb == "payment")
+                  {
+                     $("#not_list").append('<li class="drawer-item read"> <a href="/billing" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                  }
+                  else if(vvv.verb == "reviews")
+                  {
+                     $("#not_list").append(' <li class="drawer-item read"> <a href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                  }
+                  else if(vvv.verb == "tip")
+                  {
+                     $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/balance" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong>'+vvv.sender_username+'</strong>: '+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+' </a> </li> ');
+                  }
+                  else if(vvv.verb == "gig")
+                  {
+                     back_img = "/static/assets/images/trans_notification.png";
+                     $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/manage_gigs" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+back_img+'); background-size: 35px; background-repeat: no-repeat; "></div> </div> </div> <div class="item-content-wrapper"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div>'+btn_txt+' </a> </li> ');
+                  }
+                  else if(vvv.verb == "request")
+                  {
+                     back_img = "/static/assets/images/trans_notification.png";
+                     $("#not_list").append('<li class="drawer-item read"> <a href="/user/{{request.user.username}}/manage_request" class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent"></div> <div class="user-image" style="background-image: url('+back_img+'); background-size: 35px; background-repeat: no-repeat;"></div> </div> </div> <div class="item-content-wrapper"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer> </div> '+btn_txt+'</a> </li> ');
+                  }
+               });
+            }
+         }
+      });
+   }
+
+   function refresh_message_notifications()
+   {
+      $.ajax({
+         type:"GET",
+         url: "/get_message_notify/",
+         data: {'username': '{{request.user.username}}'},
+         success: function(data)
+         {  
+            if($("#mssg_last_time").val().length != 0)
+            {
+               if($("#mssg_unread_count").val() != data.unread_count.trim() && $("#mssg_last_time").val() != data.last_time.trim())
+               {
+                  $("#span_mssg_count").text(data.unread_count);
+                  $("#mssg_unread_count").val(data.unread_count);
+                  $("#mssg_last_time").val(data.last_time.trim());
+                  $("#message_list").empty();
+                  $.each(data.data, function(i, vvv) {
+                     if(vvv.verb == "chat")
+                     {
+                        $("#message_list").append(' <li class="drawer-item read"> <a onclick="onmessage_read(this)" data-label="'+vvv.sender_username+'" data-id="'+vvv.mssg_id+'" data-type="chat" data-href="/inbox/'+vvv.sender_username+'/" class="main-action" id="inbox_94798279_109558113" data-impression-collected="true"> <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong class="username">'+vvv.sender_username+'</strong>Me: '+vvv.text+'</p> <footer class="r15kMhW"> <time datetime="1668776064000">'+vvv.message_date+'</time> </footer> </div>  </a> </li>');
+                     }
+                     else if(vvv.verb == "order_chat"){
+                        $("#message_list").append(' <li class="drawer-item read"> <a onclick="onmessage_read(this)" data-label="'+vvv.sender_username+'" data-id="'+vvv.mssg_id+'" data-type="order_chat" data-href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" id="inbox_94798279_109558113" data-impression-collected="true"> <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong class="username">'+vvv.sender_username+'</strong>Me: '+vvv.text+'</p> <footer class="r15kMhW"> <time datetime="1668776064000">'+vvv.message_date+'</time>  </footer> </div> </a> </li>');
+                     }  
+                  });
+                  if(parseInt(data.unread_count) > 0)
+                  {
+                     $("#messages").find(".unread_div").html('<div class="unread-icon notifications-drawer-bell-unread"></div>');
+                  }
+               }
+            }
+            else{
+               $("#span_mssg_count").text(data.unread_count);
+               $("#mssg_unread_count").val(data.unread_count);
+               $("#mssg_last_time").val(data.last_time.trim());
+               $("#message_list").empty();
+               $.each(data.data, function(i, vvv) {
+                  if(vvv.verb == "chat")
+                  {
+                     $("#message_list").append(' <li class="drawer-item read"> <a onclick="onmessage_read(this)" data-label="'+vvv.sender_username+'" data-id="'+vvv.mssg_id+'" data-type="chat" data-href="/inbox/'+vvv.sender_username+'/" class="main-action" id="inbox_94798279_109558113" data-impression-collected="true"> <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong class="username">'+vvv.sender_username+'</strong>Me: '+vvv.text+'</p> <footer class="r15kMhW"> <time datetime="1668776064000">'+vvv.message_date+'</time> </footer> </div>  </a> </li>');
+                  }
+                  else if(vvv.verb == "order_chat"){
+                     $("#message_list").append(' <li  class="drawer-item read"> <a onclick="onmessage_read(this)" data-label="'+vvv.sender_username+'" data-id="'+vvv.mssg_id+'" data-type="order_chat" data-href="/user/'+vvv.sender_username+'/manage_orders/'+vvv.order_no+'/activities" class="main-action" id="inbox_94798279_109558113" data-impression-collected="true"> <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <p class="content"><strong class="username">'+vvv.sender_username+'</strong>Me: '+vvv.text+'</p> <footer class="r15kMhW"> <time datetime="1668776064000">'+vvv.message_date+'</time>  </footer> </div> </a> </li>');
+                  }  
+               });
+               if(parseInt(data.unread_count) > 0)
+               {
+                  $("#messages").find(".unread_div").html('<div class="unread-icon notifications-drawer-bell-unread"></div>');
+               }
+            }
+         }
+      });
+   }
+   function not_mark_as_unread(ev)
+   {
+      noti_id = $(ev).attr("data-id");
+      noti_sender = $(ev).attr("data-sender");
+      $.ajax({
+         type:"GET",
+         url: "/post_mark_as_unread/",
+         data: {"not_id":noti_id,"not_sender":noti_sender},
+         success: function(data) 
+         {  
+            refresh_order_notifications();
+         }
+      });
+   }
+   function not_mark_as_unread(ev)
+   {
+      noti_id = $(ev).attr("data-id");
+      noti_sender = $(ev).attr("data-sender");
+      $.ajax({
+         type:"GET",
+         url: "/post_mark_as_read/",
+         data: {"not_id":noti_id,"not_sender":noti_sender},
+         success: function(data) 
+         {  
+            refresh_order_notifications();
+         }
+      });
+   }
+
+   function onmessage_read(ev)
+   {
+      serder_username = $(ev).attr("data-label");
+      mssg_id = $(ev).attr("data-id");
+      mssg_type = $(ev).attr("data-type");
+      data_href = $(ev).attr("data-href");
+      $.ajax({
+         type:"GET",
+         url: "/post_mssg_mark_as_read/",
+         data: {"not_id":mssg_id,"not_sender":serder_username,"not_type":mssg_type,"username":"{{request.user.username}}"},
+         success: function(data) 
+         {  
+            location_href =  $(location).attr('href').split("/");
+            window.location.href = location_href[0]+"//"+location_href[2] + data_href;
+         }
+      });
    }
 </script>
 </body>

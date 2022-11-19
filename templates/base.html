@@ -52,14 +52,14 @@
             box-sizing: border-box;
             position: absolute;
             z-index: 10000;
-            padding-top: 16px!important;
             left: -20%;
             background:white;
+            top: 140%;
         }
         #messages  ._77O-JH4
         {
-            left: 3%;
-            top: 75%;
+            left: -180%;
+            top: 140%;
         }
         .tabs-notifications ._5KluhlZ {
             background-color: #fff;
@@ -100,10 +100,12 @@
         .tabs-notifications header {
             border: 1px solid #e4e5e7;
             border-bottom: none;
-            padding:8px;
+            padding: 3px;
+            border-bottom: 1px solid #e4e5e7;
         }
         .tabs-notifications header .header-icon {
             padding:10px;
+            margin-right:2%;
         }
         .tabs-notifications .XQskgrQ {
             fill: #74767e;
@@ -131,6 +133,8 @@
             height: 100%;
             width: 100%;
             align-items: flex-start !important;
+            display:block !important;
+            margin-bottom: 0% !important;
         }
         .tabs-notifications ol, ul {
             list-style: none;
@@ -142,10 +146,14 @@
             border-bottom: 1px solid #e4e5e7;
         }
         .tabs-notifications .drawer-item {
-            background: #ebf2f5;
+            background: white;
             position: relative;
             margin: 0px !important;
             width:100%;
+            border-bottom: 1px solid #e4e5e7;
+        }
+        .tabs-notifications .drawer-item:hover{
+            background: #e4e5e7;
         }
         .tabs-notifications .drawer-item:not(.toast):not(:last-child){
             border-bottom: 1px solid #e4e5e7;
@@ -158,6 +166,7 @@
             display: -webkit-box;
             display: -webkit-flex;
             display: -ms-flexbox;
+            cursor:pointer;
             display: flex;
             max-height: 90px;
             padding: 15px;
@@ -190,6 +199,8 @@
             right: 0;
             top: 0;
             z-index: 1;
+            background-position: center;
+            background-size: cover;
         }
         .tabs-notifications .profile-picture .user-image,  {
             border-radius: 50%;
@@ -203,41 +214,47 @@
             background-size: cover;
         }
     
-        .tabs-notifications .profile-picture:after {
-            background-color: #95979d;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            bottom: 0;
-            content: "";
-            display: block;
-            height: 10px;
-            position: absolute;
-            right: 0;
-            width: 10px;
-            z-index: 1;
-        }
         .tabs-notifications .drawer-item .item-content-wrapper {
             -webkit-box-flex: 1;
             -webkit-flex: 1 1;
             -ms-flex: 1 1;
             flex: 1 1;
             max-width: 245px;
+            padding-left: 4%;
         }
         .tabs-notifications .content{
-            font-size: 14px;
+            font-size: 12px;
             line-height: 15px;
             max-height: 45px;
             overflow: hidden;
             position: relative;
             padding-top: 4%;
         }
+        .content strong.username {
+         display: block;
+         font-size:14px;
+         text-transform:capitalize;
+
+      }
         .tabs-notifications strong {
-            font-weight: 700;
+            font-weight: 600;
+            font-size:14px;
         }
+        #messages .tabs-notifications .drawer-item .item-content-wrapper
+        {
+            padding-left: 4%;
+            padding-top: 0%;
+            margin-top: -2%;
+        }
+
+        .tabs-notifications .toggle-read.read {
+            background-position: 0 1px;
+         }
         .tabs-notifications .r15kMhW {
             color: #b5b6ba;
             font-size: 12px;
             padding: 5px 0;
+            border:none;
         }
         .tabs-notifications .unread-container {
          color: #fff;
@@ -279,6 +296,9 @@
             height: 100%;
             width: 100%;
         }
+        .tabs-notifications .drawer-item .main-action:hover{
+         color:#111 !important;
+        }
         .tabs-notifications .W46fKfn,.tabs-notifications .W46fKfn ._5-fo9i5 {
             display: -webkit-inline-box;
             display: -webkit-inline-flex;
@@ -313,11 +333,35 @@
             vertical-align: middle;
         }
         .tabs-notifications .toggle-read {
-         background: url(https://fiverr-res.cloudinary.com/npm-assets/layout-server/icn-unread.27f5cf3.svg) 0 -57px/17px no-repeat;
+         background: url(/static/assets/images/icn-unread.27f5cf3.svg) 0 -57px/17px no-repeat;
          display: block;
          height: 20px;
          width: 17px;
+         border:none;
      }
+     #notification .notifications-drawer-bell-unread, #messages .notifications-drawer-bell-unread {
+      background-color: #2E5DC5;
+      border-radius: 50%;
+      height: 6px;
+      position: absolute;
+      width: 6px;
+  }
+  #notification, #messages 
+  {
+      position:relative;
+      margin: 0px 5px;
+      padding-top: 1%;
+  }
+  #notification .notifications-drawer-bell-unread
+  {
+      right: 2px;
+      top: -1px;
+  }
+  #messages .notifications-drawer-bell-unread
+  {
+      right: 0px;
+      top: -1px;
+  }
       </style>
       <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/bootstrap.min.css' %}" />
       <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/font-awesome.min.css' %}" />
@@ -641,94 +685,41 @@
                            <li id="freelancerbtn"><a href="{% url 'for_freelancer' %}" class="pr0">Are you a freelancer?</a></li>
                            <li id="notification">
                               <div id="not_anchor"></div>
+                              <div class="unread_div"></div>
                               <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" id="notification_show_div"> 
                                  <div class="_5KluhlZ"> <section class="tabs-notifications wrapper"> 
                                     <header> 
+                                       <input type="hidden" id="not_unread_count" value="">
+                                       <input type="hidden" id="not_last_time" value="">
                                        <span class="XQskgrQ header-icon bell" aria-hidden="true" style="width: 16px; height: 16px;"> 
                                           <i class="fa fa-bell" aria-hidden="true"></i>
-                                       </span> Notifications (0) 
+                                       </span> Notifications (<span id="span_not_count"></span>) 
                                     </header>
                                     <div class="scroll-wrapper"> 
-                                       <ul class="items-list"> 
-                                          <li data-testid="62f505bf5b67aff26a7b83c3" class="drawer-item read"> 
-                                             <a href="/notification_items/62f505bf5b67aff26a7b83c3/L3VzZXJzL3N3YXBfc29sbl85MC9tYW5hZ2Vfb3JkZXJzL0ZPMzE4NkIwNENEMDc=" class="main-action" id="62f505bf5b67aff26a7b83c3" data-impression-collected="true"> 
-                                                <div class="image-wrapper"> <div class="profile-picture" title="beinganaatiidu1"> <div class="user-initial font-accent">b</div> 
-                                                <div class="user-image" style="background-image: url(&quot;https://fiverr-res.cloudinary.com/image/upload/t_profile_small,q_auto,f_auto/v1/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg&quot;);"></div>
-                                                </div> 
-                                                </div> 
-                                                <div class="item-content-wrapper"> 
-                                                   <p class="content"><strong>beinganaatiidu1</strong>: Yes.</p> 
-                                                   <footer class="r15kMhW"> <time datetime="1668747177000">7h</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> 
-                                                      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> <span>Website Builders &amp; CMS</span> 
-                                                      <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> 
-                                                      </span> 
-                                                      
-                                                   </footer>
-                                                 </div>
-                                                 <div class="item-gutter">
-                                                    <div class="controls"> 
-                                                      <span class="unread-container read">
-                                                          <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5">
-                                                            Mark as Unread
-                                                         </span>
-                                                      </div> 
-                                                   </span> 
-                                                </div> 
-                                                <div class="preview-image-wrapper"> 
-                                                   <div class="preview-image" style="background-image: url(&quot;https://fiverr-res.cloudinary.com/images/t_thumbnail3_2,q_auto,f_auto/gigs/213090617/original/ee5f15bd13e8fcaf802a0d164d5158c8055f8431/build-an-awesome-website-applications-within-three-days.png&quot;);"></div> 
-                                                </div> 
-                                             </div> 
-                                          </a> 
-                                       </li> 
-                                    </ul>
-                                 </div> 
-                               
+                                       <ul class="items-list" id="not_list"> 
+                                 
+                                       </ul>
+                                    </div> 
                               </section> 
                            </div>
                         </aside>
                            </li>
                            <li id="messages">
                               <div id="mssg_anchor"></div>
+                              <div class="unread_div"></div>
                               <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" id="message_show_div"> 
                                  <div class="_5KluhlZ"> <section class="tabs-notifications wrapper"> 
                                     <header> 
+                                       <input type="hidden" id="mssg_unread_count" value="">
+                                       <input type="hidden" id="mssg_last_time" value="">
                                        <span class="XQskgrQ header-icon bell" aria-hidden="true" style="width: 16px; height: 16px;"> 
                                           <i class="fa fa-envelope" aria-hidden="true"></i>
-                                       </span> Inbox (0) 
+                                       </span> Inbox (<span id="span_mssg_count"></span>) 
                                     </header>
                                     <div class="scroll-wrapper"> 
-                                       <ul class="items-list"> 
-                                          <li data-testid="62f505bf5b67aff26a7b83c3" class="drawer-item read"> 
-                                             <a href="/notification_items/62f505bf5b67aff26a7b83c3/L3VzZXJzL3N3YXBfc29sbl85MC9tYW5hZ2Vfb3JkZXJzL0ZPMzE4NkIwNENEMDc=" class="main-action" id="62f505bf5b67aff26a7b83c3" data-impression-collected="true"> 
-                                                <div class="image-wrapper"> <div class="profile-picture" title="beinganaatiidu1"> <div class="user-initial font-accent">b</div> 
-                                                <div class="user-image" style="background-image: url(&quot;https://fiverr-res.cloudinary.com/image/upload/t_profile_small,q_auto,f_auto/v1/attachments/profile/photo/fc8239564594e9d04dd84460519067c7-947982791662550991608/JPEG_20220907_144309_2084943259438974827.jpg&quot;);"></div>
-                                                </div> 
-                                                </div> 
-                                                <div class="item-content-wrapper"> 
-                                                   <p class="content"><strong>beinganaatiidu1</strong>: Yes.</p> 
-                                                   <footer class="r15kMhW"> <time datetime="1668747177000">7h</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> 
-                                                      <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> <span>Website Builders &amp; CMS</span> 
-                                                      <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> 
-                                                      </span> 
-                                                      
-                                                   </footer>
-                                                 </div>
-                                                 <div class="item-gutter">
-                                                    <div class="controls"> 
-                                                      <span class="unread-container read">
-                                                          <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5">
-                                                            Mark as Unread
-                                                         </span>
-                                                      </div> 
-                                                   </span> 
-                                                </div> 
-                                                <div class="preview-image-wrapper"> 
-                                                   <div class="preview-image" style="background-image: url(&quot;https://fiverr-res.cloudinary.com/images/t_thumbnail3_2,q_auto,f_auto/gigs/213090617/original/ee5f15bd13e8fcaf802a0d164d5158c8055f8431/build-an-awesome-website-applications-within-three-days.png&quot;);"></div> 
-                                                </div> 
-                                             </div> 
-                                          </a> 
-                                       </li> 
-                                    </ul>
+                                       <ul class="items-list" id="message_list">
+                                         
+                                       </ul>
                                  </div> 
                                  <footer class="drawer-footer">
                                    <a href="/inbox" class="view-all">See All in Inbox</a></footer>
