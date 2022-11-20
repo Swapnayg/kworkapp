@@ -88,7 +88,7 @@ def get_app_list(self, request):
                 'Order Conversations':27,
                 'Conversations':28,
                 'Messages':29,
-                'Message Response Analysys':30,
+                'Message Interval':30,
                 'Order Extra Offer':31,
                 'Order Delivery':32,
                 'Order Messages':33,
@@ -355,7 +355,7 @@ admin.site.register(ChatWords, AdminChatWords)
 
 
 class AdminUploadFile(admin.ModelAdmin):
-    list_display = ['existingPath','name','eof']
+    list_display = ['existingPath','name','eof','timestamp']
 
 admin.site.register(UploadFile, AdminUploadFile)
 

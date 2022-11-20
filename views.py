@@ -4,6 +4,7 @@ from re import sub
 from django.utils import timesince
 import smtplib
 import shortuuid
+from functools import reduce
 from paypalrestsdk import Payment,Refund,Sale
 import paypalrestsdk
 from operator import itemgetter
@@ -3643,9 +3644,112 @@ def update_all_balancevalues(username):
     userDetails.with_credits_used_amount = with_used_credit_val
     userDetails.refund_credits_used_amount = ref_used_credit_val
     userDetails.save()
-                     
+
+def Average(lst):
+    return reduce(lambda a, b: a + b, lst) / len(lst)
+                    
 def monthly_routine():
-    print("345")
+    all_users = []
+    today = datetime.today()
+    first = today.replace(day=1)
+    last_date = first - timedelta(days=1)
+    first_date = last_date.replace(day=1)
+    start_date = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    end_date = datetime.strptime(last_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    completed_orders1 = 0
+    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    for us in all_users:
+        time_diff = []
+        mssg_responses =  Message_Response_Time.objects.filter(receiver = us).order_by('-timestamp')
+        print(mssg_responses)
+        previous_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+        for mssg_r in mssg_responses:
+            try:
+                resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
+            except:
+                resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
+            diff = relativedelta.relativedelta(previous_date,resp_date )
+            time_diff.append(str(diff.hours).replace("+","").replace("-",""))
+            try:
+                previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
+            except:
+                previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
+        print(time_diff)
+        average = Average(time_diff)
+        print(average)
+        us.avg_respons = round(average)
+        us.save()
+        if(us.seller_level == "level1"):
+            userDetails = User.objects.get(username = us.username)
+            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            three_date = start_date1 - relativedelta(months=3)
+            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
+            order_to_complete = 0
+            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") )
+            for ordr in orders_ext:
+                if(ordr.parameter_name == "seller_level_1"):
+                    order_to_complete = ordr.no_of_days
+            if(completed_orders1 >= int(order_to_complete)):
+                us.seller_level = "level2"
+                us.save()
+        elif(us.seller_level == "level1"):
+            userDetails = User.objects.get(username = us.username)
+            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            three_date = start_date1 - relativedelta(months=3)
+            six_date = start_date1 - relativedelta(months=6)
+            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
+            completed_orders2 = User_orders.objects.filter(order_status = "completed",completed_date__range=(s_month_date1, end_date)).count()
+            order_to_complete1 = 0
+            order_to_complete2 = 0
+            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") | Q(parameter_name="seller_level_2") )
+            for ordr in orders_ext:
+                if(ordr.parameter_name == "seller_level_1"):
+                    order_to_complete1 = ordr.no_of_days
+                elif(ordr.parameter_name == "seller_level_2"):
+                    order_to_complete2 = ordr.no_of_days
+            if(completed_orders2 >= int(order_to_complete2)):
+                us.seller_level = "level3"
+                us.save()
+            elif(completed_orders1 >= int(order_to_complete1)):
+                us.seller_level = "level1"
+                us.save()
+        elif(us.seller_level == "level1"):
+            userDetails = User.objects.get(username = us.username)
+            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            three_date = start_date1 - relativedelta(months=3)
+            six_date = start_date1 - relativedelta(months=6)
+            year_date = start_date1 - relativedelta(months=12)
+            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            y_month_date1 = datetime.strptime(year_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
+            completed_orders2 = User_orders.objects.filter(order_status = "completed",completed_date__range=(s_month_date1, end_date)).count()
+            completed_orders3 = User_orders.objects.filter(order_status = "completed",completed_date__range=(y_month_date1, end_date)).count()
+            order_to_complete1 = 0
+            order_to_complete2 = 0
+            order_to_complete3 = 0
+            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") | Q(parameter_name="seller_level_2") | Q(parameter_name="seller_level_3") )
+            for ordr in orders_ext:
+                if(ordr.parameter_name == "seller_level_1"):
+                    order_to_complete1 = ordr.no_of_days
+                elif(ordr.parameter_name == "seller_level_2"):
+                    order_to_complete2 = ordr.no_of_days
+                elif(ordr.parameter_name == "seller_level_3"):
+                    order_to_complete3 = ordr.no_of_days
+            if(completed_orders3 >= int(order_to_complete3)):
+                us.seller_level = "level3"
+                us.save()
+            elif(completed_orders2 >= int(order_to_complete2)):
+                us.seller_level = "level2"
+                us.save()
+            elif(completed_orders1 >= int(order_to_complete1)):
+                us.seller_level = "level1"
+                us.save()
+    Message_Response_Time.objects.filter(timestamp__range=(start_date, end_date)).delete()
+    UploadFile.objects.filter(timestamp__range=(start_date, end_date)).delete()
     
 def get_buyer_request_view(request):
     if request.method == 'GET':
@@ -5363,6 +5467,8 @@ def get_conv_user_details_view(request):
                 message_cover_detls.save()  
         conversational_details =   Conversation.objects.get(pk = message_cover_detls.pk)
         user_details =[]
+        messa_resp = Message_Response_Time(receiver=initiator, timestamp= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S'))
+        messa_resp.save()
         language_inst = Languages.objects.get(lng_Name = "English")
         user_langauges = UserLanguages.objects.filter(user_id= receiver, language_name=language_inst).first()
         seller_rating = 0
@@ -5697,7 +5803,7 @@ def get_all_notify_view(request):
         response_data= {"data":data,"unread_count":unread_count,"last_time":last_message_time}
         return JsonResponse(response_data,safe=False)
 
-def post_mark_as_read_view(request):
+def post_not_mark_as_read_view(request):
     if request.method == 'GET':
         not_id = request.GET['not_id']
         not_sender = request.GET['not_sender']
@@ -5723,6 +5829,8 @@ def post_mssg_mark_as_read_view(request):
         username = request.GET['username']
         sender_user = User.objects.get(username = not_sender)
         sender_receiver = User.objects.get(username = username)
+        messa_resp = Message_Response_Time(receiver=sender_receiver, timestamp= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S'))
+        messa_resp.save()
         not_list = CustomNotifications.objects.filter(sender=sender_user,recipient=sender_receiver,verb=not_type).update(is_read=True)
         return HttpResponse('sucess')
     

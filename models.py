@@ -909,8 +909,8 @@ class Message_Response_Time(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        verbose_name = _("Message Response Analysis")
-        verbose_name_plural = _("Message Response Analysys")
+        verbose_name = _("Message Interval")
+        verbose_name_plural = _("Message Interval")
 
     def __str__(self):
         return str(self.timestamp)   
@@ -919,6 +919,7 @@ class UploadFile(models.Model):
     existingPath = models.CharField(unique=True, max_length=100)
     name = models.CharField(max_length=50)
     eof = models.BooleanField()
+    timestamp = models.DateTimeField(default=timezone.now,null=True,blank=True)
     
 class User_Order_Resolution(models.Model):
     BOOL_CHOICES_TYPES = [('cancel', 'Cancel Order'),('extention', 'Extension Days'),('delivered', 'Delivered'),('completed', 'Completed')]
