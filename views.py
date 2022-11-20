@@ -3645,7 +3645,7 @@ def update_all_balancevalues(username):
     userDetails.refund_credits_used_amount = ref_used_credit_val
     userDetails.save()
 
-def Average(lst):
+def Average_Time(lst):
     return reduce(lambda a, b: a + b, lst) / len(lst)
                     
 def monthly_routine():
@@ -3661,7 +3661,6 @@ def monthly_routine():
     for us in all_users:
         time_diff = []
         mssg_responses =  Message_Response_Time.objects.filter(receiver = us).order_by('-timestamp')
-        print(mssg_responses)
         previous_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         for mssg_r in mssg_responses:
             try:
@@ -3669,20 +3668,23 @@ def monthly_routine():
             except:
                 resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
             diff = relativedelta.relativedelta(previous_date,resp_date )
-            time_diff.append(str(diff.hours).replace("+","").replace("-",""))
+            time_diff.append(int(str(diff.hours).replace("+","").replace("-","")))
             try:
                 previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
             except:
                 previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
-        print(time_diff)
-        average = Average(time_diff)
-        print(average)
-        us.avg_respons = round(average)
-        us.save()
+        if(len(time_diff) != 0):
+            average = Average_Time(time_diff)
+            if(round(average) == 0):
+                us.avg_respons = 1
+                us.save()
+            else:
+                us.avg_respons = round(average)
+                us.save()   
         if(us.seller_level == "level1"):
             userDetails = User.objects.get(username = us.username)
             start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 - relativedelta(months=3)
+            three_date = start_date1 -  relativedelta.relativedelta(months=3)
             t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
             completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
             order_to_complete = 0
@@ -3696,8 +3698,8 @@ def monthly_routine():
         elif(us.seller_level == "level1"):
             userDetails = User.objects.get(username = us.username)
             start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 - relativedelta(months=3)
-            six_date = start_date1 - relativedelta(months=6)
+            three_date = start_date1 -  relativedelta.relativedelta(months=3)
+            six_date = start_date1 -  relativedelta.relativedelta(months=6)
             t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
             s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
             completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
@@ -3719,9 +3721,9 @@ def monthly_routine():
         elif(us.seller_level == "level1"):
             userDetails = User.objects.get(username = us.username)
             start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 - relativedelta(months=3)
-            six_date = start_date1 - relativedelta(months=6)
-            year_date = start_date1 - relativedelta(months=12)
+            three_date = start_date1 -  relativedelta.relativedelta(months=3)
+            six_date = start_date1 -  relativedelta.relativedelta(months=6)
+            year_date = start_date1 -  relativedelta.relativedelta(months=12)
             t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
             s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
             y_month_date1 = datetime.strptime(year_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
