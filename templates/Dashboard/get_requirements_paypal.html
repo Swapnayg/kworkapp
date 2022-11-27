@@ -131,41 +131,49 @@
     
 </style>
 <script>
-    $(document).ready(function(){
-        location_href =  $(location).attr('href').split("/");
-        offer_id= location_href[5]
-        paypal_id= location_href[6]
-        paypal_email= location_href[7]
-        trans_id = location_href[8]
-        trans_status = location_href[9]
-        base_price = location_href[10]
-        total_price = location_href[11]
-        service_fees = location_href[12]
-        extra_gigs = location_href[14]
-        credits_used = location_href[15]
-        $.ajax({
-            type:"GET",
-            url: "/post_paypal_transaction/",
-            data: {'u_offer_id': offer_id,'u_user_id': {{request.user.id}},'u_paypal_id': paypal_id,'u_paypal_email': paypal_email,'u_trans_id': trans_id,'u_trans_status': trans_status,"u_base_price":base_price,"u_total_price":total_price,"u_service_fees":service_fees ,"u_extra_gigs":extra_gigs,"u_credits_used":credits_used},
-            success: function(data)
-            {
-                jsonObj = JSON.parse(data);
-                $("#order_no").val(jsonObj[0].order_no);
-                $("#order_by").val(jsonObj[0].ordered_by);
-                $("#order_to").val(jsonObj[0].ordered_to);
-                $("#already_sub").val(jsonObj[0].submitted);
-                $(".section_text:first").show();
-                if(parseInt($("#already_sub").val()) >0)
+    var chkReadyState = setInterval(function() {
+        if (document.readyState == "complete") {
+            clearInterval(chkReadyState);
+            location_href =  $(location).attr('href').split("/");
+            console.log(location_href)
+            offer_id= location_href[5]
+            paypal_id= location_href[6]
+            paypal_email= location_href[7]
+            trans_id = location_href[8]
+            trans_status = location_href[9]
+            base_price = location_href[10]
+            total_price = location_href[11]
+            service_fees = location_href[12]
+            extra_gigs = location_href[14]
+            credits_used = location_href[15]
+            $.ajax({
+                type:"GET",
+                url: "/post_paypal_transaction/",
+                data: {'u_offer_id': offer_id,'u_user_id': {{request.user.id}},'u_paypal_id': paypal_id,'u_paypal_email': paypal_email,'u_trans_id': trans_id,'u_trans_status': trans_status,"u_base_price":base_price,"u_total_price":total_price,"u_service_fees":service_fees ,"u_extra_gigs":extra_gigs,"u_credits_used":credits_used},
+                success: function(data)
                 {
-                    $("#user_gig_collect_req").hide();
-                    $("#sucess_div").show();
+                    
+                    jsonObj = JSON.parse(data);
+                    $("#order_no").val(jsonObj[0].order_no);
+                    $("#order_by").val(jsonObj[0].ordered_by);
+                    $("#order_to").val(jsonObj[0].ordered_to);
+                    $("#already_sub").val(jsonObj[0].submitted);
+                    $(".section_text:first").show();
+                    if(parseInt($("#already_sub").val()) >0)
+                    {
+                        $("#user_gig_collect_req").hide();
+                        $("#sucess_div").show();
+                    }
+                    else{
+                        $("#user_gig_collect_req").show();
+                        $("#sucess_div").hide();
+                    }
                 }
-                else{
-                    $("#user_gig_collect_req").show();
-                    $("#sucess_div").hide();
-                }
-            }
-        }); 
+            });
+        }
+    }, 100);
+    $(document).ready(function(){
+ 
     });
 
     function markassubmittedClick(ev)

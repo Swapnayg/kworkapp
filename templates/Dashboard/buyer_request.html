@@ -485,6 +485,7 @@
          data: {'gig_id': gig_id, "user_id":'{{request.user.id}}'},
          success: function(data)
          {
+            console.log(data);
             var intRegex = /^\d+$/;
             img_url = $(ev).attr("data-label");
             gig_title = $(ev).attr("data-title");

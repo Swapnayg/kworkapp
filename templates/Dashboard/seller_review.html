@@ -22,7 +22,7 @@
                               </svg>
                            </button>
                            <a href="{% url 'index' %}" class="site-logo">
-                              <img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="40" width="160" alt="mobile logo"/>
+                              <img class="js-header-theme-logo" src="{{logo_image_url}}" height="40" width="160" alt="mobile logo"/>
                            </a>
                          
                         </div>
@@ -31,7 +31,7 @@
                   <div class="loadable">
                     <div class="row justify-content-center mt-0">
                         <div class="col-10 text-center p-0 mt-3 mb-2">
-                           <article class="payment-methods" id="review_section">
+                           <article class="payment-methods" id="seller_review_section">
                               <div class="cash">
                                  <div class="radio-group">
                                     <article class="payment-methods">
@@ -516,7 +516,7 @@ article .fa, article .fa {
 <script>
     $(document).ready(function(){
         $(".error-message-review").hide();
-        $("#thank_section").show();
+        $("#thank_section").hide();
         $('#responsive').barrating({ theme: 'fontawesome-stars',initialRating: '0',allowEmpty: false,emptyValue: '',deselectable: true,onSelect: function(value, text, event) {
             if (typeof(event) !== 'undefined') {
                 responsive_rating = value;
@@ -559,9 +559,12 @@ article .fa, article .fa {
                     data: {"order_no":'{{order_no}}',"s_comm":responsive_rating.length,"s_serv":service_rating,"s_recomm":recommend_rating,"s_review_txt":$("#textarea_seller_desc").val()},
                     success: function(data) 
                     {
-                       if(data == "sucess")
+                        jsonObject = JSON.parse(JSON.stringify({
+                            "sucess": "sucess"
+                        }))
+                       if(jsonObject['sucess'] == "sucess")
                        {
-                         $("#review_section").hide();
+                         $("#seller_review_section").hide();
                          $("#thank_section").show();
                          $(".error-message-review").hide();
                        }

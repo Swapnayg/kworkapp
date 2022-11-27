@@ -27,13 +27,12 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_protect
 from django.conf import settings
-from django.core.mail import send_mail,EmailMultiAlternatives
 from django.core.files.storage import FileSystemStorage
 from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 class indexView(View):
@@ -481,6 +480,8 @@ class buyer_dashboard_view(View):
         else:
             return render(request , 'register.html')       
 
+
+
 class search_gig_view(View):
     return_url = None
     def get(self , request,keyword=''):
@@ -562,9 +563,9 @@ class seller_main_view(View):
                         active_earnings = float(active_earnings) + float(a_order.order_amount)
                         due_date = ''
                         try:
-                            due_date = datetime.strptime(str(a_order.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S").date()
-                        except:
                             due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        except:
+                            due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
                         end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                         diff = relativedelta.relativedelta(due_date, end_date)
                         num = float(diff.days)
@@ -1077,11 +1078,11 @@ class flutter_thank_you_tip_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active"):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -1156,11 +1157,11 @@ class paypal_thank_you_tip_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active"):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -1234,11 +1235,11 @@ class tips_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active"):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -1331,11 +1332,11 @@ class credit_thank_you_tip_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active"):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -1544,9 +1545,9 @@ class seller_manage_orders_view(View):
                     active_earnings = float(active_earnings) + float(a_order.order_amount)
                     due_date = ''
                     try:
-                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
-                    except:
                         due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    except:
+                        due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     num = float(diff.days)
@@ -1626,6 +1627,7 @@ class seller_manage_orders_view(View):
             #     return render(request , 'register.html')
         else:
             return render(request , 'register.html')
+
 
 class buyer_request_view(View):
     return_url = None
@@ -1812,11 +1814,11 @@ class order_activities_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active" or str(order_details.order_status) == "delivered" ):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -2000,11 +2002,11 @@ class resolution_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active"):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
-                    except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
+                    except:
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                     diff = relativedelta.relativedelta(due_date, end_date)
                     order_due_date = order_details.due_date
@@ -2142,11 +2144,11 @@ def save_content_view(request):
             ucontent = request.POST.get("ucontent")
             upageName = request.POST.get("upageName")
             htmlcontent = ''
-            with open("kworkapp/templates/"+upageName + '.html', 'r') as f:
+            with open("/home/kworkuser/myprojectdir/kworkapp/templates/"+upageName + '.html', 'r') as f:
                 htmlcontent = f.read()
             soup=BeautifulSoup(htmlcontent,'html.parser')
             soup.find('div',attrs={"class":"all_page"}).replace_with(ucontent)
-            with open("kworkapp/templates/"+upageName + '.html', "w", encoding = 'utf-8') as file:
+            with open("/home/kworkuser/myprojectdir/kworkapp/templates/"+upageName + '.html', "w", encoding = 'utf-8') as file:
                 file.write(html.unescape(str(soup.prettify()).replace("&lt;","<").replace("&gt;",">").replace("&nbsp;"," ").replace("&amp;","&").replace("&quot;",'"').replace("&apos;","'").replace("&cent;","¢").replace("&pound;","£").replace("&yen;","¥").replace("&euro;","€").replace("&copy;","©").replace("&reg;","®").replace("a&#769;","`").replace("a&#770;","^").replace("a&#771;","~").replace("a&#771;","~")))
             data = "sucess"
         except Exception as e:
@@ -2217,20 +2219,15 @@ def get_menus_data_view(request):
         return JsonResponse(data_contents,safe=False)
 
 def SendEmailAct(sendto,message,subject):
-    mailsettings = SMTP_settings.objects.filter(is_active= True).first()
-    sender_address = mailsettings.mail_address
-    sender_password = mailsettings.mail_password
+    sender_address = 'info@letworkbedone.com'
+    sender_password = 'xu11yC%5DF=Q'
     themsg = MIMEMultipart()
     themsg['Subject'] = subject
     themsg['To'] = sendto
     themsg['From'] = sender_address
     themsg.attach(MIMEText(message, 'html'))
-    themsg = themsg.as_string()  
-    if( int(mailsettings.mail_port) == 587):
-        smtp = smtplib.SMTP(mailsettings.mail_host,int(mailsettings.mail_port))
-        smtp.starttls()
-    else:
-        smtp = smtplib.SMTP_SSL(mailsettings.mail_host, int(mailsettings.mail_port))
+    themsg = themsg.as_string()
+    smtp = smtplib.SMTP_SSL('letworkbedone.com', 465)
     smtp.login(sender_address, sender_password)
     smtp.sendmail(sender_address, sendto, themsg)
     smtp.quit()
@@ -2289,17 +2286,17 @@ def post_contact_support_view(request):
                                     </td>
                                 </tr>
                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Thank you for contacting Letsworkbedone Support. Your request ("""+ticket+""") has been received and will be reviewed by our support staff.</span>
-    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> Kindly note that our email support hours are from 8:00AM to 7:00PM (Saturday to Thursday) and we will attempt to get back to you as soon as possible during business hours.</span>
-	  <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> You can add additional comments to your request by replying to this email.</span>
+                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;">Thank you for contacting Letsworkbedone Support. Your request ("""+ticket+""") has been received and will be reviewed by our support staff.</span>
+    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Kindly note that our email support hours are from 8:00AM to 7:00PM (Saturday to Thursday) and we will attempt to get back to you as soon as possible during business hours.</span>
+	  <span style="display:inline-block; vertical-align:middle; Padding:15px;"> You can add additional comments to your request by replying to this email.</span>
 	    
   </td> 
                                 </tr>
-							<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
+								<tr style="text-align:left;">
+                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;">Thank you</span>
 								</tr>
 								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
+                               <span style="display:inline-block; vertical-align:middle; Padding:15px;">Support</span>
 								</tr>
                                 <tr>
                                     <td style="height:40px;">&nbsp;</td>
@@ -3029,10 +3026,6 @@ def post_service_request_view(request):
         else:
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,service_type=service_type)
             post_bu_req.save()
-        subject = 'hello'
-        to = 'infoswap90@gmail.com'
-        html_content = '<p>This is an <strong>important</strong> message.</p>'
-        SendEmailAct(to,html_content,subject)
         return HttpResponse('sucess')
 
 
@@ -3182,9 +3175,9 @@ def daily_routine():
                 if(earn.clearence_status == "pending" ):
                     current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
             try:
-                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-            except:
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+            except:
+                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
             todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             if(int(todays_date.month) == int(earned_date.month)):
                 cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
@@ -3197,9 +3190,9 @@ def daily_routine():
         if(UserAvailable.objects.filter(user_id=userDetails).exists() == True):
             user_avail_details = UserAvailable.objects.get(user_id=userDetails)
             try:
-                availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S").date()
+                availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
             except:
-	            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
+	            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S").date()
             if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
                 UserAvailable.objects.filter(user_id=userDetails).delete()
         userDetails.total_earning = total_earning_val
@@ -3241,9 +3234,9 @@ def every_minute():
         for earn in total_earnng:
             if(earn.clearence_date != None or earn.clearence_status == "pending" ):
                 try:
-                    clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
+                    clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f")
                 except:
-	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f")
+	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
                 if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour) and int(todays_date.minute) == int(clearence_date.minute)):
                     earn.aval_with = earn.earning_amount
                     earn.clearence_status = "cleared"
@@ -3253,9 +3246,9 @@ def every_minute():
                     order_by = User.objects.get(username = order_details.order_by.username)
                     order_to = User.objects.get(username = order_details.order_to.username)
                     try:
-                        earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-                    except:
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    except:
+                        earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
                     order_activity = User_Order_Activity.objects.filter(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to,activity_date__year=earned_date.year,activity_date__month=earned_date.month, activity_date__day=earned_date.day)
                     for order_ac in order_activity:
                         order_ac.activity_type = "cleared"
@@ -3266,16 +3259,16 @@ def every_minute():
         orders_deliv_lists = []
         for u_order in user_orders:
             try:
-                order_date = datetime.strptime(str(u_order.order_date),"%Y-%m-%d %H:%M:%S").date()
-            except:
                 order_date = datetime.strptime(str(u_order.order_date),"%Y-%m-%d %H:%M:%S.%f").date()
+            except:
+                order_date = datetime.strptime(str(u_order.order_date),"%Y-%m-%d %H:%M:%S").date()
             delivery_details =  Order_Delivery.objects.filter(delivered_by=userDetails, order_no=u_order ).last()
             if(delivery_details != None):
                 if(delivery_details.delivery_date != None):
                     try:
-                        delivery_date = datetime.strptime(str(delivery_details.delivery_date),"%Y-%m-%d %H:%M:%S").date()
-                    except:
                         delivery_date = datetime.strptime(str(delivery_details.delivery_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    except:
+                        delivery_date = datetime.strptime(str(delivery_details.delivery_date),"%Y-%m-%d %H:%M:%S").date()
                     diff = relativedelta.relativedelta(order_date, delivery_date)
                     orders_deliv_lists.append(diff.days)
                     try:
@@ -3474,9 +3467,9 @@ def every_minute():
         for res in reolution_details:
             if(res.resolution_last_date != None):
                 try:
-                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
-                except:
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
+                except:
+                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
                 if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour) and int(todays_date.minute) == int(resolution_last_date.minute)):
                     if(res.resolution_type=="cancel"):
                         res.resolution_status = 'accepted'
@@ -3669,9 +3662,9 @@ def update_all_balancevalues(username):
         if(earn.clearence_status == "pending" ):
             current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
         try:
-            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-        except:
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+        except:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         if(int(todays_date.month) == int(earned_date.month)):
             cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
@@ -3684,9 +3677,9 @@ def update_all_balancevalues(username):
     if(UserAvailable.objects.filter(user_id=userDetails).exists() == True):
         user_avail_details = UserAvailable.objects.get(user_id=userDetails)
         try:
-            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S").date()
+            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
         except:
-	        availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
+	        availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S").date()
         if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
             UserAvailable.objects.filter(user_id=userDetails).delete()
     userDetails.total_earning = total_earning_val
@@ -3719,15 +3712,15 @@ def monthly_routine():
         previous_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         for mssg_r in mssg_responses:
             try:
-                resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
-            except:
                 resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
+            except:
+                resp_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
             diff = relativedelta.relativedelta(previous_date,resp_date )
             time_diff.append(int(str(diff.hours).replace("+","").replace("-","")))
             try:
-                previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
-            except:
                 previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S.%f")
+            except:
+                previous_date = datetime.strptime(str(mssg_r.timestamp),"%Y-%m-%d %H:%M:%S")
         if(len(time_diff) != 0):
             average = Average_Time(time_diff)
             if(round(average) == 0):
@@ -4446,15 +4439,14 @@ def post_credit_transaction_view(request):
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
-
-
+    
 def post_mark_as_read_view(request):
     if request.method == 'GET':
         gig_id = request.GET['gig_id']
+        data = []
         user_id = request.GET['user_id']
         req_ques = request.GET['req_ques']
         order_no = request.GET['order_no']
-        data = []
         try:
             order_by_user = User.objects.get(username = user_id)
             gig_details = UserGigs.objects.get(pk = gig_id)
@@ -4595,7 +4587,7 @@ def post_draft_object_view(request):
         delivery_count = Order_Delivery.objects.filter(order_no=order_details).count()
         orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution,total_revision= order_offer_details.no_revisions,current_revision = int(delivery_count) + 1)
         orde_delivery.save()
-        order_ativity = User_Order_Activity(order_message = "×1 Order Draft" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
+        order_ativity = User_Order_Activity(order_message = "×1 Order Delivered" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
         order_ativity.save()
         return HttpResponse('sucess')
     
@@ -4658,7 +4650,10 @@ def post_resolutions_view(request):
             if(notification_extension.is_active == True):
                 noti_create = CustomNotifications(sender = raised_by_user, recipient= raised_to, verb='order',order_no = order_details,description= str(raised_by_user.username).title() + "Requested to Extend Delivery Date.")
                 noti_create.save()
-            prev_date =  datetime.strptime(order_details.due_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+            try:
+                prev_date =  datetime.strptime(str(order_details.due_date), '%Y-%m-%d %H:%M:%S.%f')
+            except:
+                prev_date =  datetime.strptime(str(order_details.due_date), '%Y-%m-%d %H:%M:%S')        
             new_date = prev_date + timedelta(days=int(res_days))
         else:
             notification_cancellation = Notification_commands.objects.get(slug = "cancellation_request")
@@ -4680,7 +4675,6 @@ def post_resolutions_view(request):
         resolution= User_Order_Resolution(resolution_type=res_type,resolution_text = res_text,resolution_message=res_message,resolution_desc=res_desc,resolution_status="pending",order_no=order_details,resolution_days=res_days,raised_by=raised_by_user,raised_to=raised_to,message=get_message,ext_prev_date= prev_date,ext_new_date=new_date, resolution_last_date= last_date)
         resolution.save()
         return HttpResponse('sucess')
-
 
 
 @csrf_exempt
@@ -5086,12 +5080,12 @@ def post_seller_review_view(request):
             orderedto_user = User.objects.get(username = ord_details.order_to.username)
             gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)  
             average_val =  round(float(int(int(s_comm) + int(s_serv)+ int(s_recomm)) / 3),2)
-            if(Seller_Reviews.objects.filter(order_no=ord_details,s_review_from=orderedby_user,s_review_to=orderedto_use,package_gig_name= gig_details).exists() == False):
+            if(Seller_Reviews.objects.filter(order_no=ord_details,s_review_from=orderedby_user,s_review_to=orderedto_user,package_gig_name= gig_details).exists() == False):
                 seller_reviews = Seller_Reviews(communication=s_comm,recommendation=s_recomm,service=s_serv,average_val=average_val,seller_response="",review_message=s_review_txt,order_no=ord_details,package_gig_name= gig_details,s_review_from=orderedby_user,s_review_to=orderedto_user,buyer_resp_date=None)
                 seller_reviews.save()
                 notification_seller = Notification_commands.objects.get(slug = "order_seller_reviews")
                 if(notification_seller.is_active == True):
-                    noti_create = CustomNotifications(sender = orderedby_user, recipient=orderedto_user,order_no= ord_details, verb='reviews',description= str(orderedby_user.username).title() + " left a " +round(average_val) + " star review.")  
+                    noti_create = CustomNotifications(sender = orderedby_user, recipient=orderedto_user,order_no= ord_details, verb='reviews',description= str(orderedby_user.username).title() + " left a " + str(round(average_val)) + " star review.")  
                     noti_create.save()
             data.append({"sucess" : str("sucess")})
         except Exception as e:
@@ -5559,6 +5553,7 @@ def post_buyer_review_view(request):
         return JsonResponse(json.dumps(data),safe=False)
     
     
+    
 def post_initiate_withdrawl_view(request):
     if request.method == 'GET':
         username = request.GET['username']
@@ -5935,7 +5930,7 @@ def get_all_notify_view(request):
                 for noty in order_nots_list:
                     if(noty.is_read == False):
                         unread_count = unread_count + 1
-                    last_message_time = noty.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+                    last_message_time = noty.timestamp.strftime('%Y-%m-%d %H:%M')
                     if(noty.verb == "order" or noty.verb == "reviews"):
                         order_details = User_orders.objects.get(order_no = noty.order_no.order_no)
                         gig_details = UserGigs.objects.get(gig_title= order_details.package_gig_name.gig_title)
@@ -5988,732 +5983,3 @@ def post_mssg_mark_as_read_view(request):
         not_list = CustomNotifications.objects.filter(sender=sender_user,recipient=sender_receiver,verb=not_type).update(is_read=True)
         return HttpResponse('sucess')
     
-
-
-def order_extension_message(sender_username, receiver_username, gig_title, order_amount, order_no):
-    mail_content = """<!doctype html><html lang="en-US"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-        <title>Let'sworkbedone - Reset Password</title>
-        <meta name="description" content="Reset Password Email Template.">
-        <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-        </style>
-        </head>
-        <body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-        <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">We've got news about your order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" requested a modification for their order of I will """+gig_title+""" for $"""+order_amount+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> To review the modification request and redeliver the order, <a href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_no+"""/activities">click here</a>.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        </table>
-        </body></html>"""
-    return mail_content
-
-
-def order_cancellation_message(sender_username, receiver_username, order_number, resolution_days):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">"""+receiver_username+""" opened a dispute regarding your order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" has requested to cancel order """+order_number+""". Please review the request and respond within the next """+resolution_days+""" days, or the order will be automatically cancelled.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Need help navigating the situation? We encourage you to work things out with """+sender_username+""" at the resolution center or contact our customer support.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-def order_withdrawal_message(sender_username, receiver_username, order_number):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" withdrew their request regrading order """+order_number+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">You can always visit the resolution center if something is unclear or you need help navigating the situation.</span>
-                                  </td> 
-                                </tr>
-							    <tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-    
-
-def chat_message(sender_username, receiver_username, message):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-								 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:22px;font-family:'Rubik',sans-serif; padding-bottom:8%;border-bottom:1px solid #ddd;margin-left:8%; margin-right:8%;">You've received messages from """+sender_username+"""</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:0px;margin-left:8%;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:5px;margin-left:8%;text-align:justify;">"""+sender_username+""" left you messages:</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:block; vertical-align:middle; Padding:15px;padding-left:5%;margin-left:13%;padding-bottom:5%;border-top:1px solid #ddd; margin-right:13%;margin-top: 3%;text-align:justify;">"""+message+"""</span>
-                                  </td> 
-                                </tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content
-
-def order_cancelled_message(sender_username, receiver_username, gig_title, reason):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Buyer has cancelled the order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Unfortunately, """+sender_username+"""  has cancelled your order """+order_number+""", """+gig_title+""" ,  """+reason+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Just as a reminder, late deliveries can negatively impact your rating on Fiverr. If needed, you may always adjust the Gig delivery time by editing your Gig, so you can meet the due date for future orders</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content
-
-
-def order_delivery_deadline_message(sender_username, receiver_username, order_number):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Your delivery deadline is coming up</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">We wanted to remind you that your delivery deadline for order """+order_number+""" with """+sender_username+""" is in less than 12 hours.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Delivering on time is a key part in a successful collaboration. It can determine how """+sender_username+""" rates the order, whether they choose to work with you again and even recommend your Gig to others.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> If you still need more time to work on this order, you can ask """+sender_username+""" to extend the delivery time.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-
-def order_buyer_order_message(sender_username, receiver_username):
-mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Your Proof Of Doing</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Congrats!</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">You've officially accomplished something today. Here's your proof of doing:</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">  
-                                  <table cellspacing="0" cellpadding="8" style="font:16px/22px 'Helvetica Neue',Arial,'sans-serif';border:0;width:90%;border-collapse:collapse;background-color:rgb(242, 243, 248);margin: auto;">
-   <tbody>
-      <tr>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;text-align:left">Item</td>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;width:20%">Qty</td>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;width:40px;text-align:right">Price</td>
-      </tr>
-      <tr>
-         <td style="color:#555555;font-weight:bold;text-align:left;border-right:1px solid #ffffff;border-bottom:1px solid #ffffff">
-            I will install cyberpanel control panel in <span class="il">your</span> vps, dedicated or cloud server
-            - <span style="font-weight:normal">install cyberpanel control panel in <span class="il">your</span> vps, dedicated or cloud server</span>
-         </td>
-         <td style="color:#555;border-right:1px solid #fff;border-bottom:1px solid #fff">× 1</td>
-         <td style="text-align:right;color:#555;border-bottom:1px solid #fff">₹814.42</td>
-      </tr>
-      <tr>
-         <td style="color:#555;text-align:left;padding-left:24px;font-size:14px;line-height:150%">
-            <img src="https://ci5.googleusercontent.com/proxy/h616ZtH84WScqR8V80bjUDKnTyR_ICiCa2nMjSzpjmJ-Q7yzHXRfCMzGki_tA8LuLgbrNIgMk21cUv_9CWVYslF4dvsta1tUtJluToyI2VGH6-U-f0xtHPE7Fwq9Mrmn_Pq1JMokSzfPrnoiTJC0=s0-d-e1-ft#https://fiverr-res.cloudinary.com/q_auto,f_auto/v1/general_assets/system_emails/chk-grey.jpg" align="center" valign="middle" style="padding-right:6px" class="CToWUd" data-bit="iit">
-            1 Revision
-         </td>
-      </tr>
-      <tr style="border-top:1px solid #fff">
-         <td style="color:#555;text-align:left" colspan="2">Service Fee</td>
-         <td style="text-align:right;color:#555">₹207.68</td>
-      </tr>
-   </tbody>
-</table>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">In case you have yet to fill out the order requirements, please do so <a href="https://letworkbedone.com/inbox/"""+receiver_username+"""">here</a>, so """+receiver_username+""" can get started on your order.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-def order_delivery_view_message(sender_username, receiver_username, gig_title,resolution_days ):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Consider it Done</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">The Gig you ordered: 'I will """+gig_title+"""' from """+sender_username+""" is ready for your review.</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">To cross it off your to-do list, accept the delivery or request a revision if needed!</span>
-                                  </td> 
-                                </tr>
-                                  <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Please note your order will be automatically marked as complete by Fiverr after """+resolution_days+""" days, so make sure to review it.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">  
-                                  
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content

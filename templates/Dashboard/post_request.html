@@ -162,7 +162,7 @@
             post_req_desc= $("#textarea_post_req").val();
             imgList= '';
             $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
-                imgList = imgList +", "+  $(this).find('img').attr("src");
+                imgList = imgList +", "+   $(this).find('.img_file_name').val();
             });
             post_category = $("#post_category").val();
             post_sub_category = $("#post_sub_category").val();
@@ -176,7 +176,8 @@
                 {  
                     if(data == "sucess")
                     {
-                        $('#quote_form')[0].reset(); 
+                        $('#quote_form')[0].reset();
+                        $("#quote_form").find("#image_list").empty();
                         $("#image_list").empty();
                         $("#successMssg").show();
                     }

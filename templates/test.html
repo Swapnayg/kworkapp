@@ -84,11 +84,10 @@
                               </div>
                                 <div class="message-action-bar">
                                    <ul>
-                                       <li class="attachmentsdiv">
-                                          <label class="ORLWF8p _7pUBXz- co-green-700 attachments-button p-0 YxOH7gm bg-co-white">
-                                             <span class="attachment-icon" for="chat_file"></span>
-                                             <input  type="file" id="inbox_chat_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
-                                       </label>
+                                       <li class="attachmentsdiv"><span class="tooltip hint--top" data-hint="Max 5GB">
+                                          <i class="icn attachment"></i>
+                                          <input  type="file" id="inbox_chat_file"  accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint,text/plain, application/pdf, image/*" >
+                                          </span>
                                        </li>
                                        <li>
                                          <div class="W46fKfn +cX12Jm k-kBZXW">
@@ -1277,7 +1276,7 @@ aside.actions-menu .divider {
    outline: none;
    resize: none;
    border-radius: 0;
-   width: 100% !important;
+   width: 100%;
    -webkit-box-shadow: none;
    box-shadow: none;
    height: 100%;
@@ -3177,14 +3176,6 @@ input:checked + .slider:before {
 {
    width:100%;
 }
-.attachments-button .attachment-icon {
-   display: -webkit-inline-box;
-   display: -ms-inline-flexbox;
-   display: inline-flex;
-   width: 16px;
-   height: 16px;
-   background-image: url('/static/assets/images/files/paperclip-active.2888128.svg');
-}
 </style>
 
 <script>
@@ -3207,7 +3198,7 @@ input:checked + .slider:before {
       return strTime;
     }
    
-    function formatDate(date) {
+   function formatAMPM(date) {
       var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
       var hours = date.getHours();
       var minutes = date.getMinutes();
@@ -3221,62 +3212,16 @@ input:checked + .slider:before {
       hours = hours ? hours : 12; // the hour '0' should be '12'
       minutes = minutes < 10 ? '0'+minutes : minutes;
       var strTime = '';
-      strTime =  monthNames[month] + " " + _date+ ", " + year ;  
-      return strTime;
-    }
-
-    const relativeTimePeriods = [
-    [31536000, 'year'],
-    [2419200, 'month'],
-    [604800, 'week'],
-    [86400, 'day'],
-    [3600, 'hour'],
-    [60, 'minute'],
-    [1, 'second']
-];
-
-function relativeTime(date, isUtc=false) {
-    if (!(date instanceof Date)) date = new Date(date * 1000);
-    var seconds = (new Date() - date) / 1000;
-    seconds = parseInt(seconds) - parseInt(12606);
-    for (let [secondsPer, name] of relativeTimePeriods) {
-        if (seconds >= secondsPer) {
-            const amount = Math.floor(seconds / secondsPer);
-            return `${amount} ${name}${amount ? 's' : ''} ago`;
-        }
-    }
-    return 'Just now';
-}
-   
-   function formatAMPM(date) {
-      var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-      var hours = date.getHours();
-      var minutes = date.getMinutes();
-      var _date = date.getDate();
-      var month = date.getMonth();
-      var year = date.getFullYear();
-      var d = new Date();
-      var curr_year = d.getFullYear();   
-      var curr_month = d.getMonth(); 
-      var curr_day = d.getDate(); 
-      var ampm = hours >= 12 ? 'pm' : 'am';
-      hours = hours % 12;
-      hours = hours ? hours : 12; // the hour '0' should be '12'
-      minutes = minutes < 10 ? '0'+minutes : minutes;
-      var strTime = '';
       if(curr_year != year)
       {
          strTime =  monthNames[month] + " " + _date+ ", " + year + hours + ':' + minutes + ' ' + ampm; 
-      }
-      else if(curr_year == year  && curr_month == month && curr_day == _date )
-      {
-         strTime = relativeTime(date)
       }
       else{
          strTime = monthNames[month]  + " " + _date+ ", " + hours + ':' + minutes + ' ' + ampm;  
       }   
       return strTime;
-   }
+    }
+
    $(document).ready(function(){
       $(".help_div").hover(function (e) {
          $('.helptext_desc').toggle();
@@ -3345,7 +3290,7 @@ function relativeTime(date, isUtc=false) {
    
    const roomName = "chat_896";
    const chatSocket = new WebSocket(
-     'ws://'
+     'wss://'
      + window.location.host
      + '/ws/chat/'
      + roomName
@@ -3976,7 +3921,6 @@ function relativeTime(date, isUtc=false) {
                {
                   parentdiv =  $("#contacts-list").find("a[data-label='"+nn.user_Name.replace(/\?/g, '')+"']");
                   $(parentdiv).find(".notif_div").append('<span class="unread-count">'+parseInt(nn.unread_count)+'</span> ')
-
                }
             });
          }

@@ -52,13 +52,13 @@
                                     <tr data-id="228160561">
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                          <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank">
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -89,7 +89,7 @@
                                                       </a>
                                                    </li>
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions" onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -146,13 +146,13 @@
                                       
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank" >
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -178,7 +178,7 @@
                                                 <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
                                                 <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions"  onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -225,13 +225,13 @@
                                       
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"  >
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -257,7 +257,7 @@
                                                 <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
                                                 <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions"  onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -304,13 +304,13 @@
                                        
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank" >
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -336,7 +336,7 @@
                                                 <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
                                                 <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions" onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -388,13 +388,13 @@
                                      
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank" >
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -420,7 +420,7 @@
                                                 <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
                                                 <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions" onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -467,13 +467,13 @@
                                       
                                        <td class="gig-image-small js-toggle-gig-stats">
                                           <span class="gig-pict-45">
-                                          <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank"><img src="{{gig.gig_Image}}" alt="{{gig.gig_Name}}"></a>
                                           </span>
                                        </td>
                                        <td class="title js-toggle-gig-stats ">
                                           <div class="ellipsis">
-                                             <a href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" target="_blank">
-                                                {{gig.gig_Name}}
+                                             <a href="/gigs/{{request.user.username}}/{{gig.gig_Name}}" target="_blank" >
+                                                {{gig.gig_Name |title}}
                                              </a>
                                           </div>
                                        </td>
@@ -499,7 +499,7 @@
                                                 <a class="dropdown-toggle no-content" onclick="dropdownclick(this);"></a>
                                                 <ul class="dropdown-menu pull-right " role="menu" style="top: -2px;">
                                                    <li>
-                                                      <a class="anchor_actions" target="_blank" href="/user/{{request.user.username}}/edit_gig/{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
+                                                      <a class="anchor_actions" onclick="editgig_onclick(this);" data-label = "{{gig.gig_id}}" class="js-gtm-event-auto" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Edit">
                                                       <span class="text-inner">Edit</span>
                                                       </a>
                                                    </li>
@@ -586,6 +586,23 @@
 <script>
     $(document).ready(function(){
     });
+    function makeid(length) {
+      var result           = '';
+      var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+      var charactersLength = characters.length;
+      for ( var i = 0; i < length; i++ ) {
+          result += characters.charAt(Math.floor(Math.random() * charactersLength));
+      }
+      return result;
+   }
+   function editgig_onclick(ev)
+   {
+      gig_id = $(ev).attr("data-label");
+      location_href =  $(location).attr('href').split("/");
+      random_string = makeid(6);
+      var output = [random_string.slice(0, 3), gig_id, random_string.slice(3)].join('');
+      window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/edit_gig/'+ output, "_blank");
+   }
     function create_gig_onclick()
     {
         $.ajax({
@@ -597,7 +614,9 @@
                 if(data != "error" && data != 0)
                 {
                      location_href =  $(location).attr('href').split("/");
-                     window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/create_gig/'+ data, "_blank");
+                     random_string = makeid(6);
+                     var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
+                     window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/create_gig/'+ output, "_blank");
                 }
             }
           });

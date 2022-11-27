@@ -581,6 +581,7 @@
                                     </div>
                                     <div class="col-lg-9  pt-4">
                                        <div class="">
+                                          <div class="almost-there publish-section"><p>Share your gig on top social media platforms to get buyers.</p></div>
                                           <div class="share-buttons-container">
                                              <div class="share-list">
                                                <!-- FACEBOOK -->
@@ -710,91 +711,95 @@
           }
         }
        });
+       gig_id = window.location.pathname.split("/")[4];
       $.ajax({
          type:"GET",
          url: "/get_gig_details/",
-         data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}}},
+         data: {'u_gig_id':gig_id.toString().trim().match(/\d+/)[0] ,'u_user_id': {{request.user.id}}},
          success: function(data)
          {
-            json_details = JSON.parse(data.gig_details);
-            $.each(json_details, function(i, v) {
-               $("#textarea_iwill").val(v.title);
-               $("#gig_category").val(v.gig_category);
-               gig_categoryOnchange(v.gig_category,v.gig_sub_category);
-               $("#description_gig").summernote('code',v.gig_description);
-               $("#description_gig").trigger('summernote.change'); 
-               user_sub_category = v.gig_sub_category;
-            });
-            user_gig_tags =  data.gig_tags;
-            if(data.gig_tags.length == 0)
+            if(data.gig_details != null)
             {
-               $('#btn_gig_title').attr("disabled",false);
-            }
-            else{
-               $('#btn_gig_title').attr("disabled",true);
-            }
-            user_gig_package = data.gig_packages;
-            user_gig_extra_package = data.gig_extra_pack;
-            user_gig_extra_delivery = data.gig_extra_delivery;
-            $.each(data.extra_gigs, function(i, v66) {
-               $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value="'+v66.extra_gig_title+'"></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" required placeholder="describe your offering" value="'+v66.extra_gig_description+'"></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="'+v66.extra_gig_price+'"></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
-               just_added_elem= $("#extra_gig_container").find("li.custom-extra-row:last");
-               $(just_added_elem).find(".inp_extra_days").val(v66.extra_gig_duration);
-            });
-            if(data.extra_gigs.length== 2)
-            {
-               $("#add_container_btn").hide();
-            }
-            else{
-               $("#add_container_btn").show();
-            }
-            if(data.gig_faqs.length== 1)
-            {
-               $("#faq_form_que_ans").show();
-               $('#faq_add_btn').hide();
-               $("#faq_remove_btn").show();
-               $("#faq_question").val(data.gig_faqs[0].fields["gig_faq_question"]);
-               $("#faq_answer").val(data.gig_faqs[0].fields["gig_faq_answer"]);
-               $("#faq_question").trigger('keyup');
-               $("#faq_answer").trigger('keyup');
-            }
-            else{
-               $("#faq_form_que_ans").hide();
-               $('#faq_add_btn').show();
-               $("#faq_remove_btn").hide();
-            }
-            if(data.gig_requirements.length>0)
-            {
-               $("#requirements_form").show();
-               $.each(data.gig_requirements, function(i, v77) {
-                  $("#requirements_form_divs").append('<div id="textarea'+(parseInt(i)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(i)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{gig_requirements_ques_char}}" placeholder="Request necessary details such as dimensions, brand guidelines, and more." onkeyup="requirementskeyup(this)">'+v77.fields["gig_req_question"]+'</textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>')
+               json_details = JSON.parse(data.gig_details);
+               $.each(json_details, function(i, v) {
+                  $("#textarea_iwill").val(v.title);
+                  $("#gig_category").val(v.gig_category);
+                  gig_categoryOnchange(v.gig_category,v.gig_sub_category);
+                  $("#description_gig").summernote('code',v.gig_description);
+                  $("#description_gig").trigger('summernote.change'); 
+                  user_sub_category = v.gig_sub_category;
                });
-            }
-            else if(data.gig_requirements.length == 5)
-            {
-               $("#btn_add_new_question").hide();
-            }
-            else{
-               $("#btn_add_new_question").show();
-            }
-            if(data.gig_image.length>0)
-            {
-               $(".delete_img_anchor").hide(); 
-               $.each(data.gig_image, function(l, v88) {
-                  $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().find("img").attr("src",v88.fields["gig_image"]);  
-                  $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().hide();  
-                  $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().show();
+               user_gig_tags =  data.gig_tags;
+               if(data.gig_tags.length == 0)
+               {
+                  $('#btn_gig_title').attr("disabled",false);
+               }
+               else{
+                  $('#btn_gig_title').attr("disabled",true);
+               }
+               user_gig_package = data.gig_packages;
+               user_gig_extra_package = data.gig_extra_pack;
+               user_gig_extra_delivery = data.gig_extra_delivery;
+               $.each(data.extra_gigs, function(i, v66) {
+                  $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value="'+v66.extra_gig_title+'"></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" required placeholder="describe your offering" value="'+v66.extra_gig_description+'"></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="'+v66.extra_gig_price+'"></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
+                  just_added_elem= $("#extra_gig_container").find("li.custom-extra-row:last");
+                  $(just_added_elem).find(".inp_extra_days").val(v66.extra_gig_duration);
                });
-               $("#gig_image_contents").prop('checked', true);
+               if(data.extra_gigs.length== 2)
+               {
+                  $("#add_container_btn").hide();
+               }
+               else{
+                  $("#add_container_btn").show();
+               }
+               if(data.gig_faqs.length== 1)
+               {
+                  $("#faq_form_que_ans").show();
+                  $('#faq_add_btn').hide();
+                  $("#faq_remove_btn").show();
+                  $("#faq_question").val(data.gig_faqs[0].fields["gig_faq_question"]);
+                  $("#faq_answer").val(data.gig_faqs[0].fields["gig_faq_answer"]);
+                  $("#faq_question").trigger('keyup');
+                  $("#faq_answer").trigger('keyup');
+               }
+               else{
+                  $("#faq_form_que_ans").hide();
+                  $('#faq_add_btn').show();
+                  $("#faq_remove_btn").hide();
+               }
+               if(data.gig_requirements.length>0)
+               {
+                  $("#requirements_form").show();
+                  $.each(data.gig_requirements, function(i, v77) {
+                     $("#requirements_form_divs").append('<div id="textarea'+(parseInt(i)+1)+'" class="mt-2 req_question_wrapper"> <div class="label-row"> <label class="form-label">Add a question</label> <div class="help_div error_help"> <div class="helptext_desc">This field is required.</div> <span class="help_text_span"  onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span>   </div><span class="req_que_delete" onclick="delete_req_ques(textarea'+(parseInt(i)+1)+');"><i class="fa fa-trash" aria-hidden="true"></i></span></div> <div class="question-textarea"> <div class="fit-textarea fit-textarea-has-counter"><textarea maxlength="{{gig_requirements_ques_char}}" placeholder="Request necessary details such as dimensions, brand guidelines, and more." onkeyup="requirementskeyup(this)">'+v77.fields["gig_req_question"]+'</textarea><span class="fit-counter fit-textarea-counter">0 / 400</span></div> </div> </div>')
+                  });
+               }
+               else if(data.gig_requirements.length == 5)
+               {
+                  $("#btn_add_new_question").hide();
+               }
+               else{
+                  $("#btn_add_new_question").show();
+               }
+               if(data.gig_image.length>0)
+               {
+                  $(".delete_img_anchor").hide(); 
+                  $.each(data.gig_image, function(l, v88) {
+                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().find("img").attr("src",v88.fields["gig_image"]);  
+                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().hide();  
+                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().show();
+                  });
+                  $("#gig_image_contents").prop('checked', true);
+               }
+               else{
+                  $(".delete_img_anchor").hide(); 
+               }
+   
+               $('#textarea_iwill').trigger('keyup');
+               $("#extra_gig_container").find('.inp_extra_title').trigger('keyup');
+               $("#extra_gig_container").find('.inp_extra_description ').trigger('keyup');
+               $("#requirements_form_divs").find('textarea ').trigger('keyup');   
             }
-            else{
-               $(".delete_img_anchor").hide(); 
-            }
-
-            $('#textarea_iwill').trigger('keyup');
-            $("#extra_gig_container").find('.inp_extra_title').trigger('keyup');
-            $("#extra_gig_container").find('.inp_extra_description ').trigger('keyup');
-            $("#requirements_form_divs").find('textarea ').trigger('keyup');
          }
       });
       $('#gig_subcategory').change(function() {
@@ -1421,10 +1426,11 @@
             next_fs =  $(this).attr("data-next");
             if(current_fs == "overview_gig")
             {
+               gig_id = window.location.pathname.split("/")[4];
                $.ajax({
                   type:"POST",
                   url: "/post_gig_save/",
-                  data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_gigtitle': $("#textarea_iwill").val(),'u_gig_category': $("#gig_category").val(),'u_gig_sub_category': $("#gig_subcategory").val(),'u_gig_tags': JSON.stringify($("#gig_tags").val())},
+                  data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_gigtitle': $("#textarea_iwill").val(),'u_gig_category': $("#gig_category").val(),'u_gig_sub_category': $("#gig_subcategory").val(),'u_gig_tags': JSON.stringify($("#gig_tags").val())},
                   success: function(data)
                   {  
                      if(data == "sucess")
@@ -2009,10 +2015,11 @@
                      });
                      if(validmessage.every( (val, i, arr) => val === arr[0] ) == true && validmessage[0]=='true')
                      {
+                        gig_id = window.location.pathname.split("/")[4];
                         $.ajax({
                            type:"POST",
                            url: "/post_packages_save/",
-                           data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
+                           data: {'u_gig_id':  gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
                            success: function(data)
                            {  
                               if(data == "sucess")
@@ -2137,10 +2144,11 @@
                      {
                         if(validmessage.every( (val, i, arr) => val === arr[0] ) == true && validmessage[0]=='true')
                         {
+                           gig_id = window.location.pathname.split("/")[4];
                            $.ajax({
                               type:"POST",
                               url: "/post_packages_save/",
-                              data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
+                              data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
                               success: function(data)
                               {  
                                  if(data == "sucess")
@@ -2166,10 +2174,11 @@
                      }
                      else
                      {
+                        gig_id = window.location.pathname.split("/")[4];
                         $.ajax({
                            type:"POST",
                            url: "/post_packages_save/",
-                           data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
+                           data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_package_details': JSON.stringify(u_package_details),'u_package_details1': JSON.stringify(u_package_details1),'u_package_details2': JSON.stringify(u_package_details2),'u_extra_delivery': JSON.stringify(u_extra_delivery),'u_add_on_package_details':JSON.stringify(u_add_on_package_details),'u_add_on_gig':JSON.stringify(u_add_on_gig)},
                            success: function(data)
                            {  
                               if(data == "sucess")
@@ -2210,7 +2219,6 @@
                   validatemessage = "false";
                   $("#gig_desciption_error").show();
                }
-               console.log(validatemessage);
                if(validatemessage == "true")
                {
                   validmessage = []
@@ -2246,10 +2254,11 @@
                      }
                      if(validmessage.every( (val, i, arr) => val === arr[0] ) == true && validmessage[0]=='true')
                      {
+                        gig_id = window.location.pathname.split("/")[4];
                         $.ajax({
                            type:"POST",
                            url: "/post_gig_des_faq_save/",
-                           data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_gig_description': $("#description_gig").summernote('code'),'u_gig_faq_ques':$("#faq_question").val() ,'u_gig_faq_answer': $("#faq_answer").val()},
+                           data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_gig_description': $("#description_gig").summernote('code'),'u_gig_faq_ques':$("#faq_question").val() ,'u_gig_faq_answer': $("#faq_answer").val()},
                            success: function(data)
                            {  
                               if(data == "sucess")
@@ -2274,10 +2283,11 @@
                      }
                   }
                   else{
+                     gig_id = window.location.pathname.split("/")[4];
                      $.ajax({
                         type:"POST",
                         url: "/post_gig_desp_save/",
-                        data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_gig_description': $("#description_gig").summernote('code')},
+                        data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_gig_description': $("#description_gig").summernote('code')},
                         success: function(data)
                         {  
                            if(data == "sucess")
@@ -2329,10 +2339,11 @@
                   });
                   if(validmessage.every( (val, i, arr) => val === arr[0] ) == true && validmessage[0]=='true')
                   {
+                     gig_id = window.location.pathname.split("/")[4];
                      $.ajax({
                         type:"POST",
                         url: "/post_rquirements_save/",
-                        data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_requirements': JSON.stringify(data_requirements)},
+                        data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_requirements': JSON.stringify(data_requirements)},
                         success: function(data)
                         {  
                            if(data == "sucess")
@@ -2381,10 +2392,11 @@
                   $("#image_gig_error").hide();
                   if($("#gig_image_contents").is(':checked'))
                   {
+                     gig_id = window.location.pathname.split("/")[4];
                      $.ajax({
                         type:"POST",
                         url: "/post_images_save/",
-                        data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}},'u_images': JSON.stringify(data_images)},
+                        data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_images': JSON.stringify(data_images)},
                         success: function(data)
                         {  
                            if(data == "sucess")
@@ -2419,10 +2431,11 @@
             }
             else if(current_fs == "publish_gig")
             {
+               gig_id = window.location.pathname.split("/")[4];
                $.ajax({
                   type:"POST",
                   url: "/post_publish_save/",
-                  data: {'u_gig_id': window.location.pathname.split("/")[4],'u_user_id': {{request.user.id}}},
+                  data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}}},
                   success: function(data)
                   {  
                      if(data == "sucess")
@@ -2711,8 +2724,9 @@ function gig_imgUpload(parentid,e)
       for (var i = 0; i < files.length; i++) {
          fd.append("files", files[i]);
       }
+      gig_id = window.location.pathname.split("/")[4];
       fd.append("user_id", '{{request.user.id}}');
-      fd.append("gig_id", window.location.pathname.split("/")[4]);
+      fd.append("gig_id", gig_id.toString().trim().match(/\d+/)[0]);
       var xhr=new XMLHttpRequest();
 		xhr.open("POST","/gig_image_upload/",true);
 		xhr.onreadystatechange = function() {
@@ -2781,6 +2795,15 @@ function cos_click() {
    .gig-overview h1
    {
       text-transform: capitalize;
+   }
+   #publish_social_div .publish-section 
+   {
+      margin: 0;
+      border: none;
+   }
+   .share-buttons-container
+   {
+      height: 20vh;
    }
 </style>
 {% endblock %}

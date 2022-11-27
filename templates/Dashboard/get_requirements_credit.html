@@ -131,38 +131,44 @@
     
 </style>
 <script>
-    $(document).ready(function(){
-        location_href =  $(location).attr('href').split("/");
-        offer_id= location_href[5]
-        base_price= location_href[6]
-        total_price= location_href[7]
-        fees = location_href[8]
-        extra_gigs = location_href[9]
-        used_credits = location_href[10]
-        pay_user = location_href[11]
-        $.ajax({
-            type:"GET",
-            url: "/post_credit_transaction/",
-            data: {'offer_id': offer_id,'base_price': base_price,'total_price': total_price,'fees': fees,'extra_gigs': extra_gigs,'used_credits': used_credits,'pay_user': pay_user,'pay_by':'{{request.user.username}}'},
-            success: function(data)
-            {
-                jsonObj = JSON.parse(data);
-                $("#order_no").val(jsonObj[0].order_no);
-                $("#order_by").val(jsonObj[0].ordered_by);
-                $("#order_to").val(jsonObj[0].ordered_to);
-                $("#already_sub").val(jsonObj[0].submitted);
-                $(".section_text:first").show();
-                if(parseInt($("#already_sub").val()) >0)
+    var chkReadyState = setInterval(function() {
+        if (document.readyState == "complete") {
+            clearInterval(chkReadyState);
+            location_href =  $(location).attr('href').split("/");
+            offer_id= location_href[5]
+            base_price= location_href[6]
+            total_price= location_href[7]
+            fees = location_href[8]
+            extra_gigs = location_href[9]
+            used_credits = location_href[10]
+            pay_user = location_href[11]
+            $.ajax({
+                type:"GET",
+                url: "/post_credit_transaction/",
+                data: {'offer_id': offer_id,'base_price': base_price,'total_price': total_price,'fees': fees,'extra_gigs': extra_gigs,'used_credits': used_credits,'pay_user': pay_user,'pay_by':'{{request.user.username}}'},
+                success: function(data)
                 {
-                    $("#user_gig_collect_req").hide();
-                    $("#sucess_div").show();
+                    jsonObj = JSON.parse(data);
+                    $("#order_no").val(jsonObj[0].order_no);
+                    $("#order_by").val(jsonObj[0].ordered_by);
+                    $("#order_to").val(jsonObj[0].ordered_to);
+                    $("#already_sub").val(jsonObj[0].submitted);
+                    $(".section_text:first").show();
+                    if(parseInt($("#already_sub").val()) >0)
+                    {
+                        $("#user_gig_collect_req").hide();
+                        $("#sucess_div").show();
+                    }
+                    else{
+                        $("#user_gig_collect_req").show();
+                        $("#sucess_div").hide();
+                    }
                 }
-                else{
-                    $("#user_gig_collect_req").show();
-                    $("#sucess_div").hide();
-                }
-            }
-        });
+            });
+        }
+    }, 100);
+    $(document).ready(function(){
+
     });
 
     function markassubmittedClick(ev)

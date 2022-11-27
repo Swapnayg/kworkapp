@@ -736,11 +736,14 @@
         </div>
     </div>
 </div>
-
-{% if request.session.userpage == "buyer" %}
-   {% include  'Dashboard/base_buyer.html' %}
+{% if request.user.username|length != 0%}
+   {% if request.session.userpage == "buyer" %}
+      {% include  'Dashboard/base_buyer.html' %}
+   {% else %}
+      {% include  'Dashboard/base_seller.html' %}
+   {% endif %}
 {% else %}
-   {% include  'Dashboard/base_seller.html' %}
+   {% include  'footer.html' %}
 {% endif %}
 {% endblock %}
 <div class="modal" id="modal_share" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
@@ -880,11 +883,20 @@
   {
       margin-left: 8px;
   }
+  .carousel li
+  {
+   background:white !important;
+  }
+  .gig-description .description-wrapper .description-content
+  {
+      max-height: inherit;
+      margin-bottom: 3%;
+  }
 </style>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />
 <script src="{% static 'assets/js/jquery.light-carousel.js' %}"></script>
 <script>
-   $(document).ready(function(){
+   $(document).ready(function(){    
     function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
     dataObj1 =  eval($("#pack_data_0").val());
     dataObj2 =  eval($("#pack_data_1").val());

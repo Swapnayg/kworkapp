@@ -17,6 +17,7 @@
                   <select id="buyer_query_type"  required class="js-index-search-input js-static-search form-control" >
                      <option></option>   
                   </select>
+                  <span class="search-button"><button class="button button-success" type="button" id="buyer_search_btn">Search</button></span>
                 </div>
              </div>
              <div class="payer-banner__search-sample">Some ideas to try: 
@@ -72,7 +73,7 @@
                                         <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
                                            <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
                                               <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
-                                              <li class="rating-block__rating-item--number fw600 v-align-m">{{imp_gigs.seller_count}}</li>
+                                              <li class="rating-block__rating-item--number fw600 v-align-m">{{imp_gigs.seller_count|floatformat:0}}</li>
                                            </ul>
                                            <span class="rating-block__count rating-block__count-star">({{imp_gigs.review_count}})</span>
                                         </div>
@@ -122,7 +123,7 @@
                                        <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
                                           <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
                                              <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
-                                             <li class="rating-block__rating-item--number fw600 v-align-m">{{sea_gig.seller_count}}</li>
+                                             <li class="rating-block__rating-item--number fw600 v-align-m">{{sea_gig.seller_count|floatformat:0}}</li>
                                           </ul>
                                           <span class="rating-block__count rating-block__count-star">({{sea_gig.review_count}})</span>
                                        </div>
@@ -154,6 +155,13 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
+<style>
+   #buyer_search_btn:hover
+   {
+      background:#2E5DC5;
+      color:white;
+   }
+</style>
 <script>
    hidden_val = eval(JSON.parse(JSON.stringify($("#buyer_catlist_hidden").val())));
       var array = [];
@@ -168,16 +176,28 @@
    };
   $("#buyer_query_type").select2(configParamsObj);
   $("#buyer_query_type").change(function () {
-   $.ajax({
-      type:"POST",
-      url: "/post_search_key/",
-      data: {'keyword':$('#buyer_query_type').find(":selected").text(),"keyword_type":"keyword"},
-      success: function(data) 
-      {  
-         value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#buyer_query_type').find(":selected").text();});
-         window.open('/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
-      }
-   });
+
+});
+$("#buyer_search_btn").click(function () {
+   if($("#buyer_query_type").val().trim().length != 0)
+   {
+      $.ajax({
+         type:"POST",
+         url: "/post_search_key/",
+         data: {'keyword':$('#buyer_query_type').find(":selected").text(),"keyword_type":"keyword"},
+         success: function(data) 
+         {  
+            
+            location_href =  $(location).attr('href').split("/");
+            value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#buyer_query_type').find(":selected").text();});
+            $('#buyer_query_type').val("");
+            window.open( location_href[0]+"//"+location_href[2] + '/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
+         }
+      });
+   }
+   else{
+      alert("Select any category");
+   }
 });
 </script>
 {% endblock %}

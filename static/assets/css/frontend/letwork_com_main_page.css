@@ -271,7 +271,7 @@
 }
 
 i.icon-help--grey {
-    background: url(/images/icons/icon-help-grey.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-help-grey.svg) no-repeat;
     display: inline-block;
     height: 20px;
     line-height: 20px;
@@ -280,7 +280,7 @@ i.icon-help--grey {
 }
 
 i.icon-star {
-    background: url(/images/icons/icon-star-gray.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-star-gray.svg) no-repeat;
     background-size: 100% 100%;
     display: inline-block;
     height: 14px;
@@ -290,7 +290,7 @@ i.icon-star {
 
 i.icon-star--active,
 i.icon-star.active {
-    background: url(/images/icons/icon-star-active.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-star-active.svg) no-repeat;
     background-size: 100% 100%
 }
 
@@ -604,7 +604,7 @@ iframe {
 .icon {
     background-clip: padding-box;
     background-color: transparent;
-    background-image: url(/images/sprite-icon.png?v=12);
+    background-image: url(/static/assets/images/sprite-icon.png?v=12);
     background-repeat: no-repeat;
     display: inline-block
 }
@@ -703,7 +703,7 @@ iframe {
 }
 
 .custom-search.general-search-index:after {
-    background: url(/images/sprite-icon.png?v=11) -35px -1931px no-repeat;
+    background: url(/static/assets/images//sprite-icon.png?v=11) -35px -1931px no-repeat;
     content: "";
     height: 24px;
     left: 20px;
@@ -925,7 +925,7 @@ iframe {
 }
 
 .header .headertop-desktop .general-search.custom-search:before {
-    background: url(/images/icons/icon-search-16-gray.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-search-16-gray.svg) no-repeat;
     content: "";
     display: block;
     height: 16px;
@@ -956,7 +956,7 @@ iframe {
 }
 
 .header .headertop-desktop .general-search.custom-search .search-button .ico-search-button {
-    background: url(/images/header/icon-search.svg) no-repeat 50%;
+    background: url(/static/assets/images/header/icon-search.svg) no-repeat 50%;
     display: none;
     height: 16px;
     width: 16px
@@ -1067,7 +1067,7 @@ body.is-robot .recommendation-app {
 }
 
 .recommendation-app__rating {
-    background: url(/images/full-star.svg?ver=2) 0 0 space;
+    background: url(/static/assets/images/full-star.svg?ver=2) 0 0 space;
     display: inline-block;
     height: 10px;
     margin: 0 0 0 1px;
@@ -1081,7 +1081,7 @@ body.is-robot .recommendation-app {
 }
 
 .recommendation-app__rating--half:before {
-    background: url(/images/half-star.svg?ver=2) 0 0 no-repeat;
+    background: url(/static/assets/images/half-star.svg?ver=2) 0 0 no-repeat;
     content: "";
     height: 10px;
     position: absolute;
@@ -1111,7 +1111,7 @@ body.is-robot .recommendation-app {
 }
 
 .recommendation-app__logo {
-    background: url(/images/logo-app.svg?ver=2) 50% 50% no-repeat;
+    background: url(/static/assets/images/logo-app.svg?ver=2) 50% 50% no-repeat;
     height: 64px;
     width: 40px
 }
@@ -1182,7 +1182,7 @@ body.is-robot .recommendation-app {
 }
 
 i.icon-help--grey {
-    background: url(/images/icons/icon-help-grey.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-help-grey.svg) no-repeat;
     display: inline-block;
     height: 20px;
     line-height: 20px;
@@ -1191,7 +1191,7 @@ i.icon-help--grey {
 }
 
 i.icon-star {
-    background: url(/images/icons/icon-star-gray.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-star-gray.svg) no-repeat;
     background-size: 100% 100%;
     display: inline-block;
     height: 14px;
@@ -1201,7 +1201,7 @@ i.icon-star {
 
 i.icon-star--active,
 i.icon-star.active {
-    background: url(/images/icons/icon-star-active.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-star-active.svg) no-repeat;
     background-size: 100% 100%
 }
 
@@ -1303,7 +1303,7 @@ body {
 }
 
 .banner-market .custom-search.general-search-index:after {
-    background: url(/images/icons/icon-search-index.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-search-index.svg) no-repeat;
     height: 24px;
     left: 12px;
     top: 11px;
@@ -1322,7 +1322,7 @@ body {
 }
 
 .banner-market .custom-search.general-search-index .clear-button {
-    background: url(/images/icons/icon-close-32.svg) no-repeat;
+    background: url(/static/assets/images/icons/icon-close-32.svg) no-repeat;
     font-size: 0;
     height: 32px;
     left: auto;
@@ -2114,7 +2114,7 @@ body {
 }
 
 .help-buisness__item:before {
-    background: url(/images/icons/checked.svg) no-repeat 0 0;
+    background: url(/static/assets/images/icons/checked.svg) no-repeat 0 0;
     content: "";
     display: block;
     height: 22px;
@@ -2589,7 +2589,7 @@ body .footer {
 }
 
 .mobile-nav__header-close {
-    background: url(/images/header/icon-close.svg) 0 0 no-repeat;
+    background: url(/static/assets/images/header/icon-close.svg) 0 0 no-repeat;
     cursor: pointer;
     height: 32px;
     -webkit-user-select: none;
@@ -2903,7 +2903,7 @@ body .footer {
 }
 
 .mobile-nav__header-close {
-    background: url(/images/header/icon-close.svg) 0 0 no-repeat;
+    background: url(/static/assets/images/header/icon-close.svg) 0 0 no-repeat;
     cursor: pointer;
     height: 32px;
     -webkit-user-select: none;
@@ -3341,7 +3341,7 @@ body .footer {
 
 @media (max-width:767.98px) {
     .header .menu-category.menu-category_login {
-        background: 50%/contain no-repeat url(/images/header/sign-in.svg);
+        background: 50%/contain no-repeat url(/static/assets/images/header/sign-in.svg);
         height: 32px;
         margin-bottom: 1px;
         margin-left: 8px;
@@ -3690,7 +3690,7 @@ body .footer {
 
 @media (min-width:768px) {
     .banner-market {
-        background: url(/images/index/banner-bg-front.jpg?v=2) bottom no-repeat;
+        background: url(/static/assets/images/index/banner-bg-front.jpg?v=2) bottom no-repeat;
         background-size: cover;
         height: 400px;
         padding-top: 64px

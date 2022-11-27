@@ -1,6 +1,6 @@
 from kworkapp.models import  Conversation,Message,User
 from django.db.models import Q
-from kworkapp.models import Categories,SubCategories,SubSubCategories,Api_keys,User_warning,User
+from kworkapp.models import Categories,SubCategories,SMTP_settings,SubSubCategories,Api_keys,User_warning,User,LogoImages
 import json
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -100,6 +100,9 @@ def menu_procesor(request):
     user_warning = ''
     user_blocked = ''
     categories = Categories.objects.all()
+    logo_details= LogoImages.objects.filter().first()
+    logo_img_url = "/media/"+str(logo_details.image)
+    print(logo_img_url)
     if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
         userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
         user_warning = ''
@@ -112,8 +115,7 @@ def menu_procesor(request):
         if(userDetails.profile_status == "blocked"):
             user_blocked = "yes"
         else:
-            user_blocked = "no"
-            
+            user_blocked = "no"         
     for i,c in enumerate(categories):
         menu_list.append({"name":c.category_Name,'image':c.image})
         category_int = Categories.objects.get(category_Name= c.category_Name)
@@ -125,7 +127,8 @@ def menu_procesor(request):
         'sub_menu' : json.dumps(sub_menulist),
         "warning_message":user_warning,
         "block_message":user_blocked,
-        "session_users":get_current_users()
+        "session_users":get_current_users(),
+        "logo_image_url":logo_img_url,
     }
 
 

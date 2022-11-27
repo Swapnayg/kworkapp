@@ -108,6 +108,10 @@ class User(AbstractBaseUser):
     referrals_earnings =  models.IntegerField(blank=True,default="0",null=True)
     pay_pal_mail_id = models.EmailField(max_length=300, blank=True, null=True)
     objects = UserManager()
+    mail_message = models.BooleanField(default=True)
+    mail_order = models.BooleanField(default=True)
+    mail_updates = models.BooleanField(default=True)
+    mail_rating = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -1001,6 +1005,7 @@ class User_Earnings(models.Model):
     
 class Api_keys(models.Model):
     BOOL_CHOICES_STATUS = [('google', 'Google'),('facebook', 'Facebook'),('paypal', 'Paypal'),('flutterwave', 'Flutterwave')]
+    BOOL_CHOICES_Ports = [('587', '587'),('25', '25'),('465', '465')]
     api_name =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True, unique=True)
     secrete_key = models.CharField(max_length=1000,blank=True,default="",null=True)
     private_key = models.CharField(max_length=1000,blank=True,default="",null=True)
@@ -1012,6 +1017,29 @@ class Api_keys(models.Model):
 
     def __str__(self):
         return str(self.api_name)
+
+
+class SMTP_settings(models.Model):
+    BOOL_CHOICES_Ports = [('587', '587'),('465', '465')]
+    mail_host = models.CharField(max_length=1000,blank=True,default="",null=True)
+    mail_address = models.CharField(max_length=1000,blank=True,default="",null=True)
+    mail_password = models.CharField(max_length=1000,blank=True,default="",null=True)
+    mail_port = models.CharField(max_length=300,choices=BOOL_CHOICES_Ports,blank=True,default="587",null=True)
+    is_active = models.BooleanField(default=False)
+    created_on = models.DateTimeField(default=timezone.now, blank=True)
+    
+    class Meta:
+        verbose_name = _("SMTP Setting")
+        verbose_name_plural = _("SMTP Settings")
+
+    def __str__(self):
+        return str(self.mail_host)
+
+
+
+
+
+
 
 class SpamDetection(models.Model):
     BOOL_CHOICES_warning = [('sent', 'Sent'),('pending', 'Pending')]
@@ -1091,6 +1119,7 @@ class Notification_commands(models.Model):
     notification = models.CharField(max_length=500,blank=True,null=True)
     slug = models.CharField(max_length=300,blank=True,null=True)
     is_active = models.BooleanField(default=False)
+    mail_active = models.BooleanField(default=False)
     
     class Meta:
         verbose_name = _("Notification Setting")
@@ -1137,8 +1166,22 @@ class CustomNotifications(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
+def logofilename(instance, filename):
+    ext = filename.split('.')[-1]
+    filenm = os.path.splitext(filename)[0]
+    filename = "%s_%s.%s" % (instance.slug.split()[0],filenm, ext)
+    return os.path.join( 'logo/'+filename)
 
+class LogoImages(models.Model):
+    image = models.FileField(upload_to = logofilename, null=True,blank=True,help_text='Max width and height of the image will be 460:100')
+    slug = models.CharField(max_length=300, blank=True, null=True)
+    
+    class Meta:
+        verbose_name = _("Logo")
+        verbose_name_plural = _("Logo")
 
+    def __str__(self):
+        return str(self.image)
 
 
 

@@ -858,6 +858,15 @@
              }
           });
         }
+        function makeid(length) {
+         var result           = '';
+         var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+         var charactersLength = characters.length;
+         for ( var i = 0; i < length; i++ ) {
+             result += characters.charAt(Math.floor(Math.random() * charactersLength));
+         }
+         return result;
+      }
         function create_gig_onclick()
         {
             $.ajax({
@@ -868,7 +877,9 @@
                 {  
                     if(data != "error" && data != 0)
                     {
-                        window.open('/user/{{request.user.username}}/create_gig/'+ data, "_blank");
+                        random_string = makeid(6);
+                        var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
+                        window.open('/user/{{request.user.username}}/create_gig/'+ output, "_blank");
                     }
                     else{
                         window.open('/user/{{request.user.username}}/manage_gigs', "_blank");

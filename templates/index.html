@@ -52,6 +52,7 @@
                   <select id="query_type"  required class="js-index-search-input js-static-search form-control" >
                      <option></option>   
                   </select>
+                  <span class="search-button"><button class="button button-success" type="button" id="home_search_btn">Search</button></span>
                   <span class="js-clear-button clear-button hidden bg-none-important">
                      <svg class="pointer-en" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
                         <path d="M24.14 7.858a1.2 1.2 0 0 0-1.697 0L16 14.303 9.556 7.858a1.2 1.2 0 0 0-1.697 1.697L14.303 16 7.86 22.444a1.2 1.2 0 0 0 1.697 1.697L16 17.697l6.444 6.444a1.2 1.2 0 1 0 1.697-1.697L17.697 16l6.444-6.444a1.2 1.2 0 0 0 0-1.697z" fill="#a3a3a3"/>
@@ -229,7 +230,7 @@
                            <a href="/user/profile/{{gig.gig_user.username}}" class="inspire__user-avatar" title="{{gig.gig_user.username |title}}">
                            <img src="{{gig.gig_user.avatar}}" class="js-lazy-load-image" alt="" />
                            </a>
-                           <span class="inspire__user-author">Freelancer: <a href="#" title="{{gig.gig_user.username |title}}">{{gig.gig_user.username |title}}</a></span>
+                           <span class="inspire__user-author">Freelancer: <a href="/user/profile/{{gig.gig_user.username}}" title="{{gig.gig_user.username |title}}">{{gig.gig_user.username |title}}</a></span>
                         </div>
                      </div>
                   </div>
@@ -335,7 +336,6 @@
    .select2-container--default .select2-selection--single .select2-selection__placeholder
    {
       padding-left: 8%;
-      line-height: 45px;
       font-size: 20px;
    }
    .select2-container--default .select2-selection--single .select2-selection__arrow
@@ -345,6 +345,17 @@
    .search-button
    {
       z-index:100000;
+   }
+   .select2-container--default .select2-selection--single .select2-selection__rendered
+   {
+      padding-left: 7%;
+      padding-top: 10px;
+      font-size: 17px !important;
+   }
+   #home_search_btn:hover
+   {
+      background:#2E5DC5;
+      color:white;
    }
 </style>
 <script>
@@ -362,17 +373,30 @@
    };
   $("#query_type").select2(configParamsObj);
   $("#query_type").change(function () {
-   $.ajax({
-      type:"POST",
-      url: "/post_search_key/",
-      data: {'keyword':$('#query_type').find(":selected").text(),"keyword_type":"keyword"},
-      success: function(data) 
-      {  
-         value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#query_type').find(":selected").text();});
-         window.open('/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
-      }
-   });
+   
 });
+$("#home_search_btn").click(function () {
+   if($("#query_type").val().trim().length != 0)
+   {
+      $.ajax({
+         type:"POST",
+         url: "/post_search_key/",
+         data: {'keyword':$('#query_type').find(":selected").text(),"keyword_type":"keyword"},
+         success: function(data) 
+         {  
+            
+            location_href =  $(location).attr('href').split("/");
+            value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#query_type').find(":selected").text();});
+            $('#query_type').val("");
+            window.open( location_href[0]+"//"+location_href[2] + '/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
+         }
+      });
+   }
+   else{
+      alert("Select any category");
+   }
+});
+
     value_user = '{{request.user.username}}'
     if(value_user.length != 0)
     {

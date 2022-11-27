@@ -131,36 +131,43 @@
     
 </style>
 <script>
-    $(document).ready(function(){
-        location_href =  $(location).attr('href').split("/");
-        parameters = location_href[10].split("?");
-        params = parameters[1].split("&")
-        status = params[0].split("=")[1]
-        trans_ref = params[1].split("=")[1]
-        trans_id = params[2].split("=")[1]
-        $.ajax({
-            type:"GET",
-            url: "/post_flutterwave_transaction/",
-            data: {'u_offer_id': '{{offer_id}}','u_user_id': {{request.user.id}},'u_status': status,'u_trans_ref': trans_ref,'u_trans_id': trans_id,"u_base_price":'{{base_price}}',"u_total_price":'{{total_price}}',"u_service_fees":'{{service_fee}}'},
-            success: function(data)
-            {
-                jsonObj = JSON.parse(data);
-                $("#order_no").val(jsonObj[0].order_no);
-                $("#order_by").val(jsonObj[0].ordered_by);
-                $("#order_to").val(jsonObj[0].ordered_to);
-                $("#already_sub").val(jsonObj[0].submitted);
-                $(".section_text:first").show();
-                if(parseInt($("#already_sub").val()) >0)
+    var chkReadyState = setInterval(function() {
+        if (document.readyState == "complete") {
+            clearInterval(chkReadyState);
+            location_href =  $(location).attr('href').split("/");
+            parameters = location_href[10].split("?");
+            params = parameters[1].split("&")
+            status = params[0].split("=")[1]
+            trans_ref = params[1].split("=")[1]
+            trans_id = params[2].split("=")[1]
+            $.ajax({
+                type:"GET",
+                url: "/post_flutterwave_transaction/",
+                data: {'u_offer_id': '{{offer_id}}','u_user_id': {{request.user.id}},'u_status': status,'u_trans_ref': trans_ref,'u_trans_id': trans_id,"u_base_price":'{{base_price}}',"u_total_price":'{{total_price}}',"u_service_fees":'{{service_fee}}'},
+                success: function(data)
                 {
-                    $("#user_gig_collect_req").hide();
-                    $("#sucess_div").show();
+                    console.log(data);
+                    jsonObj = JSON.parse(data);
+                    $("#order_no").val(jsonObj[0].order_no);
+                    $("#order_by").val(jsonObj[0].ordered_by);
+                    $("#order_to").val(jsonObj[0].ordered_to);
+                    $("#already_sub").val(jsonObj[0].submitted);
+                    $(".section_text:first").show();
+                    if(parseInt($("#already_sub").val()) >0)
+                    {
+                        $("#user_gig_collect_req").hide();
+                        $("#sucess_div").show();
+                    }
+                    else{
+                        $("#user_gig_collect_req").show();
+                        $("#sucess_div").hide();
+                    }
                 }
-                else{
-                    $("#user_gig_collect_req").show();
-                    $("#sucess_div").hide();
-                }
-            }
-        });   
+            });
+        }
+    }, 100);
+    $(document).ready(function(){
+   
     });
     function markassubmittedClick(ev)
     {

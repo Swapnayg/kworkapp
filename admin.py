@@ -12,7 +12,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -29,7 +29,7 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id')
+    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id','mail_message','mail_order','mail_updates','mail_rating')
     list_filter = ('is_admin', 'is_staff', 'is_active')
     fieldsets = (
         (None, {'fields': ('email', 'username','seller_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')}),
@@ -122,7 +122,9 @@ def get_app_list(self, request):
                 'Payment Parameters':59,
                 'Withdrawals':60,
                 'Notification Settings':61,
-                'Notifications':62
+                'Notifications':62,
+                'Logo':63,
+                'SMTP Settings':64,
             }
             app['models'].sort(key=lambda x: ordering[x['name']])
 
@@ -293,7 +295,7 @@ def update_all_balancevalues(username):
 
                         
 class AdminNotification_commands(admin.ModelAdmin):
-    list_display = ['notification','slug','is_active']
+    list_display = ['notification','slug','is_active','mail_active']
 
 admin.site.register(Notification_commands, AdminNotification_commands)
 
@@ -319,6 +321,11 @@ class AdminTopicDetails(SummernoteModelAdmin):
         css = {'all': ('assets/css/frontend/topic_Details.css', )} 
 
 admin.site.register(TopicDetails, AdminTopicDetails)
+
+class AdminLogoImages(admin.ModelAdmin):
+    list_display = ['image','slug']
+
+admin.site.register(LogoImages, AdminLogoImages)
 
 class AdminLearnTopics(admin.ModelAdmin):
     list_display = ['topic_names','created_at']
@@ -675,6 +682,12 @@ class AdminApi_keys(admin.ModelAdmin):
 admin.site.register(Api_keys, AdminApi_keys)
 
 
+class AdminSMTP_settings(admin.ModelAdmin):
+    list_display = ['mail_host','mail_address','mail_password','mail_port','is_active','created_on']
+
+admin.site.register(SMTP_settings, AdminSMTP_settings)
+
+
 class AdminAddon_Parameters(admin.ModelAdmin):
     list_display = ['parameter_name','no_of_days']
 
@@ -706,8 +719,61 @@ admin_urls = get_admin_urls(admin.site.get_urls())
 admin.site.get_urls = admin_urls
 
 def content_editView(request,Id=''):
-    print(Id+ ".html")
-    return render(request , 'contents.html',{'templateName':Id+ ".html"})
+    if(Id == "index"):
+        active_gigs_details = UserGigs.objects.filter(gig_status='active')
+        active_gigs_data= []
+        category_list = []
+        categories = Categories.objects.all()
+        for c in categories:
+            sub_cat = SubSubCategories.objects.filter(category_Name=c).first()
+            if(sub_cat != None):
+                category_list.append({"cat_name":sub_cat.category_Name.category_Name,"subcat_name":sub_cat.sub_category_Name.sub_category_Name,"subsubcat_name":sub_cat.sub_sub_category_Name})
+        for u_gig in active_gigs_details:
+            gig_image_url = ''
+            gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
+            if(gig_image != None):
+                gig_image_url = gig_image.gig_image
+            active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id})
+        active_works = User_orders.objects.filter(order_status="active").count()  
+        last_week = datetime.today() - timedelta(days=7)    
+        buyers_request_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').count()
+        buyers_this_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').distinct('user_id').count()
+        context = {"gig_details":active_gigs_data,"active_orders":active_works,"new_buyers":buyers_this_week,"buyer_reqyests":buyers_request_week,"cat_list":category_list,"cat_list_json":json.dumps(category_list),'templateName':Id+ ".html"}
+    elif(Id == "about"):
+        context = {'templateName':Id+ ".html"}
+    elif(Id == "affiliate_program"):
+        userDetails = User.objects.get(username="admin")
+        base_url = request.build_absolute_uri('/ref')
+        context = {'userDetails':userDetails,"url": base_url,"referral_count":0,'templateName':Id+ ".html"}
+    elif(Id == "approval_process"):
+        context = {}
+    elif(Id == "buyer_protection"):
+        context = {'templateName':Id+ ".html"}
+    elif(Id == "earn_letworkbdone"):
+        learning_topics = LearnTopics.objects.all()
+        learning_Details = []
+        learning_topics_Details = LearningTopicDetails.objects.all()
+        num_counts = 0
+        for l_details in learning_topics_Details:
+            num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
+            learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":l_details.image,"image_Text":l_details.image_Text,"video_url":l_details.video_url,"num_counts":num_counts})
+        context = {"topics":learning_topics,"topics_Details":learning_Details,'templateName':Id+ ".html"}
+    elif(Id == "for_freelancer"):
+        userdata= []
+        subcategory= SubCategories.objects.all()
+        for sub_cat in subcategory:
+            u_profile = UserProfileDetails.objects.filter(sub_category=sub_cat).first()
+            if(u_profile != None):
+                if(len(userdata) <= 8):
+                    userdata.append({"username":u_profile.user_id.username, "profession":u_profile.sub_category.sub_category_Name,"joined_dt":u_profile.user_id.created_at,"profile_img":u_profile.user_id.avatar})
+        context = {"user_details":userdata,'templateName':Id+ ".html"}
+    elif(Id == "privacy"):
+        context = {'templateName':Id+ ".html"}
+    elif(Id == "prohibited_service"):
+        context = {'templateName':Id+ ".html"}
+    elif(Id == "terms"):
+        context = {'templateName':Id+ ".html"}
+    return render(request , 'contents.html',context)
 
 
 def get_admin_urls(urls):

@@ -27,6 +27,11 @@
                            <h1>Complete your free account setup</h1>
                            <input type="hidden" id="userprimaryval" value="{{UserDetails.id}}">
                            <input type="hidden" id="useremailval" value="{{UserDetails.email}}">
+                           <div class="body mt-4 mb-4 pb-4">
+                              <h5 class="mb-3">Username</h5>
+
+                              <input type="text" id="user_name" placeholder="Enter Username" value="{{UserDetails.username}}" required>
+                           </div>
                            {% if UserDetails.email == None %}
                               <div class="d-flex email justify-content-center align-items-center">
                                  <img class="mr-2" src="{{UserDetails.avatar}}" alt="profile image" onerror="imageLoadError(this)">
@@ -37,21 +42,19 @@
                                  <img class="mr-2" src="{{UserDetails.avatar}}" alt="profile image" onerror="imageLoadError(this)">
                                  <span>{{UserDetails.email}}</span>
                               </div>
-                           {% endif %}
-                        
-                           {% if UserDetails.country|length != 0 %}
-                              <select name="" class="form-control" disabled="" id="country_user" required>
-                                 <option value="">Select Country</option>
-                                 <option value="{{UserDetails.country.code}}" selected>{{UserDetails.country.name}}</option>
-                              </select>
-                           {% else %}
+                           {% endif %}    
                               <select name="" class="form-control" id="country_user" required>
                                  <option value="">Select Country</option>
                                  {% for country in Countrylist %}
-                                    <option value="{{country.code}}">{{country.name}}</option>
+                                    {% if UserDetails.country.name.strip == country.name.strip %}
+                                       <option value="{{UserDetails.country.code}}" selected>{{UserDetails.country.name}}</option>
+                                    {% else %}
+                                       <option value="{{country.code}}">{{country.name}}</option>
+                                    {% endif %}
                                  {% endfor %}
+                                 
                               </select>
-                           {% endif %}
+                           
                            <p class="mt-3">I Want to:</p>
                            <div class="roll mb-2">
                               {% if UserDetails.profile_type|length == 0 %}
@@ -147,9 +150,8 @@
                               <span class="text-muted">3 of 7</span>
                            </div>
                            <div class="body mt-4 mb-4 pb-4">
-                              <h5 class="mb-3">Enter your paypal email address.</h5>
-                              <input type="email" id="paypalemail" placeholder="Enter Email Address" required>
-                              
+                              <h5 class="mb-3">Enter your paypal email address for withdrawing your Earnings.</h5>
+                              <input type="email" id="paypalemail" placeholder="Enter Email Address" value="{{UserDetails.pay_pal_mail_id}}" required>
                               <label id="payment_error" class="error_mssg"></label>
                            </div>
                         </div>
@@ -187,7 +189,7 @@
                               </div>
                               <h6 class="mb-2">What other languages do you speak?</h6>
                               <input type="hidden" id="user_lang_val" value="{{userlangs}}">
-                              <div class="row mb-2 m-0" id="label_div">
+                              <div class="row mb-2 m-0" id="label_div" style="display:none;">
                               <div class="col-7 p-0">
                                  <label>Select your languages</label>
                               </div>
@@ -195,7 +197,7 @@
                                  <label>Proficiency</label>
                               </div>
                               </div>
-                              <div id="user_languages_div">
+                              <div id="user_languages_div" class="mt-3">
                                  
                               </div>
                               <div id="select_div" style="display:none;">
@@ -681,7 +683,7 @@
   }
     
    $(document).ready(function(){
-      $('#seller_headline').trifgger('keyup');
+      $('#seller_headline').trigger('keyup');
       $("#seller_about").summernote({
         placeholder: "Write your content here",
         height: 200,
@@ -743,6 +745,7 @@
       {
          var country_txt = $("#country_user option:selected").text().trim();
          var country_val = $("#country_user").val();
+         var userName = $("#user_name").val();
          var user_roll = $("input[name='roll']:checked");
          var user_terms = $("input[name='agree_trms']:checked");
          var user_roll_val = $("input[name='roll']:checked").val();
@@ -773,7 +776,7 @@
                      $.ajax({
                         type:"GET",
                         url: "/post_useremail_Details/",
-                        data: {'userid': $("#userprimaryval").val(),'useremail': user_email,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
+                        data: {'userid': $("#userprimaryval").val(),'username': userName,'useremail': user_email,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
                         success: function(data)
                         {  
                            if(data== "success")
@@ -811,7 +814,7 @@
                $.ajax({
                   type:"GET",
                   url: "/post_user_Details/",
-                  data: {'userid': $("#userprimaryval").val(),'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
+                  data: {'userid': $("#userprimaryval").val(),'username': userName,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
                   success: function(data)
                   {  
                      if(data== "success")
@@ -886,13 +889,13 @@
 
       else if($(this).attr("id") == "create_paypal")
       {
-         var paypal_val = $("#paypalemail").val();
+         var paypal_val = $("#paypalemail").val().trim();
          if(paypal_val.length != 0)
          { 
             $.ajax({
                type:"GET",
                url: "/post_user_paypal/",
-               data: {'userid': $("#userprimaryval").val(),'upaypal': paypal_val},
+               data: {'userid': '{{request.user.id}}','upaypal': paypal_val},
                success: function(data)
                {  
                   if(data == "success")
@@ -1074,6 +1077,7 @@
    $.each(userlanguages, function(i, v) {
       if(v.name != "English")
       {
+         $("#label_div").show();
          lengthcurrlang = $("#user_languages_div").find(".newLaguage").length;
          div_html = $("#select_div").find(".newLaguage").clone().prop('id', 'newlang'+(lengthcurrlang+1));
          $("#user_languages_div").append(div_html);
@@ -1081,12 +1085,6 @@
          $("#user_languages_div").find("select[name='language_level[]']").find("option:contains(" + v.proficiency.trim() + ")").attr('selected', 'selected');
       }
    });
-   lengthcurrlang = $("#user_languages_div").find(".newLaguage").length;
-   if(lengthcurrlang==0)
-   {
-      div_html = $("#select_div").find(".newLaguage").clone().prop('id', 'newlang1');
-      $("#user_languages_div").append(div_html);
-   }
 });
 
 function accnt_headline_onchange(ev)
@@ -1138,6 +1136,16 @@ function isEmail(email) {
   return regex.test(email);
 }
 
+function makeid(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+}
+
 function create_gig_onclick()
 {
     $.ajax({
@@ -1148,7 +1156,9 @@ function create_gig_onclick()
         {  
             if(data != "error" && data != 0)
             {
-                window.location = '/user/{{request.user.username}}/create_gig/'+ data;
+               random_string = makeid(6);
+               var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
+               window.location = '/user/{{request.user.username}}/create_gig/' + output;
             }
         }
       });

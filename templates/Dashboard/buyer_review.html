@@ -23,7 +23,7 @@
                               </svg>
                            </button>
                            <a href="{% url 'index' %}" class="site-logo">
-                              <img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="40" width="160" alt="mobile logo"/>
+                              <img class="js-header-theme-logo" src="{{logo_image_url}}" height="40" width="160" alt="mobile logo"/>
                            </a>
                          
                         </div>
@@ -75,7 +75,7 @@
                                                     <h5  class="header_txt1">
                                                         What was it like working with this buyer?
                                                      </h5>
-                                                     <textarea maxlength="{{buyer_descp_count}}" required placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" onchange="textarea_buyer_desconchange(this)"></textarea>
+                                                     <textarea maxlength="{{buyer_descp_count}}" required placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" ></textarea>
                                                     <span class="buyer_desc_count">0 / {{buyer_descp_count}} max</span>
                                                 </div>
                                                 <div class="col-lg-3">
@@ -256,7 +256,6 @@ article .fa, article .fa {
         $("#form_buyer_review").submit(function(e)
         {
             e.preventDefault();
-            console.log(rating_buyer);
             if(rating_buyer != 0 )
             {
                 $.ajax({
@@ -265,7 +264,10 @@ article .fa, article .fa {
                     data: {"order_no":'{{order_no}}',"b_review_txt":$("#textarea_buyer_desc").val(),"b_rating":rating_buyer},
                     success: function(data) 
                     {
-                       if(data == "sucess")
+                        jsonObject = JSON.parse(JSON.stringify({
+                            "sucess": "sucess"
+                        }))
+                       if(jsonObject['sucess'] == "sucess")
                        {
                          $("#review_section").hide();
                          $("#thank_section").show();

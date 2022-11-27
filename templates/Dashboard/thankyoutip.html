@@ -2338,66 +2338,73 @@ button[disabled]{
 
 </style>
 <script>
-   $(document).ready(function(){
-        location_href =  $(location).attr('href').split("/");
-        paymethod = location_href[4];
-        if(paymethod == "flutter")
-        {
-            order_to_username = location_href[5]
-            parameters = location_href[6].split("?");
-            order_no = parameters[0]
-            params = parameters[1].split("&")
-            status = params[0].split("=")[1]
-            trans_ref = params[1].split("=")[1]
-            trans_id = params[2].split("=")[1]
-            $.ajax({
-                type:"GET",
-                url: "/post_flutter_tip_details/",
-                data: {'order_no':order_no,'order_to_user':order_to_username,'status':status, 'trans_ref':trans_ref,'trans_id':trans_id},
-                success: function(data) 
-                {  
-                    if(data == "sucess")
-                    {
-                        
-                    }
-                }
-            });
 
-        }
-        else if(paymethod == "paypal")
-        {
-            username = location_href[5]
-            order_no = location_href[6]
-            payer_id = location_href[7]
-            payer_email = location_href[8]
-            trans_id = location_href[9]
-            trans_status = location_href[10]
-            base_price = location_href[11]
-            total_price = location_href[12]
-            service_fees = location_href[13]
-            used_credits = location_href[14]
-            $.ajax({
-                type:"GET",
-                url: "/post_paypal_tip_details/",
-                data: {'order_to_user':username,'order_no':order_no,'payer_id':payer_id,'payer_email':payer_email,'trans_id':trans_id,'trans_status':trans_status,'base_price':base_price,'total_price':total_price,'service_fees':service_fees,'used_credits':used_credits},
-                success: function(data) 
-                {  
-                    if(data == "sucess")
-                    {
-                        
+    var chkReadyState = setInterval(function() {
+        if (document.readyState == "complete") {
+            clearInterval(chkReadyState);
+            location_href =  $(location).attr('href').split("/");
+            paymethod = location_href[4];
+            if(paymethod == "flutter")
+            {
+                order_to_username = location_href[5]
+                parameters = location_href[6].split("?");
+                order_no = parameters[0]
+                params = parameters[1].split("&")
+                status = params[0].split("=")[1]
+                trans_ref = params[1].split("=")[1]
+                trans_id = params[2].split("=")[1]
+                $.ajax({
+                    type:"GET",
+                    url: "/post_flutter_tip_details/",
+                    data: {'order_no':order_no,'order_to_user':order_to_username,'status':status, 'trans_ref':trans_ref,'trans_id':trans_id},
+                    success: function(data) 
+                    {  
+                        if(data == "sucess")
+                        {
+                            
+                        }
                     }
-                }
-            });
+                });
+    
+            }
+            else if(paymethod == "paypal")
+            {
+                username = location_href[5]
+                order_no = location_href[6]
+                payer_id = location_href[7]
+                payer_email = location_href[8]
+                trans_id = location_href[9]
+                trans_status = location_href[10]
+                base_price = location_href[11]
+                total_price = location_href[12]
+                service_fees = location_href[13]
+                used_credits = location_href[14]
+                $.ajax({
+                    type:"GET",
+                    url: "/post_paypal_tip_details/",
+                    data: {'order_to_user':username,'order_no':order_no,'payer_id':payer_id,'payer_email':payer_email,'trans_id':trans_id,'trans_status':trans_status,'base_price':base_price,'total_price':total_price,'service_fees':service_fees,'used_credits':used_credits},
+                    success: function(data) 
+                    {  
+                        if(data == "sucess")
+                        {
+                            
+                        }
+                    }
+                });
+            }
+            else if(paymethod == "credit")
+            {
+                username = location_href[5]
+                order_no = location_href[6]
+                base_price = location_href[7]
+                total_price = location_href[8]
+                service_fees = location_href[9]
+                used_credits = location_href[10] 
+            }    
         }
-        else if(paymethod == "credit")
-        {
-            username = location_href[5]
-            order_no = location_href[6]
-            base_price = location_href[7]
-            total_price = location_href[8]
-            service_fees = location_href[9]
-            used_credits = location_href[10] 
-        }    
+    }, 1000);
+   $(document).ready(function(){
+
    });
 </script>
 {% endblock %}

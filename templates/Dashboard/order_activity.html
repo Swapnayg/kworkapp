@@ -562,7 +562,7 @@
                                       </div>
                                       <span class="total-price">
                                          <p>Total price</p>
-                                         <span class="price">${{seller_gig.0.order_amount}}</span>
+                                         <span class="price">${{buyer_price}}</span>
                                       </span>
                                    </div>
                                    <div class="order-number">Order number <span>#{{seller_gig.0.order_no}}</span></div>
@@ -744,7 +744,7 @@
                                  <div class="flex-start gig-header m-t-4">
                                     <a href="/gigs/{{seller_gig.0.gig_user}}/{{seller_gig.0.gig_title}}" class="gig-image-link"><img src="{{seller_gig.0.gig_image}}" alt="Late" class="gig-image"></a>
                                     <div class="flex-around m-l-12 gig-title-text-container">
-                                       <a class="gig-title tbody-6" title="I will build your web applications with no bound of limits welcome" href="/gigs/{{seller_gig.0.gig_username}}/{{seller_gig.0.gig_title}}">{{seller_gig.0.gig_title}}</a>
+                                       <a class="gig-title tbody-6" title="I will build your web applications with no bound of limits welcome" href="/gigs/{{seller_gig.0.gig_username}}/{{seller_gig.0.gig_title}}">{{seller_gig.0.gig_title |title}}</a>
                                        <div class="status flex-start">
                                           {% if seller_gig.0.order_status == 'late' %}
                                              <div class="order-status late_delivery_no_res">Late</div>
@@ -773,11 +773,11 @@
                                  Ordered by
                                  <div class="flex-center">
                                    
-                                    <a href="/user/profile/{{order_by.username}}" target="_blank" class="name-data data-column">{{order_by.username}}</a>
+                                    <a href="/user/profile/{{order_by.username}}" target="_blank" class="name-data data-column">{{order_by.username |title}}</a>
                                  </div>
                               </li>
                               <li>Delivery date<span class="data-column"><i>{{ seller_gig.0.due_date|date:"M d, h:i A" }}</i></span></li>
-                              <li>Total price<span class="data-column price">${{seller_gig.0.order_amount}}</span></li>
+                              <li>Total price<span class="data-column price">${{buyer_price}}</span></li>
                               <li>Order number<span class="data-column">#{{seller_gig.0.order_no}}</span></li>
                            </ul>
                         </div>
@@ -1290,21 +1290,24 @@
         margin-right:2%;
     }
     .bg-co-green-700 {
-        background-color:  #2E5DC5;
+      color: #fff !important;
+      background-color: #446ee7 !important;
+      border-color: #446ee7 !important;
     }
     #buyer_rev_btn
     {
-      text-decoration:none;
+      text-decoration: none;
       padding: 10px;
-      line-height: 60px;
-      cursor:pointer;
-      height: 60px;
+      line-height: 20px;
+      cursor: pointer;
+      height: 40px;
       width: 200px;
       color: white;
       background-color: #2E5DC5;
       border-radius: 3px;
       padding-left: 3%;
       padding-right: 3%;
+      margin-bottom: 2%;
     }
     .wrap-box {
         background-color: #fff;
@@ -3966,9 +3969,7 @@ small {
 .extend-delivery-section .extend-actions :last-child, .mutual-cancellation-section .extend-actions :last-child {
    margin-left: 12px;
 }
-.bg-co-green-700 {
-   background-color: #1dbf73;
-}
+
 .co-white {
    color: #fff;
 }
@@ -4438,6 +4439,10 @@ small {
    padding-left: 13%;
    padding-right: 5%;
 }
+#d_file_progress_div
+{
+   margin-bottom: 3%;
+}
 </style>
 <script>
    function formatDate(date) {
@@ -4457,6 +4462,28 @@ small {
       strTime =  monthNames[month] + " " + _date+ ", " + year ;  
       return strTime;
     }
+
+    const relativeTimePeriods = [
+    [31536000, 'year'],
+    [2419200, 'month'],
+    [604800, 'week'],
+    [86400, 'day'],
+    [3600, 'hour'],
+    [60, 'minute'],
+    [1, 'second']
+];
+
+function relativeTime(date, isUtc=true) {
+    if (!(date instanceof Date)) date = new Date(date * 1000);
+    const seconds = (new Date() - date) / 1000;
+    for (let [secondsPer, name] of relativeTimePeriods) {
+        if (seconds >= secondsPer) {
+            const amount = Math.floor(seconds / secondsPer);
+            return `${amount} ${name}${amount ? 's' : ''} ago`;
+        }
+    }
+    return 'Just now';
+}
    
    function formatAMPM(date) {
       var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -4466,7 +4493,9 @@ small {
       var month = date.getMonth();
       var year = date.getFullYear();
       var d = new Date();
-      var curr_year = d.getFullYear();    
+      var curr_year = d.getFullYear();   
+      var curr_month = d.getMonth(); 
+      var curr_day = d.getDate(); 
       var ampm = hours >= 12 ? 'pm' : 'am';
       hours = hours % 12;
       hours = hours ? hours : 12; // the hour '0' should be '12'
@@ -4475,6 +4504,10 @@ small {
       if(curr_year != year)
       {
          strTime =  monthNames[month] + " " + _date+ ", " + year + hours + ':' + minutes + ' ' + ampm; 
+      }
+      else if(curr_year == year  && curr_month == month && curr_day == _date )
+      {
+         strTime = relativeTime(date)
       }
       else{
          strTime = monthNames[month]  + " " + _date+ ", " + hours + ':' + minutes + ' ' + ampm;  
@@ -4609,7 +4642,7 @@ small {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened delivery-received"></span>'
                               message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
                            } 
                         }
                         else if(v.res_type.trim() == "completed")
@@ -5177,8 +5210,8 @@ small {
       }
       else if($(ev).attr("data-text") == "cancel")
       {
-         prev_date = '';
-         next_date = '';
+         prev_date = new Date();
+         next_date = new Date();
       }
       $.ajax({
          type:"GET",
@@ -5186,7 +5219,8 @@ small {
          data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text"),"pre_date": prev_date, "next_date":next_date},
          success: function(data) 
          {
-            location.reload();
+            console.log(data)
+            //location.reload();
 		   }
 		});
    }

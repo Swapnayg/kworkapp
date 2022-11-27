@@ -56,9 +56,13 @@
             background:white;
             top: 140%;
         }
+        #notification ._77O-JH4
+        {
+         left: -200%;
+        }
         #messages  ._77O-JH4
         {
-            left: -180%;
+            left: -400%;
             top: 140%;
         }
         .tabs-notifications ._5KluhlZ {
@@ -229,10 +233,11 @@
         .tabs-notifications .content{
             font-size: 12px;
             line-height: 15px;
-            max-height: 45px;
+            max-height: 50px;
             overflow: hidden;
             position: relative;
-            padding-top: 4%;
+            padding-top: 0%;
+            margin-bottom: 2%;
         }
         .content strong.username {
          display: block;
@@ -481,7 +486,7 @@
                <div class="mobile-nav__header">
                   <div class="mobile-nav__header-close js-show-mobile-nav-link"></div>
                   <a class="mobile-nav__header-logo" href="{% url 'index' %}">
-                  <img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="22" width="105" alt="mobile logo"/>
+                  <img class="js-header-theme-logo" src="{{logo_image_url}}" height="22" width="105" alt="mobile logo"/>
                   </a>
                </div>
                <a class="kw-button kw-button--green kw-button--size-40 kw-button--width-fixed mobile-nav__signup-button signup-js">Sign Up</a>
@@ -654,14 +659,14 @@
                         </div>
                      </div>
                      <div class="header__logo">
-                        <a href="{% url 'index' %}"><img class="js-header-theme-logo" src="{% static 'assets/images/logo.png' %}" height="22" width="105" alt="mobile logo"/></a>
+                        <a href="{% url 'index' %}"><img class="js-header-theme-logo" src="{{logo_image_url}}" height="22" width="105" alt="mobile logo"/></a>
                      </div>
                      <a class="menu-category menu-category_login login-js">Sign In</a>
                   </div>
                   <div class="headertop-desktop m-hidden">
                      <div class="brand-image">
                         <a href="{% url 'index' %}">
-                           <img src="{% static 'assets/images/logo.png' %}" alt=""/>
+                           <img src="{{logo_image_url}}" alt=""/>
                            <!-- <div class="logo_subtext">Freelance marketplace</div> -->
                         </a>
                      </div>
@@ -690,7 +695,7 @@
                            <li id="notification">
                               <div id="not_anchor"></div>
                               <div class="unread_div"></div>
-                              <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" id="notification_show_div"> 
+                              <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" id="notification_show_div" style="display:none;"> 
                                  <div class="_5KluhlZ"> <section class="tabs-notifications wrapper"> 
                                     <header> 
                                        <input type="hidden" id="not_unread_count" value="">
@@ -711,7 +716,7 @@
                            <li id="messages">
                               <div id="mssg_anchor"></div>
                               <div class="unread_div"></div>
-                              <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" id="message_show_div"> 
+                              <aside class="_77O-JH4 _1tVYPJI" data-position="bottom-right" style="display:none;" id="message_show_div"> 
                                  <div class="_5KluhlZ"> <section class="tabs-notifications wrapper"> 
                                     <header> 
                                        <input type="hidden" id="mssg_unread_count" value="">
@@ -745,7 +750,7 @@
                <div class="centerwrap lg-centerwrap category-menu overflow-hidden category-menu--new">
                   <ul class="js-category-menu-list js-cat-menu-thin category-menu__list subnav__category-menu cat-menu-thin sub-menu-parent" id="main-menu">
                      <li class="js-cat-menu-thin-item">
-                        <a href="#" class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item ">
+                        <a  class="js-category-menu-item js-cat-menu-thin-link category-menu__list_item ">
                         <span class="js-cat-menu-thin-span category-menu__list__inner category-menu__list__inner--new">Design</span>
                         </a>
                         <div class="menubox">
@@ -965,7 +970,7 @@
                   <ul class="js-category-menu-list category-menu__list cat-menu-wide sub-menu-parent" id="main1-menu">
                      {% for ml in main_menu|slice:"0:6" %}
                         <li class="">
-                           <a href="/categories/{{ml.name}}" class="js-category-menu-item category-menu__list_item" data-category-id="1078">
+                           <a  class="js-category-menu-item category-menu__list_item" data-category-id="1078">
                               <span class="category-menu__list__inner category-menu__list__inner--new">{{ml.name |title}}</span>
                            </a>
                            <div class="menubox">
