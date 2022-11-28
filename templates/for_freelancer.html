@@ -32,41 +32,8 @@
       <div class="for-sellers__people">
          <div class="kw-wrapper for-sellers__people-inner">
             <div class="for-sellers__title for-sellers__people-title" data-editable-demo="" data-name="page__heading3"><p class="page__heading3">Join Our Evergrowing Freelance Community</p></div>
-            <div class="for-sellers__people-list hover js-for-sellers-people-slider">
-               {% for user in user_details %}
-                  <div class="for-sellers__people-list-item js-for-sellers-people-list-item">
-                  <div class="for-sellers__people-list-profession js-for-sellers-modal-link" data-id="0">
-                     <a href="/user/profile/{{user.username}}" target="_blank">
-                     <picture class="for-sellers__people-list-image">
-                        <img src="{{user.profile_img}}" alt="">
-                     </picture>
-                     <div class="for-sellers__people-list-profession-title for-sellers__people-list-profession-title--nowrap">I'm a <span>{{user.profession}}</span></div>
-                  </a>
-                  </div>
-                  <div class="t-align-c for-sellers__people-modal-link js-for-sellers-modal-mobile-link js-for-sellers-modal-mobile-link-open">See more</div>
-                  <div class="for-sellers__people-stats-wrapper js-for-sellers-modal-mobile">
-                     <div class="for-sellers__people-stats">
-                        <div class="for-sellers__people-stats-content">
-                           Joined
-                           <div class="for-sellers__people-stats-date">  April 18, 2017</div>
-                           <div class="for-sellers__people-stats-rating"><img class="for-sellers__people-stats-rating-icon" src="{% static 'assets/images/for-sellers/star.svg' %}" width="20" height="20" alt="">5.0</div>
-                           <div class="for-sellers__people-stats-user-type">Professional <br> Seller</div>
-                           Completed Orders
-                           <div class="for-sellers__people-stats-orders">7128</div>
-                           <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__people-stats-button signup-js worker js-follow-url" data-href="{% url 'index' %}">Start Earning</div>
-                        </div>
-                        <div class="for-sellers__people-stats-close js-for-sellers-modal-mobile-link"></div>
-                     </div>
-                  </div>
-                  </div>
-               {% endfor %}
-               <div class="for-sellers__people-list-item">
-                  <div class="for-sellers__people-list-action">
-                     <img class="for-sellers__people-list-icon" src="{% static 'assets/images/for-sellers/heart.svg' %}" width="48" height="44" alt="">
-                     <div class="for-sellers__title for-sellers__people-list-title">What's <br> Your Skill?</div>
-                     <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__people-list-button signup-js worker js-follow-url" ><a href="{% url 'register' %}" target="_blank">Start Earning</a></div>
-                  </div>
-               </div>
+            <div class="for-sellers__people-list hover js-for-sellers-people-slider" id= "user_details_list">
+              
             </div>
          </div>
       </div>
@@ -161,43 +128,64 @@
       color:white;
       text-decoration:none;
    }
+   .anchor_tag_user
+   {
+      text-transform:capitalize;
+   }
 </style>
 <script>
    $(document).ready(function(){
-    value_user = '{{request.user.username}}'
-    if(value_user.length != 0)
-    {
-       $("#loginbtn").remove();
-       $("#registerbtn").remove();
-       $("#freelancerbtn").remove();
-       $('#message_show_div').hide();
-       $('#notification_show_div').hide();
-       $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
-       $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
-       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
-       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
-       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box"><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
-       $('#help_not a').hover(function (e) {
-           $('#help_not .des').css({
-               left: e.offsetX + 80,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-       $('#notification a').click(function (e) {
-         $('#message_show_div').hide();
-         $('#notification_show_div').toggle();
-     });
-     $('#messages a').click(function (e) {
-         $('#notification_show_div').hide();
-         $('#message_show_div').toggle();
-     });
-       $('#favourite a').hover(function (e) {
-           $('#favourite .des').css({
-               left: e.offsetX + 60,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-    }
+      $.ajax({
+         type:"GET",
+         url: "/get_freelancer_data/",
+         data: {},
+         success: function(data) 
+         { 
+
+            $("#user_details_list").empty();
+            $(data.user_details).each(function(i, user) {  
+               user_title = " I'm a <span>"+user.profession+"</span>"
+               $("#user_details_list").append('<div class="for-sellers__people-list-item js-for-sellers-people-list-item"> <div class="for-sellers__people-list-profession js-for-sellers-modal-link" data-id="0"> <a href="/user/profile/'+user.username+'" target="_blank"> <picture class="for-sellers__people-list-image"> <img src="'+user.profile_img+'" alt=""> </picture> <div class="for-sellers__people-list-profession-title for-sellers__people-list-profession-title--nowrap">'+user_title+'</div> </a> </div>  </div>')
+            });
+            whats_txt ="What's"
+            $("#user_details_list").append(' <div class="for-sellers__people-list-item"> <div class="for-sellers__people-list-action"> <img class="for-sellers__people-list-icon" src="static/assets/images/for-sellers/heart.svg" width="48" height="44" alt=""> <div class="for-sellers__title for-sellers__people-list-title">'+whats_txt+' <br> Your Skill?</div> <div class="kw-button kw-button--green for-sellers__button js-for-sellers-button for-sellers__people-list-button signup-js worker js-follow-url" ><a href="/register" target="_blank">Start Earning</a></div> </div> </div>');
+            value_user = data.logged_user;
+            value_user_img = data.logged_user_img;
+            if(value_user.length != 0)
+            {
+               $("#loginbtn").remove();
+               $("#registerbtn").remove();
+               $("#freelancerbtn").remove();
+               $('#message_show_div').hide();
+               $('#notification_show_div').hide();
+               $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+               $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+               $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+               $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+               $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box"><img class="user-avatar js-user-avatar_block " src="'+value_user_img+'" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/'+value_user+'" class="dropdownbox__username anchor_tag_user">'+value_user+'</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/'+value_user+'" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+               $('#help_not a').hover(function (e) {
+               $('#help_not .des').css({
+                     left: e.offsetX + 80,
+                     top: e.offsetY + 40
+                  }).toggle();
+               });
+               $('#notification a').click(function (e) {
+                  $('#message_show_div').hide();
+                  $('#notification_show_div').toggle();
+               });
+               $('#messages a').click(function (e) {
+                  $('#notification_show_div').hide();
+                  $('#message_show_div').toggle();
+               });
+               $('#favourite a').hover(function (e) {
+                  $('#favourite .des').css({
+                     left: e.offsetX + 60,
+                     top: e.offsetY + 40
+                  }).toggle();
+               });
+            }
+         }
+      });
    });
 </script>
 {% endblock %}

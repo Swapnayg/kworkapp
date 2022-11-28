@@ -3,6 +3,7 @@
 {% block contentarea%}
 <title>Letworkbedone - {{request.user.username}} / Resolution Center</title>
 <div class="all_page page-flex__content pt0 m0">
+    <input type="hidden" id="current_user_hidd" name="current_user_hidd" value="{{current_user}}">
    <div id="event_list" class="event-list js-event-list"></div>
    <div id="fox_notification_block"></div>
    <div class="row justify-content-center mt-0" id="manage_gigs">
@@ -47,6 +48,7 @@
                                <ul class="radio-form" id="solution2_lists">
 
                                </ul>
+                               <div class="errors m-t-16 co-red-700 text-body-2 flex flex-col" id="message_errors">This field is required.</div>
                             </div>
                          </div>
                     </div>
@@ -2427,8 +2429,23 @@ button[disabled]{
     margin-left: 20px;
     vertical-align: middle;
 }
+#custom_answer
+{
+    height: 33px;
+    font-size: 14px;
+    width: 100%;
+    border: 1px solid rgb(221, 221, 221);
+    padding: 15px;
+}
+#custom_answer:focus, #custom_answer:hover
+{
+    outline:none;
 
-
+}
+.errors
+{
+    color:red;
+}
 </style>
 <script>
    function extractContent(html) {
@@ -2438,6 +2455,7 @@ button[disabled]{
   }
    $(document).ready(function(){
       $("#solution2_div").hide();
+      $("#custom_answer").hide();
       $("#btn_actions").prop("disabled",true);
      $("#description_gig").summernote({
        placeholder: "Write your content here",
@@ -2477,21 +2495,50 @@ button[disabled]{
            next_fs =  $(this).attr("data-next"); 
            if(next_fs != "last")
            {
-              $(".error-message").hide();
-              $("#progressbar li").eq($("#"+next_fs).index() -1).addClass("active");
-              $("#progressbar li").eq($("#"+current_fs).index() -1).removeClass("active")
-              $("#"+next_fs).show(); 
-              $("#"+current_fs).animate({opacity: 0}, {
-              step: function(now) {
-              opacity = 1 - now;
-              $("#"+current_fs).css({
-                 'display': 'none',
-                 'position': 'relative'
-              });
-                 $("#"+next_fs).css({'opacity': opacity});
-              }, 
-              duration: 600
-           });
+                res_message = $('input[name="solution_txt"]:checked').next().text();
+                if(res_message == "Other")
+                {
+                    if($("#custom_answer").val().trim().length != 0)
+                    {
+                        $("#message_errors").hide();
+                        $(".error-message").hide();
+                        $("#progressbar li").eq($("#"+next_fs).index() -1).addClass("active");
+                        $("#progressbar li").eq($("#"+current_fs).index() -1).removeClass("active")
+                        $("#"+next_fs).show(); 
+                        $("#"+current_fs).animate({opacity: 0}, {
+                        step: function(now) {
+                          opacity = 1 - now;
+                          $("#"+current_fs).css({
+                              'display': 'none',
+                              'position': 'relative'
+                          });
+                          $("#"+next_fs).css({'opacity': opacity});
+                        }, 
+                        duration: 600
+                        });    
+                    }
+                    else{
+                        $("#message_errors").show();
+                    }
+                }
+                else{
+                    $(".error-message").hide();
+                    $("#progressbar li").eq($("#"+next_fs).index() -1).addClass("active");
+                    $("#progressbar li").eq($("#"+current_fs).index() -1).removeClass("active")
+                    $("#"+next_fs).show(); 
+                    $("#"+current_fs).animate({opacity: 0}, {
+                    step: function(now) {
+                      opacity = 1 - now;
+                      $("#"+current_fs).css({
+                          'display': 'none',
+                          'position': 'relative'
+                      });
+                      $("#"+next_fs).css({'opacity': opacity});
+                    }, 
+                    duration: 600
+                });
+      
+            }
         }
         else{
             res_type = '';
@@ -2508,6 +2555,13 @@ button[disabled]{
                 res_days = $("#delivery").val();
                 res_text = $('input[name="solution_id"]:checked').next().text();
                 res_message = $('input[name="solution_txt"]:checked').next().text();
+                if(res_message == "Other")
+                {
+                    res_message = $("#custom_answer").val();
+                }
+                else{
+                    res_message = $('input[name="solution_txt"]:checked').next().text();
+                }
                 if(res_desc.trim().length == 0 || res_days.trim().length == 0 )
                 {
                     $(".error-message").show();
@@ -2525,6 +2579,13 @@ button[disabled]{
                 res_days = 0;
                 res_text = $('input[name="solution_id"]:checked').next().text();
                 res_message = $('input[name="solution_txt"]:checked').next().text();
+                if(res_message == "Other")
+                {
+                    res_message = $("#custom_answer").val();
+                }
+                else{
+                    res_message = $('input[name="solution_txt"]:checked').next().text();
+                }
                 if(res_desc.trim().length == 0 )
                 {
                     $(".error-message").show();
@@ -2563,31 +2624,83 @@ button[disabled]{
 
    function resolution_cat(ev)
    {
-      lists1 = ["We couldn't agree on the price","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
-      lists2 = ["The buyer is not responding","The buyer will order again","I’m too busy for this job","We couldn't agree on the price","I'm not able to do this job","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
+      seller_lists_extention = ["We couldn't agree on the price","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
+      seller_lists_cancel = ["The buyer is not responding","The buyer will order again","I’m too busy for this job","We couldn't agree on the price","I'm not able to do this job","I didn't receive enough information from the buyer","Due to personal/technical reasons, I cannot complete the work","The buyer requested additional work, which wasn't in the scope of the original order","Other"]
+      buyer_lists_extention = ["The seller is not responding","The quality of the work I received was poor","I didn't receive what I ordered","The seller can't deliver on time","Other"]
+      buyer_lists_cancel  = ["The seller is not qualified to do the work I requested","The seller is not responding","The seller can't do this job","The quality of the work I received was poor","I didn't receive what I ordered","The seller can't deliver on time","Other"]
       $("#solution2_lists").empty();
       if(ev.value == 1)
       {
         $("#extension_form").show();
         $("#cancellation_form").hide();
-         $.each(lists1, function(i, v) {
-            $("#solution2_lists").append('<label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label>');
-         });
+        if($("#current_user_hidd").val() == "Buyer")
+        {
+            $.each(buyer_lists_extention, function(i, v) {
+                if(v != "Other")
+                {
+                    $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li>');
+                }
+                else{
+                    $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li><input type="text" name="custom_answer" id="custom_answer" class="m-t-15 other-answer large" maxlength="100" value="" placeholder="Please explain the issue you are having">');
+                }
+            });
+        }
+        else{
+            $.each(seller_lists_extention, function(i, v) {
+                if(v != "Other")
+                {
+                    $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li>');
+                }
+                else{
+                    $("#solution2_lists").append(' <li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li><input type="text" name="custom_answer" id="custom_answer" class="m-t-15 other-answer large" maxlength="100" value="" placeholder="Please explain the issue you are having">');
+                }
+            });
+        }
       }
       else if(ev.value == 2)
       {
         $("#extension_form").hide();
         $("#cancellation_form").show();
-         $.each(lists2, function(i, v) {
-            $("#solution2_lists").append('<label class="radio-text" ><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label>');
-         });
+         if($("#current_user_hidd").val() == "Buyer")
+            {
+                $.each(buyer_lists_cancel, function(i, v) {
+                    if(v != "Other")
+                    {
+                        $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li>');
+                    }
+                    else{
+                        $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label><input type="text" name="custom_answer" id="custom_answer" class="m-t-15 other-answer large" maxlength="100" value="" placeholder="Please explain the issue you are having">');
+                    }  
+                });
+            }
+            else{
+                $.each(seller_lists_cancel, function(i, v) {
+                    if(v != "Other")
+                    {
+                        $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li>');
+                    }
+                    else{
+                        $("#solution2_lists").append('<li><label class="radio-text"><input type="radio" onclick="solution2_onclick(this);" name="solution_txt" value="'+(i+1)+'" id="sol_txt'+(i+1)+'"><label  for="sol_txt'+(i+1)+'">'+v+'</label></label></li><input type="text" name="custom_answer" id="custom_answer" class="m-t-15 other-answer large" maxlength="100" value="" placeholder="Please explain the issue you are having">');
+                    }
+                });
+            }
       }
+      $("#message_errors").hide();
+      $("#custom_answer").hide();
       $("#btn_actions").prop("disabled",true);
       $("#solution2_div").show();
    }
    function solution2_onclick(ev)
    {
-      $("#btn_actions").prop("disabled",false);
+        $("#message_errors").hide();
+        if($(ev).next().text() == "Other")
+        {
+            $("#custom_answer").show();
+        }
+        else{
+            $("#custom_answer").hide();
+        }
+        $("#btn_actions").prop("disabled",false);
    }
    function openTab(evt) {
    cityName= $(evt).attr("data-label");

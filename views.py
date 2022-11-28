@@ -39,25 +39,7 @@ import operator
 class indexView(View):
     return_url = None
     def get(self , request,username=''):
-        active_gigs_details = UserGigs.objects.filter(gig_status='active')
-        active_gigs_data= []
-        category_list = []
-        categories = Categories.objects.all()
-        for c in categories:
-            sub_cat = SubSubCategories.objects.filter(category_Name=c).first()
-            if(sub_cat != None):
-                category_list.append({"cat_name":sub_cat.category_Name.category_Name,"subcat_name":sub_cat.sub_category_Name.sub_category_Name,"subsubcat_name":sub_cat.sub_sub_category_Name})
-        for u_gig in active_gigs_details:
-            gig_image_url = ''
-            gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
-            if(gig_image != None):
-                gig_image_url = gig_image.gig_image
-            active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id})
-        active_works = User_orders.objects.filter(order_status="active").count()  
-        last_week = datetime.today() - timedelta(days=7)    
-        buyers_request_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').count()
-        buyers_this_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').distinct('user_id').count()
-        return render(request , 'index.html',{"gig_details":active_gigs_data,"active_orders":active_works,"new_buyers":buyers_this_week,"buyer_reqyests":buyers_request_week,"cat_list":category_list,"cat_list_json":json.dumps(category_list)})
+        return render(request , 'index.html')
 
 class menu_pageView(View):
     return_url = None
@@ -210,14 +192,7 @@ class for_freelancerView(View):
 class earn_letorkbdoneView(View):
     return_url = None
     def get(self , request,username=''):
-        learning_topics = LearnTopics.objects.all()
-        learning_Details = []
-        learning_topics_Details = LearningTopicDetails.objects.all()
-        num_counts = 0
-        for l_details in learning_topics_Details:
-            num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
-            learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":l_details.image,"image_Text":l_details.image_Text,"video_url":l_details.video_url,"num_counts":num_counts})
-        return render(request , 'earn_letworkbdone.html',{"topics":learning_topics,"topics_Details":learning_Details})
+        return render(request , 'earn_letworkbdone.html')
 
 class categoriesView(View):
     return_url = None
@@ -229,10 +204,7 @@ class affiliate_programView(View):
     def get(self , request,username=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try: 
-                userDetails = User.objects.get(username=str(request.user.username).strip())
-                base_url = request.build_absolute_uri('/ref')
-                referral_count = Referral_Users.objects.filter(user_id=userDetails).exclude(refferal_user__isnull=False).count()
-                return render(request , 'affiliate_program.html',{'userDetails':userDetails,"url": base_url,"referral_count":referral_count})                 
+                return render(request , 'affiliate_program.html')                 
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1057,7 +1029,7 @@ class flutter_thank_you_tip_view(View):
                 ordered_to_user = User.objects.get(id= order_details.order_to.id)
                 extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
                 current_user = ''
-                if(userDetails.username == ordered_by_user.username):
+                if(userDetails.username.strip() == ordered_by_user.username.strip()):
                     current_user = "Buyer"
                 else:
                     current_user = "Seller"
@@ -1795,7 +1767,6 @@ class order_activities_view(View):
                     buyer_price = str(transaction_details.offer_amount)
                     buyer_user_name = str(ordered_by_user.username)
                     seller_user_name = str(ordered_to_user.username)
-                print(buyer_price)
                 seller_gig_details = UserGigs.objects.get(id= order_details.package_gig_name.id)
                 s_gig_list = []
                 imp_gig_image_url = ''
@@ -2032,14 +2003,18 @@ class resolution_view(View):
                     d_minutes = 00
                     d_seconds = 00
                     formatted_due_date = "failed"
-                
                 s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
                 charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
                 for c in charcterlimits:
                     if(c.Char_category_Name == "resolution_text"):
                         res_char = c.Max_No_of_char_allowed
                 extra_days = Parameter.objects.filter(Q(parameter_name="res_days"))
-                return render(request , 'Dashboard/resolution.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days})
+                current_user = ''
+                if(userDetails.username.strip() == ordered_by_user.username.strip()):
+                    current_user = "Buyer"
+                else:
+                    current_user = "Seller"
+                return render(request , 'Dashboard/resolution.html',{"seller_gig_details":s_gig_list,"resolution_char":res_char,"extra_days":extra_days,"current_user":current_user})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -5988,732 +5963,122 @@ def post_mssg_mark_as_read_view(request):
         not_list = CustomNotifications.objects.filter(sender=sender_user,recipient=sender_receiver,verb=not_type).update(is_read=True)
         return HttpResponse('sucess')
     
-
-
-def order_extension_message(sender_username, receiver_username, gig_title, order_amount, order_no):
-    mail_content = """<!doctype html><html lang="en-US"><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-        <title>Let'sworkbedone - Reset Password</title>
-        <meta name="description" content="Reset Password Email Template.">
-        <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-        </style>
-        </head>
-        <body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-        <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">We've got news about your order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" requested a modification for their order of I will """+gig_title+""" for $"""+order_amount+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> To review the modification request and redeliver the order, <a href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_no+"""/activities">click here</a>.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-        </table>
-        </body></html>"""
-    return mail_content
-
-
-def order_cancellation_message(sender_username, receiver_username, order_number, resolution_days):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">"""+receiver_username+""" opened a dispute regarding your order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" has requested to cancel order """+order_number+""". Please review the request and respond within the next """+resolution_days+""" days, or the order will be automatically cancelled.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Need help navigating the situation? We encourage you to work things out with """+sender_username+""" at the resolution center or contact our customer support.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-def order_withdrawal_message(sender_username, receiver_username, order_number):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">"""+sender_username+""" withdrew their request regrading order """+order_number+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">You can always visit the resolution center if something is unclear or you need help navigating the situation.</span>
-                                  </td> 
-                                </tr>
-							    <tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
+def get_index_data_view(request):
+    if request.method == 'GET':
+        active_gigs_details = UserGigs.objects.filter(gig_status='active')
+        active_gigs_data= []
+        category_list = []
+        categories = Categories.objects.all()
+        for c in categories:
+            sub_cat = SubSubCategories.objects.filter(category_Name=c).first()
+            if(sub_cat != None):
+                category_list.append({"cat_name":sub_cat.category_Name.category_Name,"subcat_name":sub_cat.sub_category_Name.sub_category_Name,"subsubcat_name":sub_cat.sub_sub_category_Name})
+        for u_gig in active_gigs_details:
+            gig_image_url = ''
+            gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
+            if(gig_image != None):
+                gig_image_url = gig_image.gig_image
+            active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_username":u_gig.user_id.username,"gig_user_img":u_gig.user_id.avatar})
+        active_works = User_orders.objects.filter(order_status="active").count()  
+        last_week = datetime.today() - timedelta(days=7)
+        menu_list = []  
+        categories = Categories.objects.all()
+        for i,c in enumerate(categories):
+            menu_list.append({"name":c.category_Name,'image':str(c.image)})
+        l_username = ''
+        l_user_img = ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+            l_username = userDetails.username
+            l_user_img = userDetails.avatar
+        buyers_request_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').count()
+        buyers_this_week = Buyer_Post_Request.objects.filter(service_date__gte=last_week ,service_type='all').distinct('user_id').count()
+        responseData = {"gig_details":active_gigs_data,"active_orders":active_works,"new_buyers":buyers_this_week,"buyer_requests":buyers_request_week,"cat_list":category_list,'main_menu' : menu_list,"logged_user":l_username,"logged_user_img":l_user_img}
+        return JsonResponse(responseData,safe=False)
+    
+    
+def get_affiliate_data_view(request):
+    if request.method == 'GET':
+        affiliate_code = 0
+        reff_earnings = 0.00
+        referral_count = 0
+        l_username = ''
+        l_user_img = ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+            affiliate_code = int(userDetails.affiliate_code)
+            reff_earnings = round(float(userDetails.referrals_earnings),2)
+            referral_count = Referral_Users.objects.filter(user_id=userDetails).exclude(refferal_user__isnull=False).count()
+            l_username = userDetails.username
+            l_user_img = userDetails.avatar
+        responseData =  {"affiliate_code":affiliate_code,"referral_earnings":reff_earnings,"referral_count":referral_count,"logged_user":l_username,"logged_user_img":l_user_img}
+        return JsonResponse(responseData,safe=False)
     
 
-def chat_message(sender_username, receiver_username, message):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-								 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:22px;font-family:'Rubik',sans-serif; padding-bottom:8%;border-bottom:1px solid #ddd;margin-left:8%; margin-right:8%;">You've received messages from """+sender_username+"""</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:0px;margin-left:8%;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:5px;margin-left:8%;text-align:justify;">"""+sender_username+""" left you messages:</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:block; vertical-align:middle; Padding:15px;padding-left:5%;margin-left:13%;padding-bottom:5%;border-top:1px solid #ddd; margin-right:13%;margin-top: 3%;text-align:justify;">"""+message+"""</span>
-                                  </td> 
-                                </tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content
-
-def order_cancelled_message(sender_username, receiver_username, gig_title, reason):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Buyer has cancelled the order</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Dear """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Unfortunately, """+sender_username+"""  has cancelled your order """+order_number+""", """+gig_title+""" ,  """+reason+""".</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Just as a reminder, late deliveries can negatively impact your rating on Fiverr. If needed, you may always adjust the Gig delivery time by editing your Gig, so you can meet the due date for future orders</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content
-
-
-def order_delivery_deadline_message(sender_username, receiver_username, order_number):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Your delivery deadline is coming up</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">We wanted to remind you that your delivery deadline for order """+order_number+""" with """+sender_username+""" is in less than 12 hours.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Delivering on time is a key part in a successful collaboration. It can determine how """+sender_username+""" rates the order, whether they choose to work with you again and even recommend your Gig to others.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;"> If you still need more time to work on this order, you can ask """+sender_username+""" to extend the delivery time.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-
-def order_buyer_order_message(sender_username, receiver_username):
-mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Your Proof Of Doing</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Congrats!</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">You've officially accomplished something today. Here's your proof of doing:</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">  
-                                  <table cellspacing="0" cellpadding="8" style="font:16px/22px 'Helvetica Neue',Arial,'sans-serif';border:0;width:90%;border-collapse:collapse;background-color:rgb(242, 243, 248);margin: auto;">
-   <tbody>
-      <tr>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;text-align:left">Item</td>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;width:20%">Qty</td>
-         <td style="color:#000;border-bottom:1px solid #fff;font-weight:bold;width:40px;text-align:right">Price</td>
-      </tr>
-      <tr>
-         <td style="color:#555555;font-weight:bold;text-align:left;border-right:1px solid #ffffff;border-bottom:1px solid #ffffff">
-            I will install cyberpanel control panel in <span class="il">your</span> vps, dedicated or cloud server
-            - <span style="font-weight:normal">install cyberpanel control panel in <span class="il">your</span> vps, dedicated or cloud server</span>
-         </td>
-         <td style="color:#555;border-right:1px solid #fff;border-bottom:1px solid #fff">× 1</td>
-         <td style="text-align:right;color:#555;border-bottom:1px solid #fff">₹814.42</td>
-      </tr>
-      <tr>
-         <td style="color:#555;text-align:left;padding-left:24px;font-size:14px;line-height:150%">
-            <img src="https://ci5.googleusercontent.com/proxy/h616ZtH84WScqR8V80bjUDKnTyR_ICiCa2nMjSzpjmJ-Q7yzHXRfCMzGki_tA8LuLgbrNIgMk21cUv_9CWVYslF4dvsta1tUtJluToyI2VGH6-U-f0xtHPE7Fwq9Mrmn_Pq1JMokSzfPrnoiTJC0=s0-d-e1-ft#https://fiverr-res.cloudinary.com/q_auto,f_auto/v1/general_assets/system_emails/chk-grey.jpg" align="center" valign="middle" style="padding-right:6px" class="CToWUd" data-bit="iit">
-            1 Revision
-         </td>
-      </tr>
-      <tr style="border-top:1px solid #fff">
-         <td style="color:#555;text-align:left" colspan="2">Service Fee</td>
-         <td style="text-align:right;color:#555">₹207.68</td>
-      </tr>
-   </tbody>
-</table>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">In case you have yet to fill out the order requirements, please do so <a href="https://letworkbedone.com/inbox/"""+receiver_username+"""">here</a>, so """+receiver_username+""" can get started on your order.</span>
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-    return mail_content
-
-def order_delivery_view_message(sender_username, receiver_username, gig_title,resolution_days ):
-    mail_content = """
-<!doctype html>
-<html lang="en-US">
-<head>
-    <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <title>Let'sworkbedone - Reset Password</title>
-    <meta name="description" content="Reset Password Email Template.">
-    <style type="text/css">
-        a:hover {text-decoration: underline !important;}
-    </style>
-</head>
-
-<body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">
-    <table cellspacing="0" border="0" cellpadding="0" width="100%" bgcolor="#f2f3f8"
-        style="@import url(https://fonts.googleapis.com/css?family=Rubik:300,400,500,700|Open+Sans:300,400,600,700); font-family: 'Open Sans', sans-serif;">
-        <tr>
-            <td>
-                <table style="background-color: #f2f3f8; max-width:670px;  margin:0 auto;" width="100%" border="0"
-                    align="center" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                          <a href="https://letworkbedone.com/" title="logo" target="_blank">
-                            <img width="250" src="https://i.ibb.co/2ghjzv2/logo.png" title="logo" alt="logo">
-                          </a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <table width="95%" border="0" cellpadding="0" cellspacing="0"
-                                style="max-width:670px;background:#fff; border-radius:3px; text-align:center;-webkit-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);-moz-box-shadow:0 6px 18px 0 rgba(0,0,0,.06);box-shadow:0 6px 18px 0 rgba(0,0,0,.06);">
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                                 <tr>
-                                    <td style="text-align:center;">
-                                        <h1 style="color:#1e1e2d; font-weight:500; margin:0;font-size:26px;font-family:'Rubik',sans-serif;">Consider it Done</h1>
-                                    </td>
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;"> Hi """+receiver_username+""",</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">The Gig you ordered: 'I will """+gig_title+"""' from """+sender_username+""" is ready for your review.</span>
-                                  </td> 
-                                </tr>
-                                <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">To cross it off your to-do list, accept the delivery or request a revision if needed!</span>
-                                  </td> 
-                                </tr>
-                                  <tr style="text-align:left;">
-                                  <td style="">    <span style="display:inline-block; vertical-align:middle; Padding:15px;text-align:justify;">Please note your order will be automatically marked as complete by Fiverr after """+resolution_days+""" days, so make sure to review it.</span>
-                                  </td> 
-                                </tr>
-                                 <tr style="text-align:left;">
-                                  <td style="">  
-                                  
-                                  </td> 
-                                </tr>
-								<tr style="text-align:left;">
-                                   <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-bottom:5px;">Thanks,</span>
-								</tr>
-								<tr style="text-align:left;">
-                               <span style="display:inline-block; vertical-align:middle; Padding:15px;padding-top:0px;">The Letworkbedone Team</span>
-								</tr>
-                                <tr>
-                                    <td style="height:40px;">&nbsp;</td>
-                                </tr>
-                            </table>
-                        </td>
-                    <tr>
-                        <td style="height:20px;">&nbsp;</td>
-                    </tr>
-                    <tr>
-                        <td style="text-align:center;">
-                            <p style="font-size:14px; color:rgba(69, 80, 86, 0.7411764705882353); line-height:18px; margin:0 0 0;">&copy; <strong>www.letsworkbedone.com</strong></p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="height:80px;">&nbsp;</td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
-</body></html>"""
-
-    return mail_content
+def get_earn_data_view(request):
+    if request.method == 'GET':
+        learning_topics = []
+        learning_Details = []
+        l_username = ''
+        l_user_img = ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+            l_username = userDetails.username
+            l_user_img = userDetails.avatar
+        learning_topics_all = LearnTopics.objects.all()
+        for l in learning_topics_all:
+            learning_topics.append({"name":l.topic_names})
+        learning_Details = []
+        learning_topics_Details = LearningTopicDetails.objects.all()
+        num_counts = 0
+        for l_details in learning_topics_Details:
+            num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
+            learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":str(l_details.image),"image_Text":l_details.image_Text,"video_url":l_details.video_url,"num_counts":num_counts})
+        responseData =  {"topics":learning_topics,"topics_Details":learning_Details,"logged_user":l_username,"logged_user_img":l_user_img}
+        return JsonResponse(responseData,safe=False)
+    
+    
+def get_freelancer_data_view(request):
+    if request.method == 'GET':
+        userdata = []
+        l_username = ''
+        l_user_img = ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+            l_username = userDetails.username
+            l_user_img = userDetails.avatar
+        subcategory= SubCategories.objects.all()
+        for sub_cat in subcategory:
+            u_profile = UserProfileDetails.objects.filter(sub_category=sub_cat).first()
+            if(u_profile != None):
+                if(len(userdata) <= 8):
+                    userdata.append({"username":u_profile.user_id.username, "profession":u_profile.sub_category.sub_category_Name,"joined_dt":u_profile.user_id.created_at,"profile_img":u_profile.user_id.avatar})
+        responseData =  {"user_details":userdata,"logged_user":l_username,"logged_user_img":l_user_img}
+        return JsonResponse(responseData,safe=False)
+    
+def get_all_page_data_view(request):
+    if request.method == 'GET':
+        userdata = []
+        l_username = ''
+        l_user_img = ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+            l_username = userDetails.username
+            l_user_img = userDetails.avatar
+        responseData =  {"logged_user":l_username,"logged_user_img":l_user_img}
+        return JsonResponse(responseData,safe=False)
+    
+    
+def post_user_notification_view(request):
+    if request.method == 'GET':
+        userid = request.GET['userid']
+        umessage = request.GET['umessage']
+        uorder = request.GET['uorder']
+        uorder_updates = request.GET['uorder_updates']
+        userDetails = User.objects.get(pk=userid)
+        userDetails.mail_message = umessage
+        userDetails.mail_order = uorder
+        userDetails.mail_updates = uorder_updates
+        userDetails.save()
+        return HttpResponse('sucess')
+        

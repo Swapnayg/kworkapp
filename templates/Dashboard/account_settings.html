@@ -19,6 +19,7 @@
                         <li id="language"><strong>Language</strong></li>
                         <li id="overview"><strong>Overview</strong></li>
                         <li id="prof_image"><strong>Profile Image</strong></li>
+                        <li id="p_notification"><strong>Notification</strong></li>
                         <li id="create_gig"><strong>Create A Gig</strong></li>
                      </ul>
                      <!-- fieldsets -->
@@ -284,6 +285,34 @@
                         </div>
                         <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
                         <input type="button" name="make_payment" class="next action-button" value="Confirm" id="create_profile_img"/>
+                     </fieldset>
+                     <fieldset>
+                        <div class="form-card" id="notification_form">
+                           <div class="header pb-4">
+                              <h5>Notification Settings</h5>
+                              <span class="text-muted">7 of 8</span>
+                           </div>
+                           <div class="body mt-4">
+                              <div class="col-md-12">
+                                 <ul class="ks-cboxtags">
+                                  <li>
+                                     <input type="checkbox" id="inbox_check" value="Order one">
+                                     <label for="inbox_check">Inbox Messages</label>
+                                  </li>
+                                  <li>
+                                     <input type="checkbox" id="order_check" value="Order Two">
+                                     <label for="order_check">Order Messages</label>
+                                  </li>
+                                  <li>
+                                     <input type="checkbox" id="ordre_update_check" value="Order Two">
+                                     <label for="ordre_update_check">Order Updates</label>
+                                  </li>
+                                </ul>
+                              </div>
+                           </div>
+                        </div>
+                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                        <input type="button" name="make_payment" class="next action-button" value="Confirm" id="create_notification"/>
                      </fieldset>
                      <fieldset>
                         <div class="form-card" id="created_form">
@@ -582,7 +611,7 @@
    #progressbar li {
    list-style-type: none;
    font-size: 12px;
-   width: 14%;
+   width: 12%;
    float: left;
    position: relative;
    }
@@ -673,6 +702,95 @@
    width: 100%;
    object-fit: cover;
    }
+   ul.ks-cboxtags {
+      list-style: none;
+      padding: 20px; }
+      ul.ks-cboxtags li {
+        display: block; }
+        ul.ks-cboxtags li label {
+          display: inline-block;
+          background-color: rgba(255, 255, 255, 0.9);
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          color: rgba(0, 0, 0, 0.8);
+          font-size: 18px;
+          border-radius: 4px;
+          white-space: nowrap;
+          margin: 0 0 10px 0;
+          -webkit-touch-callout: none;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          -webkit-tap-highlight-color: transparent;
+          -webkit-transition: all .2s;
+          -o-transition: all .2s;
+          transition: all .2s;
+          display: block; }
+    
+    ul.ks-cboxtags li label {
+      padding: 10px 20px;
+      cursor: pointer; }
+      ul.ks-cboxtags li label::before {
+        display: inline-block;
+        font-style: normal;
+        font-variant: normal;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        font-family: "FontAwesome";
+        font-weight: 900;
+        font-size: 24px;
+        padding: 0;
+        margin-right: 15px;
+        content: "\f1db";
+        color: rgba(0, 0, 0, 0.2);
+        -webkit-transition: -webkit-transform .3s ease-in-out;
+        transition: -webkit-transform .3s ease-in-out;
+        -o-transition: transform .3s ease-in-out;
+        transition: transform .3s ease-in-out;
+        transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+        position: absolute;
+        right: 40px;
+        margin-top: -5px; }
+      ul.ks-cboxtags li label span {
+        background: #f9e090;
+        font-size: 12px;
+        padding: 2px 5px;
+        border-radius: 30px;
+        color: #fff;
+        margin-left: 10px; }
+    
+    ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
+      content: "\f058";
+      -webkit-transform: rotate(-360deg);
+      -ms-transform: rotate(-360deg);
+      transform: rotate(-360deg);
+      -webkit-transition: -webkit-transform .3s ease-in-out;
+      transition: -webkit-transform .3s ease-in-out;
+      -o-transition: transform .3s ease-in-out;
+      transition: transform .3s ease-in-out;
+      transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+      color: rgba(0, 0, 0, 0.8); }
+    
+    ul.ks-cboxtags li input[type="checkbox"]:checked + label {
+      color:  rgba(0, 0, 0, 0.8);;
+      -webkit-transition: all .2s;
+      -o-transition: all .2s;
+      transition: all .2s; }
+      ul.ks-cboxtags li input[type="checkbox"]:checked + label span {
+        background: #fff;
+        color: #000; }
+    
+    ul.ks-cboxtags li input[type="checkbox"] {
+      display: absolute; }
+    
+    ul.ks-cboxtags li input[type="checkbox"] {
+      position: absolute;
+      opacity: 0; }
+      #progressbar #p_notification:before
+      {
+         font-family: FontAwesome;
+         content: "\f0f3";
+      }    
 </style>
 <script>
 
@@ -684,6 +802,27 @@
     
    $(document).ready(function(){
       $('#seller_headline').trigger('keyup');
+      if('{{UserDetails.mail_message}}' == 'True')
+      {
+         $("#inbox_check").prop("checked",true);
+      }
+      else{
+         $("#inbox_check").prop("checked",false);
+      }
+      if('{{UserDetails.mail_order}}' == 'True')
+      {
+         $("#order_check").prop("checked",true);
+      }
+      else{
+         $("#order_check").prop("checked",false);
+      }
+      if('{{UserDetails.mail_updates}}' == "True")
+      {
+         $("#ordre_update_check").prop("checked",true);
+      }
+      else{
+         $("#ordre_update_check").prop("checked",false);
+      }
       $("#seller_about").summernote({
         placeholder: "Write your content here",
         height: 200,
@@ -1031,10 +1170,42 @@
                duration: 600
             });
          }
-         else{
-            $("#profile_img_error").show();
-            $("#profile_img_error").text(" error please fill all fields!");
-         }
+      }
+      else if($(this).attr("id") == "create_notification")
+      {
+         n_message = "False"
+         n_order = "False"
+         n_order_update = "False"
+         if($("#inbox_check").is(':checked')){
+            n_message = "True"
+         } 
+         if($("#order_check").is(':checked')){
+            n_order = "True"
+         } 
+         if($("#ordre_update_check").is(':checked')){
+            n_order_update = "True"
+         } 
+         $.ajax({
+            type:"GET",
+            url: "/post_user_notification/",
+            data: {'userid': $("#userprimaryval").val(),'umessage':n_message,'uorder':n_order,'uorder_updates':n_order_update},
+            success: function(data)
+            {  
+               $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                  next_fs.show(); 
+                  current_fs.animate({opacity: 0}, {
+                     step: function(now) {
+                        opacity = 1 - now;
+                        current_fs.css({
+                           'display': 'none',
+                           'position': 'relative'
+                     });
+                  next_fs.css({'opacity': opacity});
+                  }, 
+                  duration: 600
+               });
+            }        
+         });
       }
    });
    $('.radio-group .radio').click(function(){

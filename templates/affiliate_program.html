@@ -23,7 +23,7 @@
                      <p class="kw-header--h4">Your Affiliate Link</p>
                      <div id="referral-program-link" class="referral-program__action-form-wrapper">
                         <div class="referral-program__action-form">
-                           <input type="text" placeholder="Paste URL" id="affiliate_link" class="referral-program__action-form-field" disabled value="{{ url}}/{{userDetails.affiliate_code}} "> <button class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__action-form-button" onclick="return cos_click()">
+                           <input type="text" placeholder="Paste URL" id="affiliate_link" class="referral-program__action-form-field" disabled value=""> <button class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__action-form-button" onclick="return cos_click()">
                            Copy
                            </button> <!---->
                         </div>
@@ -31,7 +31,7 @@
                   </div>
                   <div class="referral-program__action-generate mt-4" data-editable-demo="" data-name="page__heading1">
                      <p class="kw-header--h4">My Referrals</p>
-                     <div class="referral-program__action-referrals-stats">{{referral_count}} Referral<span class="referral-program__action-referrals-stats-separator"><span class="m-hidden"> / </span></span>Earnings: <span class="nowrap"><span class="funds-currency">$</span>{{userDetails.referrals_earnings}}</span></div>
+                     <div class="referral-program__action-referrals-stats"><span id="reff_count"></span> Referral<span class="referral-program__action-referrals-stats-separator"><span class="m-hidden"> / </span></span>Earnings: <span class="nowrap"><span class="funds-currency">$</span><span id="reff_earning"></span></span></div>
                   </div>
                </div>
             </div>
@@ -157,40 +157,56 @@
 
 <script>
    $(document).ready(function(){
-    value_user = '{{request.user.username}}'
-    if(value_user.length != 0)
-    {
-       $("#loginbtn").remove();
-       $("#registerbtn").remove();
-       $("#freelancerbtn").remove();
-       $('#message_show_div').hide();
-       $('#notification_show_div').hide();
-       $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
-       $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
-       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
-       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
-       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" ><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
-       $('#help_not a').hover(function (e) {
-           $('#help_not .des').css({
-               left: e.offsetX + 80,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-       $('#notification a').click(function (e) {
-         $('#message_show_div').hide();
-         $('#notification_show_div').toggle();
-     });
-     $('#messages a').click(function (e) {
-         $('#notification_show_div').hide();
-         $('#message_show_div').toggle();
-     });
-       $('#favourite a').hover(function (e) {
-           $('#favourite .des').css({
-               left: e.offsetX + 60,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-    }
+      value_user = ''
+      value_user_img = ''
+      $.ajax({
+         type:"GET",
+         url: "/get_affiliate_data/",
+         data: {},
+         success: function(data) 
+         {  
+            var base_url = window.location.origin;
+            $("#affiliate_link").val(base_url +"/"+ data.affiliate_code);
+            $("#reff_count").text(data.referral_count);
+            $("#reff_earning").text(data.referral_earnings);
+            value_user = data.logged_user;
+            value_user_img = data.logged_user_img
+            if(value_user.length != 0)
+            {
+               $("#loginbtn").remove();
+               $("#registerbtn").remove();
+               $("#freelancerbtn").remove();
+               $('#message_show_div').hide();
+               $('#notification_show_div').hide();
+               $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+               $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+               $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+               $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+               $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" ><img class="user-avatar js-user-avatar_block " src="'+value_user_img+'" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/'+value_user+'" class="dropdownbox__username anchor_tag_user">'+value_user+'</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/'+value_user_img+'" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+               $('#help_not a').hover(function (e) {
+                  $('#help_not .des').css({
+                     left: e.offsetX + 80,
+                     top: e.offsetY + 40
+                  }).toggle();
+               });
+               $('#notification a').click(function (e) {
+                  $('#message_show_div').hide();
+                  $('#notification_show_div').toggle();
+               });
+               $('#messages a').click(function (e) {
+                  $('#notification_show_div').hide();
+                  $('#message_show_div').toggle();
+               });
+               $('#favourite a').hover(function (e) {
+                  $('#favourite .des').css({
+                     left: e.offsetX + 60,
+                     top: e.offsetY + 40
+                  }).toggle();
+               });
+            }
+         }
+      });
+    
    });
 
    function cos_click() { 
@@ -213,6 +229,10 @@
    body.en-lang .referral-program__footer-button
    {
       width: 250px;
+   }
+   .anchor_tag_user
+   {
+      text-transform:capitalize;
    }
 </style>
 {% endblock %}

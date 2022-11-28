@@ -27,7 +27,7 @@
                                                 <i class="icon icon-star active"></i>
                                                 <i class="icon icon-star active"></i>
                                              </div>
-                                             <div class="banner-slider__text"><span class="banner-slider__name">Tanya 1, </span><span class="banner-slider__profession">Freelance Accountant</span></div>
+                                             <div class="banner-slider__text"><span class="banner-slider__name">Tanya, </span><span class="banner-slider__profession">Freelance Accountant</span></div>
                                           </div>
                                        </div>
                                     </div>
@@ -64,11 +64,9 @@
             </div>
             <div class="banner-market__popular mt16">
                <div class="banner-market__popular-header kw-color--gray">Popular:</div>
-               <input type="hidden" value="{{cat_list_json}}" id="catlist_hidden">
-               <div class="banner-market__popular-links">
-                  {% for cat in cat_list|slice:":4" %}
-                     <a class="banner-market__popular-link" href="/categories/{{cat.cat_name}}/{{cat.subcat_name}}/{{cat.subsubcat_name}}/" target="_blank"><span>{{cat.subsubcat_name}}</span></a>
-                  {% endfor %}
+               
+               <div class="banner-market__popular-links" id="category_list">
+                 
                </div>
             </div>
          </div>
@@ -107,17 +105,8 @@
    <div class="rubrics">
       <div class="kw-wrapper" data-editable-demo="" data-name="page__heading2">
          <h2 class="page__heading2 kw-header--h2 p0">Explore Letworkbedone's Evergrowing Marketplace</h2>
-         <div class="rubrics__items">
-            {% for ml in main_menu %}
-               <div class="rubrics__item">
-                  <a class="rubrics__link menu_cats" href="/categories/{{ml.name}}" >
-                  <img src="/media/{{ml.image}}" alt="{{ml.name}}" width="307" height="211" onerror="imageLoadError(this)"/>
-                     <div class="text_div">
-                        <span>{{ml.name|title}}</span>
-                     </div>
-                  </a>
-               </div>
-            {% endfor %}
+         <div class="rubrics__items" id="main_menu_List">
+            
          </div>
       </div>
    </div>
@@ -138,18 +127,18 @@
                </div>
             </div>
             <div class="numbers__item" data-editable-demo="" data-name="page__heading3">
-               <p class="page__heading3 numbers__title js-animation-count" data-count="65716">{{active_orders}}</p>
+               <p class="page__heading3 numbers__title js-animation-count" data-count="65716" id="active_orders"></p>
                <p class="page__heading3numbers__text">active Works</p>
             </div>
             <div class="numbers__item"  data-editable-demo="" data-name="page__heading4">
-               <p class="page__heading4 numbers__title js-animation-count" data-count="1440" data-delay="200">{{buyer_reqyests}}</p>
+               <p class="page__heading4 numbers__title js-animation-count" data-count="1440" data-delay="200" id="buyer_requests"></p>
                <p class="page__heading4 numbers__text">
                   new Works <br />
                   this week
                </p>
             </div>
             <div class="numbers__item" data-editable-demo="" data-name="page__heading5">
-               <p class="page__heading5 numbers__title js-animation-count" data-count="791" data-delay="400">{{new_buyers}}</p>
+               <p class="page__heading5 numbers__title js-animation-count" data-count="791" data-delay="400" id="new_buyers"></p>
                <p class="page__heading5 numbers__text">
                   new buyers <br />
                   this week
@@ -217,24 +206,8 @@
          <h2 class="page__heading9 kw-header--h2 p0">Get inspired with projects created by our freelancers</h2>
          <div class="inspire__slider-wrapper">
             <div class="swiper inspire__slider js-inspire-slider" id="marketplace">
-               <div class="swiper-wrapper inspire__items">
-                  {% for gig in gig_details %}
-                  <div class="swiper-slide inspire__item">
-                     <div class="inspire__item-inner">
-                        <div class="inspire__image">
-                           <a href="/gigs/{{gig.gig_user.username}}/{{gig.gig_Name}}" class="inspire__image-link" target="_blank" title="{{gig.gig_user.username |title}}">
-                           <img class="js-lazy-load-image" alt="" data-inviewport-right="-300" onerror="imageLoadError(this)" src="{{gig.gig_Image}}" />
-                           </a>
-                        </div>
-                        <div class="inspire__bottom">
-                           <a href="/user/profile/{{gig.gig_user.username}}" class="inspire__user-avatar" title="{{gig.gig_user.username |title}}">
-                           <img src="{{gig.gig_user.avatar}}" class="js-lazy-load-image" alt="" />
-                           </a>
-                           <span class="inspire__user-author">Freelancer: <a href="/user/profile/{{gig.gig_user.username}}" title="{{gig.gig_user.username |title}}">{{gig.gig_user.username |title}}</a></span>
-                        </div>
-                     </div>
-                  </div>
-                  {% endfor %}
+               <div class="swiper-wrapper inspire__items" id= "gig_details_list">
+
                </div>
             </div>
             <div class="inspire__slider-arrow inspire__slider-arrow--prev js-inspire-slider-arrow-prev"><img src="{% static 'assets/images/slider-arrow-left.svg' %}"  alt="" /></div>
@@ -357,24 +330,93 @@
       background:#2E5DC5;
       color:white;
    }
+   .anchor_tag_user
+   {
+      text-transform:capitalize;
+   }
 </style>
 <script>
    $(document).ready(function(){
-      hidden_val = eval(JSON.parse(JSON.stringify($("#catlist_hidden").val())));
+      hidden_val = '';
+      logged_in_user = ''
+      logged_in_img = ''
       var array = [];
-      $(hidden_val).each(function(i, li) {  
-         array.push({id: li.cat_name,text: li.subsubcat_name});
-     });
-     var configParamsObj = {
-      data: array,
-      placeholder: 'Try "social media design"', 
-      minimumResultsForSearch: 3,
-      tags: true
-   };
-  $("#query_type").select2(configParamsObj);
-  $("#query_type").change(function () {
-   
-});
+      $.ajax({
+         type:"GET",
+         url: "/get_index_data/",
+         data: {},
+         success: function(data) 
+         {  
+            $(data.cat_list).each(function(i, li) {  
+               array.push({id: li.cat_name,text: li.subsubcat_name});
+            });
+            $("#gig_details_list").empty();
+           $(data.gig_details).each(function(i, gig) {  
+               $("#gig_details_list").append('<div class="swiper-slide inspire__item"> <div class="inspire__item-inner"> <div class="inspire__image"> <a href="/gigs/'+gig.gig_username+'/'+gig.gig_Name+'" class="inspire__image-link" target="_blank" title="'+gig.gig_username+'"> <img class="js-lazy-load-image" alt="" data-inviewport-right="-300" onerror="imageLoadError(this)" src="'+gig.gig_Image+'" /> </a> </div> <div class="inspire__bottom"> <a href="/user/profile/'+gig.gig_username+'" class="inspire__user-avatar" title="'+gig.gig_username+'"> <img src="'+gig.gig_Image+'" class="js-lazy-load-image" alt="" /> </a> <span class="inspire__user-author">Freelancer: <a href="/user/profile/'+gig.gig_username+'" title="'+gig.gig_username+'" class="anchor_tag_user">'+gig.gig_username+'</a></span> </div> </div> </div>')
+           });
+           $("#active_orders").text(data.active_orders);
+           $("#new_buyers").text(data.new_buyers);
+           $("#buyer_requests").text(data.buyer_requests);
+           logged_in_user = data.logged_user
+           logged_in_img = data.logged_user_img
+           hidden_val = data.cat_list
+           $("#main_menu_List").empty();
+           $(data.main_menu).each(function(i, menu) {  
+               $("#main_menu_List").append('<div class="rubrics__item"> <a class="rubrics__link menu_cats" href="/categories/'+menu.name+'" > <img src="/media/'+menu.image+'" alt="'+menu.name+'" width="307" height="211" onerror="imageLoadError(this)"/> <div class="text_div"> <span class="anchor_tag_user">'+menu.name+'</span> </div> </a> </div>')
+           });
+           $("#category_list").empty();
+           $(data.cat_list).each(function(i, cat) { 
+               if(i<4){
+                  $("#category_list").append('<a class="banner-market__popular-link" href="/categories/'+cat.cat_name+'/'+cat.subcat_name+'/'+cat.subsubcat_name+'/" target="_blank"><span class="anchor_tag_user">'+cat.subsubcat_name+'</span></a>');
+               }
+           });
+           var configParamsObj = {
+            data: array,
+            placeholder: 'Try "social media design"', 
+            minimumResultsForSearch: 3,
+            tags: true
+         };
+         $("#query_type").select2(configParamsObj);
+         $("#query_type").change(function () {
+         
+         });
+         if(logged_in_user.length != 0)
+         {
+            $("#loginbtn").remove();
+            $("#registerbtn").remove();
+            $("#freelancerbtn").remove();
+            $('#message_show_div').hide();
+            $('#notification_show_div').hide();
+            $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
+            $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
+            $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
+            $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
+            $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" ><img class="user-avatar js-user-avatar_block " src="'+logged_in_img+'" id="logged_in_user_image" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/'+logged_in_user+'" class="dropdownbox__username anchor_tag_user">'+logged_in_user+'</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/'+logged_in_user+'" id="logged_in_user_name" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
+            $('#help_not a').hover(function (e) {
+               $('#help_not .des').css({
+                  left: e.offsetX + 80,
+                  top: e.offsetY + 40
+               }).toggle();
+            });
+            $('#notification a').click(function (e) {
+               $('#message_show_div').hide();
+               $('#notification_show_div').toggle();
+            });
+            $('#messages a').click(function (e) {
+               $('#notification_show_div').hide();
+               $('#message_show_div').toggle();
+            });
+            $('#favourite a').hover(function (e) {
+               $('#favourite .des').css({
+                  left: e.offsetX + 60,
+                  top: e.offsetY + 40
+               }).toggle();
+            });
+         }
+         }
+      });
+    
+     
 $("#home_search_btn").click(function () {
    if($("#query_type").val().trim().length != 0)
    {
@@ -396,42 +438,7 @@ $("#home_search_btn").click(function () {
       alert("Select any category");
    }
 });
-
-    value_user = '{{request.user.username}}'
-    if(value_user.length != 0)
-    {
-       $("#loginbtn").remove();
-       $("#registerbtn").remove();
-       $("#freelancerbtn").remove();
-       $('#message_show_div').hide();
-       $('#notification_show_div').hide();
-       $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
-       $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
-       $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
-       $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
-       $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" ><img class="user-avatar js-user-avatar_block " src="{{request.user.avatar}}" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/{{request.user.username}}" class="dropdownbox__username">{{request.user.username|title}}</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/{{request.user.username}}" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
-       $('#help_not a').hover(function (e) {
-           $('#help_not .des').css({
-               left: e.offsetX + 80,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-       $('#notification a').click(function (e) {
-         $('#message_show_div').hide();
-         $('#notification_show_div').toggle();
-     });
-     $('#messages a').click(function (e) {
-         $('#notification_show_div').hide();
-         $('#message_show_div').toggle();
-     });
-
-       $('#favourite a').hover(function (e) {
-           $('#favourite .des').css({
-               left: e.offsetX + 60,
-               top: e.offsetY + 40
-           }).toggle();
-       });
-    }
+    
    });
 </script>
 {% endblock %}

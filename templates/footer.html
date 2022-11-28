@@ -163,15 +163,16 @@
          window.location.href = location_href[0]+"//"+location_href[2] +"/blocked/{{request.user.username}}"
       }
       else{
-         var urls = ['http://127.0.0.1:8000/static/assets/images/users/banner-user-1.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-2.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-3.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-4.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-5.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-6.png',
-         'http://127.0.0.1:8000/static/assets/images/users/banner-user-7.png'];
+         var base_url = window.location.origin;
+         var urls = [base_url + '/static/assets/images/users/banner-user-1.png',
+         base_url + '/static/assets/images/users/banner-user-2.png',
+         base_url + '/static/assets/images/users/banner-user-3.png',
+         base_url + '/static/assets/images/users/banner-user-4.png',
+         base_url + '/static/assets/images/users/banner-user-5.png',
+         base_url + '/static/assets/images/users/banner-user-6.png',
+         base_url + '/static/assets/images/users/banner-user-7.png'];
          var listItems = $("#swiper_slider .swiper-slide");
-         var names = ["Lily, ","Eugene, ","Tanya, ","Alex, ","Margarita, ","Dennis, ","Eugenia, "]
+         var names = ["Lily, ","Eugene, ","Emma, ","Alex, ","Margarita, ","Dennis, ","Eugenia, "]
          var prof = ["Web Developer","Voice Actor","Freelance Accountant","Front-end Developer","Graphic Designer","Web Designer","Freelance Poet"]
          var count = 1;
          $('#swiper-slide1').css('background-image', 'url("' + urls[0] + '")');

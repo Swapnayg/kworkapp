@@ -111,7 +111,6 @@ class User(AbstractBaseUser):
     mail_message = models.BooleanField(default=True)
     mail_order = models.BooleanField(default=True)
     mail_updates = models.BooleanField(default=True)
-    mail_rating = models.BooleanField(default=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
