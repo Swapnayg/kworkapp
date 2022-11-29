@@ -5,6 +5,7 @@ from django.utils import timesince
 import smtplib
 import shortuuid
 import html
+from kworkapp.mail_templates import MailTemplates
 from functools import reduce
 from paypalrestsdk import Payment,Refund,Sale
 import paypalrestsdk
@@ -1757,11 +1758,12 @@ class order_activities_view(View):
                 current_user = ''
                 buyer_user_name = ''
                 seller_user_name = ''
+                Order_Message.objects.filter(receiver=userDetails,is_read=False).update(is_read=True)
                 if(userDetails.username == ordered_by_user.username):
                     current_user = "Buyer"
                     buyer_price = str(transaction_details.total_amount)
                     buyer_user_name = str(ordered_by_user.username)
-                    seller_user_name = str(ordered_to_user.username)
+                    seller_user_name = str(ordered_to_user.username) 
                 else:
                     current_user = "Seller"
                     buyer_price = str(transaction_details.offer_amount)
@@ -3860,7 +3862,26 @@ def get_modal_show_request_details_view(request):
             user_gig_details.append({"gig_id":u_gig.id,"gig_image":gig_image_url,"gig_title":u_gig.gig_title})
         response_data = {"buyer_details":buyer_request_data,"user_gig_details":user_gig_details}
         return JsonResponse(json.dumps(response_data),safe=False)
-    
+
+def every_five_minute():
+    all_users = []
+    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    for us in all_users:
+        get_active_orders = User_orders.objects.filter(Q(order_by=us) | Q(order_to= us),order_status = 'active' )
+        for order in get_active_orders:
+            get_order_messg = Order_Message.objects.filter(receiver=us,is_read=False).count()
+            if(get_order_messg  > 0):
+                first_messg = Order_Message.objects.filter(receiver=us,is_read=False).first()
+                if(us.mail_order == True):
+                    mail_content = MailTemplates.chat_order_message(str(first_messg.sender.username).title(),str(first_messg.receiver.username).title(),str(first_messg.text),str(first_messg.timestamp.strftime('%d %b, %Y')),str(order.order_no).title())
+                    SendEmailAct(str(us.email),mail_content,"You've received messages.")
+        get_chat_messg = Message.objects.filter(receiver=us,is_read=False).count()
+        if(get_chat_messg  > 0):
+            c_first_messg = Message.objects.filter(receiver=us,is_read=False).first()
+            if(us.mail_order == True):
+                c_mail_content = MailTemplates.chat_message(str(c_first_messg.sender.username).title(),str(c_first_messg.receiver.username).title(),str(c_first_messg.text),str(c_first_messg.timestamp.strftime('%d %b, %Y')))
+                SendEmailAct(str(us.email),c_mail_content,"You've received messages.")
+                    
 def get_modal_show_gig_details_view(request):
     if request.method == 'GET':
         username = request.GET['username']
@@ -4168,6 +4189,12 @@ def post_flutterwave_transaction_view(request):
             if(notification_order.is_active == True):
                 noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
                 noti_create.save()
+            if(pay_by_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
+            if(pay_to_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -4297,6 +4324,12 @@ def post_paypal_transaction_view(request):
             if(notification_order.is_active == True):
                 noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")   
                 noti_create.save()
+            if(pay_by_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
+            if(pay_to_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -4417,7 +4450,17 @@ def post_credit_transaction_view(request):
                     already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details).count()
                 else:
                     already_submitted = 2
-                data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})                  
+                data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+            notification_order = Notification_commands.objects.get(slug = "order_received")
+            if(notification_order.is_active == True):
+                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")   
+                noti_create.save()
+            if(pay_by_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
+            if(pay_to_user.mail_order == True):
+                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")                 
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -4606,6 +4649,9 @@ def post_delivered_object_view(request):
         if(notification_delivered.is_active == True):
             noti_create = CustomNotifications(sender = delivered_by, recipient= delivered_to, verb='order',order_no = order_details,description= str(delivered_by.username).title() + " Delivered the order.")
             noti_create.save()
+        if(delivered_to.mail_order == True):
+            mail_content = MailTemplates.order_delivered(str(delivered_by.username).title(),"Here, is your Delivery.",str("#"+order_details.order_no))
+            SendEmailAct(str(delivered_to.email),mail_content,"Consider it done: Your order is ready for your review.")
         return HttpResponse('sucess')
 
     
@@ -4635,6 +4681,9 @@ def post_resolutions_view(request):
                 noti_create.save()
             prev_date =  datetime.strptime(order_details.due_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
             new_date = prev_date + timedelta(days=int(res_days))
+            if(raised_to.mail_order == True):
+                mail_content = MailTemplates.order_extension(str(raised_by_user.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
+                SendEmailAct(str(raised_to.email),mail_content," Great news: Your offer has been accepted.") 
         else:
             notification_cancellation = Notification_commands.objects.get(slug = "cancellation_request")
             if(notification_cancellation.is_active == True):
@@ -4762,13 +4811,27 @@ def get_all_order_messages_view(request):
     if request.method == 'GET':
         order_no = request.GET['order_no']
         conver_id = request.GET['conver_id']
+        count_val = request.GET['current_count']
+        id_list = request.GET['id_list']
         data = []
         delivery_no=0
         order_details = User_orders.objects.get(order_no = order_no)
         cover_detls =  Order_Conversation.objects.get(pk = conver_id)
-        all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details)
+        last_id = 0
+        first_id = 0
+        array_list = []
+        total_counts = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).count()
+        a_message = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')
+        for a_m in a_message:
+            array_list.append(int(a_m.pk))
+        if(id_list == "start"):
+            all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')[:int(count_val)]
+        else:
+            idlists = id_list.split(",")
+            all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details,id__in=idlists).order_by('-pk')
         for all_m in all_messages:
             if(all_m.message_type == "chat"):
+                print(all_m.message_type)
                 attachment_str = ''
                 if(all_m.attachment != None):
                     if(len(all_m.attachment.strip()) != 0):
@@ -4777,7 +4840,7 @@ def get_all_order_messages_view(request):
                         attachment_str = "None"
                 else:
                     attachment_str = "None"
-                data.append({"mssg_type":"chat","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
+                data.append({"mssg_id":all_m.pk,"mssg_type":"chat","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
             else:
                 reolution_details = User_Order_Resolution.objects.filter(message=all_m).first()
                 if(reolution_details != None):
@@ -4792,9 +4855,10 @@ def get_all_order_messages_view(request):
                         delivery_no = delivery_no + 1
                     else:
                         message_str = reolution_details.resolution_desc
-                    data.append({"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
+                    data.append({"mssg_id":all_m.pk,"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
         data.sort(key=operator.itemgetter('mssg_time'))
-        return JsonResponse(data,safe=False)
+        response_data = {"data":data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list}
+        return JsonResponse(response_data,safe=False)
 
 
 
@@ -4823,6 +4887,9 @@ def post_accept_click_view(request):
                 if(notification_extension.is_active == True):
                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= str(raised_to.username).title() + " agreed to extend Due Date.")
                     noti_create.save()
+                if(raised_by.mail_order == True):
+                    mail_content = MailTemplates.order_extension_accepted(str(raised_by.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
+                    SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved.")  
             elif(res_type == "cancel"):
                 order_details = User_orders.objects.get(order_no = res_details.order_no)
                 order_details.order_status = 'cancel'
@@ -4897,6 +4964,12 @@ def post_accept_click_view(request):
                 if(notification_cancel.is_active == True):
                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " cancelled the Order.")
                     noti_create.save()
+                if(order_by.mail_order == True):
+                    mail_content = MailTemplates.order_cancelled_buyer(str(order_by.username).title(),str("#"+order_details.order_no))
+                    SendEmailAct(str(order_by.email),mail_content,"You have Cancelled the Order: " + str("#"+order_details.order_no))
+                if(order_to.mail_order == True):
+                    mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
+                    SendEmailAct(str(order_to.email),mail_content,"Your order with "+str(raised_to.username).title()+" was cancelled")
                 update_all_balancevalues(order_by_user)
                 update_all_balancevalues(order_to_user)
             elif(res_type == "delivered"):
@@ -5026,11 +5099,17 @@ def post_decline_click_view(request):
             if(notification_extension_req.is_active == True):
                 noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= "Your Order Extension Request has been Declined.")
                 noti_create.save()
+            if(raised_by.mail_order == True):
+                mail_content = MailTemplates.order_extension_decline(str(raised_to.username).title(),str(raised_by.username).title(),str("#"+order_details.order_no))
+                SendEmailAct(str(raised_by.email),mail_content,"Extension declined by the " + str(raised_to.username).title() + ".")  
         elif(res_details.resolution_type == "delivered"):
             notification_extension_req = Notification_commands.objects.get(slug = "order_delivery_declined")
             if(notification_extension_req.is_active == True):
                 noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= str(raised_to.username).title() + " requested an Revision.")
                 noti_create.save()
+            if(raised_by.mail_order == True):
+                mail_content = MailTemplates.revision_requested(str(raised_to.username).title(),str(raised_by.username).title(),str("#"+order_details.order_no))
+                SendEmailAct(str(raised_by.email),mail_content,"Revision Requested by Buyer.")  
         return HttpResponse('sucess')
     
 
@@ -5240,6 +5319,9 @@ def post_credit_tip_details_view(request):
                 order_ativity1.save()
                 order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
+                if(order_to.mail_order == True):
+                    mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.gig_title).title(),str(ord_details.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
+                    SendEmailAct(str(order_to.email),mail_content," Great news: Your received an tip from buyer.") 
                 update_all_balancevalues(order_by)
                 update_all_balancevalues(order_to)
         except Exception as e:
@@ -5562,7 +5644,9 @@ def post_check_conver_view(request):
 def get_conv_user_details_view(request):
     if request.method == 'GET':
         receiver_user = request.GET['receiver_user']
-        initiator_user = request.GET['initiator_user'] 
+        initiator_user = request.GET['initiator_user']
+        count_val = request.GET['current_count']
+        id_list = request.GET['id_list']
         initiator = User.objects.get(username = initiator_user)
         receiver = User.objects.get(username = receiver_user)
         try:    
@@ -5608,8 +5692,14 @@ def get_conv_user_details_view(request):
             seller_level_string = "Professional"
         user_details.append({"user_id":receiver.pk,"username":receiver.username,"userimg":receiver.avatar,"user_location":receiver.country.name,"user_start":receiver.created_at.strftime('%b %Y'),"user_english":user_langauges.lang_prof,"seller_level":seller_level_string,"response_time":receiver.avg_respons,"seller_rating":seller_rating,"buyer_rating":buyer_rating,"seller_reviews":seller_reviews,"buyer_reviews":buyer_reviews})
         order_details = []
-        order_data = [] 
-        all_messages = Message.objects.filter(conversation_id= conversational_details)
+        order_data = []
+        array_list = []
+        current_count = 10
+        total_counts = Message.objects.filter(conversation_id= conversational_details).count()
+        a_message = Message.objects.filter(conversation_id= conversational_details).order_by('-pk')
+        for a_m in a_message:
+            array_list.append(int(a_m.pk))
+        all_messages = Message.objects.filter(conversation_id= conversational_details).order_by('-pk')[:int(10)]
         message_data = []
         for all_m in all_messages:
             if(all_m.is_read == False):
@@ -5689,7 +5779,7 @@ def get_conv_user_details_view(request):
             if(gig_image != None):
                 gig_image_url = gig_image.gig_image
             order_data.append({"order_id":order.pk,"order_no":order.order_no,"order_amount":order.order_amount,"order_due_date":order.due_date.strftime('%b %d, %Y'),"gig_img":gig_image_url,"order_status":order.order_status,"gig_title":order.package_gig_name.gig_title}) 
-        response_data = {"response_userDetails":user_details,"conversation_id":conversational_details.pk,"no_of_orders":len(order_details),"curre_User":current_User,"order_details":order_data,"data_messages":message_data}
+        response_data = {"response_userDetails":user_details,"conversation_id":conversational_details.pk,"no_of_orders":len(order_details),"curre_User":current_User,"order_details":order_data,"data_messages":message_data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list}
         return JsonResponse(response_data,safe=False)
     
 @csrf_exempt
@@ -6081,4 +6171,79 @@ def post_user_notification_view(request):
         userDetails.mail_updates = uorder_updates
         userDetails.save()
         return HttpResponse('sucess')
-        
+
+def get_chat_messages_view(request):
+    if request.method == 'GET':
+        conver_id = request.GET['conver_id']
+        count_val = request.GET['current_count']
+        id_list = request.GET['id_list']
+        cover_detls =  Conversation.objects.get(pk = conver_id)
+        idlists = id_list.split(",")
+        all_messages = Message.objects.filter(conversation_id= cover_detls,id__in=idlists).order_by('-pk')
+        message_data = []
+        for all_m in all_messages:
+            if(all_m.is_read == False):
+                all_m.is_read = True
+                all_m.save()
+            if(all_m.message_type == "chat"):
+                attachment_str = ''
+                if(all_m.attachment != None):
+                    if(len(all_m.attachment.strip()) != 0):
+                        attachment_str = all_m.attachment.strip()
+                    else:
+                        attachment_str = "None"
+                else:
+                    attachment_str = "None"
+                message_data.append({"mssg_type":"chat","mssg_id":all_m.pk,"sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
+            else:
+                if(all_m.message_type == "offer"):
+                    offer_details = Request_Offers.objects.get(pk= all_m.request_offers_id.pk)
+                    orders_details = User_orders.objects.filter(offer_id=offer_details).first()
+                    offer_status = ""
+                    order_no= ''
+                    if(offer_details.offer_status_by_buyer == "active"):
+                        offer_status = "active"
+                    elif(offer_details.offer_status_by_buyer == "deleted"):
+                        offer_status = "deleted"
+                    if((orders_details) != None): 
+                        offer_status = "ordered"
+                        order_no = orders_details.order_no
+                    gig_details = UserGigs.objects.get(gig_title= offer_details.gig_name.gig_title)
+                    offer_data = []
+                    message_data.append({ "mssg_type":"offer","mssg_id":all_m.pk,"sender_username":all_m.sender.username,"attachment":"None","sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp,"offer_id":offer_details.pk,"buyer_request_id":0,"gig_title":gig_details.gig_title,"offer_amount":offer_details.offer_budget,"offer_time":offer_details.offer_time,"offer_revision":offer_details.no_revisions,"offer_desc":offer_details.offer_desc,"extra_parameters":offer_details.extra_parameters,"offer_sender":offer_details.custom_user.username,"offer_status":offer_status,"order_no":order_no})
+                elif(all_m.message_type == "quote"):
+                    buyer_request = Buyer_Post_Request.objects.get(pk= all_m.buyer_request_id.pk)
+                    service_time_str = ''
+                    no_of_days = ''
+                    due_date_str = ''
+                    today_date = datetime.today()
+                    if(buyer_request.service_time== "24hours"):
+                        service_time_str = "24 dours"
+                        no_of_days = 1
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "3days"):
+                        service_time_str = "3 days"
+                        no_of_days = 3
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "7days"):
+                        service_time_str = "7 days"
+                        no_of_days = 7
+                        due_date_str = today_date + timedelta(days=int(no_of_days))
+                        due_date_str = due_date_str.strftime('%b %d, %Y')
+                    elif(buyer_request.service_time== "other"):
+                        service_time_str = "Other"
+                        due_date_str = ''
+                    offer_data = []
+                    offer_created_status = ''
+                    try:
+                        req_offers = Request_Offers.objects.get(buyer_request = buyer_request)
+                        offer_created_status = "created"
+                    except:
+                        offer_created_status = "active"
+                    message_data.append({"mssg_type":"quote","mssg_id":all_m.pk,"attachment":"None","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp,"request_id":buyer_request.pk,"req_desc":buyer_request.service_desc,"req_time":service_time_str,"req_budget":buyer_request.service_budget,"req_due_date":due_date_str,"req_status":buyer_request.service_status,"offer_created_sta":offer_created_status})
+        message_data.sort(key=operator.itemgetter('mssg_id'))
+        response_data = {"data":message_data,"current_count":count_val}
+        return JsonResponse(response_data,safe=False)
+

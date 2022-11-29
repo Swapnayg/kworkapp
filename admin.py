@@ -476,7 +476,7 @@ class AdminOrder_Delivery(admin.ModelAdmin):
 admin.site.register(Order_Delivery, AdminOrder_Delivery)
 
 class AdminOrder_Message(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type']
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type','is_read']
 
 admin.site.register(Order_Message, AdminOrder_Message)
 

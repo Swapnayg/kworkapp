@@ -880,6 +880,7 @@ class Order_Message(models.Model):
     attachment = models.CharField(max_length=500,blank=True,null=True)
     conversation_id = models.ForeignKey(Order_Conversation, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
+    is_read = models.BooleanField(default=False)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
 

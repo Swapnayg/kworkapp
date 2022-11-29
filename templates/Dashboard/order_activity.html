@@ -7,6 +7,9 @@
     <input type="hidden"  value="{{seller_user_name}}" id="seller_username" />
     <input type="hidden"  value="{{buyer_user_name}}" id="buyer_username" />
     <input type="hidden"  value="{{conversation_id}}" id="conversation_id" />
+    <input type="hidden"  value="" id="total_chat_count" />
+    <input type="hidden"  value="" id="current_count" />
+    <input type="hidden"  value="" id="message_ids" />
     <input type="hidden"  value="{{chat_words}}" id="chat_words_hidd" />
     <input type="hidden"  value="{{five_chat_words}}" id="five_chat_words_hidd" />
     <div id="fox_notification_block"></div>
@@ -39,7 +42,11 @@
                                    </div>
                                 </div>
                                 <div class="wrap-box">
-                                   <div class="activities with-extras-loading" id="message_wrap_box">
+                                 <h2 id="h_previous_mssg"><------------------------------------     <button onclick="loadPrevious_Mssg();">Load Previous Message</button>     ------------------------------------></h2>
+                                   
+                                    <div class="activities with-extras-loading" id="loaded_messages">
+                                    </div>
+                                    <div class="activities with-extras-loading" id="message_wrap_box">
                                    </div>
                                    {% if seller_gig.0.order_status == 'late' or seller_gig.0.order_status == 'delivered' or seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' %}
                                    <div class="seller-message-box shared-message-box">
@@ -1311,7 +1318,7 @@
     }
     .wrap-box {
         background-color: #fff;
-        max-width: 95%;
+        max-width: 95% !important;
         padding: 20px 0 50px;
     }
     .m-b-16 {
@@ -1873,7 +1880,6 @@
     }
     .wrap-box {
         background-color: #fff;
-        max-width: 840px;
         padding: 0 0 50px;
     }
     .text-semi-bold {
@@ -2378,7 +2384,6 @@
 }
 .wrap-box {
    background-color: rgb(255, 255, 255);
-   max-width: 840px;
    padding: 0px 0px 50px;
 }
 .activities {
@@ -4443,6 +4448,22 @@ small {
 {
    margin-bottom: 3%;
 }
+#h_previous_mssg
+{
+   font-weight: 500;
+   font-size: 17px;
+   color: #2E5DC5;
+}
+#h_previous_mssg button:focus, #h_previous_mssg button:hover{
+   outline:none;
+}
+#h_previous_mssg button{
+   background: none;
+   border: none;
+   font-weight: 700;
+    color: #2E5DC5;
+    margin-top: 2%;
+}
 </style>
 <script>
    function formatDate(date) {
@@ -4522,10 +4543,18 @@ function relativeTime(date, isUtc=true) {
       $.ajax({
          type:"GET",
          url: "/get_all_order_messages/",
-         data: {"conver_id":$("#conversation_id").val(),"order_no":'{{order_details.order_no}}'},
+         data: {"conver_id":$("#conversation_id").val(),"order_no":'{{order_details.order_no}}',"current_count":10,"id_list":"start"},
          success: function(data) 
          {
-            $.each(data, function(i, v) {
+            $("#total_chat_count").val(data.total_count);
+            $("#current_count").val(data.current_count);
+            $("#message_ids").val(data.message_ids);
+            array_list = $("#message_ids").val().split(",");
+
+            $.each(data.data, function(i, v) {
+               array_list = jQuery.grep(array_list, function(value) {
+                  return value !=  v.mssg_id;
+               });
                if(v.attachment != "None")
                {
                   attachments = v.attachment.trim().split(",");
@@ -4763,8 +4792,9 @@ function relativeTime(date, isUtc=true) {
                         $("#message_wrap_box").append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
                      }
                   }
-               } 
+               }
             });
+            $("#message_ids").val(array_list.join(", "));
          }
       });
       $(".help_div").hover(function (e) {
@@ -5219,8 +5249,7 @@ function relativeTime(date, isUtc=true) {
          data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text"),"pre_date": prev_date, "next_date":next_date},
          success: function(data) 
          {
-            console.log(data)
-            //location.reload();
+            location.reload();
 		   }
 		});
    }
@@ -5251,6 +5280,283 @@ function relativeTime(date, isUtc=true) {
      });
       
    }
-
+   function loadPrevious_Mssg()
+   {
+      newArray= []
+      total_val = $("#total_chat_count").val();
+      curre_val = $("#current_count").val();
+      message_id = $("#message_ids").val().split(",");
+      if(parseInt(curre_val) < parseInt(total_val))
+      {
+        
+         if(message_id.length > 9){
+            curre_val = parseInt(curre_val)+ 10;
+            newArray = message_id.slice(0,10);
+         }
+         else{
+            curre_val =  parseInt(curre_val)+ message_id.length;
+            newArray = message_id;
+         }
+      $.ajax({
+         type:"GET",
+         url: "/get_all_order_messages/",
+         data: {"conver_id":$("#conversation_id").val(),"order_no":'{{order_details.order_no}}',"current_count":parseInt(curre_val),"id_list":newArray.join(", ").toString()},
+         success: function(data) 
+         {
+            div_id = 'div_messg_wrap_counter'+curre_val;
+            $('#loaded_messages').prepend('<div id="div_messg_wrap_counter'+curre_val+'"></div>');    
+            $("#total_chat_count").val(data.total_count);
+            $("#current_count").val(data.current_count);
+            $.each(data.data, function(i, v) {
+               message_id = jQuery.grep(message_id, function(value) {
+                  return value !=  v.mssg_id;
+               }); 
+               if(v.attachment != "None")
+               {
+                  attachments = v.attachment.trim().split(",");
+                  attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                  $.each(attachments, function (key, value) {
+                     if(value.trim().length != 0)
+                     {
+                        file_path = '/media/order_files/'+value.trim();
+                        attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value+'">...'+value.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                     }
+                  });
+                  attachment_txt += '</ul></div>';
+                  if('{{request.user.username}}' == v.sender_username)
+                  {
+                     $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap is-message message-sent"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p>'+attachment_txt+' </div> </div> </div> </article> </div> </article> </section>');
+                  }
+                  else{
+                     $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> '+attachment_txt+' </div> </div> </div> </article> </div> </article> </section>');
+                  } 
+               }
+               else{
+                  if(v.mssg_type != "chat")
+                  {
+                     if('{{request.user.username}}' == v.reciever_username)
+                     {
+                        classtype = ''
+                        message_type = ''
+                        extensionmssg = ''
+                        deliverymssg = ''
+                        req_type= ''
+                        buttons_txt = ''
+                        cancel_mssg = ''
+                        if(v.res_type.trim() == "cancel")
+                        {
+                           extensionmssg = ''
+                           deliverymssg = ''
+                           req_type= "cancel"
+                           cancel_mssg = ''
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = 'Your order was cancelled'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'You decided not to cancel this order'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                           }
+                        }
+                        else if(v.res_type.trim() == "extention")
+                        {
+                           req_type= "extention"
+                           deliverymssg = ''
+                           cancel_mssg = ''
+                           extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+formatDate(new Date(v.res_next_date))  +'</p> </div></div>';
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> agreed to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to extend the delivery date'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> requested to extend the delivery date';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                           }
+                        }
+                        else if(v.res_type.trim() == "delivered")
+                        {
+                           extensionmssg = ''
+                           cancel_mssg = ''
+                           if(v.del_images.trim().length != 0)
+                           {
+                              del_attachments = v.del_images.trim().split(",");
+                              del_attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                              $.each(del_attachments, function (key, value1) {
+                              if(value1.trim().length != 0)
+                              {
+                                 file_path = '/media/delivery/'+value1.trim();
+                                 del_attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...'+value1.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                              }
+                              });
+                              del_attachment_txt += '</ul></div>';
+                           }
+                           deliverymssg = '<div class="activity-collapsible-content delivery_content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap delivery-card old-revision-copy"> <header class="card-header"><span class="card-title">Delivery #'+v.delivery_No+'</span> </header> <div class="card-content"> <div class="user-message"> <a href="/user/profile/'+v.sender_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_2405330232899" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username">'+v.sender_username+'</span></div> </p> <p>'+v.del_descrp+'</p> '+del_attachment_txt+' </div> </div>  </div> </section> </article> </div> </div></div>'
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp delivery-received"></span>'
+                              message_type = 'Your order was completed'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'Sorry your delivery was rejected'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened delivery-received"></span>'
+                              message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
+                           } 
+                        }
+                        else if(v.res_type.trim() == "completed")
+                        {
+                           classtype = '<span class="stamp order-completed"></span>'
+                           message_type = 'Your order was completed'
+                           deliverymssg = ''
+                           extensionmssg = ''
+                           cancel_mssg = ''
+                        }
+                        $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap resolution-opened"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> '+classtype+'<p class="header-base "><span class="title-text"><span>'+message_type+'</span></span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap resolution mutual-cancellation-section"> <div class="card-content"> <div class="user-message"> <a href="user/profile/'+v.reciever_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_9928531938024" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div> </p> <p>'+v.res_message+'</p> '+ extensionmssg + deliverymssg + cancel_mssg + '  </div> </div>  '+buttons_txt+' </div> </section> </article> </div> </div> </div> </article></section>');
+                     }
+                     else{
+                        classtype = ''
+                        message_type = ''
+                        extensionmssg = ''
+                        deliverymssg = ''
+                        cancel_mssg = ''
+                        if(v.res_type.trim() == "cancel")
+                        {
+                           extensionmssg = ''
+                           deliverymssg = ''
+                           cancel_mssg = ''
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> order was cancelled'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> decided not to cancel this order'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
+                           }
+                        }
+                        else if(v.res_type.trim() == "extention")
+                        {
+                           deliverymssg = ''
+                           cancel_mssg = ''
+                           extensionmssg = '<div class="dates-comparison"> <div class=""> <p>Original date</p> <p>'+formatDate(new Date(v.res_prev_date)) +'</p> </div> <span class="lFICM06 dates-arrow" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M9.92332 2.96885C9.63854 2.66807 9.1768 2.66807 8.89202 2.96885C8.60723 3.26963 8.60723 3.75729 8.89202 4.05807L11.6958 7.01931H1.48616C1.08341 7.01931 0.756918 7.36413 0.756918 7.7895C0.756918 8.21487 1.08341 8.5597 1.48616 8.5597H11.8436L8.89202 11.677C8.60723 11.9778 8.60723 12.4654 8.89202 12.7662C9.1768 13.067 9.63854 13.067 9.92332 12.7662L14.0459 8.41213C14.3307 8.11135 14.3307 7.62369 14.0459 7.32291L13.977 7.25011C13.9737 7.24661 13.9704 7.24315 13.9671 7.23972L9.92332 2.96885Z"></path> </svg> </span> <div class="irrelevant-date"> <p>New date</p> <p>'+ formatDate(new Date(v.res_next_date)) +'</p> </div></div>';
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp order-completed"></span>'                              
+                              message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> agreed to extend the delivery date'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined extend-delivery"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'You decided not to extend the delivery date'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
+                              message_type = 'You requested to extend the delivery date'
+                           }
+                        }
+                        else if(v.res_type.trim() == "delivered")
+                        {
+                           extensionmssg = ''
+                           cancel_mssg = ''
+                           if(v.del_images.trim().length != 0)
+                           {
+                              del_attachments = v.del_images.trim().split(",");
+                              del_attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
+                              $.each(del_attachments, function (key, value1) {
+                              if(value1.trim().length != 0)
+                              {
+                                 file_path = '/media/delivery/'+value1.trim();
+                                 del_attachment_txt += '<li class="thumbnail-preview" onclick="attachfile_onclick(this);" title="'+value+'" data-label= "'+file_path+'"><a class="thumbnail-link" href="'+file_path+'" target="_blank"><span class="fa fa-file-o fileicon" ></span></a><div class="action-bar flex flex-between"><div class="flex flex-center"><div class="attachment-name-container"><p class="attachment-name" title="'+value1+'">...'+value1.slice(-20)+'</p></div><span class="attachment-size"></span></div><div class="flex flex-center m-l-8"><a href="'+file_path+'" download class="download-button m-r-8"><span><i class="fa fa-download" aria-hidden="true"></i></span></a></div></div></li>';
+                              }
+                              });
+                              del_attachment_txt += '</ul></div>';
+                           }
+                           deliverymssg = '<div class="activity-collapsible-content delivery_content"> <div style="max-height: unset; overflow: unset;"> <div> <article class="activity-body"> <section class="card-wrap delivery-card old-revision-copy"> <header class="card-header"><span class="card-title">Delivery #'+v.delivery_No+'</span> </header> <div class="card-content"> <div class="user-message"> <a href="/user/profile/'+v.sender_username+'" class="stamp link"> <div class="user-profile-image"><label class="profile-pict" for="profile_image_2405330232899" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div> </a> <div class="message-column"> <p> <div class="flex"><span class="username">Me</span></div> </p> <p>'+v.del_descrp+'</p> '+del_attachment_txt+' </div> </div> <div class="warning-note auto-complete"> <span class="lFICM06 note-icon" aria-hidden="true" style="width: 18px; height: 18px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM8 14.25C4.54688 14.25 1.75 11.4531 1.75 8C1.75 4.54688 4.54688 1.75 8 1.75C11.4531 1.75 14.25 4.54688 14.25 8C14.25 11.4531 11.4531 14.25 8 14.25ZM9.93125 10.9875L7.27812 9.05937C7.18125 8.9875 7.125 8.875 7.125 8.75625V3.625C7.125 3.41875 7.29375 3.25 7.5 3.25H8.5C8.70625 3.25 8.875 3.41875 8.875 3.625V8.05313L10.9625 9.57187C11.1312 9.69375 11.1656 9.92813 11.0437 10.0969L10.4563 10.9062C10.3344 11.0719 10.1 11.1094 9.93125 10.9875Z"></path> </svg> </span> <p class="tbody-6"><span class="note-text"><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a> has until <b>'+formatAMPM(new Date(v.res_last_date))+'</b> to approve this delivery or request a revision. After this date, the order will be finalized and marked as complete.</span></p> </div> </div> </section> </article> </div> </div></div>'
+                           if(v.res_status.trim() == "accepted")
+                           {
+                              classtype = '<span class="stamp delivery-received"></span>'
+                              message_type = 'Your order was completed'
+                           }
+                           else if(v.res_status.trim() == "rejected"){
+                              classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
+                              message_type = 'Sorry your delivery was rejected'
+                              if(v.cancel_mssg.trim().length != 0)
+                              {
+                                 cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
+                              }
+                           }
+                           else if(v.res_status.trim() == "pending"){
+                              classtype = '<span class="stamp resolution-opened delivery-received"></span>'
+                              message_type =  'You delivered the order'
+                           } 
+                        }
+                        else if(v.res_type.trim() == "completed")
+                        {
+                           classtype = '<span class="stamp order-completed"></span>'
+                           message_type = 'Your order was completed'
+                           deliverymssg = ''
+                           extensionmssg = ''
+                        }
+                        $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap resolution-withdrawn"><article class="LF267+J H1pvagJ PpAciwT"><div class="AuUenGR activity-collapsible-title-wrapper"><div class="CLdO82Y"><label> '+classtype+'<p class="header-base "><span class="title-text">'+message_type+'</span><i class="time-stamp">'+formatAMPM(new Date(v.mssg_time))+'</i></p></label></div></div><div class="activity-collapsible-content"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap resolution mutual-cancellation-section"><div class="card-content"><div class="user-message"><a href="user/profile/'+v.reciever_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_7171343538020" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.reciever_img+'" class="profile-pict-img" alt="'+v.reciever_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.reciever_username+'" class="username-url">'+v.reciever_username+'</a></span></span></div></p><p>'+v.res_message+'</p> '+ extensionmssg + deliverymssg + cancel_mssg +'</div></div></div></section></article></div></div></div></article></section>');
+                     }
+                  }
+                  else
+                  {
+                     if('{{request.user.username}}' == v.sender_username)
+                     {
+                        $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+                     }
+                     else{
+                        $('#loaded_messages').find("#"+div_id).append('<section class="activity-wrap is-message message-received"> <article class="LF267+J H1pvagJ PpAciwT"> <div class="AuUenGR activity-collapsible-title-wrapper"> <div class="CLdO82Y"> <label> <a href="/user/profile/'+v.sender_username+'" class="stamp link message-sent"> <div class="user-profile-image"> <label class="profile-pict" for="profile_image_8475174845636" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a> <p class="header-base "><span class="title-text"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span> sent you a message</span><i class="time-stamp">'+formatAMPM(new Date(v.timestamp))+'</i></p> </label> </div> </div> <div class="activity-collapsible-content"> <article class="activity-body"> <div style="max-height: unset; overflow: unset;"> <div> <div class="body-with-attachments"> <p class="message-content">'+v.message+'</p> </div> </div> </div> </article> </div> </article> </section>');
+                     }
+                  }         
+               }
+            });
+            $("#message_ids").val(message_id.join(", "));
+            if(message_id.length == 0){
+               $("#h_previous_mssg").hide();
+            }
+         }
+      });
+   }
+   }
 </script>
 {% endblock %}
