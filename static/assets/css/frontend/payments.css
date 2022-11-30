@@ -541,3 +541,149 @@ margin-bottom: 0;
 margin-left: 0;
 }
 
+.extra-border {
+    border-bottom: 1px solid #e4e5e7;
+    border-right: 1px solid #e4e5e7;
+    border-left: 1px solid #e4e5e7;
+}
+.extra-border ul {
+    list-style: none;
+    list-style-image: none;
+}
+.extra-pricing-factor-list .pf-container {
+    position: relative;
+}
+.pf-row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    position: relative;
+    padding: 10px 15px;
+    background: #fff;
+    border-top: 1px solid #e4e5e7;
+    font-size: 13px;
+    text-align: left;
+}
+#revisiondiv
+{
+    margin-top:5%;
+}
+.factor-title .order-details-general-quantity 
+{
+    margin-right: 7px;
+}
+.fit-checkbox {
+ display: -webkit-inline-box;
+ display: -ms-inline-flexbox;
+ display: inline-flex;
+ -webkit-box-orient: horizontal;
+ -webkit-box-direction: normal;
+ -ms-flex-direction: row;
+ flex-direction: row;
+ -webkit-box-align: center;
+ -ms-flex-align: center;
+ align-items: center;
+ color: #404145;
+}
+.fit-checkbox input[type=checkbox] {
+ height: 0;
+ width: 0;
+ opacity: 0;
+}
+
+.fit-checkbox .checkmark-box {
+ -webkit-box-sizing: border-box;
+ box-sizing: border-box;
+ display: -webkit-inline-box;
+ display: -ms-inline-flexbox;
+ display: inline-flex;
+ -webkit-box-align: center;
+ -ms-flex-align: center;
+ align-items: center;
+ -webkit-box-pack: center;
+ -ms-flex-pack: center;
+ justify-content: center;
+ position: relative;
+ width: 18px;
+ min-width: 18px;
+ height: 18px;
+ border: 1px solid #c5c6c9;
+ border-radius: 2px;
+ margin-right: 12px;
+ cursor: pointer;
+ -webkit-transition: .15s ease-in-out;
+ -o-transition: .15s ease-in-out;
+ transition: .15s ease-in-out;
+}
+.fit-checkbox .checkmark-box .check-icon {
+ -webkit-transform: scale(.5);
+ transform: scale(.5);
+ -webkit-transform-origin: 50% 50%;
+ transform-origin: 50% 50%;
+ display: inline-block;
+ font-weight: inherit;
+ font-style: inherit;
+ opacity: 0;
+ pointer-events: none;
+ fill: #62646a;
+ -webkit-transition: .15s ease-in-out;
+ -o-transition: .15s ease-in-out;
+ transition: .15s ease-in-out;
+}
+.factor-title .quantity-price-container 
+{
+ float:right;
+}
+.fit-icon svg {
+ float: left;
+ height: 100%;
+ width: 100%;
+}
+.fiverr-header .site-logo
+{
+ margin: 20px 100px 20px 10px;
+}
+#revisiondiv svg
+{
+ width: 15px;
+  margin-right: 5px;
+  margin-top: 2px;
+}
+.fit-checkbox input:checked+.checkmark-box .check-icon {
+ -webkit-transform: none;
+ transform: none;
+ opacity: 1;
+}
+.factor-title,.summary_rows
+{
+ width:100%;
+}
+#total_credits
+{
+ float:right;
+}
+.disabled
+{
+ cursor:not-allowed;
+}
+
+#avail_click:disabled  ~ #avail_click_checkmark,
+#avail_click[disabled] ~ #avail_click_checkmark{
+
+cursor:not-allowed;
+}
+
+button:disabled,
+button[disabled]{
+ cursor:not-allowed;
+}
+
+
+

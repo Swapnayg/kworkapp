@@ -3,7 +3,7 @@
 {% block contentarea%}
 <title>Letworkbedone - Seller Review</title>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/payments.css' %}" type="text/css" />
-
+<link rel="stylesheet" href="{% static 'assets/css/frontend/buyer_review.css' %}" type="text/css" />
 <div class="all_page page-flex__content pt0 m0">
     <div id="event_list" class="event-list js-event-list"></div>
     <div id="fox_notification_block"></div>
@@ -135,99 +135,7 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
-<style>
-.text-display-7
-{
-    font-size: 22px;
-    font-weight: 600;
-}
-.header_txt
-{
-    font-size: 22px;
-    font-weight: 600;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 3%;
-}
-.header_txt1
-{
-    font-size: 18px;
-    font-weight: 600;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 1%;  
-}
-#textarea_buyer_desc
-{
-    width:100%;
-    height:100px;
-}
-.br-wrapper
-{
-    margin-top: 4% ;
-}
-.br-theme-fontawesome-stars .br-widget a
-{
-    
-    font: normal normal normal 25px/1 FontAwesome !important;
-    margin-right: 12px !important;
-}
-.buyer_desc_count
-{
-    float:right;
-}
-.message
-{
-    font-size: 18px;
-    margin-bottom:2%;
-}
-.payment-methods
-{
-    text-align:left;
-    margin-top:2%;
-}
-.br-theme-fontawesome-stars .br-widget a.br-selected:after, .br-theme-fontawesome-stars .br-widget a.br-active:after
-{
-    color: #FFD700 !important;
-}
-.message1
-{
-    font-size:16px;
-}
-.thank-you article p, .thank-you-no-icon article p {
-    font-size: 14px;
-    line-height: 20px;
-}
-.thank-you
-{
-    width: 70%;
-    text-align: center; 
-    margin: auto;
-}
 
-article .fa, article .fa {
-    position: absolute;
-    z-index: 0;
-    top: 15px;
-    left: 0;
-    color: #2E5DC5;
-    font-size: 66px;
-}
-
-#thank_section article article p, #thank_section article p {
-    font-size: 14px;
-    line-height: 20px;
-}
-
-#thank_section article, #thank_section article {
-    position: relative;
-    padding-left: 90px;
-    text-align: left;
-}
-.error
-{
-    color:red;
-    font-size:12px;
-}
-</style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/themes/fontawesome-stars.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/jquery.barrating.min.js"></script>
 <script>

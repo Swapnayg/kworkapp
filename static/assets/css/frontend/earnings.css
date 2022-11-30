@@ -1,0 +1,453 @@
+#manage_earning
+{
+    margin-right:2%;
+}
+.db-new-content {
+min-height: 800px;
+margin-top: 30px;
+position: relative;
+box-sizing: border-box;
+width:80%;
+}
+article, aside, figure, footer, header, hgroup, nav, section, main {
+display: block;
+}
+.db-new-header {
+padding-bottom: 20px;
+}
+.db-new-header h1 {
+font-weight: 300;
+}
+h1.alt, .text-display-1.alt {
+font-weight: 600;
+}
+h1, h2, h3, h4, h5, h6, .text-display-0, .text-display-1, .text-display-2, .text-display-3, .text-display-4, .text-display-5, .text-display-6, .text-display-7 {
+font-family: macan,helvetica neue,Helvetica,Arial,sans-serif;
+font-weight: 700;
+color: #404145;
+}
+.db-new-header h1 .money-expected {
+float: right;
+font-size: 14px;
+line-height: 14px;
+color: #555;
+margin-top: 20px;
+margin-left: 16px;
+}
+.db-new-header h1 .money-expected.separator {
+color: #dadbdd;
+}
+.db-new-header h1 .money-expected .tooltip {
+color: #95979d;
+}
+.hint--top:before, .hint--top:after {
+bottom: 100%;
+left: 50%;
+}
+.fa {
+display: inline-block;
+font: normal normal normal 14px/1 FontAwesome;
+font-size: inherit;
+text-rendering: auto;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+}
+.hint--top:before, .hint--top:after {
+bottom: 100%;
+left: 50%;
+}
+.hint--top:before {
+margin-left: -5px;
+margin-bottom: -12px;
+border-top-color: #222325;
+}
+.fa-question-circle:before {
+content: "\f059";
+}
+.db-new-header h1 .money-expected .tooltip:after {
+width: 230px;
+white-space: pre-wrap;
+}
+#export_csv
+{
+  cursor:pointer;
+}
+.db-stats-standard {
+background-color: #fff;
+padding: 25px 10px;
+margin-bottom: 30px;
+display: table;
+width: 100%;
+border: 1px #e5e5e5 solid;
+overflow: visible;
+box-sizing: border-box;
+}
+.cf {
+zoom: 1;
+}
+.cf:before, .cf:after {
+content: " ";
+display: table;
+}
+.db-stats-standard a:first-child, .db-stats-standard>span:first-child {
+border: none;
+}
+.dropdown-menu li a{
+font-size: 13px;
+color: #999;
+padding: 6px 10px;
+cursor:pointer;
+}
+.db-stats-standard a, .db-stats-standard>span {
+display: table-cell;
+font-size: 27px;
+line-height: 27px;
+font-weight: 400;
+color: #303030;
+text-decoration: none;
+padding: 0 5px;
+text-align: center;
+vertical-align: top;
+border-left: 1px solid #ddd;
+}
+.db-stats-standard a small, .db-stats-standard>span small {
+display: block;
+font-weight: 700;
+font-size: 15px;
+line-height: 18px;
+color: #999;
+text-align: center;
+padding: 0 0 15px;
+min-width: 125px;
+}
+.db-stats-standard a, .db-stats-standard>span {
+display: table-cell;
+font-size: 28px;
+line-height: 27px;
+font-weight: 400;
+color: #303030;
+text-decoration: none;
+padding: 0 5px;
+text-align: center;
+vertical-align: top;
+border-left: 1px solid #ddd;
+}
+.revenues-actions {
+padding: 0 0 20px 90px;
+}
+
+.revenues-actions label {
+line-height: 31px;
+margin-left: -90px;
+float: left;
+}
+.earnings-package .withdraw-buttons-list {
+display: -webkit-box;
+display: -ms-flexbox;
+display: flex;
+float: left;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button.disabled {
+border-color: #c5c6c9;
+color: #b5b6ba;
+}
+.money-out
+{
+color:red;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button {
+background: #fff;
+height: 36px;
+border: 1px solid #b5b6ba;
+border-radius: 3px;
+font-size: 12px;
+line-height: 100%;
+font-weight: 500;
+text-transform: none;
+color: #62646a;
+padding: 9px 10px 9px 30px;
+margin-right: 5px;
+position: relative;
+}
+
+.hint--top:before {
+margin-left: -5px;
+margin-bottom: -12px;
+border-top-color: #222325;
+}
+.hint--top:before, .hint--top:after {
+bottom: 100%;
+left: 50%;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button.paypal.disabled i {
+background-position: -36px -5px;
+}
+.earnings-package .withdraw-buttons-list .withdraw-button:after {
+width: 100%;
+max-width: 250px;
+white-space: normal;
+text-align: left;
+}
+
+.FW1syM7 {
+display: inline-block;
+-webkit-box-sizing: border-box;
+box-sizing: border-box;
+position: relative;
+padding: 12px 24px;
+border: 1px solid transparent;
+border-radius: 4px;
+font-weight: 600;
+font-size: 16px;
+line-height: 100%;
+text-decoration: none;
+text-align: center;
+cursor: pointer;
+-webkit-transition: 70ms cubic-bezier(.75,0,.25,1);
+-o-transition: 70ms cubic-bezier(.75,0,.25,1);
+transition: 70ms cubic-bezier(.75,0,.25,1);
+color:white;
+}
+
+.FW1syM7.p9qU5Ka {
+padding: 10px 16px;
+font-size: 14px;
+}
+.bg-co-green-700 {
+background-color: #2E5DC5;
+}
+
+.revenues-actions {
+padding: 0 0 20px 90px;
+}
+.revenues-actions label {
+line-height: 31px;
+margin-left: -90px;
+float: left;
+}
+.revenues-actions .dd-wrap {
+display: inline-block;
+margin-right: 5px;
+}
+
+.cf {
+zoom: 1;
+}
+.cf:before, .cf:after {
+content: " ";
+display: table;
+}
+.fake-dropdown {
+position: relative;
+visibility: hidden;
+}
+.cf:after {
+clear: both;
+}
+.fake-dropdown .dropdown-toggle.max-width {
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.fake-dropdown .dropdown-toggle:after {
+content: '';
+color: #999;
+font-size: 19px;
+line-height: 16px;
+position: absolute;
+z-index: 1;
+display: block;
+top: 13px;
+right: 7px;
+}
+.fake-dropdown .dropdown-menu {
+min-width: 0;
+}
+.dropdown-menu {
+background-color: #fff;
+background-clip: padding-box;
+position: absolute;
+top: 100%;
+left: 0;
+z-index: 1000;
+display: none;
+float: left;
+min-width: 160px;
+padding: 5px 0;
+margin: 2px 0 0;
+list-style: none;
+border: 1px #ccc solid;
+border-radius: 3px;
+box-shadow: 0 2px 3px rgba(0,0,0,.1);
+}
+.revenues-actions .dd-wrap li {
+cursor: pointer;
+}
+
+.fake-dropdown .dropdown-toggle.max-width {
+overflow: hidden;
+text-overflow: ellipsis;
+}
+.fake-dropdown .dropdown-toggle {
+background-color: #fff;
+display: inline-block;
+position: relative;
+font: 400 12px macan,helvetica neue,Helvetica,Arial,sans-serif;
+color: #777;
+text-decoration: none;
+text-align: left;
+border: 1px #b2b2b2 solid;
+padding: 7px 30px 7px 10px;
+text-transform: uppercase;
+margin: 0;
+white-space: nowrap;
+cursor: pointer;
+border-radius: 3px;
+width: 140px !important;
+}
+
+.revenues-actions .csv-export, .revenues-actions .sync-to-workspace, .revenues-actions .stop-sync-to-workspace {
+float: right;
+line-height: 31px;
+color: #4a73e8;
+margin-left: 32px;
+}
+
+.db-new-main-table table {
+width: 100%;
+border-collapse: collapse;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+font-size: inherit;
+font: 100%;
+}
+.db-new-main-table table thead tr {
+background-color: #fff;
+border: 1px #e5e5e5 solid;
+}
+.db-new-main-table table td:first-child {
+padding-left: 20px;
+}
+.db-new-main-table table thead td {
+font-size: 12px;
+font-weight: 600;
+text-transform: uppercase;
+color: #999;
+line-height: 33px;
+padding-top: 0;
+padding-bottom: 0;
+}
+.db-new-main-table table td:last-child {
+padding-right: 20px;
+text-align:right;
+}
+
+.db-new-main-table table td {
+padding: 15px 15px 15px 0;
+font-size: 14px;
+line-height: 20px;
+color: #555;
+vertical-align: middle;
+white-space: nowrap;
+}
+.t-a-right {
+text-align: right!important;
+}
+.db-new-main-table table tbody tr {
+background-color: #fff;
+border: 1px #e5e5e5 solid;
+}
+.db-new-main-table table td.ellipsis-wrap .ellipsis a {
+color: #555;
+}
+.order_no
+{
+color:green;
+}
+.withdrawal_button
+{
+float:right;
+position: relative;
+width: 25%;
+}
+.withdrawal_btn:hover{
+text-decoration: none;
+color: #0070BA;
+}
+.withdrawal_btn
+{
+color: #0070BA;
+text-decoration: none;
+text-align: center;
+border: 1px #b2b2b2 solid;
+position: absolute;
+left: 0px;
+right: 106px;
+top: 0px;
+line-height: 30px;
+cursor:pointer;
+}
+.withdrawal_btn .fa{
+margin-right: 3%;
+color:#0070BA;
+}
+#publish_social_div .sharing-description
+{
+color: green;
+margin-top: 4%;
+}
+
+.custom-order-package .budget-wrapper button {
+background-color: transparent;
+padding-top: 8px;
+display: block;
+color: #2E5DC5;
+border: none;
+font-size: 12px;
+padding: 2%;
+display: inline-block;
+font-size: 17px;
+}
+.buttons-containers 
+{
+display:flex;
+margin-bottom:10%;
+margin-top:8%;
+}
+.buttons-containers button:hover,.buttons-containers button:focus{
+outline:none;
+}
+.buttons-containers button{
+margin-right: 6%;
+height: 35px;
+line-height: 30px;
+width: 50%;
+border:none;
+font-weight:600;
+}
+.buttons-containers .co-green-700
+{
+color:#2E5DC5;
+border:1px solid #2E5DC5;
+border-radius:3px;
+background:white;
+}
+
+.buttons-containers .bg-co-green-700
+{
+color:white;
+border-radius:3px;
+border:1px solid #2E5DC5;
+background:#2E5DC5
+}
+.modal-header .close:hover, .modal-header .close:focus
+{
+outline:none;
+}
+
+#withdrawal_btn:disabled,
+#withdrawal_btn[disabled]{
+cursor:not-allowed;
+pointer:none;
+}

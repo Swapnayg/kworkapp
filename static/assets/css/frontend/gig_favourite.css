@@ -166,3 +166,8 @@
 .popular-rubrics__link span{
     margin-top: 2%;
 }
+
+.popular-rubrics__link img
+{
+   height:150px;
+}

@@ -2132,3 +2132,18 @@ position: absolute;
 bottom: 0;
 cursor: pointer;
 }
+
+
+.gig-overview h1
+{
+   text-transform: capitalize;
+}
+#publish_social_div .publish-section 
+{
+   margin: 0;
+   border: none;
+}
+.share-buttons-container
+{
+   height: 20vh;
+}

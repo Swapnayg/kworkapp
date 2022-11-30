@@ -1,0 +1,455 @@
+.useremail
+{
+   line-height: 50px;
+}
+.error_mssg
+{
+   color: red !important;
+   font-size: 12px !important;
+}
+ #main_contents
+ {
+     margin-left: 5%;
+     margin-right: 5%;
+ }
+ .outline_theme {
+     border: 1px solid  #2E5DC5;
+     color: #2E5DC5;
+     border-radius: 2rem;
+     padding: 12px 24px;
+     font-size: 18px;
+     font-weight: 600;
+ }
+ #created_form h2
+ {
+     font-size: 40px;
+     line-height: 40px;
+     text-align: center;
+     color: black;
+     font-weight: 600;
+ }
+ #created_form .body 
+ {
+     width: 90%;
+     margin: auto;
+     text-align: center;
+ }
+ #category_form .header h5,#category_form .body h5,#language_form .header h5,#overview_form .header h5,#profile_form .header h5{
+     color: black;
+     font-size: 22px;
+     font-weight: 600;
+ }
+ a.addLang, label.addLang {
+     padding: 8px 1rem;
+     border: 1px solid #2E5DC5;
+     display: inline-block;
+     border-radius: 2rem;
+     font-size: 16px;
+     color: black;
+     float: left;
+ }
+ #category_form .body h6,#language_form .body h6,#overview_form .form-group h6,#profile_form .body p{
+     color: black;
+     font-size: 17px;
+     font-weight: 600;
+ }
+ .image {
+     margin: auto;
+ }
+ .addProfile {
+     opacity: 0;
+     visibility: hidden;
+ }
+ .image img {
+     width: 100%;
+ }
+ #category_form .input-group label,#language_form label{
+     color: black;
+     font-size: 16px;
+ }
+ #category_form .header span,#language_form .header span,#overview_form .header span,#profile_form .header span{
+     font-size: 18px;
+ }
+ #overview_form input, #overview_form textarea{
+     border-color: black;
+ }
+#country_user
+{
+   margin-bottom: 2%;
+}
+#main_category:hover,#main_category:focus,#child_category:hover,#child_category:focus,#language_form select:hover,#language_form select:focus,#overview_form input:hover,#overview_form input:focus,#country_user:hover, #country_user:focus,#seller_about:hover, #seller_about:focus{
+ color: black;
+ background-color: white;
+ border-color: black;
+ border-radius: 5px;
+ outline: black;
+ box-shadow: none;
+}
+.email img {
+width: 50px;
+height: 50px;
+border-radius: 100%;
+object-fit: cover;
+object-position: center;
+}
+#terms span{
+color: black;
+font-size: 15px;
+}
+.email{
+margin-bottom: 2%;
+}
+.email span{
+color: black;
+font-size: 20px;
+}
+#account_profile
+{
+text-align: center;
+}
+#account_profile h1{
+font-size: 40px;
+flex-wrap: nowrap;
+word-break: keep-all;
+line-height: 45px;
+text-align: center;
+margin: auto;
+margin-bottom: 12px;
+}
+#account_profile p{
+font-size: 18px;
+color: black;
+text-align: center;
+margin-bottom: 3%;
+}
+.roll {
+display: flex;
+justify-content: center;
+}
+.buyer_btn {
+border-radius: 0.25rem 0rem 0rem 0.25rem;
+text-align: center;
+}
+.seller_btn {
+border-radius: 0rem 0.25rem 0.25rem 0rem;
+text-align: center;
+}
+.active_roll {
+background: #2E5DC5;
+color: #ffffff;
+}
+.roll_input {
+visibility: hidden;
+position: absolute;
+}
+#msform {
+text-align: center;
+position: relative;
+}
+#msform fieldset .form-card {
+background: white;
+border: 0 none;
+border-radius: 0px;
+box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+padding: 20px 40px 30px 40px;
+box-sizing: border-box;
+width: 94%;
+margin: 0 3% 20px 3%;
+/*stacking fieldsets above each other*/
+position: relative;
+}
+#msform fieldset {
+background: white;
+border: 15px none;
+border-radius: 0.5rem;
+box-sizing: border-box;
+width: 50%;
+margin: auto;
+padding-bottom: 20px;
+position: relative;
+margin-top: 5%;
+}
+.all_page 
+{
+margin: auto !important;
+width: 98%;
+}
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+display: none;
+}
+#msform fieldset .form-card {
+text-align: left;
+color: #9E9E9E;
+}
+#msform input, #msform textarea {
+padding: 0px 8px 4px 8px;
+border: none;
+border-bottom: 1px solid #2E5DC5;
+border-radius: 0px;
+margin-bottom: 25px;
+margin-top: 2px;
+width: 100%;
+box-sizing: border-box;
+font-family: montserrat;
+color: #2C3E50;
+font-size: 16px;
+letter-spacing: 1px;
+}
+#msform input:focus, #msform textarea:focus {
+-moz-box-shadow: none !important;
+-webkit-box-shadow: none !important;
+box-shadow: none !important;
+border: none;
+font-weight: bold;
+border-bottom: 2px solid #2E5DC5;
+outline-width: 0;
+}
+/*Blue Buttons*/
+#msform .action-button {
+width: 35%;
+background: #2E5DC5;
+font-weight: bold;
+color: white;
+border: 0 none;
+border-radius: 5px;
+cursor: pointer;
+padding: 10px 5px;
+margin: 10px 5px;
+font-size: 18px;
+}
+#msform .action-button:hover, #msform .action-button:focus {
+box-shadow: 0 0 0 2px white, 0 0 0 3px #2E5DC5;
+}
+/*Previous Buttons*/
+#msform .action-button-previous {
+width: 100px;
+background: #616161;
+font-weight: bold;
+color: white;
+border: 0 none;
+border-radius: 5px;
+cursor: pointer;
+padding: 10px 5px;
+margin: 10px 5px;
+}
+#msform .action-button-previous:hover, #msform .action-button-previous:focus {
+box-shadow: 0 0 0 2px white, 0 0 0 3px #616161;
+}
+/*Dropdown List Exp Date*/
+select.list-dt {
+border: none;
+outline: 0;
+border-bottom: 1px solid #ccc;
+padding: 2px 5px 3px 5px;
+margin: 2px;
+}
+select.list-dt:focus {
+border-bottom: 2px solid #2E5DC5;
+}
+/*The background card*/
+.card {
+z-index: 0;
+border: none;
+border-radius: 0.5rem;
+position: relative;
+}
+/*FieldSet headings*/
+.fs-title {
+font-size: 25px;
+color: #2C3E50;
+margin-bottom: 10px;
+font-weight: bold;
+text-align: left;
+}
+/*progressbar*/
+#progressbar {
+overflow: hidden;
+color: lightgrey;
+}
+#progressbar .active {
+color: #000000;
+}
+#progressbar li {
+list-style-type: none;
+font-size: 12px;
+width: 12%;
+float: left;
+position: relative;
+}
+#progressbar #account:before {
+font-family: FontAwesome;
+content: "\f007";
+}
+#progressbar #category:before {
+font-family: FontAwesome;
+content: "\f022";
+}
+#progressbar #payments:before {
+   font-family: FontAwesome;
+   content: "\f1ed";
+   }
+#progressbar #expertise:before {
+font-family: FontAwesome;
+content: "\f275";
+}
+#progressbar #language:before {
+font-family: FontAwesome;
+content: "\f1ab";
+}
+#progressbar #overview:before {
+font-family: FontAwesome;
+content: "\f07c";
+}
+#progressbar #prof_image:before {
+font-family: FontAwesome;
+content: "\f03e";
+}
+#progressbar #create_gig:before {
+font-family: FontAwesome;
+content: "\f055";
+}
+/*ProgressBar before any progress*/
+#progressbar li:before {
+width: 50px;
+height: 50px;
+line-height: 45px;
+display: block;
+font-size: 18px;
+color: #ffffff;
+background: lightgray;
+border-radius: 50%;
+margin: 0 auto 10px auto;
+padding: 2px;
+}
+/*ProgressBar connectors*/
+#progressbar li:after {
+content: '';
+width: 100%;
+height: 2px;
+background: lightgray;
+position: absolute;
+left: 0;
+top: 25px;
+z-index: -1;
+}
+/*Color number of the step and the connector before it*/
+#progressbar li.active:before, #progressbar li.active:after {
+background: #2E5DC5;
+}
+/*Imaged Radio Buttons*/
+.radio-group {
+position: relative;
+margin-bottom: 25px;
+}
+.radio {
+display:inline-block;
+width: 204;
+height: 104;
+border-radius: 0;
+background: lightblue;
+box-shadow: 0 2px 2px 2px rgba(0, 0, 0, 0.2);
+box-sizing: border-box;
+cursor:pointer;
+margin: 8px 2px; 
+}
+.radio:hover {
+box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.3);
+}
+.radio.selected {
+box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.1);
+}
+/*Fit image in bootstrap div*/
+.fit-image{
+width: 100%;
+object-fit: cover;
+}
+ul.ks-cboxtags {
+   list-style: none;
+   padding: 20px; }
+   ul.ks-cboxtags li {
+     display: block; }
+     ul.ks-cboxtags li label {
+       display: inline-block;
+       background-color: rgba(255, 255, 255, 0.9);
+       border: 1px solid rgba(0, 0, 0, 0.1);
+       color: rgba(0, 0, 0, 0.8);
+       font-size: 18px;
+       border-radius: 4px;
+       white-space: nowrap;
+       margin: 0 0 10px 0;
+       -webkit-touch-callout: none;
+       -webkit-user-select: none;
+       -moz-user-select: none;
+       -ms-user-select: none;
+       user-select: none;
+       -webkit-tap-highlight-color: transparent;
+       -webkit-transition: all .2s;
+       -o-transition: all .2s;
+       transition: all .2s;
+       display: block; }
+ 
+ ul.ks-cboxtags li label {
+   padding: 10px 20px;
+   cursor: pointer; }
+   ul.ks-cboxtags li label::before {
+     display: inline-block;
+     font-style: normal;
+     font-variant: normal;
+     text-rendering: auto;
+     -webkit-font-smoothing: antialiased;
+     font-family: "FontAwesome";
+     font-weight: 900;
+     font-size: 24px;
+     padding: 0;
+     margin-right: 15px;
+     content: "\f1db";
+     color: rgba(0, 0, 0, 0.2);
+     -webkit-transition: -webkit-transform .3s ease-in-out;
+     transition: -webkit-transform .3s ease-in-out;
+     -o-transition: transform .3s ease-in-out;
+     transition: transform .3s ease-in-out;
+     transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+     position: absolute;
+     right: 40px;
+     margin-top: -5px; }
+   ul.ks-cboxtags li label span {
+     background: #f9e090;
+     font-size: 12px;
+     padding: 2px 5px;
+     border-radius: 30px;
+     color: #fff;
+     margin-left: 10px; }
+ 
+ ul.ks-cboxtags li input[type="checkbox"]:checked + label::before {
+   content: "\f058";
+   -webkit-transform: rotate(-360deg);
+   -ms-transform: rotate(-360deg);
+   transform: rotate(-360deg);
+   -webkit-transition: -webkit-transform .3s ease-in-out;
+   transition: -webkit-transform .3s ease-in-out;
+   -o-transition: transform .3s ease-in-out;
+   transition: transform .3s ease-in-out;
+   transition: transform .3s ease-in-out, -webkit-transform .3s ease-in-out;
+   color: rgba(0, 0, 0, 0.8); }
+ 
+ ul.ks-cboxtags li input[type="checkbox"]:checked + label {
+   color:  rgba(0, 0, 0, 0.8);;
+   -webkit-transition: all .2s;
+   -o-transition: all .2s;
+   transition: all .2s; }
+   ul.ks-cboxtags li input[type="checkbox"]:checked + label span {
+     background: #fff;
+     color: #000; }
+ 
+ ul.ks-cboxtags li input[type="checkbox"] {
+   display: absolute; }
+ 
+ ul.ks-cboxtags li input[type="checkbox"] {
+   position: absolute;
+   opacity: 0; }
+   #progressbar #p_notification:before
+   {
+      font-family: FontAwesome;
+      content: "\f0f3";
+   }
