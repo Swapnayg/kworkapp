@@ -14,18 +14,83 @@
        <h1 class="t-align-l pt20 m-fs22">My Favorite Gigs</h1>
        <div class="popular-rubrics__items">
          {% for f_gig in favourite_lists %}
-          <div class="popular-rubrics__item">
-             <a href="/gigs/{{request.user.username}}/{{f_gig.gig_title}}" target="_blank" class="popular-rubrics__link">
-                <picture>
-                   <img src="{{f_gig.gig_image}}" alt="{{f_gig.gig_title}}">
-                </picture>
-                <span>{{f_gig.gig_title}}</span>
-             </a>
-          </div>
+         <div data-id="19082363" class="kwork-card cusongsblock js-kwork-card cards-layout-item kwork-card-item cusongsblock--group-price">
+            <!----> 
+            <div class="kwork-card-item__wrapper">
+               <div class="songperson cusongsblock__content kwork-card-item__left">
+                  <a href="/gigs/{{f_gig.gig_username}}/{{f_gig.gig_title}}" class="ispinner-container">
+                     <picture>
+                         <img src="{{f_gig.gig_img_url}}" alt="{{f_gig.gig_title}}">
+                      </picture>
+                  </a>
+               </div>
+               <div class="ta-left padding-content">
+                  <p><a href="/gigs/{{f_gig.gig_username}}/{{f_gig.gig_title}}">{{f_gig.gig_title|title}}</span></a></p>
+                  <div class="cusongsblock__panel">
+                     <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120">
+                       <a href="user/profile/{{f_gig.gig_username}}" title="{{f_gig.gig_username}}" class="inspire__user-avatar dark-link"  title="swapq90"> <img src="{{f_gig.gig_gig_img}}" class="js-lazy-load-image" alt=""> 
+                        <div class="div_seller_levl"> 
+                           {{f_gig.gig_username |title}}
+                           <span class="_5-fo9i5">{{f_gig.gig_seller_level}}</span>
+                        </div>
+                        <div class="div_seller_levl1"> 
+                           <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
+                              <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
+                              <li class="rating-block__rating-item--number fw600 v-align-m">{{f_gig.seller_count|floatformat:0}}</li>
+                           </ul>
+                           <span class="rating-block__count rating-block__count-star">({{f_gig.review_count}})</span>
+                        </div>
+                       </a>
+                      
+                        </div>
+                     <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
+                        <div class="price nowrap pull-right m-pull-right">
+                          <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{f_gig.start_price}}</span></div>
+                       </div>   
+                     </div>
+                  </div> 
+                             
+               </div>
+            </div>
+            <!---->
+         </div>
           {% endfor %}
        </div>
     </div>
  </div>
+ <style>
+   .inspire__user-avatar {
+      display: inline-flex;
+      text-decoration: none;
+      margin-bottom: 8%;
+  }
+  .div_seller_levl
+  {
+      padding-left: 15%;
+    line-height: 20px;
+  }
+   .div_seller_levl  span{
+      font-size: 12px;
+      color:#8a8a8a;
+      display:block;
+   }
+   .div_seller_levl1
+   {
+      position: absolute;
+      right: 34px;
+      top: 0px;
+      width: 31px;
+      display: inline-flex;
+   }
+   .cusongsblock-panel__rating
+   {
+      bottom: 0px;
+   }
+   .cusongsblock-panel__user-name
+   {
+      width:100%;
+   }
+ </style>
 {% include  'Dashboard/base_buyer.html' %}
 
 

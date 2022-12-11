@@ -199,7 +199,8 @@
                 recommend_rating = value;
             } 
         }});
-        $('#textarea_seller_desc').keyup(function() { 
+        $('#textarea_seller_desc').on('keyup', 'paste', function() { 
+            setTimeout(function() {
             var thisChars = this.value.replace(/{.*}/g, '').length; 
             var maxlength = $(this).attr("maxlength");
             if(thisChars > maxlength) 
@@ -209,6 +210,7 @@
             }else{
                $(".seller_desc_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
             }
+        }, 500);  
          });
         $("#buyer_tip_review").click(function(){
             location_href =  $(location).attr('href').split("/");
@@ -223,18 +225,16 @@
                 $.ajax({
                     type:"GET",
                     url: "/post_seller_review/",
-                    data: {"order_no":'{{order_no}}',"s_comm":responsive_rating.length,"s_serv":service_rating,"s_recomm":recommend_rating,"s_review_txt":$("#textarea_seller_desc").val()},
+                    data: {"order_no":'{{order_no}}',"s_comm":responsive_rating,"s_serv":service_rating,"s_recomm":recommend_rating,"s_review_txt":$("#textarea_seller_desc").val()},
                     success: function(data) 
                     {
-                        jsonObject = JSON.parse(JSON.stringify({
-                            "sucess": "sucess"
-                        }))
-                       if(jsonObject['sucess'] == "sucess")
-                       {
-                         $("#seller_review_section").hide();
-                         $("#thank_section").show();
-                         $(".error-message-review").hide();
-                       }
+                        jsonObject = JSON.parse(JSON.stringify(data));
+                        if(jsonObject['sucess'] == "sucess")
+                        {
+                            $("#seller_review_section").hide();
+                            $("#thank_section").show();
+                            $(".error-message-review").hide();
+                        } 
                     }
                 });
             }

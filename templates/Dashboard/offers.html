@@ -91,11 +91,11 @@
                            <span class="user-pict-50">
                            <img class="missing-image-user" src="{{off.buyer_image}}"></img>
                            </span>
-                           <b><a href="/user/profile/{{off.buyer_username}}" class="name js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Seller">{{off.buyer_username}} ({{off.seller_level}}) |  <span class="star-rating-s9 rate-10" title="rating">({{off.seller_reviews}})</span> </a></b>
+                           <b><a href="/user/profile/{{off.buyer_username}}" class="name js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Seller">{{off.buyer_username |title}} ({{off.seller_level}}) |  <span class="star-rating-s9 rate-10" title="rating">({{off.seller_reviews}})</span> </a></b>
                            <br><a onclick="inbox_click('{{off.buyer_username}}');" class="contact js-seller-contact js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Contact"><i class="fa fa-envelope"></i>Contact me</a>
                         </div>
                         <div class="details">
-                           <h6><a href="/gigs/{{off.buyer_username}}/{{off.gig_title}}" class="js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Gig Name">{{off.gig_title}}</a></h6>
+                           <h6><a href="/gigs/{{off.buyer_username}}/{{off.gig_title}}" class="js-gtm-event-auto" data-gtm-category="Request Offers" data-gtm-action="Click" data-gtm-label="Gig Name">{{off.gig_title|title}}</a></h6>
                            <p class="description js-offer-desc">
                               <span class="js-long-desc">  {{off.offer_desc}}</span>
                            </p>
@@ -132,7 +132,12 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
-
+<style>
+   .db-offers>ul>li .details-wrap .seller b a
+   {
+      text-transform: capitalize;
+   }
+</style>
 <script>
    $(document).ready(function(){
       $("#Order_values_lists li a").on('click', function(e) {

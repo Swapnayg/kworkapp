@@ -6,6 +6,7 @@
 <div class="all_page page-flex__content pt0 m0">
     <div id="event_list" class="event-list js-event-list"></div>
     <div id="fox_notification_block"></div>
+    {% if has_records ==  'yes' %}
     <div class="row justify-content-center mt-5 mb-5" id="profile_view">
         <div class="col-md-12 mx-0">
             <div class="row gig-page-wrapper">
@@ -140,6 +141,13 @@
                                     (<!-- -->{{gig_reviews|length}}<!-- -->)
                                  </span>
                               </div>
+                              {% if active_orders != 0 %}
+                                 {% if active_orders == 1 %}
+                                    <div class="sfNimsX">{{active_orders}} Order in Queue</div>
+                                 {% else %}  
+                                    <div class="sfNimsX">{{active_orders}} Orders in Queue</div>
+                                 {% endif %}
+                              {% endif %}  
                            </div>
                         </div>
                      </div>
@@ -174,7 +182,7 @@
                         <div class="description-wrapper" id="faq">
                             <span style="font-size:0"></span>
                             <div class="description-content">
-                                {{gig_details.gig_description| safe}}
+                                {{gig_details.gig_description| safe | capfirst}}
                             </div>
                             <ul class="metadata">
                                 <li class="metadata-attribute">
@@ -241,8 +249,16 @@
                                   <ul class="user-stats">
                                      <li>From<strong>{{userDetails.country.name}}</strong></li>
                                      <li>Member since<strong>{{ userDetails.created_at|date:"M Y" }}</strong></li>
-                                     <li>Avg. response time<strong>{{ userDetails.avg_respons}} hour</strong></li>
-                                     <li>Last delivery<strong>{{ userDetails.avg_respons}} month</strong></li>
+                                     <li>Avg. response time<strong>{{ userDetails.avg_respons}} Hour</strong></li>
+                                     <li>Last delivery
+                                       <strong>
+                                          {% if profile_last_delivery == "Just Started" %}
+                                             Just Started
+                                          {% else %}
+                                          {{userDetails.u_last_delivery|timesince}}
+                                          {% endif %}   
+                                       </strong>
+                                    </li>
                                   </ul>
                                   <article class="seller-desc">
                                      <div class="inner">{{profile_Details.profess_overview|safe}}                                </div>
@@ -288,23 +304,42 @@
                                    </tr>
                                    <tr class="description">
                                       <th></th>
-                                      <td>{{gig_package_Details.0.package_title}}:
-                                        {{gig_package_Details.0.package_description}}.
+                                      <td>{{gig_package_Details.0.package_title|capfirst}}:
+                                        {{gig_package_Details.0.package_description|capfirst}}.
                                       </td>
-                                      <td>{{gig_package_Details.1.package_title}}:
-                                        {{gig_package_Details.1.package_description}}.
+                                      <td>{{gig_package_Details.1.package_title|capfirst}}:
+                                        {{gig_package_Details.1.package_description|capfirst}}.
                                       </td>
-                                      <td>{{gig_package_Details.2.package_title}}:
-                                        {{gig_package_Details.2.package_description}}.
+                                      <td>{{gig_package_Details.2.package_title|capfirst}}:
+                                        {{gig_package_Details.2.package_description|capfirst}}.
                                       </td>
                                    </tr>
                                    <tr>
                                       <th>
                                          <div class="tmELUJj P_h9XGC"><span class="vpfXdaJ">Revisions</span></div>
                                       </th>
-                                      <td>{{gig_package_Details.0.package_revisions}}</td>
-                                      <td>{{gig_package_Details.1.package_revisions}}</td>
-                                      <td>{{gig_package_Details.2.package_revisions}}</td>
+                                      <td>
+                                       {% if gig_package_Details.0.package_revisions.parameter_value.strip == "unlimited" %}
+                                          <b class="revisions">∞ Revisions</b>
+                                       {% else %}
+                                          <b class="revisions">{{gig_package_Details.0.package_revisions.parameter_value.strip}} Revisions</b>
+                                       {% endif %}
+                                       </td>
+                                      <td>
+                                       {% if gig_package_Details.1.package_revisions.parameter_value.strip == "unlimited" %}
+                                          <b class="revisions">∞ Revisions</b>
+                                       {% else %}
+                                          <b class="revisions">{{gig_package_Details.1.package_revisions.parameter_value.strip}} Revisions</b>
+                                       {% endif %}
+                                      </td>
+                                      <td>
+
+                                       {% if gig_package_Details.2.package_revisions.parameter_value.strip == "unlimited" %}
+                                          <b class="revisions">∞ Revisions</b>
+                                       {% else %}
+                                          <b class="revisions">{{gig_package_Details.2.package_revisions.parameter_value.strip}} Revisions</b>
+                                       {% endif %}
+                                      </td>
                                    </tr>
                                    <tr class="delivery-time">
                                       <th>Delivery Time</th>
@@ -332,22 +367,26 @@
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.0.package_price}}</p>
                                          </div>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','basic');">Select</button>
                                       </td>
                                       <td>
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.1.package_price}}</p>
                                          </div>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','standard');" >Select</button>
                                       </td>
                                       <td>
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.2.package_price}}</p>
                                          </div>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','enterprise');">Select</button>
                                       </td>
                                    </tr>
                                 </tbody>
                              </table>
                          </div>
                          {% endif %}
+                         {% if extra_gigs|length > 0 %}
                          <div class="reviews-package is-collapsed is-collapsable mt-5" id="extragigTable">
                            <header class="reviews-header breakdown-header">
                               <div class="details">
@@ -379,6 +418,8 @@
                               </div>
                            </span>
                          </div> 
+                           {% endif %}
+                       
                          <div class="reviews-package is-collapsed is-collapsable mt-5" id="reviews">
                             <header class="reviews-header breakdown-header">
                                <div class="details">
@@ -558,11 +599,11 @@
                                  <div class="package-content zxTHQ6r mt-4" id="basic_contents">
                                     <header class="header-default">
                                        <h3>
-                                          <b class="title">basic</b>
+                                          <b class="title">Basic</b>
                                           <div class="price-wrapper"><span class="price">$ {{gig_package_Details.0.package_price}}</span></div>
                                        </h3>
-                                       <p>{{gig_package_Details.0.package_title}}:
-                                        {{gig_package_Details.0.package_description}}.
+                                       <p>{{gig_package_Details.0.package_title|capfirst}}:
+                                        {{gig_package_Details.0.package_description|capfirst}}.
                                        </p>
                                     </header>
                                     <article>
@@ -583,23 +624,28 @@
                                                    <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
                                                 </svg>
                                              </span>
-                                             <b class="revisions">{{gig_package_Details.0.package_revisions}} Revisions</b>
+                                             {% if gig_package_Details.0.package_revisions.parameter_value.strip == "unlimited" %}
+                                                <b class="revisions">∞ Revisions</b>
+                                             {% else %}
+                                             <b class="revisions">{{gig_package_Details.0.package_revisions.parameter_value.strip}} Revisions</b>
+                                             {% endif %}
+                                             
                                           </div>
                                        </div>
                                        <ul class="features">
                                          
                                        </ul>
                                     </article>
-                                    <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
+                                    <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="continue_offer('{{userDetails.id}}','basic');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
                                  </div>
                                  <div class="package-content zxTHQ6r mt-4" id="standard_contents">
                                     <header class="header-default">
                                        <h3>
-                                          <b class="title">standard</b>
+                                          <b class="title">Standard</b>
                                           <div class="price-wrapper"><span class="price">$ {{gig_package_Details.1.package_price}}</span></div>
                                        </h3>
-                                       <p>{{gig_package_Details.1.package_title}}:
-                                        {{gig_package_Details.1.package_description}}.
+                                       <p>{{gig_package_Details.1.package_title|capfirst}}:
+                                        {{gig_package_Details.1.package_description|capfirst}}.
                                        </p>
                                     </header>
                                     <article>
@@ -620,23 +666,27 @@
                                                     <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
                                                  </svg>
                                               </span>
-                                              <b class="revisions">{{gig_package_Details.1.package_revisions}} Revisions</b>
+                                              {% if gig_package_Details.1.package_revisions.parameter_value.strip == "unlimited" %}
+                                              <b class="revisions">∞ Revisions</b>
+                                           {% else %}
+                                           <b class="revisions">{{gig_package_Details.1.package_revisions.parameter_value.strip}} Revisions</b>
+                                           {% endif %}
                                            </div>
                                         </div>
                                         <ul class="features">
                                           
                                         </ul>
                                      </article>
-                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
+                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="continue_offer('{{userDetails.id}}','standard');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
                                  </div>
                                  <div class="package-content zxTHQ6r mt-4" id="premium_contents">
                                     <header class="header-default">
                                        <h3>
-                                          <b class="title">premium</b>
+                                          <b class="title">Premium</b>
                                           <div class="price-wrapper"><span class="price">$ {{gig_package_Details.2.package_price}}</span></div>
                                         </h3>
-                                        <p>{{gig_package_Details.2.package_title}}:
-                                         {{gig_package_Details.2.package_description}}.
+                                        <p>{{gig_package_Details.2.package_title |capfirst}}:
+                                         {{gig_package_Details.2.package_description |capfirst}}.
                                         </p>
                                     </header>
                                     <article>
@@ -657,14 +707,18 @@
                                                     <path d="M15.8 7.2999L9.40001 6.5999L11.5 4.4999C9.60001 2.5999 6.40001 2.5999 4.50001 4.4999C3.80001 5.1999 3.30001 6.1999 3.10001 7.1999L1.10001 6.8999C1.30001 5.3999 2.00001 4.0999 3.00001 3.0999C4.40001 1.6999 6.10001 1.0999 7.90001 1.0999C9.70001 1.0999 11.5 1.7999 12.8 3.0999L15 0.899902L15.8 7.2999Z"></path>
                                                  </svg>
                                               </span>
-                                              <b class="revisions">{{gig_package_Details.2.package_revisions}} Revisions</b>
+                                              {% if gig_package_Details.2.package_revisions.parameter_value.strip == "unlimited" %}
+                                              <b class="revisions">∞ Revisions</b>
+                                           {% else %}
+                                           <b class="revisions">{{gig_package_Details.2.package_revisions.parameter_value.strip}} Revisions</b>
+                                           {% endif %}
                                            </div>
                                         </div>
                                         <ul class="features">
                                           
                                         </ul>
                                      </article>
-                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank"  onclick="inbox_click('{{userDetails.username}}');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
+                                     <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank"  onclick="continue_offer('{{userDetails.id}}','enterprise');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
                                  </div>
                                 
                              </div>
@@ -735,6 +789,20 @@
             
         </div>
     </div>
+    {% else %}
+    <div class="row justify-content-center mt-5 mb-5" id="profile_view">
+      <div class="col-md-12 mx-0">
+            <div class="row gig-page-wrapper">
+               <div class="top-nav">
+                  <div class="error-image">
+                     <img src="{% static 'assets/images/404_not_found.png' %}" alt="empty result image">
+                     <small><span>Made on Letworkbedone<br>by</span> <b>techdivaa</b></small>
+                  </div>
+               </div>
+            </div>
+      </div>
+   </div>
+    {% endif %} 
 </div>
 {% if request.user.username|length != 0%}
    {% if request.session.userpage == "buyer" %}
@@ -767,11 +835,6 @@
                    </div>
                    <div class="share-buttons-container">
                       <div class="share-list">
-                        <!-- FACEBOOK -->
-                        <a class="fb-h" onclick="return fbs_click()" target="_blank">
-                          <img src="https://img.icons8.com/material-rounded/96/000000/facebook-f.png">
-                        </a>
-                    
                         <!-- TWITTER -->
                         <a class="tw-h" onclick="return tbs_click()"  target="_blank">
                           <img src="https://img.icons8.com/material-rounded/96/000000/twitter-squared.png">
@@ -802,6 +865,47 @@
   </div>
 </div>
 <link rel="stylesheet" href="{% static 'assets/css/frontend/light-carousel.css' %}" type="text/css" />
+<style>
+   .package-content article .delivery, .package-content article .revisions
+   {
+       text-align: left;
+       font-size: 13px;
+   }   
+   .gig-page-packages-table .fake-radio-wrapper .fake-radio .radio-img
+   {
+      border-radius: 50%;
+      background: #2E5DC5;
+      box-shadow: 0px 0px 0px 3px white, 0px 0px 0px 5px #bbb;
+      width: 10px;
+      height: 10px;
+      margin-right: 10px;
+     margin-top: 6px;
+   }
+   .price
+   {
+      color:#2E5DC5;
+   }
+   .btn-select-package
+   {
+      width:80% !important;
+   }
+   .sfNimsX {
+      color: #95979d;
+      margin-right: 8px;
+  }
+  .error-image
+  {
+   width:80%;
+   margin:auto;
+  }
+  .error-image img{
+   width:80%%
+  }
+  .error-image small{
+   display:block;
+  }
+</style>
+
 <script src="{% static 'assets/js/jquery.light-carousel.js' %}"></script>
 <script>
    $(document).ready(function(){    
@@ -889,30 +993,39 @@
         $("#modal_share").modal('show');
    }
 
-   function fbs_click() { 
-    var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
-    var pageLink = window.location.href;
-    window.open(`http://www.facebook.com/sharer.php?u=${pageLink}&quote=${pageTitle}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+
        
  function tbs_click() { 
     var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
-    var pageLink = window.location.href;
-    window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+    var pathurl =  window.location.origin;
+    var username = '{{gig_details.user_id.username}}';
+    var gig_link = '{{gig_details.gig_share_link}}';
+    var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+    window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
  
  function lbs_click() { 
     var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
-    var pageLink = window.location.href;
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+    var pathurl =  window.location.origin;
+    var username = '{{gig_details.user_id.username}}';
+    var gig_link = '{{gig_details.gig_share_link}}';
+    var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+    window.open(`http://www.linkedin.com/shareArticle?mini=true&url=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
  
  function was_click() { 
     var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
-    var pageLink = window.location.href;
-    window.open(`https://api.whatsapp.com/send?text=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+    var pathurl =  window.location.origin;
+    var username = '{{gig_details.user_id.username}}';
+    var gig_link = '{{gig_details.gig_share_link}}';
+    var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+    window.open(`https://api.whatsapp.com/send?text=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
  
  function cos_click() { 
     var pageTitle = "Letworkbedone Gig - " + '{{gig_details.gig_title}}';
-    var pageLink = window.location.href;
-       navigator.clipboard.writeText(pageLink).then(
+    var pathurl =  window.location.origin;
+    var username = '{{gig_details.user_id.username}}';
+    var gig_link = '{{gig_details.gig_share_link}}';
+    var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+       navigator.clipboard.writeText(completeUrl).then(
          function() {
            window.alert('Url Copied!') 
          }, 
@@ -961,6 +1074,21 @@ function inbox_click(username)
       {  
          location_href =  $(location).attr('href').split("/");
          window.location.href = location_href[0]+"//"+location_href[2] +"/inbox/"+ username;
+      }   
+  });
+   
+}
+
+function continue_offer(gig_user,package)
+{
+   $.ajax({
+      type:"GET",
+      url: "/post_view_gig_offer/",
+      data: {'initiator':'{{request.user.username}}','receiver':gig_user,"package":package,'gig_id':'{{gig_details.id}}'},
+      success: function(data) 
+      {  
+         location_href =  $(location).attr('href').split("/");
+         window.location.href = location_href[0]+"//"+location_href[2] +"/payments/0/"+ data;
       }   
   });
    

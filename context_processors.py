@@ -101,7 +101,10 @@ def menu_procesor(request):
     user_blocked = ''
     categories = Categories.objects.all()
     logo_details= LogoImages.objects.filter().first()
-    logo_img_url = "/media/"+str(logo_details.image)
+    try:
+        logo_img_url = "/media/"+str(logo_details.image)
+    except:
+        logo_img_url = ''
     if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
         userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
         user_warning = ''

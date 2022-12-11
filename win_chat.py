@@ -5,7 +5,6 @@ from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
-from notifications.signals import notify
 from .models import User
 from .models import Message, Conversation
 from django.db.models import Q
@@ -63,7 +62,6 @@ class ChatConsumer(WebsocketConsumer):
                 text=message,
                 conversation_id=conversation,
             )
-            notify.send(sender, recipient=receiver, verb='chat',description=message)
         else:
             _message = Message.objects.create(
                 sender=sender,
@@ -72,7 +70,6 @@ class ChatConsumer(WebsocketConsumer):
                 text=message,
                 conversation_id=conversation,
             )
-            notify.send(sender, recipient=receiver, verb='chat',description=message)
         # Send message to room group
         if _message.attachment:
             async_to_sync(self.channel_layer.group_send)(

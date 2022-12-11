@@ -1,18 +1,36 @@
 import json
 from django.contrib import admin
+from email.mime.multipart import MIMEMultipart
+from social.apps.django_app.default.models import UserSocialAuth
+from email.mime.text import MIMEText
+import smtplib
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.admin import AdminSite
 from django.dispatch import receiver
+from django_summernote.models import Attachment
+from kworkapp.mail_templates import MailTemplates
+from taggit.admin import Tag
+from django.db.models import Q
+#from django.contrib.sites.models import Site
 from django.shortcuts import redirect, render
+from import_export import fields, resources
+from taggit.managers import TaggableManager
+from import_export.widgets import ForeignKeyWidget
+from import_export.signals import post_import, post_export
+from import_export.widgets import Widget
+from import_export.formats import base_formats
+from import_export import resources
+from import_export import fields, resources, widgets
 from datetime import datetime, timedelta,date
+from import_export.admin import ExportActionMixin, ImportExportActionModelAdmin,ExportActionModelAdmin, ImportExportModelAdmin, ImportMixin
 import whatismyip
 from django.views import View
-from django.db.models.signals import post_save,pre_delete
+from django.db.models.signals import post_save,pre_delete,post_delete
 from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,SMTP_settings,SellerLevels4,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -29,10 +47,10 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'username','first_name','seller_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id','mail_message','mail_order','mail_updates')
+    list_display = ('email', 'username','first_name','user_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id','mail_message','mail_order','mail_updates')
     list_filter = ('is_admin', 'is_staff', 'is_active')
     fieldsets = (
-        (None, {'fields': ('email', 'username','seller_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')}),
+        (None, {'fields': ('email', 'username','user_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')}),
         ('Permissions', {'fields': ('is_admin', 'is_staff', 'is_active')}),
     )
 
@@ -45,6 +63,14 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'username', 'name')
     ordering = ('email',)
     filter_horizontal = ()
+    
+@receiver(pre_delete, sender=User)
+def model_post_delete(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        userobj = User.objects.get(email = instance.email)
+        UserSocialAuth.objects.filter(user=userobj).delete()
 
 def get_app_list(self, request):
     """
@@ -147,6 +173,9 @@ def add_user(sender, **kwargs):
 
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
+admin.site.unregister(Attachment)
+admin.site.unregister(Tag)
+#admin.site.unregister(Site)
 
 class AdminPageEditor(admin.ModelAdmin):
     list_display = ['page_name','page_slug','timestamp','edit_page_mode']
@@ -163,17 +192,17 @@ admin.site.register(PageEditor, AdminPageEditor)
 
 
 class AdminSellerLevels(admin.ModelAdmin):
-    list_display = ['level_name','No_of_gigs','No_of_offers']
-    #def has_add_permission(self, request, obj=None):
-        #return False
+    list_display = ['level_name','level_slug','No_of_gigs','No_of_offers','level_badge','up_order_amount','up_order_count','record_check']
+# #     #def has_add_permission(self, request, obj=None):
+# #         #return False
 
-    # def has_change_permission(self, request, obj=None):
-    #     return False
+# #     # def has_change_permission(self, request, obj=None):
+# #     #     return False
 
-    # def has_delete_permission(self, request, obj=None):
-    #     return False
+# #     # def has_delete_permission(self, request, obj=None):
+# #     #     return False
 
-admin.site.register(SellerLevels, AdminSellerLevels)
+admin.site.register(SellerLevels4, AdminSellerLevels)
 
 class AdminsupportTopic(admin.ModelAdmin):
     list_display = ['support_topic_Name','topic_category','timestamp','slug']
@@ -256,8 +285,11 @@ def update_all_balancevalues(username):
             if(earn.credit_used != ''):
                 with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
         if(earn.aval_with != None or earn.clearence_status == "cleared" ):
-            if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
-                avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+            if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
+                try:
+                    avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+                except:
+                    avail_bal_val = round(float(avail_bal_val),2)
         if(earn.clearence_status == "pending" ):
             current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
         try:
@@ -349,6 +381,172 @@ class AdminUser_orders(admin.ModelAdmin):
 admin.site.register(User_orders, AdminUser_orders)
 
 
+@receiver(pre_save, sender=User_orders)
+def update_order_status(sender, instance, **kwargs):
+    if(instance.pk is None):
+        pass
+    else:
+        p
+        try:
+            previous_val = User_orders.objects.get(pk = instance.pk)
+            previous_status =  str(previous_val.order_status)
+            if(previous_status == "active" or previous_status == "delivered"):
+                if(instance.order_status == "cancel"):
+                    order_details = User_orders.objects.get(order_no = instance.order_no)
+                    order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                    order_details.save()
+                    order_by_user = User.objects.get(username= order_details.order_by.username)
+                    order_to_user = User.objects.get(username= order_details.order_to.username)
+                    transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                    try:    
+                        cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
+                    except:
+                        cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
+                    get_message =  Order_Message.objects.get(pk = order_message.pk)
+                    resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
+                    resolution.save()
+                    res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
+                    refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                    refund_details.save()  
+                    order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                    order_message.save()
+                    order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                    order_ativity.save()
+                    earning_val = 0
+                    if(float(order_details.order_amount) <=40):
+                        payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                        for p in payment_parameters:
+                            serv_fees_val = p.service_fees
+                            serv_fees_type = p.fees_type
+                            if(serv_fees_type == "flat"):
+                                service_fees_price =  int(serv_fees_val)
+                            else:
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
+                                service_fees_price = round(perceof_budg,2)
+                    else:
+                        payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                        for p in payment_parameters:
+                            serv_fees_val = p.service_fees
+                            serv_fees_type = p.fees_type
+                            if(serv_fees_type == "flat"):
+                                service_fees_price =  int(serv_fees_val)
+                            else:
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
+                                service_fees_price = round(perceof_budg,2)
+                    earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
+                    order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                    order_ativity1.save()
+                    service_fees_price = 0
+                    if(float(order_details.order_amount) <=40):
+                        payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                        for p in payment_parameters:
+                            serv_fees_val = p.service_fees
+                            serv_fees_type = p.fees_type
+                            if(serv_fees_type == "flat"):
+                                service_fees_price =  int(serv_fees_val)
+                            else:
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
+                                service_fees_price = round(perceof_budg,2)
+                    else:
+                        payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                        for p in payment_parameters:
+                            serv_fees_val = p.service_fees
+                            serv_fees_type = p.fees_type
+                            if(serv_fees_type == "flat"):
+                                service_fees_price =  int(serv_fees_val)
+                            else:
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
+                                service_fees_price = round(perceof_budg,2)
+                    earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+                    refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to_user,earning_type="cancelled",affiliate_user=None)
+                    refund_details.save()
+                    update_all_balancevalues(order_by_user)
+                    update_all_balancevalues(order_to_user)
+                    notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                    if(notification_cancel.is_active == True):
+                        noti_create = CustomNotifications(sender = order_to_user, recipient=order_by_user, verb='order' ,order_no = order_details,description= str(order_to_user.username).title() + " cancelled the Order.")
+                        noti_create.save()
+                    if(order_by_user.mail_order == True):
+                        mail_content = MailTemplates.order_cancelled_buyer(str(order_by_user.username).title(),str("#"+order_details.order_no))
+                        SendEmailAct(str(order_by_user.email),mail_content,"Admin have Cancelled the Order: " + str("#"+order_details.order_no))
+                    if(order_to_user.mail_order == True):
+                        mail_content = MailTemplates.order_cancelled_seller(str(order_to_user.username).title(),str(order_by_user.username).title(),str("#"+order_details.order_no))
+                        SendEmailAct(str(order_to_user.email),mail_content,"Your order with "+str(order_by_user.username).title()+" was cancelled")
+            else:
+                if(previous_status == "completed"):
+                    if(instance.order_status == "cancel"):
+                        order_details = User_orders.objects.get(order_no = instance.order_no)
+                        order_by_user = User.objects.get(username= order_details.order_by.username)
+                        order_to_user = User.objects.get(username= order_details.order_to.username)
+                        earning_details = User_Earnings.objects.get(order_no=order_details,user_id=order_to_user,earning_type="order")
+                        clearence_date = ''
+                        earning_tip = None
+                        try:
+                            earning_tip = User_Earnings.objects.get(order_no=order_details,user_id=order_to_user,earning_type="tip")
+                        except:
+                            earning_tip = None
+                        try:
+                            clearence_date = datetime.strptime(str(earning_details.clearence_date),"%Y-%m-%d %H:%M:%S").date()
+                        except:
+                            clearence_date = datetime.strptime(str(earning_details.clearence_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                        refunded_val = 0
+                        can_order_val = 0
+                        can_tip_val = 0
+                        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                        if(int(todays_date.month) == int(clearence_date.month) and int(clearence_date.day) > int(todays_date.day) and int(todays_date.year) == int(clearence_date.year)):
+                            earning_details.clearence_status = "cancelled"
+                            earning_details.earning_type = "cancelled"
+                            earning_details.save()
+                            refunded_val = float(float(refunded_val) + float(earning_details.order_amount))
+                            can_order_val = float(earning_details.order_amount)
+                            refunded_val = float(float(refunded_val) + float(earning_tip.order_amount))
+                            transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                            try:    
+                                cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
+                            except:
+                                cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
+                            get_message =  Order_Message.objects.get(pk = order_message.pk)
+                            resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
+                            resolution.save()
+                            res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
+                            refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                            refund_details.save()
+                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                            order_message.save()
+                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity.save()
+                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = can_order_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity1.save()
+                            User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_amount=can_order_val,order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            User_Order_Activity.objects.filter(order_message="×1 Order Completed",order_amount=can_order_val,order_no=order_details,activity_type="completed",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            if(earning_tip != None):
+                                earning_tip.clearence_status = "cancelled"
+                                earning_tip.earning_type = "cancelled"
+                                earning_tip.save()
+                                can_tip_val = float(earning_tip.order_amount)
+                                order_ativity = User_Order_Activity(order_message = "×1 Tip Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                                order_ativity.save()
+                                order_ativity1 = User_Order_Activity(order_message = "Cancelled Tip Refunded to Buyer",order_amount = can_tip_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                                order_ativity1.save()
+                                User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_amount=can_tip_val,order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
+                                User_Order_Activity.objects.filter(order_message="Tip Provide by Buyer",order_amount=can_tip_val,order_no=order_details,activity_type="tip",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            update_all_balancevalues(order_by_user)
+                            update_all_balancevalues(order_to_user)
+                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                            if(notification_cancel.is_active == True):
+                                noti_create = CustomNotifications(sender = order_to_user, recipient=order_by_user, verb='order' ,order_no = order_details,description= str(order_to_user.username).title() + " cancelled the Order.")
+                                noti_create.save()
+                            if(order_by_user.mail_order == True):
+                                mail_content = MailTemplates.order_cancelled_buyer(str(order_by_user.username).title(),str("#"+order_details.order_no))
+                                SendEmailAct(str(order_by_user.email),mail_content,"Admin have Cancelled the Order: " + str("#"+order_details.order_no))
+                            if(order_to_user.mail_order == True):
+                                mail_content = MailTemplates.order_cancelled_seller(str(order_to_user.username).title(),str(order_by_user.username).title(),str("#"+order_details.order_no))
+                                SendEmailAct(str(order_to_user.email),mail_content,"Your order with "+str(order_by_user.username).title()+" was cancelled")
+                            
+        except:
+            pass
+                
+
 class AdminUser_Order_Activity(admin.ModelAdmin):
     list_display = ['order_message','order_amount','activity_date','order_no','activity_type','activity_by','activity_to']
 
@@ -432,9 +630,6 @@ class AdminSpamDetection(admin.ModelAdmin):
 
 admin.site.register(SpamDetection, AdminSpamDetection)
 
-
-
-
 def view_admin_dashboard(request, format=None):
     return render(request , 'admin_dashboard.html')
 
@@ -454,7 +649,7 @@ class AdminConversation(admin.ModelAdmin):
 admin.site.register(Conversation, AdminConversation)
 
 class AdminMessage(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','is_read','request_offers_id','conversation_id','timestamp','message_type','buyer_request_id']
+    list_display = ['sender','receiver','text','attachment','is_read','request_offers_id','conversation_id','timestamp','message_type','buyer_request_id','mail_sent']
 
 admin.site.register(Message, AdminMessage)
 
@@ -476,7 +671,7 @@ class AdminOrder_Delivery(admin.ModelAdmin):
 admin.site.register(Order_Delivery, AdminOrder_Delivery)
 
 class AdminOrder_Message(admin.ModelAdmin):
-    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type','is_read']
+    list_display = ['sender','receiver','text','attachment','conversation_id','timestamp','order_no','message_type','is_read','mail_sent']
 
 admin.site.register(Order_Message, AdminOrder_Message)
 
@@ -496,12 +691,32 @@ class AdminSubCategories(admin.ModelAdmin):
 
 admin.site.register(SubCategories, AdminSubCategories)
 
-class AdminSubSubCategories(admin.ModelAdmin):
+
+
+class MainMenuExportResource(resources.ModelResource):
+    category_Name = fields.Field(column_name='category_Name', attribute='category_Name',
+               widget=widgets.ForeignKeyWidget(model=Categories, field='category_Name'))
+    sub_category_Name = fields.Field(column_name='sub_category_Name', attribute='sub_category_Name',
+               widget=widgets.ForeignKeyWidget(model=SubCategories, field='sub_category_Name'))
+    sub_sub_category_Name = fields.Field(column_name='sub_sub_category_Name', attribute='sub_sub_category_Name',
+               widget=widgets.CharWidget())
+    slug = fields.Field(column_name='slug', attribute='slug',
+               widget=widgets.CharWidget())
+    Tags = fields.Field(column_name='Tags', attribute='Tags',
+               widget=widgets.CharWidget())
+         
+class AdminSubSubCategories(ImportExportModelAdmin,admin.ModelAdmin):
     list_display = ['category_Name','sub_category_Name','sub_sub_category_Name','slug','Tags']
     
     class Media:
-        js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js','assets/js/sub_sub_category.js')
-
+        js = ('https://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js','assets/js/sub_sub_category.js')
+    
+    def get_export_resource_class(self):
+        return MainMenuExportResource
+    
+    # def get_import_resource_class(self):     
+    #     return MainMenuExportResource
+    
 admin.site.register(SubSubCategories, AdminSubSubCategories)
 
 
@@ -518,7 +733,7 @@ class AdminUserProfileDetails(admin.ModelAdmin):
         css = {'all': ('assets/css/frontend/admin_post_request.css', )} 
     
     class Media:
-        js = ('http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js','assets/js/sub_sub_category1.js')
+        js = ('https://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js','assets/js/sub_sub_category1.js')
         
 admin.site.register(UserProfileDetails, AdminUserProfileDetails)
 
@@ -539,7 +754,7 @@ admin.site.register(UserSearchTerms, AdminUserSearchTerms)
 
 
 class AdminUserGigs(admin.ModelAdmin):
-    list_display = ['gig_title','gig_category','gig_sub_category','gig_description','gig_status','user_id']
+    list_display = ['gig_title','gig_category','gig_sub_category','gig_description','gig_status','user_id','gig_share_link']
     class Media:
         css = {'all': ('assets/css/frontend/admin_post_request.css', )} 
 
@@ -754,3 +969,24 @@ admin.autodiscover()
 
 admin_urls = get_admin_urls(admin.site.get_urls())
 admin.site.get_urls = admin_urls
+
+
+def SendEmailAct(sendto,message,subject):
+    mailsettings = SMTP_settings.objects.filter(is_active= True).first()
+    sender_address = mailsettings.mail_address
+    sender_password = mailsettings.mail_password
+    themsg = MIMEMultipart()
+    themsg['Subject'] = subject
+    themsg['To'] = sendto
+    themsg['From'] = sender_address
+    themsg.attach(MIMEText(message, 'html'))
+    themsg = themsg.as_string()  
+    if( int(mailsettings.mail_port) == 587):
+        smtp = smtplib.SMTP(mailsettings.mail_host,int(mailsettings.mail_port))
+        smtp.starttls()
+    else:
+        smtp = smtplib.SMTP_SSL(mailsettings.mail_host, int(mailsettings.mail_port))
+    smtp.login(sender_address, sender_password)
+    smtp.sendmail(sender_address, sendto, themsg)
+    smtp.quit()
+    return "mail Sent" 

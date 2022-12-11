@@ -312,7 +312,13 @@
 </div> 
 
 {% include  'Dashboard/base_seller.html' %}
-
+<style>
+   .order-card-wrapper .order-card .buyer-username
+   {
+      text-decoration: none;
+      cursor: default;
+   }
+</style>
 <script>
     $(document).ready(function(){
         $(".order-cards-wrapper").hide();

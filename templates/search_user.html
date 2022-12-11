@@ -74,7 +74,12 @@
  </div>
 </div>
 {% include  'footer.html' %}
-
+<style>
+   .user-items
+   {
+      display:inline-flex;
+   }
+</style>
 <script>
    $(document).ready(function(){
     value_user = '{{request.user.username}}'

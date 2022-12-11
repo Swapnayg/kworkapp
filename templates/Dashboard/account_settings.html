@@ -153,7 +153,11 @@
                            </div>
                            <div class="body mt-4 mb-4 pb-4">
                               <h5 class="mb-3">Enter your paypal email address for withdrawing your Earnings.</h5>
-                              <input type="email" id="paypalemail" placeholder="Enter Email Address" value="{{UserDetails.pay_pal_mail_id}}" required>
+                              {% if UserDetails.pay_pal_mail_id == "None" %}
+                                 <input type="email" id="paypalemail" placeholder="Enter Email Address" value="" required>
+                              {% else %}
+                                 <input type="email" id="paypalemail" placeholder="Enter Email Address" value="{{UserDetails.pay_pal_mail_id}}" required>
+                              {% endif %}
                               <label id="payment_error" class="error_mssg"></label>
                            </div>
                         </div>
@@ -246,7 +250,7 @@
                                  <label for="ttl">
                                     <h6 class="mb-1">Title </h6>
                                  </label>
-                                 <input type="text" id="seller_headline" maxlength="{{title_char}}" minlength="0" value="{{profile_Details.profile_title}}" onkeyup="accnt_headline_onchange(this);" placeholder="Title" value="" required="" class="form-control">
+                                 <input type="text" id="seller_headline" maxlength="{{title_char}}" minlength="0" value="{{profile_Details.profile_title}}" onkeyup="accnt_headline_onchange(this);" onpaste="accnt_headline_onchange(this);" placeholder="Title" value="" required="" class="form-control">
                                  <p class="text-muted text-right"><span class="countTitle">{{title_char}}</span> characters left</p>
                               </div>
                               <div class="form-group">
@@ -273,7 +277,7 @@
                            <div class="body mt-4">
                               <p class="b_p_1">Please upload a professional portrait that clearly shows your face.</p>
                               <div class="row mb-5 mt-3">
-                                 <div class="col-md-6 text-center">
+                                 <div class="col-md-10 text-center">
                                     <div class="image">
                                        <img id="output" src="{{UserDetails.avatar}}" alt="profile pic" onerror="imageLoadError(this)">
                                     </div>
@@ -320,6 +324,8 @@
                            <div class="body mt-4 mb-4 pb-4">
                               <h2 class="mb-5">Your account is created successfully</h2>
                               <a  onclick="create_gig_onclick();" class="btn outline_theme">Create A Gig</a>
+
+                              <a  onclick="profile_onclick();" class="btn outline_theme" style="background:#2E5DC5;color: white;">View Profile</a>
                            </div>
                         </div>
                         <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
@@ -331,12 +337,14 @@
       </div>
    </div>
 </div>
-{% if request.session.userpage == "buyer" %}
-   {% include  'Dashboard/base_buyer.html' %}
-{% else %}
-   {% include  'Dashboard/base_seller.html' %}
-{% endif %}
+{% include  'footer.html' %}
 
+<style>
+   .image{
+      margin-left: 0%;
+      width: 60%;
+   }
+</style>
 <script>
 
    function extractContent(html) {
@@ -344,9 +352,14 @@
           .parseFromString(html, "text/html")
           .documentElement.textContent;
   }
-    
+  function isEmail(email) {
+   var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+   return regex.test(email);
+ }
+
    $(document).ready(function(){
       $('#seller_headline').trigger('keyup');
+      $('.header_top').hide();
       if('{{UserDetails.mail_message}}' == 'True')
       {
          $("#inbox_check").prop("checked",true);
@@ -392,6 +405,20 @@
             }else{
                $(".countDesc").text(  maxlength - thisChars + " /"+maxlength  +" max"  ); 
             }  
+         },
+         onPaste: function(e) {
+            setTimeout(function() {
+               var textval = $(this).summernote('code').toString();
+               var thisChars =  extractContent(textval).length; 
+               var maxlength = $("#seller_about_hidden").val();
+               if(thisChars > maxlength) 
+               {
+                  var CharsToDel = (thisChars-maxlength); 
+                  this.value = this.value.substring(0,this.value.length-CharsToDel); 
+               }else{
+                  $(".countDesc").text(  maxlength - thisChars + " /"+maxlength  +" max"  ); 
+               }
+            }, 500);  
          }
        }
       });
@@ -576,6 +603,8 @@
          var paypal_val = $("#paypalemail").val().trim();
          if(paypal_val.length != 0)
          { 
+            if( isEmail(paypal_val)== true)
+            {
             $.ajax({
                type:"GET",
                url: "/post_user_paypal/",
@@ -601,6 +630,11 @@
                   }
 				   }
 				});
+         }
+         else{
+            $("#payment_error").show();
+            $("#payment_error").text("Please enter valid email address!");
+         }
          }
          else{
             $("#payment_error").show();
@@ -805,7 +839,8 @@
 
 function accnt_headline_onchange(ev)
 {
-   var thisChars = ev.value.replace(/{.*}/g, '').length; 
+   setTimeout(function() {
+      var thisChars = ev.value.replace(/{.*}/g, '').length; 
       var maxlength = $(ev).attr("maxlength");
       if(thisChars > maxlength) 
       {
@@ -814,6 +849,7 @@ function accnt_headline_onchange(ev)
       }else{
          $(".countTitle").text(  maxlength - thisChars + " /"+maxlength  +" max" ); 
       }
+   }, 500);
 }
 function addLanguageClick()
 {
@@ -861,7 +897,11 @@ function makeid(length) {
    }
    return result;
 }
-
+function profile_onclick()
+{
+   location_href =  $(location).attr('href').split("/");
+   window.location.href = location_href[0]+"//"+location_href[2] + '/user/profile/' + $("#user_name").val().trim();
+}
 function create_gig_onclick()
 {
     $.ajax({
@@ -874,7 +914,7 @@ function create_gig_onclick()
             {
                random_string = makeid(6);
                var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
-               window.location = '/user/{{request.user.username}}/create_gig/' + output;
+               window.location = '/user/{{request.user.username}}/create_gig/' + output + '/NEW';
             }
         }
       });

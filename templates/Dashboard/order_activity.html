@@ -187,6 +187,7 @@
                                                                      </li>
                                                                   </ul>
                                                                  {% if seller_review.0.seller_response|length == 0 %}
+                                                                 {% if current_user == "Seller" %}
                                                                      <div class="activity-collapsible-content" id="response_div">
                                                                         <form id="form_response">
                                                                            <div class="LsC-Zuk p-r-0 form-text-area">
@@ -198,6 +199,7 @@
                                                                            </div>
                                                                         </form>
                                                                      </div>
+                                                                     {% endif %}
                                                                   {% else %}
                                                                      <div class="user-message response"  >
                                                                         <a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="stamp link">
@@ -1029,7 +1031,16 @@
 <script src="{% static 'assets/js/jquery.emojipicker.js' %}"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/jquery.emojipicker.tw.css' %}" />
 <script src="{% static 'assets/js/jquery.emojis.js' %}"></script>
-
+<style>
+   .order-summary .status .in_resolution
+   {
+      font-size:8px !important;
+   }
+   a.username-url,.user-message p
+   {
+      text-transform:capitalize;
+   }
+</style>
 <script>
    function formatDate(date) {
       var monthNames =  ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
@@ -1059,9 +1070,10 @@
     [1, 'second']
 ];
 
-function relativeTime(date, isUtc=true) {
+function relativeTime(date, isUtc=false) {
     if (!(date instanceof Date)) date = new Date(date * 1000);
-    const seconds = (new Date() - date) / 1000;
+    var seconds = (new Date() - date) / 1000;
+    seconds = parseInt(seconds) - parseInt(12606);
     for (let [secondsPer, name] of relativeTimePeriods) {
         if (seconds >= secondsPer) {
             const amount = Math.floor(seconds / secondsPer);
@@ -1111,6 +1123,13 @@ function relativeTime(date, isUtc=true) {
          data: {"conver_id":$("#conversation_id").val(),"order_no":'{{order_details.order_no}}',"current_count":10,"id_list":"start"},
          success: function(data) 
          {
+            if(parseInt(data.total_count) < 10)
+            {
+               $("#h_previous_mssg").hide();
+            }
+            else{
+               $("#h_previous_mssg").show();
+            }
             $("#total_chat_count").val(data.total_count);
             $("#current_count").val(data.current_count);
             $("#message_ids").val(data.message_ids);
@@ -1120,7 +1139,7 @@ function relativeTime(date, isUtc=true) {
                array_list = jQuery.grep(array_list, function(value) {
                   return value !=  v.mssg_id;
                });
-               if(v.attachment != "None")
+               if(v.attachment != "None" && v.res_type == null)
                {
                   attachments = v.attachment.trim().split(",");
                   attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';
@@ -1376,7 +1395,8 @@ function relativeTime(date, isUtc=true) {
          position: 'right'
       });
 
-      $('#text_delivery_messsg').keyup(function() { 
+      $('#text_delivery_messsg').on('keyup', 'paste', function() {
+         setTimeout(function() {  
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          if(thisChars > maxlength) 
@@ -1386,6 +1406,7 @@ function relativeTime(date, isUtc=true) {
          }else{
             $("#span_delivery_messsg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+      }, 500);  
       }); 
 
       $("#form_response").submit(function(e)
@@ -1401,12 +1422,13 @@ function relativeTime(date, isUtc=true) {
                {
                   $("#response_message").text($("#text_response_mssg").val());
                   $("#response_div").hide();
-                  $("#seller_resp_div").show();
+                  $("#seller_resp_div1").show();
                }
             }
          });
       });
-      $('#text_response_mssg').keyup(function() { 
+      $('#text_response_mssg').on('keyup', 'paste', function() {
+         setTimeout(function() {  
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          if(thisChars > maxlength) 
@@ -1416,9 +1438,11 @@ function relativeTime(date, isUtc=true) {
          }else{
             $("#span_response_mssg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+      }, 500); 
       }); 
 
-      $('#text_cancel_messsg').keyup(function() { 
+      $('#text_cancel_messsg').on('keyup', 'paste', function() {
+         setTimeout(function() {  
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          if(thisChars > maxlength) 
@@ -1428,8 +1452,10 @@ function relativeTime(date, isUtc=true) {
          }else{
             $("#span_cancel_messsg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+      }, 500);  
       });
-      $('#text_order_mssg').keyup(function() { 
+      $('#text_order_mssg').on('keyup', 'paste', function() {
+         setTimeout(function() {  
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          messages =  jsonObj1.some(substring=>this.value.includes(substring));
@@ -1450,6 +1476,7 @@ function relativeTime(date, isUtc=true) {
          }else{
             $("#span_order_mssg").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+      }, 500);  
       }); 
       
       $("#btn_save_draft").click(function(){
@@ -1876,7 +1903,7 @@ function relativeTime(date, isUtc=true) {
                message_id = jQuery.grep(message_id, function(value) {
                   return value !=  v.mssg_id;
                }); 
-               if(v.attachment != "None")
+               if(v.attachment != "None" && v.res_type == null)
                {
                   attachments = v.attachment.trim().split(",");
                   attachment_txt = '<div class="attachments-preview-component"><div class="thumbnails-header"><h3>ATTACHMENTS</h3></div><ul class="attchments-container">';

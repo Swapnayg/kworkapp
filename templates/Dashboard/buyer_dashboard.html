@@ -20,7 +20,7 @@
                   <span class="search-button"><button class="button button-success" type="button" id="buyer_search_btn">Search</button></span>
                 </div>
              </div>
-             <div class="payer-banner__search-sample">Some ideas to try: 
+             <div class="payer-banner__search-sample">Some to try: 
                <input type="hidden" value="{{cat_list_json}}" id="buyer_catlist_hidden">
                {% for cat in cat_list|slice:":3" %}
                   <a class="payer-banner__search-link" href="/categories/{{cat.cat_name}}/{{cat.subcat_name}}/{{cat.subsubcat_name}}/" target="_blank">{{cat.subsubcat_name}}</a>,
@@ -34,11 +34,11 @@
        <div class="popular-rubrics__items">
          {% for p_cat in P_gig_details %}
           <div class="popular-rubrics__item">
-             <a href="/gigs/{{request.user.username}}/{{p_cat.gig_Name}}" target="_blank" class="popular-rubrics__link">
+             <a href="/categories/{{p_cat.gig_cat_name}}" target="_blank" class="popular-rubrics__link">
                 <picture>
-                   <img src="{{p_cat.gig_Image}}" alt="{{p_cat.gig_Name}}">
+                   <img src="/media/{{p_cat.gig_cat_image}}" alt="{{p_cat.gig_cat_name}}">
                 </picture>
-                <span>{{p_cat.gig_Name}}</span>
+                <span>{{p_cat.gig_cat_name|title}}</span>
              </a>
           </div>
           {% endfor %}
@@ -69,18 +69,31 @@
                                   <div class="ta-left padding-content">
                                      <p><a href="/gigs/{{imp_gigs.gig_username}}/{{imp_gigs.gig_title}}">{{imp_gigs.gig_title|title}}</span></a></p>
                                      <div class="cusongsblock__panel">
-                                        <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10875374" class="js-user-online-block dot-user-status track--item__title-status dot-user-online"></i> <a href="user/profile/{{imp_gigs.gig_username}}" title="{{imp_gigs.gig_username}}" class="dark-link">{{imp_gigs.gig_username}}</a></div>
+                                        <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120">
+                                          <a href="user/profile/{{imp_gigs.gig_username}}" title="{{imp_gigs.gig_username}}" class="inspire__user-avatar dark-link"  title="swapq90"> <img src="{{imp_gigs.gig_gig_img}}" class="js-lazy-load-image" alt=""> 
+                                             <div class="div_seller_levl"> 
+                                                {{imp_gigs.gig_username |title}}
+                                                <span class="_5-fo9i5">{{imp_gigs.gig_seller_level}}</span>
+                                             </div>
+                                             <div class="div_seller_levl1"> 
+                                                <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
+                                                   <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
+                                                   <li class="rating-block__rating-item--number fw600 v-align-m">{{imp_gigs.seller_count|floatformat:0}}</li>
+                                                </ul>
+                                                <span class="rating-block__count rating-block__count-star">({{imp_gigs.review_count}})</span>
+                                             </div>
+                                          </a>
+                                         
+                                           </div>
                                         <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
-                                           <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
-                                              <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
-                                              <li class="rating-block__rating-item--number fw600 v-align-m">{{imp_gigs.seller_count|floatformat:0}}</li>
-                                           </ul>
-                                           <span class="rating-block__count rating-block__count-star">({{imp_gigs.review_count}})</span>
+                                          
+                                           
+                                           <div class="price nowrap pull-right m-pull-right">
+                                             <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{imp_gigs.start_price}}</span></div>
+                                          </div>   
                                         </div>
                                      </div> 
-                                     <div class="price nowrap pull-right m-pull-right">
-                                       <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{imp_gigs.start_price}}</span></div>
-                                    </div>              
+                                                
                                   </div>
                                </div>
                                <!---->
@@ -119,18 +132,31 @@
                                  <div class="ta-left padding-content">
                                     <p><a href="/gigs/{{sea_gig.gig_username}}/{{sea_gig.gig_title}}">{{sea_gig.gig_title|title}}</span></a></p>
                                     <div class="cusongsblock__panel">
-                                       <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10875374" class="js-user-online-block dot-user-status track--item__title-status dot-user-online"></i> <a href="user/profile/{{sea_gig.gig_username}}" title="{{sea_gig.gig_username}}" class="dark-link">{{sea_gig.gig_username}}</a></div>
+                                       <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120">
+                                         <a href="user/profile/{{sea_gig.gig_username}}" title="{{sea_gig.gig_username}}" class="inspire__user-avatar dark-link"  title="swapq90"> <img src="{{sea_gig.gig_gig_img}}" class="js-lazy-load-image" alt=""> 
+                                          <div class="div_seller_levl"> 
+                                             {{sea_gig.gig_username |title}}
+                                             <span class="_5-fo9i5">{{sea_gig.gig_seller_level}}</span>
+                                          </div>
+                                          <div class="div_seller_levl1"> 
+                                             <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
+                                                <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
+                                                <li class="rating-block__rating-item--number fw600 v-align-m">{{sea_gig.seller_count|floatformat:0}}</li>
+                                             </ul>
+                                             <span class="rating-block__count rating-block__count-star">({{sea_gig.review_count}})</span>
+                                          </div>
+                                         </a>
+                                        
+                                          </div>
                                        <div class="pull-right cusongsblock-panel__rating m-pull-reset d-flex cusongsblock-panel__rating--mobile-hidden">
-                                          <ul class="rating-block cusongsblock-panel__rating-list dib d-flex">
-                                             <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li>
-                                             <li class="rating-block__rating-item--number fw600 v-align-m">{{sea_gig.seller_count|floatformat:0}}</li>
-                                          </ul>
-                                          <span class="rating-block__count rating-block__count-star">({{sea_gig.review_count}})</span>
+                                         
+                                          
+                                          <div class="price nowrap pull-right m-pull-right">
+                                            <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{sea_gig.start_price}}</span></div>
+                                         </div>   
                                        </div>
                                     </div> 
-                                    <div class="price nowrap pull-right m-pull-right">
-                                      <div class="kwork-cards-price"><span class=""><span class="usd"><span class="price-label price-label-en">Starting at</span> $</span>{{sea_gig.start_price}}</span></div>
-                                   </div>              
+                                               
                                  </div>
                               </div>
                               <!---->
@@ -155,7 +181,90 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
-
+<style>
+   .kwork-card-carousel.kwork-detail-carousel.cusongslist_big_5_column, .popular-rubrics__items
+   {
+      width: 95%;
+      margin: auto;
+      max-width: inherit;
+   }
+   .popular-rubrics__items
+   {
+      margin-top:2%;
+   }
+   .popular-rubrics__link, .popular-rubrics__link:hover
+   {
+      text-align: left;
+   }
+   .popular-rubrics__link img, .cusongsblock__content img
+   {
+      margin-bottom: 10px;
+   }
+   .popular-rubrics__item
+   {
+      padding-left:0px;
+   }
+   .w120
+   {
+      width: 100%;
+   }
+   .rating-block
+   {
+      padding-top: 30%;
+      padding-left: 15%;
+   }
+   .rating-block__count
+   {
+      padding-top: 30%;
+   }
+   .inspire__user-avatar
+   {
+      display:inline-flex;
+      line-height:40px !important;
+      text-decoration:none;
+   }
+   .inspire__user-avatar:hover{
+      text-decoration:none;
+   }
+   .inspire__user-avatar img{
+      margin-right: 10px;
+   }
+   .cusongsblock-panel__user-name
+   {
+      margin-bottom: 20px;
+      width: 100%;
+   }
+   .price
+   {
+      color:#2E5DC5;
+      margin-left: 10px;
+   }
+   .payer-banner__search-sample
+   {
+      margin-top: 10px;
+   }
+   .payer-banner__search-link:hover
+   {
+      color:#2E5DC5;
+   }
+   .cusongsblock p a
+   {
+      padding-bottom:0px;
+   }
+   .div_seller_levl  span{
+      font-size: 12px;
+      color:#8a8a8a;
+      display:block;
+   }
+   .div_seller_levl1
+   {
+      position: absolute;
+      right: 34px;
+      top: -7px;
+      width: 31px;
+      display: inline-flex;
+   }
+</style>
 <script>
    hidden_val = eval(JSON.parse(JSON.stringify($("#buyer_catlist_hidden").val())));
       var array = [];

@@ -26,7 +26,7 @@
                 <span class="_1iCafnp custom-order-package-tooltip-content">
                    <section class="request-description">
                       <p class="title">{{gig_req.gig_req_question |title}}:</p>
-                      <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{req_ans_char}}" data-label='{{gig_req.id}}' onkeyup="textarea_post_reqonkeyup(this);"  required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN textarea_post_span">0/{{req_ans_char}}</span></div>
+                      <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{req_ans_char}}" data-label='{{gig_req.id}}' onkeyup="textarea_post_reqonkeyup(this);" onpaste="textarea_post_reqonkeyup(this);"  required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN textarea_post_span">0/{{req_ans_char}}</span></div>
                       <div class="description-footer">
                          <div class="_2g7EPin fJuccPM file-uploader-tooltip">
                             <span class="_1iCafnp file-uploader-tooltip-content" >
@@ -70,7 +70,7 @@
                 <span class="_1iCafnp custom-order-package-tooltip-content">
                    <section class="request-description">
                       <p class="title">{{gig_req.gig_req_question |title}}:</p>
-                      <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{req_ans_char}}" data-label='{{gig_req.id}}' onkeyup="textarea_post_reqonkeyup(this);" required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN textarea_post_span">0/{{req_ans_char}}</span></div>
+                      <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{req_ans_char}}" data-label='{{gig_req.id}}' onkeyup="textarea_post_reqonkeyup(this);" onpaste="textarea_post_reqonkeyup(this);"  required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN textarea_post_span">0/{{req_ans_char}}</span></div>
                       <div class="description-footer">
                          <div class="_2g7EPin fJuccPM file-uploader-tooltip">
                             <span class="_1iCafnp file-uploader-tooltip-content" >
@@ -222,7 +222,7 @@
 
     function textarea_post_reqonkeyup(ev)
     {
-        console.log("123");
+        setTimeout(function() {
         var gig_req_id = $(ev).attr("data-label");
         var thisChars = $(ev).val().replace(/{.*}/g, '').length; 
         var maxlength = $(ev).attr("maxlength");
@@ -233,6 +233,7 @@
         }else{
             $("#section_text"+gig_req_id).find(".textarea_post_span").text( maxlength - thisChars + " /"+maxlength); 
         }
+    }, 500); 
     }
     function order_activity_click()
     {

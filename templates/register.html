@@ -23,8 +23,15 @@
 
 <script>
   $(document).ready(function(){
-    if(window.location.pathname.split("/")[1] == "ref")
+    logged_in_user = '{{request.user.username}}';
+    if(logged_in_user.trim().length != 0)
     {
+      location_href =  $(location).attr('href').split("/");
+      window.location.href = location_href[0]+"//"+location_href[2] + '/user/profile/{{request.user.username}}'
+    }
+    else{
+      if(window.location.pathname.split("/")[1] == "ref")
+      {
       $.ajax({
         type:"GET",
         url: "/add_referral_link/",
@@ -37,6 +44,7 @@
           }
         }
       });
+      }
     }
   });
 </script>

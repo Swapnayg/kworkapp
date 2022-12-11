@@ -218,11 +218,11 @@
                                       <header class="order-details-header">
                                          <span class="image-container"><img class="order-image" src="{{gig_details.0.gig_image}}" alt="{{gig_details.0.gig_title}}"></span>
                                          <div>
-                                            <h3 class="order-title text-display-7">I will do {{gig_details.0.gig_title}}</h3>
+                                            <h3 class="order-title text-display-7">I Will Do {{gig_details.0.gig_title | title}}</h3>
                                          </div>
                                       </header>
                                       <article class="order-details-general">
-                                         <span class="order-details-general-title text-display-7">{{gig_details.0.gig_title}}</span>
+                                         <span class="order-details-general-title text-display-7">{{gig_details.0.gig_title |capfirst}}</span>
                                          <div class="quantity-price-container "><span class="order-details-general-quantity hide">1</span><span class="price order-details-general-price" id="offer_price">$ {{gig_details.0.offer_price}}</span></div>
                                       </article>
                                       <div class="extra-border" id= "extra_addOn">
@@ -231,7 +231,7 @@
                                        <li class="pf-container" data-label-type="number"> 
                                        <ul> 
                                        <li class="pf-row"> 
-                                          <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="lbel{{ forloop.counter }}"> <input type="checkbox" class="add_on_click" onchange="add_on_click();" id="lbel{{ forloop.counter }}" data-label="{{e_gigs.id}}" value="{{e_gigs.extra_gig_price}}"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span>{{e_gigs.extra_gig_title}} </label> 
+                                          <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="lbel{{ forloop.counter }}"> <input type="checkbox" class="add_on_click" onchange="add_on_click();" id="lbel{{ forloop.counter }}" data-label="{{e_gigs.id}}" value="{{e_gigs.extra_gig_price}}"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span>{{e_gigs.extra_gig_title | title}} </label> 
                                              <div class="quantity-price-container "><span class="order-details-general-quantity ">{{e_gigs.extra_gig_duration}} days</span><span class="price order-details-general-price">$ {{e_gigs.extra_gig_price}}</span></div>
                                           </div>
                                           <div class="factor-decription">  
@@ -252,7 +252,7 @@
                                                      <path d="M13.6202 2.6083L5.4001 10.8284L2.37973 7.80805C2.23329 7.66161 1.99585 7.66161 1.84939 7.80805L0.96551 8.69193C0.819073 8.83836 0.819073 9.0758 0.96551 9.22227L5.13492 13.3917C5.28135 13.5381 5.51879 13.5381 5.66526 13.3917L15.0344 4.02252C15.1809 3.87608 15.1809 3.63865 15.0344 3.49218L14.1505 2.6083C14.0041 2.46186 13.7667 2.46186 13.6202 2.6083Z"></path>
                                                   </svg>
                                                </span>
-                                               <span class="order-details-item-title">{{gig_details.0.offer_revisions}} revisions</span>
+                                               <span class="order-details-item-title">{{gig_details.0.offer_revisions}} Revisions</span>
                                             </span>
                                             <span class="item-details"></span>
                                          </li>
@@ -283,7 +283,7 @@
                                                <div class="fit-popover fit-popover-top fit-tooltip tooltip" data-position="top"><span class="fit-popover-content"><i class="fa fa-question-circle" content="[object Object]" position="top"></i></span></div>
                                             </span>
                                             <input type="hidden" value="{{available_credit}}" id="available_credit_hidden">
-                                            <span class="price" id="total_credits">$ <span id="span_tip_serv_fees">{{available_credit}}</span> </span>
+                                            <span class="price" id="total_credits">$ <span id="span_tip_serv_fees">{{available_credit|floatformat:2}}</span> </span>
                                        </div>
                                        <div class="summary_rows"> 
                                            <div class="factor-title"> 
@@ -291,7 +291,7 @@
                                                    Total credits:
                                                    <div class="fit-popover fit-popover-top fit-tooltip tooltip" data-position="top"><span class="fit-popover-content"><i class="fa fa-question-circle" content="[object Object]" position="top"></i></span></div>
                                                </span>
-                                               <span class="price" id="total_credits">$ <span id="span_tip_serv_fees">{{available_credit}}</span> </span>
+                                               <span class="price" id="total_credits">$ <span id="span_tip_serv_fees">{{available_credit|floatformat:2}}</span> </span>
                                            </div>
                                            <div class="factor-title"> 
                                                <span class="row-title">

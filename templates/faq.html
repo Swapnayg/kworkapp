@@ -2,6 +2,7 @@
 {% load static %}
 {% block contentarea%}
 <title>Letworkbedone - Frequently Asked Questions</title>
+
 <div class="all_page page-flex__content pt0">
    <div id="event_list" class="event-list js-event-list"></div>
    <script>window.workerHasOrderImportant=false;</script>
@@ -137,10 +138,10 @@
                            <div class="form-item__after-input form-item__error" style="display: none;"></div>
                         </div>
                         <div class="form-item mt15">
-                           <textarea rows="7" placeholder="Please enter your message here" id="form_message" class="textarea-style w-100" required></textarea>
+                           <textarea rows="7"  minlength="0" maxlength="{{support_desc}}" placeholder="Please enter your message here" id="form_message" onkeyup="form_message_onchange(this);" onpaste="form_message_onchange(this);" class="textarea-style w-100" required></textarea>
                            <div class="form-item__after-input">
                               <div class="form-item__error" style="display: none;"></div>
-                              <div class="tcounter">0 of 4000 characters</div>
+                              <div class="tcounter"><span class="countDesc">{{support_desc}}</span></div>
                            </div>
                         </div>
                   </div>
@@ -192,6 +193,35 @@
       left: 8px;
       position: absolute;
    }
+   .green-btn
+   {
+      text-decoration:none !important;
+   }
+   .article-icon-327 {
+      background-image: url(/static/assets/images/files/5ba797304c7be.png);
+  }
+  .article-icon-329 {
+   background-image: url(/static/assets/images/files/5ba797c7237ec.png);
+}
+
+.article-icon-330 {
+   background-image: url(/static/assets/images/files/5ba797f8be2d2.png);
+}
+.article-icon-331 {
+   background-image: url(/static/assets/images/files/5ba7982587aeb.png);
+}
+.article-icon-332 {
+   background-image: url(/static/assets/images/files/5bd815c1b75a0.png);
+}
+.kb .custom-search .search-button
+{
+   top:12px;
+}
+#search_article_name:hover, #search_article_name:focus{
+   background:white !important;
+   outline:none;
+   box-shadow:none;
+}
 </style>
 <script>
    $(document).ready(function() {
@@ -327,6 +357,7 @@
             data: {'umenuname': actName},
             success: function(data) 
             {  
+               console.log(data);
                $("#main_support").empty();
                $("#main_support").append('<div class="articleDesc"><div class="question d-flex align-items-center justify-content-between"><div>'+data[0].title.toString()+'</div><div class="attention ml-3"><i class="ico-info"/></div></div><div class="answer fr-view"><p id="isPasted">'+data[0].contents.toString()+'</p></div></div>');
                parentNamefull =  $("#back_btn").attr("data-label");
@@ -453,7 +484,7 @@
          {  
             $("#suggetions").empty();
             $.each(data, function(i, v) {
-               $("#suggetions").append('<div class="suggestion d-flex justify-content-start"><div class="d-inline-block" data-label="'+data[i].title.toString()+'" onclick="searchClick(this);"><span>'+data[i].title.toString()+'</span></div></div>');
+               $("#suggetions").append('<div class="suggestion d-flex justify-content-start"><div class="d-inline-block" data-label="'+data[i].slug_name.toString()+'" onclick="searchClick(this);"><span>'+data[i].title.toString()+'</span></div></div>');
             });
             $(".dropdown-suggestions").show();
          }
@@ -479,6 +510,21 @@
             $("#back_btn").show();
          }
       });
+   }
+
+   function form_message_onchange(ev)
+   {
+      setTimeout(function() {
+         var thisChars = ev.value.replace(/{.*}/g, '').length; 
+         var maxlength = $(ev).attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         }else{
+            $(".countDesc").text(  maxlength - thisChars + " /"+maxlength  +" max" ); 
+         }
+   }, 500);
    }
 </script>
 

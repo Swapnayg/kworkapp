@@ -40,8 +40,12 @@
                                <li>
                                  <label>
                                     <input type="radio"  onclick="resolution_cat(this);" name="solution_id" value="2" id="solution2">
-                                    <label for="solution2">Ask the buyer to cancel this order</label>
-                                  </label>
+                                    {% if current_user == 'Buyer' %}
+                                        <label for="solution2">Ask the seller to cancel this order</label>
+                                    {% else %}
+                                        <label for="solution2">Ask the buyer to cancel this order</label>
+                                    {% endif %}
+                                </label>
                                </li>
                             </ul>
                             <div class="m-t-30" id="solution2_div">
@@ -86,7 +90,7 @@
                                   <label for="message">
                                     Explain to the buyer why you would like to cancel this order
                                   </label>
-                                  <textarea name="message" id="can_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="can_text_char_onkeyup(this);" ></textarea>
+                                  <textarea name="message" id="can_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="can_text_char_onkeyup(this);"  onpaste="can_text_char_onkeyup(this);"></textarea>
                                   <span class="chars-counter" id="span_can_text_char">
                                     0/{{resolution_char}} Characters
                                   </span>
@@ -96,7 +100,12 @@
                         <div class="extras-form" id="extension_form">
                             <div class="delivery-form">
                                 <h1>Extend Delivery Time</h1>
-                                <h2>You can ask beinganaatiidu1 to extend the delivery time of this order.</h2>
+                                {% if current_user ==  "Buyer" %}
+                                    <h2>You can ask {{seller_gig_details.0.gig_username}} to extend the delivery time of this order.</h2>
+                                {% else %}
+                                    <h2>You can ask {{seller_gig_details.0.order_by_username}} to extend the delivery time of this order.</h2>
+                                {% endif %}
+                                
                                 <div class="select-box">
                                    <label for="delivery">Select the number of days you would like to add to your delivery time</label>
                                    <select name="delivery" id="delivery">
@@ -111,7 +120,7 @@
                                    <label for="message">
                                       Explain why you would like to extend your delivery time
                                    </label>
-                                   <textarea name="message" id="ext_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="ext_text_char_onkeyup(this);" ></textarea>
+                                   <textarea name="message" id="ext_text_char" placeholder="Type your message here..." maxlength="{{resolution_char}}" onkeyup="ext_text_char_onkeyup(this);" onpaste="ext_text_char_onkeyup(this);"  ></textarea>
                                    <span class="chars-counter" id="span_ext_text_char">
                                      0/{{resolution_char}} Characters
                                    </span>
@@ -483,6 +492,7 @@
 
    function can_text_char_onkeyup(ev)
    {
+    setTimeout(function() {
       var thisChars = ev.value.replace(/{.*}/g, '').length; 
          var maxlength = $(ev).attr("maxlength");
          if(thisChars > maxlength) 
@@ -492,10 +502,12 @@
          }else{
             $("#span_can_text_char").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+    }, 500);
    }  
    
    function ext_text_char_onkeyup(ev)
    {
+    setTimeout(function() {
       var thisChars = ev.value.replace(/{.*}/g, '').length; 
          var maxlength = $(ev).attr("maxlength");
          if(thisChars > maxlength) 
@@ -505,6 +517,7 @@
          }else{
             $("#span_ext_text_char").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
          }
+    }, 500);
    }   
  
 </script>

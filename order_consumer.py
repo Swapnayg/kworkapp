@@ -5,7 +5,6 @@ from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.generic.websocket import WebsocketConsumer
 from django.core.files.base import ContentFile
-from notifications.signals import notify
 from .models import User
 from .models import Message, Conversation,Order_Message, CustomNotifications,Order_Conversation,User_orders,ChatWords,SpamDetection
 from django.db.models import Q

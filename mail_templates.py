@@ -24,7 +24,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+buyer_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
+                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+buyer_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -115,7 +115,7 @@ class MailTemplates():
             <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
               <tbody>
                 <tr>
-                  <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center"><a label="Button" class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number+"""/activities">View Order Details</a></td>
+                  <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center"><a label="Button" class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities">View Order Details</a></td>
                 </tr>
               </tbody>
             </table>
@@ -218,7 +218,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View My Order</a></td>
+                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View My Order</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -277,7 +277,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
+                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -318,7 +318,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-white o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #ffffff;border-radius: 4px;"><a class="o_text-primary" href=https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number+"""/activities style="text-decoration: none;outline: none;color: #2E5DC5;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
+                        <td width="300" class="o_btn o_bg-white o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #ffffff;border-radius: 4px;"><a class="o_text-primary" href=https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities style="text-decoration: none;outline: none;color: #2E5DC5;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -357,7 +357,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-white o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #ffffff;border-radius: 4px;"><a class="o_text-primary" href="https://letworkbedone.com/user/"""+buyer_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #2E5DC5;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
+                        <td width="300" class="o_btn o_bg-white o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #ffffff;border-radius: 4px;"><a class="o_text-primary" href="https://letworkbedone.com/user/"""+buyer_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #2E5DC5;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -395,7 +395,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order</a></td>
+                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View Order</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -433,7 +433,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
+                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -471,7 +471,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
+                        <td width="300" class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">See More Details</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -554,7 +554,7 @@ class MailTemplates():
                   <table align="center" cellspacing="0" cellpadding="0" border="0" role="presentation">
                     <tbody>
                       <tr>
-                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View All Proposals</a></td>
+                        <td width="300" class="o_btn o_bg-success o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;"><a class="o_text-white" href="https://letworkbedone.com/user/"""+seller_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">View All Proposals</a></td>
                       </tr>
                     </tbody>
                   </table>
@@ -713,7 +713,7 @@ class MailTemplates():
                   <tbody>
                     <tr>
                       <td class="o_btn o_bg-primary o_br o_heading o_text" align="center" style="font-family: Helvetica, Arial, sans-serif;font-weight: bold;margin-top: 0px;margin-bottom: 0px;font-size: 16px;line-height: 24px;mso-padding-alt: 12px 24px;background-color: #2E5DC5;border-radius: 4px;">
-                        <a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Reply to Message</a>
+                        <a class="o_text-white" href="https://letworkbedone.com/user/"""+receiver_username+"""/manage_orders/"""+order_number.replace("#","")+"""/activities" style="text-decoration: none;outline: none;color: #ffffff;display: block;padding: 12px 24px;mso-text-raise: 3px;">Reply to Message</a>
                       </td>
                     </tr>
                   </tbody>

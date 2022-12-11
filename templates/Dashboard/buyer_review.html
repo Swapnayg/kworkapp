@@ -150,7 +150,8 @@
         }});
         $(".error-message").hide();
 
-        $('#textarea_buyer_desc').keyup(function() { 
+        $('#textarea_buyer_desc').on('keyup', 'paste', function() {
+            setTimeout(function() {  
             var thisChars = this.value.replace(/{.*}/g, '').length; 
             var maxlength = $(this).attr("maxlength");
             if(thisChars > maxlength) 
@@ -160,6 +161,7 @@
             }else{
                $(".buyer_desc_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
             }
+        }, 500);  
          });
         $("#form_buyer_review").submit(function(e)
         {
@@ -172,10 +174,8 @@
                     data: {"order_no":'{{order_no}}',"b_review_txt":$("#textarea_buyer_desc").val(),"b_rating":rating_buyer},
                     success: function(data) 
                     {
-                        jsonObject = JSON.parse(JSON.stringify({
-                            "sucess": "sucess"
-                        }))
-                       if(jsonObject['sucess'] == "sucess")
+                        jsonObject = JSON.parse(data);
+                       if(jsonObject[0]['sucess'] == "sucess")
                        {
                          $("#review_section").hide();
                          $("#thank_section").show();

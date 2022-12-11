@@ -1001,7 +1001,7 @@
                                              <div class="submenu-group-inner">
                                                 {% for ml in main_menu|slice:"6:12" %}                                           
                                                    {% if forloop.counter <= 8 %}
-                                                      <a class="submenu-item" href="#"><span class="submenu-item__text js-menu-item">{{ml.name}}</span></a>
+                                                      <a class="submenu-item" href="/categories/{{ml.name}}"><span class="submenu-item__text js-menu-item">{{ml.name}}</span></a>
                                                    {% endif %}
                                                 {% endfor %}
                                           {% endif %}

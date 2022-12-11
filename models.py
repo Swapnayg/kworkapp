@@ -23,19 +23,6 @@ class MytypeField(models.Field):
     def db_type(self, connection):
         return 'timestamp'
 
-class SellerLevels(models.Model):
-    BOOL_CHOICES =[('level1', 'New or higher'),('level2', 'Advanced or higher'),('level3', 'Professional')]
-    level_name =  models.CharField(max_length=200,choices=BOOL_CHOICES,blank=True,default="Basic",null=True)
-    No_of_gigs = models.CharField(max_length=200,blank=True,default="0",null=True)
-    No_of_offers = models.CharField(max_length=200,blank=True,default="0",null=True)
-    
-    class Meta:
-        verbose_name = _("Seller Level")
-        verbose_name_plural = _("Seller Levels")
-
-    def __str__(self):
-        return str(self.level_name)
-
 class UserManager(BaseUserManager):
     def _create_user(self, email, username=None, is_admin=False, is_staff=False, is_active=True, password=None, country=None, avatar=None):
         'Method for actual creation of a user'
@@ -69,6 +56,32 @@ class UserManager(BaseUserManager):
             email=email, username=username, is_admin=True,
              is_staff=True, is_active=True, password=password,country=country,avatar=avatar
         )
+        
+        
+def badgeupload(instance, filename):
+    ext = filename.split('.')[-1]
+    filenm = os.path.splitext(filename)[0]
+    filename = "%s_%s.%s" % ("badge_",str(instance.level_slug), ext)
+    return os.path.join( 'badges/'+filename)
+
+class SellerLevels4(models.Model):
+    level_name =  models.CharField(max_length=500,blank=True,default="",null=True,help_text='Actual Seller Level Name Which will displayed in front.')
+    level_slug =  models.CharField(max_length=500,blank=False,default="",null=False,primary_key=True,help_text='slug name should follow the sequence of levels, i.e, level1, level2, etc.')
+    No_of_gigs = models.CharField(max_length=200,blank=True,default="0",null=True)
+    No_of_offers = models.CharField(max_length=200,blank=True,default="0",null=True)
+    level_badge = models.FileField(upload_to = badgeupload ,max_length=255, null=True,blank=True)
+    up_order_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
+    up_order_count = models.CharField(max_length=200,blank=True,default="0",null=True)
+    record_check = models.CharField(max_length=200,blank=True,default="0",null=True)
+    
+    class Meta:
+        verbose_name = _("Seller Level")
+        verbose_name_plural = _("Seller Levels")
+
+    def __str__(self):
+        return str(self.level_slug)
+
+
 
 class User(AbstractBaseUser):
     BOOL_CHOICES =[('Buyer', 'Buyer'),('Seller', 'Seller')]
@@ -82,12 +95,15 @@ class User(AbstractBaseUser):
     country =  CountryField(blank=True,default="",null=True)
     avatar = models.CharField(max_length=500, blank=True,default="",null=True)
     avg_respons = models.CharField(max_length=500, blank=True,default="1",null=True)
+    user_last_delivery = models.DateField(blank=True, default=datetime.date.today,null=True)
+    u_last_delivery = models.DateTimeField(default=timezone.now, blank=True)
     last_delivery = models.CharField(max_length=500, blank=True,default="1",null=True)
     ordersin_progress = models.CharField(max_length=500, blank=True,default="0",null=True)
     avg_delivery_time = models.CharField(max_length=500, blank=True,default="Within 24 Hours",null=True)
-    seller_level =  models.CharField(max_length=200,choices=BOOL_CHOICES_Levels,blank=True,default="level1",null=True)
+    user_level =  models.ForeignKey(SellerLevels4, on_delete=models.CASCADE,default="level1",blank=True,null=True, related_name = "user_seller_level") 
+    seller_level =  models.CharField(max_length=500, blank=True,default="level1",null=True)
     profile_type = models.CharField(max_length=200,choices=BOOL_CHOICES,blank=True,default="",null=True)
-    profile_status = models.CharField(max_length=200,choices=BOOL_CHOICES_STATUS,blank=True,default="",null=True)
+    profile_status = models.CharField(max_length=200,choices=BOOL_CHOICES_STATUS,blank=True,default="active",null=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=False)
     code = models.IntegerField(default=False)
@@ -169,6 +185,8 @@ class Conversation(models.Model):
     def __str__(self):
         return str(self.initiator)
     
+
+ 
 class ChatWords(models.Model):
     name =  models.CharField(max_length=200,blank=True,default="",null=True)
     slug =  models.CharField(max_length=200,blank=True,default="",null=True)
@@ -454,6 +472,7 @@ class UserGigs(models.Model):
     BOOL_CHOICES_STATUS =[('active', 'Active'),('pending', 'Pending'),('modification', 'Modification'),('draft', 'Draft'),('denied', 'Denied'),('paused', 'Paused')]
     gig_title =   models.CharField(max_length=1000,blank=True,default="",null=True)
     gig_category = models.ForeignKey(Categories, on_delete=models.CASCADE,null=True,blank=True)
+    gig_share_link = models.CharField(max_length=1000,blank=True,default="",null=True)
     gig_sub_category = models.ForeignKey(SubSubCategories, on_delete=models.CASCADE,null=True,blank=True)
     gig_description = models.TextField(blank=True,default="",null=True)
     gig_status =   models.CharField(max_length=200,choices=BOOL_CHOICES_STATUS,default="draft",blank=True,null=True)
@@ -881,6 +900,7 @@ class Order_Message(models.Model):
     conversation_id = models.ForeignKey(Order_Conversation, on_delete=models.CASCADE)
     timestamp = models.DateTimeField(default=timezone.now, blank=True)
     is_read = models.BooleanField(default=False)
+    mail_sent = models.BooleanField(default=False)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
 
@@ -954,7 +974,7 @@ class User_Order_Resolution(models.Model):
 class User_Refund(models.Model):
     BOOL_CHOICES_STATUS = [('cancelled', 'Cancelled'),('refunded', 'Refunded')]
     refund_amount = models.CharField(max_length=500,blank=True,default="",null=True)
-    credit_used = models.CharField(max_length=500,blank=True,default=None,null=True)
+    credit_used = models.CharField(max_length=500,blank=True,default="0.0",null=True)
     used_on = models.DateTimeField(default=timezone.now, blank=True)
     used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     refund_date = models.DateTimeField(default=timezone.now, blank=True)
@@ -990,7 +1010,7 @@ class User_Earnings(models.Model):
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="earning_user",)
     earning_type =  models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     affiliate_user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="affiliate_user",)
-    credit_used = models.CharField(max_length=500,blank=True,default=None,null=True)
+    credit_used = models.CharField(max_length=500,blank=True,default="0.0",null=True)
     used_on = models.DateTimeField(default=timezone.now, blank=True)
     used_offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     
@@ -1141,6 +1161,7 @@ class Message(models.Model):
     request_offers_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True,default= None)
     message_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     is_read = models.BooleanField(default=False)
+    mail_sent = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = _("Message")

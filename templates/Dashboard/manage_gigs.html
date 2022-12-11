@@ -99,7 +99,7 @@
                                                        </a>
                                                    </li>
                                                    <li>
-                                                      <a class="anchor_actions"  onclick="share_click('{{gig.gig_id}}', '{{gig.gig_Name}}')"  class="js-gtm-event-auto js-btn-gig-share-dropdown" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Share">
+                                                      <a class="anchor_actions"  onclick="share_click('{{gig.gig_id}}', '{{gig.gig_share_Link}}', '{{gig.gig_Name}}')"  class="js-gtm-event-auto js-btn-gig-share-dropdown" data-gtm-category="My Gigs" data-gtm-action="Gig Action" data-gtm-label="Share">
                                                       <span class="text-inner">Share</span>
                                                       </a>
                                                    </li>
@@ -548,12 +548,9 @@
                <div class="">
                   <input type="hidden" id="share_gig_id">
                   <input type="hidden" id="share_gig_name">
+                  <input type="hidden" id="share_gig_link">
                   <div class="share-buttons-container">
                      <div class="share-list">
-                       <!-- FACEBOOK -->
-                       <a class="fb-h" onclick="return fbs_click()" target="_blank">
-                         <img src="https://img.icons8.com/material-rounded/96/000000/facebook-f.png">
-                       </a>
                    
                        <!-- TWITTER -->
                        <a class="tw-h" onclick="return tbs_click()"  target="_blank">
@@ -583,6 +580,12 @@
      </div>
    </div>
  </div>
+ <style>
+ .gig-image-small
+   {
+      width:25px;
+   }
+</style>
 <script>
     $(document).ready(function(){
     });
@@ -616,7 +619,7 @@
                      location_href =  $(location).attr('href').split("/");
                      random_string = makeid(6);
                      var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
-                     window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/create_gig/'+ output, "_blank");
+                     window.open(location_href[0]+"//"+location_href[2] +'/user/{{request.user.username}}/create_gig/'+ output + '/NEW', "_blank");
                 }
             }
           });
@@ -674,42 +677,47 @@
          }
       });
     }
-    function share_click(gig_id,gig_name)
+    function share_click(gig_id,gig_sharelink,gig_name )
     {
       $("#modal_share").modal('show');
       $("#share_gig_id").val(gig_id);
+      $("#share_gig_link").val(gig_sharelink);
       $("#share_gig_name").val(gig_name);
     }
 
 
-    function fbs_click() { 
-      var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
-      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
-      pageLink = pageLink + $("#textarea_iwill").val();
-      window.open(`http://www.facebook.com/sharer.php?u=${pageLink}&quote=${pageTitle}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+   
          
    function tbs_click() { 
       var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
-      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
-      pageLink = pageLink + $("#share_gig_name").val();
-      window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+      var pathurl =  window.location.origin;
+      var username = '{{request.user.username}}';
+      var gig_link =  $("#share_gig_link").val();
+      var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+      window.open(`https://twitter.com/intent/tweet?text=${pageTitle}&url=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
    
    function lbs_click() { 
       var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
-      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
-      pageLink = pageLink + $("#share_gig_name").val();
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+      var pathurl =  window.location.origin;
+      var username = '{{request.user.username}}';
+      var gig_link =  $("#share_gig_link").val();
+      var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+      window.open(`http://www.linkedin.com/shareArticle?mini=true&url=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
    
    function was_click() { 
       var pageTitle = "Letworkbedone Gig - " + $("#share_gig_name").val();
-      var pageLink = window.location.origin + "/gigs/{{request.user.username}}/";
-      pageLink = pageLink + $("#share_gig_name").val();
-      window.open(`https://api.whatsapp.com/send?text=${pageLink}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
+      var pathurl =  window.location.origin;
+      var username = '{{request.user.username}}';
+      var gig_link =  $("#share_gig_link").val();
+      var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+      window.open(`https://api.whatsapp.com/send?text=${completeUrl}`,'sharer','toolbar=0,status=0,width=626,height=436');return false; }
    
    function cos_click() { 
-      var pageLink1 = window.location.origin + "/gigs/{{request.user.username}}/";
-      pageLink1 = pageLink1 + $("#share_gig_name").val();
-         navigator.clipboard.writeText(pageLink1).then(
+      var pathurl =  window.location.origin;
+      var username = '{{gig_details.user_id.username}}';
+      var gig_link = '{{gig_details.gig_share_link}}';
+      var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
+         navigator.clipboard.writeText(completeUrl).then(
            function() {
              window.alert('Url Copied!') 
            }, 

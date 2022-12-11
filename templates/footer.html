@@ -5,8 +5,24 @@
       <div class="footer__columns">
          <div class="footer__column footer__column--logo">
             <a href="{% url 'index' %}" class="footer__logo">
-               <img class="footer__logo-image" src="{{logo_image_url}}" alt="" width="110" height="23" />
+               {% comment %} <img class="footer__logo-image" src="{{logo_image_url}}" alt="" width="110" height="23" /> {% endcomment %}
                <!-- <span class="footer__logo-text">Freelance marketplace</span> -->
+               <div class="footer__menu">
+                  <div class="footer__menu-column js-footer-menu-column">
+                     <div class="footer__menu-title js-footer-menu-title">
+                        Categories
+                        <svg class="footer__menu-title-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none">
+                           <path d="M12 6L8 10L4 6" stroke="#177de5" stroke-width="1.6" stroke-linecap="round" />
+                        </svg>
+                     </div>
+                     <div class="footer__menu-links" id="footer_cat_list">
+                        {% for ml in main_menu %}
+                           <a href="/categories/{{ml.name}}" target="_blank">{{ml.name}}</a>
+                        {% endfor %}
+                     </div>
+                  </div>
+                 
+               </div>
             </a>
             <div class="footer__stats"></div>
          </div>
@@ -81,10 +97,10 @@
             </div> -->
       </div>
       <div class="footer__bottom">
-         <span class="footer__copyright"><span class="db mb8"> 2022 Letworkbedone ©</span>letworkbedone Ltd. 2022</span>
+         <span class="footer__copyright"><span class="db mb8"> copyright©</span>Letworkbedone Ltd {% now 'Y' %}</span>
          <div class="footer__apps">
-            <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-appstore-en.png' %}" alt="appstore" width="112" height="32" /></a>
-            <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-gplay-en.png' %}" alt="googleplay" width="112" height="32" /></a>
+            {% comment %} <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-appstore-en.png' %}" alt="appstore" width="112" height="32" /></a>
+            <a href="#" target="_blank" rel="nofollow" class="footer__apps-button"><img class="js-lazy-load-image" src="{% static 'assets/images/app-gplay-en.png' %}" alt="googleplay" width="112" height="32" /></a> {% endcomment %}
          </div>
       </div>
    </div>
@@ -141,9 +157,28 @@
    {
       cursor:pointer;
    }
+   a.login_with p
+   {
+      text-align: left;
+      padding-left: 5%;
+   }
 </style>
 <script>
    $(document).ready(function(){
+      $(document).mouseup(function(e) { 
+         container = $('#message_show_div');
+         container1 = $('#notification_show_div')
+         if (!container.is(e.target) && container.has(e.target).length === 0) 
+         {
+            $('#message_show_div').hide();
+            $('#notification_show_div').hide();
+         }
+         else if(!container1.is(e.target) && container1.has(e.target).length === 0)
+         {
+            $('#message_show_div').hide();
+            $('#notification_show_div').hide();
+         }
+      });
       $('#message_show_div').hide();
       $('#notification_show_div').hide();
       refresh_order_notifications();
@@ -335,7 +370,8 @@
                      }
                      else if(vvv.verb == "payment")
                      {
-                        $("#not_list").append('<li class="drawer-item read"> <div  class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <a href="/billing"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer></a> </div> '+btn_txt+' </div> </li> ');
+                        back_img = "/static/assets/images/trans_notification.png";
+                        $("#not_list").append('<li class="drawer-item read"> <div  class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+back_img+'); background-size: 35px; background-repeat: no-repeat;"></div> </div> </div> <div class="item-content-wrapper"> <a href="/billing"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer></a> </div> '+btn_txt+' </div> </li> ');
                      }
                      else if(vvv.verb == "reviews")
                      {
@@ -385,7 +421,8 @@
                   }
                   else if(vvv.verb == "payment")
                   {
-                     $("#not_list").append('<li class="drawer-item read"> <div  class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+vvv.sender_img+');"></div> </div> </div> <div class="item-content-wrapper"> <a href="/billing"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer></a> </div> '+btn_txt+' </div> </li> ');
+                     back_img = "/static/assets/images/trans_notification.png";
+                     $("#not_list").append('<li class="drawer-item read"> <div  class="main-action" > <div class="image-wrapper"> <div class="profile-picture" title="'+vvv.sender_username+'"> <div class="user-initial font-accent">b</div> <div class="user-image" style="background-image: url('+back_img+');background-size: 35px; background-repeat: no-repeat;"></div> </div> </div> <div class="item-content-wrapper"> <a href="/billing"> <p class="content">'+vvv.text+'</p> <footer class="r15kMhW"> <time >'+vvv.message_date+'</time> <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span>  <span class="XQskgrQ rVZcp0W" aria-hidden="true" style="width: 2px; height: 2px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"></path> </svg> </span> </footer></a> </div> '+btn_txt+' </div> </li> ');
                   }
                   else if(vvv.verb == "reviews")
                   {

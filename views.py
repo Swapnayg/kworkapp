@@ -2,6 +2,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from re import sub
 from django.utils import timesince
+import psycopg2
 import smtplib
 import shortuuid
 import html
@@ -34,7 +35,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags, SellerLevels,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,SellerLevels4,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 class indexView(View):
@@ -69,7 +70,8 @@ class all_gigs_pageView(View):
             for sub in sub_sub_category:
                 for sub_cat in sub.tags.all():
                     tagslist.append(sub_cat.name.strip())
-        return render(request , 'gigs_page.html',{"details":category_details,"sub_details":sub_categoryd,"sub_topics":sub_sub_category,"tagslist":tagslist})
+        seller_levels = SellerLevels4.objects.all()
+        return render(request , 'gigs_page.html',{"details":category_details,"sub_details":sub_categoryd,"sub_topics":sub_sub_category,"tagslist":tagslist,"seller_levels":seller_levels})
 
 class aboutView(View):
     return_url = None
@@ -83,88 +85,112 @@ class privacyView(View):
 
 class gig_View_View(View):
     return_url = None
-    def get(self , request,username='',gig_title=''):
+    def get(self , request,username='',gig_title='',share = 0):
         # try:
             userDetails = User.objects.get(username = username)
             languages = Languages.objects.exclude(lng_slug= u'english').order_by('lng_Name')
             userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
+            pro_last_delivery = ''
+            u_last_delivery = ''
+            u_created_on= ''
+            try:
+                u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S").date()
+            except:
+                u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S.%f").date()
+            try:
+                u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S").date()
+            except:
+                u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S.%f").date()
+            if(int(u_last_delivery.month) == int(u_created_on.month) and int(u_last_delivery.day) == int(u_created_on.day) and int(u_last_delivery.year) == int(u_created_on.year)):
+                pro_last_delivery = "Just Started"
+            else:
+                pro_last_delivery =  userDetails.u_last_delivery
             userlang = []
             english_profi = ''
             userlanguages = UserLanguages.objects.filter(user_id=userDetails)
             for lang in userlanguages:
                 userlang.append({"name":lang.language_name.lng_Name,"proficiency":lang.lang_prof}) 
-            gig_details = UserGigs.objects.get(user_id=userDetails ,gig_title= gig_title)
-            gig_package_details = UserGigPackages.objects.filter(user_id=userDetails ,package_gig_name= gig_details)
-            gig_image_details = Usergig_image.objects.filter(user_id=userDetails ,package_gig_name= gig_details)
-            seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails,package_gig_name= gig_details)
-            seller_all_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
-            comm_count = 0
-            recc_count = 0
-            serv_count = 0
-            seller_count = 0
-            seller_all_count = 0
-            s_review_date = ''
-            seller_rev_data = []
-            for sa_review in seller_all_reviews:
-                seller_all_count = seller_all_count + float(sa_review.average_val)
-            for s_review in seller_reviews:
-                comm_count = comm_count + int(s_review.communication)
-                recc_count = recc_count + int(s_review.recommendation)
-                serv_count = serv_count + int(s_review.service)
-                seller_count = seller_count + float(s_review.average_val)
-                s_review_date = s_review.review_date
-                s_resp_date = s_review.buyer_resp_date
-                country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
-            try:
-                seller_count = round(float(round(seller_count/len(seller_reviews),0)))
-            except:
-                seller_count = 0
-            try:
-                comm_count = round(comm_count/len(seller_reviews),1)
-            except:
+            gig_details = ''
+            if(int(share) == 1):
+                try:
+                    gig_details = UserGigs.objects.get(user_id=userDetails ,gig_share_link= gig_title,gig_status="active")
+                except:
+                    gig_details = ''
+            else:  
+                try:
+                    gig_details = UserGigs.objects.get(user_id=userDetails ,gig_title= gig_title,gig_status="active")
+                except:
+                    gig_details = ''
+            if(gig_details != ''):
+                gig_package_details = UserGigPackages.objects.filter(user_id=userDetails ,package_gig_name= gig_details)
+                gig_image_details = Usergig_image.objects.filter(user_id=userDetails ,package_gig_name= gig_details)
+                seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails,package_gig_name= gig_details)
+                seller_all_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
+                active_orders_cnt = User_orders.objects.filter(package_gig_name = gig_details,order_status="active").count()
                 comm_count = 0
-            try:
-                recc_count = round(recc_count/len(seller_reviews),1)
-            except:
                 recc_count = 0
-            try:
-                serv_count = round(serv_count/len(seller_reviews),1)
-            except:
                 serv_count = 0
-            try:
-                seller_all_count = round(seller_all_count/len(seller_all_reviews),1)
-            except:
+                seller_count = 0
                 seller_all_count = 0
-            seller_levl= ''
-            if(userDetails.seller_level=="level1"):
-                seller_levl = "New or higher"
-            elif(userDetails.seller_level=="level2"):
-                seller_levl = "Advanced or higher"
-            elif(userDetails.seller_level=="level3"):
-                seller_levl = "Professional"
-            active_gigs_details = UserGigs.objects.filter(user_id=userDetails, gig_status='active').exclude(gig_title=gig_details.gig_title)
-            active_gigs_data= []
-            for u_gig in active_gigs_details:
-                gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
-                if(gig_image != None):
-                    gig_image_url = gig_image.gig_image
-                active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url})
-            favourite_Count= Gig_favourites.objects.filter(gig_name=gig_details).count()
-            curr_fav = ''
-            if(Gig_favourites.objects.filter(gig_name=gig_details,user_id=userDetails).exists() == True):
-                curr_fav = 'yes'
+                s_review_date = ''
+                seller_rev_data = []
+                for sa_review in seller_all_reviews:
+                    seller_all_count = seller_all_count + float(sa_review.average_val)
+                for s_review in seller_reviews:
+                    comm_count = comm_count + int(s_review.communication)
+                    recc_count = recc_count + int(s_review.recommendation)
+                    serv_count = serv_count + int(s_review.service)
+                    seller_count = seller_count + float(s_review.average_val)
+                    s_review_date = s_review.review_date
+                    s_resp_date = s_review.buyer_resp_date
+                    country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
+                    seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
+                try:
+                    seller_count = round(float(round(seller_count/len(seller_reviews),0)))
+                except:
+                    seller_count = 0
+                try:
+                    comm_count = round(comm_count/len(seller_reviews),1)
+                except:
+                    comm_count = 0
+                try:
+                    recc_count = round(recc_count/len(seller_reviews),1)
+                except:
+                    recc_count = 0
+                try:
+                    serv_count = round(serv_count/len(seller_reviews),1)
+                except:
+                    serv_count = 0
+                try:
+                    seller_all_count = round(seller_all_count/len(seller_all_reviews),1)
+                except:
+                    seller_all_count = 0
+                seller_levl= str(userDetails.user_level.level_name)
+                active_gigs_details = UserGigs.objects.filter(user_id=userDetails, gig_status='active').exclude(gig_title=gig_details.gig_title)
+                active_gigs_data= []
+                for u_gig in active_gigs_details:
+                    gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
+                    if(gig_image != None):
+                        gig_image_url = gig_image.gig_image
+                    active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url})
+                favourite_Count= Gig_favourites.objects.filter(gig_name=gig_details).count()
+                curr_fav = ''
+                if(Gig_favourites.objects.filter(gig_name=gig_details,user_id=userDetails).exists() == True):
+                    curr_fav = 'yes'
+                else:
+                    curr_fav = 'no'
+                if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+                    userDetails1 = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                    impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details, user_id=userDetails1)
+                    impressions.save()
+                else:   
+                    impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details)
+                    impressions.save()
+                extra_gigs = UserExtra_gigs.objects.filter(package_gig_name=gig_details)
+                return render(request , 'Dashboard/view_gig.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"gig_details":gig_details,"gig_package_Details":gig_package_details,"gig_image_Details":gig_image_details,"gig_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"seller_level":seller_levl,"seller_all_review":seller_all_reviews,"seller_all_count":seller_all_count,"Other_gigs":active_gigs_data,"fav_count":favourite_Count,"current_user_fav":curr_fav,"extra_gigs":extra_gigs,"active_orders":active_orders_cnt,"profile_last_delivery":pro_last_delivery,"has_records":"yes"})      
             else:
-                curr_fav = 'no'
-            if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
-                userDetails1 = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details, user_id=userDetails1)
-                impressions.save()
-            else:   
-                impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details)
-                impressions.save()
-            extra_gigs = UserExtra_gigs.objects.filter(package_gig_name=gig_details)
-            return render(request , 'Dashboard/view_gig.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"gig_details":gig_details,"gig_package_Details":gig_package_details,"gig_image_Details":gig_image_details,"gig_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"seller_level":seller_levl,"seller_all_review":seller_all_reviews,"seller_all_count":seller_all_count,"Other_gigs":active_gigs_data,"fav_count":favourite_Count,"current_user_fav":curr_fav,"extra_gigs":extra_gigs})                 
+                gig_details = []    
+                return render(request , 'Dashboard/view_gig.html',{"has_records":"no"} )       
         # except:
         #     return render(request , 'register.html')
             
@@ -222,8 +248,15 @@ class reviews_View(View):
         try:
             buyer_count = round(buyer_count/len(buyer_reviews),1)
         except:
-            buyer_count = 0    
-        return render(request , 'reviews.html',{"categories":categories,"no_reviews":len(buyer_reviews), "aver_count":buyer_count})
+            buyer_count = 0
+        slideruserdata= []
+        subcategory= SubCategories.objects.all()
+        for sub_cat in subcategory:
+            u_profile = UserProfileDetails.objects.filter(sub_category=sub_cat).first()
+            if(u_profile != None):
+                if(len(slideruserdata) <= 4):
+                    slideruserdata.append({"username":u_profile.user_id.username, "profession":str(u_profile.sub_category.sub_category_Name).lower(),"joined_dt":u_profile.user_id.created_at,"profile_img":u_profile.user_id.avatar,"category_img":str(sub_cat.image)})
+        return render(request , 'reviews.html',{"categories":categories,"no_reviews":len(buyer_reviews), "aver_count":buyer_count,"slider_user_Details":slideruserdata})
 
 class prohibited_service_View(View):
     return_url = None
@@ -238,13 +271,23 @@ class approval_process_View(View):
 class faq_View(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'faq.html')
+        support_desc = 0
+        charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "contact_support_description"))
+        for c in charcterlimits:
+            if(c.Char_category_Name == "contact_support_description"):
+                support_desc = c.Max_No_of_char_allowed
+        return render(request , 'faq.html',{"support_desc":support_desc})
 
 
 class contact_support_View(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'contact_support.html')
+        support_desc = 0
+        charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "contact_support_description"))
+        for c in charcterlimits:
+            if(c.Char_category_Name == "contact_support_description"):
+                support_desc = c.Max_No_of_char_allowed
+        return render(request , 'contact_support.html',{"support_desc":support_desc})
 
 class partners_View(View):
     return_url = None
@@ -267,90 +310,111 @@ class profile_view(View):
     def get(self , request,username=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try: 
-                userDetails = User.objects.get(username=username)
-                userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
-                userlanguages = UserLanguages.objects.filter(user_id=userDetails)
-                userlang = []
-                for lang in userlanguages:
-                    userlang.append({"name":lang.language_name.lng_Name,"proficiency":lang.lang_prof})  
-                active_gig_details = []
-                draft_gig_details = []
-                user_gigs_details = UserGigs.objects.filter(user_id=userDetails)
-                seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
-                buyer_reviews = Buyer_Reviews.objects.filter(b_review_to=userDetails)
-                categories = Categories.objects.all()
-                comm_count = 0
-                recc_count = 0
-                serv_count = 0
-                seller_count = 0
-                buyer_count = 0
-                b_review_date = ''
-                seller_rev_data = []
-                buyer_rev_data = []
-                for s_review in seller_reviews:
-                    comm_count = comm_count + int(s_review.communication)
-                    recc_count = recc_count + int(s_review.recommendation)
-                    serv_count = serv_count + int(s_review.service)
-                    seller_count = seller_count + float(s_review.average_val)
-                    s_review_date = s_review.review_date
-                    s_resp_date = s_review.buyer_resp_date
-                    country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                    seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
-                for b_review in buyer_reviews:
-                    buyer_count = buyer_count + int(b_review.rating_val)
-                    b_review_date = b_review.review_date
-                    b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
-                    buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
                 try:
-                    seller_count = round(float(round(seller_count/len(seller_reviews),0)))
+                    userDetails = User.objects.get(username=username ,profile_status="active")
                 except:
-                    seller_count = 0
-                try:
-                    comm_count = round(comm_count/len(seller_reviews),1)
-                except:
+                    userDetails = ''
+                if(userDetails != ''):
+                    userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
+                    userlanguages = UserLanguages.objects.filter(user_id=userDetails)
+                    pro_last_delivery = ''
+                    u_last_delivery = ''
+                    u_created_on= ''
+                    try:
+                        u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S.%f").date()
+                    try:
+                        u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S").date()
+                    except:
+                        u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S.%f").date()
+                    if(int(u_last_delivery.month) == int(u_created_on.month) and int(u_last_delivery.day) == int(u_created_on.day) and int(u_last_delivery.year) == int(u_created_on.year)):
+                        pro_last_delivery = "Just Started"
+                    else:
+                        pro_last_delivery = userDetails.u_last_delivery
+                    userlang = []
+                    for lang in userlanguages:
+                        userlang.append({"name":lang.language_name.lng_Name,"proficiency":lang.lang_prof})  
+                    active_gig_details = []
+                    draft_gig_details = []
+                    user_gigs_details = UserGigs.objects.filter(user_id=userDetails)
+                    seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
+                    buyer_reviews = Buyer_Reviews.objects.filter(b_review_to=userDetails)
+                    categories = Categories.objects.all()
                     comm_count = 0
-                try:
-                    recc_count = round(recc_count/len(seller_reviews),1)
-                except:
                     recc_count = 0
-                try:
-                    serv_count = round(serv_count/len(seller_reviews),1)
-                except:
                     serv_count = 0
-                try: 
-                    buyer_count = round(buyer_count/len(buyer_reviews),1)
-                except:
+                    seller_count = 0
                     buyer_count = 0
-                user_availability= []
-                try:
-                    user_availability_list = UserAvailable.objects.get(Q(user_id=userDetails))
-                    user_availability.append({"available_from":datetime.strptime(str(user_availability_list.available_from), "%Y-%m-%d"),"available_to":datetime.strptime(str(user_availability_list.available_to), "%Y-%m-%d"),"available_mssg":str(user_availability_list.available_mssg),"available_for_new":str(user_availability_list.available_for_new),"available_types":str(user_availability_list.available_types)})
-                except:
-                    user_availability = []
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="available_reason") | Q(Char_category_Name= "post_request_desc"))
-                available_char = 0
-                post_request_char = 0
-                for c in charcterlimits:
-                    if(c.Char_category_Name == "available_reason"):
-                        available_char = c.Max_No_of_char_allowed
-                    elif(c.Char_category_Name == "post_request_desc"):
-                        post_request_char = c.Max_No_of_char_allowed
-                for u_gig in user_gigs_details:
-                    userpack= UserGigPackages.objects.filter(package_gig_name=u_gig , user_id = userDetails , package_type= 'basic').first() 
-                    gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
-                    if(gig_image != None):
-                        gig_image_url = gig_image.gig_image
-                    else:
-                        gig_image_url = ''
-                    if(userpack != None):
-                        start_price = userpack.package_price
-                    else:
-                        start_price = 0 
-                    if(u_gig.gig_status == "active"):
-                        active_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"start_price":start_price})
-                    elif(u_gig.gig_status == "draft"):
-                        draft_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"start_price":start_price})
-                return render(request , 'Dashboard/profile.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"active_gigs":active_gig_details,"draft_gigs":draft_gig_details,"seller_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"buyer_count":buyer_count,"buyer_reviews":buyer_rev_data,"character_avail":int(available_char),"character_post_request":int(post_request_char),"user_avail":user_availability,"categories":categories})                 
+                    b_review_date = ''
+                    seller_rev_data = []
+                    buyer_rev_data = []
+                    for s_review in seller_reviews:
+                        comm_count = comm_count + int(s_review.communication)
+                        recc_count = recc_count + int(s_review.recommendation)
+                        serv_count = serv_count + int(s_review.service)
+                        seller_count = seller_count + float(s_review.average_val)
+                        s_review_date = s_review.review_date
+                        s_resp_date = s_review.buyer_resp_date
+                        country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
+                        seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
+                    for b_review in buyer_reviews:
+                        buyer_count = buyer_count + int(b_review.rating_val)
+                        b_review_date = b_review.review_date
+                        b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
+                        buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
+                    try:
+                        seller_count = round(float(round(seller_count/len(seller_reviews),0)))
+                    except:
+                        seller_count = 0
+                    try:
+                        comm_count = round(comm_count/len(seller_reviews),1)
+                    except:
+                        comm_count = 0
+                    try:
+                        recc_count = round(recc_count/len(seller_reviews),1)
+                    except:
+                        recc_count = 0
+                    try:
+                        serv_count = round(serv_count/len(seller_reviews),1)
+                    except:
+                        serv_count = 0
+                    try: 
+                        buyer_count = round(buyer_count/len(buyer_reviews),1)
+                    except:
+                        buyer_count = 0
+                    user_availability= []
+                    try:
+                        user_availability_list = UserAvailable.objects.get(Q(user_id=userDetails))
+                        user_availability.append({"available_from":datetime.strptime(str(user_availability_list.available_from), "%Y-%m-%d"),"available_to":datetime.strptime(str(user_availability_list.available_to), "%Y-%m-%d"),"available_mssg":str(user_availability_list.available_mssg),"available_for_new":str(user_availability_list.available_for_new),"available_types":str(user_availability_list.available_types)})
+                    except:
+                        user_availability = []
+                    charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="available_reason") | Q(Char_category_Name= "post_request_desc"))
+                    available_char = 0
+                    post_request_char = 0
+                    for c in charcterlimits:
+                        if(c.Char_category_Name == "available_reason"):
+                            available_char = c.Max_No_of_char_allowed
+                        elif(c.Char_category_Name == "post_request_desc"):
+                            post_request_char = c.Max_No_of_char_allowed
+                    for u_gig in user_gigs_details:
+                        userpack= UserGigPackages.objects.filter(package_gig_name=u_gig , user_id = userDetails , package_type= 'basic').first() 
+                        gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
+                        if(gig_image != None):
+                            gig_image_url = gig_image.gig_image
+                        else:
+                            gig_image_url = ''
+                        if(userpack != None):
+                            start_price = userpack.package_price
+                        else:
+                            start_price = 0 
+                        if(u_gig.gig_status == "active"):
+                            active_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
+                        elif(u_gig.gig_status == "draft"):
+                            draft_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
+                    return render(request , 'Dashboard/profile.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"active_gigs":active_gig_details,"draft_gigs":draft_gig_details,"seller_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"buyer_count":buyer_count,"buyer_reviews":buyer_rev_data,"character_avail":int(available_char),"character_post_request":int(post_request_char),"user_avail":user_availability,"categories":categories,"profile_last_delivery":pro_last_delivery,"has_records":"yes"})                 
+                else:
+                    return render(request , 'Dashboard/profile.html',{"has_records":"no"})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -371,11 +435,14 @@ class buyer_dashboard_view(View):
                     sub_cat = SubSubCategories.objects.filter(category_Name=c).first()
                     if(sub_cat != None):
                         category_list.append({"cat_name":sub_cat.category_Name.category_Name,"subcat_name":sub_cat.sub_category_Name.sub_category_Name,"subsubcat_name":sub_cat.sub_sub_category_Name})
+                pop_category_list = []
                 for u_gig in active_gigs_details:
                     gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id})
+                        if str(u_gig.gig_category.category_Name) not in pop_category_list:
+                            pop_category_list.append(str(u_gig.gig_category.category_Name))
+                            active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id.id,"gig_username":u_gig.user_id.username,"gig_cat_name":str(u_gig.gig_category.category_Name), "gig_cat_image":str(u_gig.gig_category.image)})
                 impression_gigs = UserGigsImpressions.objects.filter(user_id= userDetails).values("gig_name").distinct()
                 impression_data = []
                 for imp in impression_gigs:
@@ -399,7 +466,7 @@ class buyer_dashboard_view(View):
                             seller_count = round(float(seller_count/len(seller_reviews)))
                         except:
                             seller_count = 0   
-                        impression_data.append({"gig_title":gig_data.gig_title,"gig_img_url":imp_gig_image_url,"start_price":start_price,"seller_count":seller_count,"review_count":len(seller_reviews),"gig_username":gig_data.user_id.username, "gig_gig_img":gig_data.user_id.avatar})
+                        impression_data.append({"gig_title":gig_data.gig_title,"gig_img_url":imp_gig_image_url,"start_price":start_price,"seller_count":seller_count,"review_count":len(seller_reviews),"gig_username":gig_data.user_id.username, "gig_gig_img":gig_data.user_id.avatar,"gig_seller_level":gig_data.user_id.user_level.level_name})
                 search_term = UserSearchTerms.objects.filter(user_id=userDetails).values("search_words").distinct()
                 search_data = []
                 for search in search_term:
@@ -425,7 +492,7 @@ class buyer_dashboard_view(View):
                                 sea_seller_count = round(float(sea_seller_count/len(sear_seller_reviews)))
                             except:
                                 sea_seller_count = 0
-                            search_data.append({"gig_title":sear_gig_data.gig_title,"gig_img_url":search_gig_image_url,"start_price":search_start_price,"seller_count":sea_seller_count,"review_count":len(sear_seller_reviews),"gig_username":sear_gig_data.user_id.username, "gig_gig_img":sear_gig_data.user_id.avatar})
+                            search_data.append({"gig_title":sear_gig_data.gig_title,"gig_img_url":search_gig_image_url,"start_price":search_start_price,"seller_count":sea_seller_count,"review_count":len(sear_seller_reviews),"gig_username":sear_gig_data.user_id.username,"gig_seller_level":sear_gig_data.user_id.user_level.level_name, "gig_gig_img":sear_gig_data.user_id.avatar})
                     except:
                         gigs_inst = UserGigs.objects.filter(gig_title__contains = search["search_words"])
                         for sear_gig_data in gigs_inst:
@@ -447,7 +514,7 @@ class buyer_dashboard_view(View):
                                 sea_seller_count = round(float(sea_seller_count/len(sear_seller_reviews)))
                             except:
                                 sea_seller_count = 0   
-                            search_data.append({"gig_title":sear_gig_data.gig_title,"gig_img_url":search_gig_image_url,"start_price":search_start_price,"seller_count":sea_seller_count,"review_count":len(sear_seller_reviews),"gig_username":sear_gig_data.user_id.username, "gig_gig_img":sear_gig_data.user_id.avatar})
+                            search_data.append({"gig_title":sear_gig_data.gig_title,"gig_img_url":search_gig_image_url,"start_price":search_start_price,"seller_count":sea_seller_count,"review_count":len(sear_seller_reviews),"gig_username":sear_gig_data.user_id.username, "gig_gig_img":sear_gig_data.user_id.avatar,"gig_seller_level":sear_gig_data.user_id.user_level.level_name})
                 return render(request , 'Dashboard/buyer_dashboard.html',{"P_gig_details":active_gigs_data,"cat_list":category_list,"cat_list_json":json.dumps(category_list),"impression_gigs":impression_data,"search_data":search_data})               
             # except:
             #     return render(request , 'register.html')
@@ -477,8 +544,22 @@ class search_gig_view(View):
             gig_image = Usergig_image.objects.filter(package_gig_name=u_gig).first() 
             if(gig_image != None):
                 gig_image_url = gig_image.gig_image
-            active_gigs_data.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_user":u_gig.user_id})
-        return render(request , 'search_gig.html',{"keyword":keyword,"active_gigs":active_gigs_data})
+            start_price = 0
+            userpack= UserGigPackages.objects.filter(package_gig_name=u_gig, package_type= 'basic').first() 
+            if(userpack != None):
+                start_price = userpack.package_price
+            else:
+                start_price = 0 
+            seller_reviews = Seller_Reviews.objects.filter(package_gig_name= u_gig)
+            seller_count = 0
+            for s_review in seller_reviews:
+                seller_count = seller_count + float(s_review.average_val)
+            try:
+                seller_count = round(float(seller_count/len(seller_reviews)))
+            except:
+                seller_count = 0  
+            active_gigs_data.append({"gig_title":u_gig.gig_title, "gig_img_url":gig_image_url,"start_price":start_price,"seller_count":seller_count,"review_count":len(seller_reviews),"gig_username":u_gig.user_id.username, "gig_gig_img":u_gig.user_id.avatar,"gig_seller_level":u_gig.user_id.user_level.level_name})
+        return render(request , 'search_gig.html',{"active_gigs":active_gigs_data,"keyword":keyword})
 
 class search_profile_view(View):
     return_url = None
@@ -495,7 +576,7 @@ class search_profile_view(View):
         for u in user_details:
             country_flag_icon = '/static/assets/images/flags/'+ u.country.code.lower()+ '.svg'
             seller_reviews = Seller_Reviews.objects.filter(s_review_to=u).count()
-            user_details_li.append({"username":u.username,"country":u.country.name,"profile_img":u.avatar,"c_flag":country_flag_icon, "u_ratings":seller_reviews})
+            user_details_li.append({"username":u.username,"user_level":u.user_level.level_name,"country":u.country.name,"profile_img":u.avatar,"c_flag":country_flag_icon, "u_ratings":seller_reviews})
         return render(request , 'search_user.html',{"keyword":keyword,"user_details":user_details_li})
 
 def logout_social(request):
@@ -535,7 +616,7 @@ class seller_main_view(View):
                         active_earnings = float(active_earnings) + float(a_order.order_amount)
                         due_date = ''
                         try:
-                            due_date = datetime.strptime(str(a_order.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S").date()
+                            due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S").date()
                         except:
                             due_date = datetime.strptime(str(a_order.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         end_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
@@ -614,14 +695,8 @@ class offers_view(View):
                         seller_count = round(float(round(seller_count/len(seller_reviews),0)))
                     except:
                         seller_count = 0
-                    seller_levl = ''
                     user_details_off = User.objects.get(username = b_o.user_id.username)
-                    if(user_details_off.seller_level=="level1"):
-                        seller_levl = "New or higher"
-                    elif(user_details_off.seller_level=="level2"):
-                        seller_levl = "Advanced or higher"
-                    elif(user_details_off.seller_level=="level3"):
-                        seller_levl = "Professional"
+                    seller_levl = str(user_details_off.user_level.level_name)
                     buyer_offers_li.append({"buyer_username":b_o.user_id.username,"buyer_image":b_o.user_id.avatar,"gig_id":b_o.gig_name.id,"gig_title":b_o.gig_name.gig_title ,"gig_image":gig_image_url,"seller_reviews":seller_count,"offer_desc":b_o.offer_desc,"offer_price":b_o.offer_budget,"offer_time":b_o.offer_time,"seller_level":seller_levl,"offer_date":str(b_o.offer_date),"offer_id":b_o.id,"offer_data":json.loads(b_o.extra_parameters)})
                 return render(request , 'Dashboard/offers.html',{"buyer_request":buyer_request,"offers":buyer_offers_li})
             # except:
@@ -651,7 +726,7 @@ class payments_view(View):
                 service_fees_price = 0
                 serv_fees_type = ''
                 serv_fees_val = ''
-                if(int(offer_details.offer_budget) <=40):
+                if(int(offer_details.offer_budget) < 40):
                     payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Buyer service Fees", service_amount="40"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
@@ -696,7 +771,10 @@ class requirements_p_view(View):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
                 pay_user = User.objects.get(username = pay_to)
-                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                try:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                except:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,custom_user = pay_user )
                 gig_requirements = []
                 charcterlimits = []
                 gig_details = []
@@ -759,7 +837,10 @@ class requirements_c_view(View):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             # try:
                 pay_user = User.objects.get(username = pay_to)
-                offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                try:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,user_id = pay_user )
+                except:
+                    offer_details = Request_Offers.objects.get(id= offer_id ,custom_user = pay_user )
                 gig_requirements = []
                 charcterlimits = []
                 gig_details = []
@@ -1378,7 +1459,21 @@ class favourites_view(View):
                     gig_image = Usergig_image.objects.filter(package_gig_name=user_gig).first() 
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
-                    fav_lists_data.append({"gig_title":gig.gig_name.gig_title, "gig_image":gig_image_url})
+                    start_price = 0
+                    userpack= UserGigPackages.objects.filter(package_gig_name=user_gig, package_type= 'basic').first() 
+                    if(userpack != None):
+                        start_price = userpack.package_price
+                    else:
+                        start_price = 0 
+                    seller_reviews = Seller_Reviews.objects.filter(package_gig_name= user_gig)
+                    seller_count = 0
+                    for s_review in seller_reviews:
+                        seller_count = seller_count + float(s_review.average_val)
+                    try:
+                        seller_count = round(float(seller_count/len(seller_reviews)))
+                    except:
+                        seller_count = 0  
+                    fav_lists_data.append({"gig_title":gig.gig_name.gig_title, "gig_img_url":gig_image_url,"start_price":start_price,"seller_count":seller_count,"review_count":len(seller_reviews),"gig_username":user_gig.user_id.username, "gig_gig_img":user_gig.user_id.avatar,"gig_seller_level":user_gig.user_id.user_level.level_name})
                 return render(request , 'Dashboard/favourites.html',{"favourite_lists":fav_lists_data})
             # except:
             #     return render(request , 'register.html')
@@ -1533,12 +1628,36 @@ class seller_manage_orders_view(View):
                         order_status = "late"
                         due_in_str = str(abs(diff.days)) + "d, " +  str(abs(diff.hours)) +"h late"
                     order_act_lists = []
-                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order).exclude(Q(activity_type="withdrawal") | Q(activity_type= "credit"))
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order,activity_type="active")
+                    orderdelivery = User_Order_Activity.objects.filter(order_no=a_order,activity_type="delivered").last()
+                    ordercancel = User_Order_Activity.objects.filter(order_no=a_order,activity_type="cancel").last()
+                    orderextension = User_Order_Activity.objects.filter(order_no=a_order,activity_type="extension").last()
+                    ordercomplete = User_Order_Activity.objects.filter(order_no=a_order,activity_type="completed").last()
                     for o_act in orderactivities:
                         order_amount = 0
                         if(o_act.order_amount != None):
                             order_amount = o_act.order_amount 
                         order_act_lists.append({"order_message":o_act.order_message,"order_amount":order_amount})
+                    if(orderextension != None):
+                        order_amount = 0
+                        if(orderextension.order_amount != None):
+                            order_amount = orderextension.order_amount 
+                        order_act_lists.append({"order_message":orderextension.order_message,"order_amount":order_amount})
+                    if(orderdelivery != None):
+                        order_amount = 0
+                        if(orderdelivery.order_amount != None):
+                            order_amount = orderdelivery.order_amount 
+                        order_act_lists.append({"order_message":orderdelivery.order_message,"order_amount":order_amount})
+                    if(ordercancel != None):
+                        order_amount = 0
+                        if(ordercancel.order_amount != None):
+                            order_amount = ordercancel.order_amount 
+                        order_act_lists.append({"order_message":ordercancel.order_message,"order_amount":order_amount})
+                    if(ordercomplete != None):
+                        order_amount = 0
+                        if(ordercomplete.order_amount != None):
+                            order_amount = ordercomplete.order_amount 
+                        order_act_lists.append({"order_message":ordercomplete.order_message,"order_amount":order_amount})       
                     s_active_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar,"due_date":a_order.due_date, "buyer_username":a_order.order_by.username, "seller_username":a_order.order_to.username,"order_price":a_order.order_amount,"delivery_time":due_in_str,"del_satus":order_status,"order_id":a_order.order_no,"order_activity":order_act_lists})
                 for a_order in s_delivered_orders_detls:
                     gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
@@ -1547,12 +1666,36 @@ class seller_manage_orders_view(View):
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
                     order_act_lists = []
-                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order).exclude(Q(activity_type="withdrawal") | Q(activity_type= "credit"))
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order,activity_type="active")
+                    orderdelivery = User_Order_Activity.objects.filter(order_no=a_order,activity_type="delivered").last()
+                    ordercancel = User_Order_Activity.objects.filter(order_no=a_order,activity_type="cancel").last()
+                    orderextension = User_Order_Activity.objects.filter(order_no=a_order,activity_type="extension").last()
+                    ordercomplete = User_Order_Activity.objects.filter(order_no=a_order,activity_type="completed").last()
                     for o_act in orderactivities:
                         order_amount = 0
                         if(o_act.order_amount != None):
                             order_amount = o_act.order_amount 
                         order_act_lists.append({"order_message":o_act.order_message,"order_amount":order_amount})
+                    if(orderextension != None):
+                        order_amount = 0
+                        if(orderextension.order_amount != None):
+                            order_amount = orderextension.order_amount 
+                        order_act_lists.append({"order_message":orderextension.order_message,"order_amount":order_amount})
+                    if(orderdelivery != None):
+                        order_amount = 0
+                        if(orderdelivery.order_amount != None):
+                            order_amount = orderdelivery.order_amount 
+                        order_act_lists.append({"order_message":orderdelivery.order_message,"order_amount":order_amount})
+                    if(ordercancel != None):
+                        order_amount = 0
+                        if(ordercancel.order_amount != None):
+                            order_amount = ordercancel.order_amount 
+                        order_act_lists.append({"order_message":ordercancel.order_message,"order_amount":order_amount})
+                    if(ordercomplete != None):
+                        order_amount = 0
+                        if(ordercomplete.order_amount != None):
+                            order_amount = ordercomplete.order_amount 
+                        order_act_lists.append({"order_message":ordercomplete.order_message,"order_amount":order_amount})
                     s_delivered_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar,"due_date":a_order.due_date, "buyer_username":a_order.order_by.username, "seller_username":a_order.order_to.username,"order_price":a_order.order_amount,"del_satus":"Delivered","order_id":a_order.order_no,"order_activity":order_act_lists})
                 for a_order in s_completed_orders_detls:
                     gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
@@ -1561,12 +1704,36 @@ class seller_manage_orders_view(View):
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
                     order_act_lists = []
-                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order).exclude(Q(activity_type="withdrawal") | Q(activity_type= "credit"))
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order,activity_type="active")
+                    orderdelivery = User_Order_Activity.objects.filter(order_no=a_order,activity_type="delivered").last()
+                    ordercancel = User_Order_Activity.objects.filter(order_no=a_order,activity_type="cancel").last()
+                    orderextension = User_Order_Activity.objects.filter(order_no=a_order,activity_type="extension").last()
+                    ordercomplete = User_Order_Activity.objects.filter(order_no=a_order,activity_type="completed").last()
                     for o_act in orderactivities:
                         order_amount = 0
                         if(o_act.order_amount != None):
                             order_amount = o_act.order_amount 
                         order_act_lists.append({"order_message":o_act.order_message,"order_amount":order_amount})
+                    if(orderextension != None):
+                        order_amount = 0
+                        if(orderextension.order_amount != None):
+                            order_amount = orderextension.order_amount 
+                        order_act_lists.append({"order_message":orderextension.order_message,"order_amount":order_amount})
+                    if(orderdelivery != None):
+                        order_amount = 0
+                        if(orderdelivery.order_amount != None):
+                            order_amount = orderdelivery.order_amount 
+                        order_act_lists.append({"order_message":orderdelivery.order_message,"order_amount":order_amount})
+                    if(ordercancel != None):
+                        order_amount = 0
+                        if(ordercancel.order_amount != None):
+                            order_amount = ordercancel.order_amount 
+                        order_act_lists.append({"order_message":ordercancel.order_message,"order_amount":order_amount})
+                    if(ordercomplete != None):
+                        order_amount = 0
+                        if(ordercomplete.order_amount != None):
+                            order_amount = ordercomplete.order_amount 
+                        order_act_lists.append({"order_message":ordercomplete.order_message,"order_amount":order_amount})
                     s_completed_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title,"gig_image_url":gig_image_url, "seller_username":a_order.order_to.username,"buyer_img":a_order.order_by.avatar, "buyer_username":a_order.order_by.username,"due_date":a_order.due_date,"order_price":a_order.order_amount,"del_satus":"Completed","order_id":a_order.order_no,"order_activity":order_act_lists})
                 for a_order in s_cancelled_orders_detls:
                     gig_details = UserGigs.objects.get(gig_title = a_order.package_gig_name.gig_title)
@@ -1575,12 +1742,36 @@ class seller_manage_orders_view(View):
                     if(gig_image != None):
                         gig_image_url = gig_image.gig_image
                     order_act_lists = []
-                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order).exclude(Q(activity_type="withdrawal") | Q(activity_type= "credit"))
+                    orderactivities = User_Order_Activity.objects.filter(order_no=a_order,activity_type="active")
+                    orderdelivery = User_Order_Activity.objects.filter(order_no=a_order,activity_type="delivered").last()
+                    ordercancel = User_Order_Activity.objects.filter(order_no=a_order,activity_type="cancel").last()
+                    orderextension = User_Order_Activity.objects.filter(order_no=a_order,activity_type="extension").last()
+                    ordercomplete = User_Order_Activity.objects.filter(order_no=a_order,activity_type="completed").last()
                     for o_act in orderactivities:
                         order_amount = 0
                         if(o_act.order_amount != None):
                             order_amount = o_act.order_amount 
                         order_act_lists.append({"order_message":o_act.order_message,"order_amount":order_amount})
+                    if(orderextension != None):
+                        order_amount = 0
+                        if(orderextension.order_amount != None):
+                            order_amount = orderextension.order_amount 
+                        order_act_lists.append({"order_message":orderextension.order_message,"order_amount":order_amount})
+                    if(orderdelivery != None):
+                        order_amount = 0
+                        if(orderdelivery.order_amount != None):
+                            order_amount = orderdelivery.order_amount 
+                        order_act_lists.append({"order_message":orderdelivery.order_message,"order_amount":order_amount})
+                    if(ordercancel != None):
+                        order_amount = 0
+                        if(ordercancel.order_amount != None):
+                            order_amount = ordercancel.order_amount 
+                        order_act_lists.append({"order_message":ordercancel.order_message,"order_amount":order_amount})
+                    if(ordercomplete != None):
+                        order_amount = 0
+                        if(ordercomplete.order_amount != None):
+                            order_amount = ordercomplete.order_amount 
+                        order_act_lists.append({"order_message":ordercomplete.order_message,"order_amount":order_amount})
                     s_cancelled_orders.append({"gig_id":gig_details.id,"gig_title":gig_details.gig_title, "seller_username":a_order.order_to.username,"gig_image_url":gig_image_url,"buyer_img":a_order.order_by.avatar, "buyer_username":a_order.order_by.username,"due_date":a_order.due_date,"order_price":a_order.order_amount,"del_satus":"Cancelled","order_id":a_order.order_no,"order_activity":order_act_lists})
                 try:
                     active_per = round(float(len(s_active_orders_detls)/total_orders)*100,2)
@@ -1608,7 +1799,7 @@ class buyer_request_view(View):
                 all_categories = []
                 seller_level_offer = 0
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id) 
-                seller_lvel = SellerLevels.objects.get(level_name= userDetails.seller_level)
+                seller_lvel = SellerLevels4.objects.get(level_slug= userDetails.user_level.level_slug)
                 UserGigCategory = UserGigs.objects.filter(user_id= userDetails , gig_status= "active").values("gig_category").distinct()
                 for g_c in UserGigCategory:
                     if(g_c["gig_category"] != None):
@@ -1624,18 +1815,19 @@ class buyer_request_view(View):
                     if(c.Char_category_Name == "offer_description"):
                         offer_description = c.Max_No_of_char_allowed
                 offers_sent_list = []
-                offers_sent = Request_Offers.objects.filter(user_id= userDetails)
+                offers_sent = Request_Offers.objects.filter(user_id= userDetails,offer_type='request')
                 for off in offers_sent:
-                    service_time_str = ''
-                    if(off.buyer_request.service_time== "24hours"):
-                        service_time_str = "24 Hours"
-                    elif(off.buyer_request.service_time== "3days"):
-                        service_time_str = "3 Days"
-                    elif(off.buyer_request.service_time== "7days"):
-                        service_time_str = "7 Days"
-                    elif(off.buyer_request.service_time== "other"):
-                        service_time_str = "Other"
-                    offers_sent_list.append({"gig_title":off.gig_name.gig_title,"offer_desc":off.offer_desc,"duration":off.offer_time,"price":off.offer_budget,"buyer_img":off.buyer_request.user_id.avatar,"buyer_name":off.buyer_request.user_id.username,"buyer_req_desc":off.buyer_request.service_desc,"buyer_delivery_time":service_time_str, "buyer_price":off.buyer_request.service_budget})
+                    if(off != None):
+                        service_time_str = ''
+                        if(off.buyer_request.service_time== "24hours"):
+                            service_time_str = "24 Hours"
+                        elif(off.buyer_request.service_time== "3days"):
+                            service_time_str = "3 Days"
+                        elif(off.buyer_request.service_time== "7days"):
+                            service_time_str = "7 Days"
+                        elif(off.buyer_request.service_time== "other"):
+                            service_time_str = "Other"
+                        offers_sent_list.append({"gig_title":off.gig_name.gig_title,"offer_desc":off.offer_desc,"duration":off.offer_time,"price":off.offer_budget,"buyer_img":off.buyer_request.user_id.avatar,"buyer_name":off.buyer_request.user_id.username,"buyer_req_desc":off.buyer_request.service_desc,"buyer_delivery_time":service_time_str, "buyer_price":off.buyer_request.service_budget})
                 return render(request , 'Dashboard/buyer_request.html',{"user_details":userDetails,"max_offers":seller_lvel.No_of_offers,"all_categories":all_categories,"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description,"offer_sent_req":offers_sent_list})
             # except:
             #     return render(request , 'register.html')
@@ -1661,26 +1853,26 @@ class manage_gigs_view(View):
                         gig_image_url = gig_image.gig_image
                     else:
                         gig_image_url = ''
-                    last_month = datetime.today() - timedelta(days=30)
+                    last_month = datetime.today() - timedelta(days=60)
                     ugig_impressions = UserGigsImpressions.objects.filter(user_id=userDetails,gig_name=u_gig,impress_date__gte=last_month).count()
-                    user_order_details = User_orders.objects.filter(order_by=userDetails,package_gig_name=u_gig,order_date__gte=last_month).count()
-                    cancelled_orders =  User_orders.objects.filter(order_by=userDetails,package_gig_name=u_gig, order_status= 'cancel').count()
+                    user_order_details = User_orders.objects.filter(order_to=userDetails,package_gig_name=u_gig).count()
+                    cancelled_orders =  User_orders.objects.filter(order_to=userDetails,package_gig_name=u_gig, order_status= 'cancel').count()
                     try:
                         cancel_perc = int((cancelled_orders * 100) / (user_order_details))
                     except:
                         cancel_perc = 0
                     if(u_gig.gig_status == "active"):
-                        activegigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        activegigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                     elif(u_gig.gig_status == "pending"):
-                        pendinggigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        pendinggigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                     elif(u_gig.gig_status == "modification"):
-                        modifgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        modifgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                     elif(u_gig.gig_status == "draft"):
-                        drafgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        drafgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                     elif(u_gig.gig_status == "denied"):
-                        deniedgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        deniedgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                     elif(u_gig.gig_status == "paused"):
-                        pausedgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
+                        pausedgigs.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_share_Link":u_gig.gig_share_link,"gig_Image":gig_image_url,"gig_impressions":ugig_impressions,"gig_orders":user_order_details,"gig_cancel_rate":cancel_perc})
                 return render(request , 'Dashboard/manage_gigs.html',{"active_gigs":activegigs,"pending_gigs":pendinggigs,"require_modif":modifgigs,"draft_gigs":drafgigs,"denied_gigs":deniedgigs,"paused_gigs":pausedgigs})
             # except:
             #     return render(request , 'register.html')
@@ -1691,12 +1883,12 @@ class earnings_view(View):
     return_url = None
     def get(self , request,username=''):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
-            # try:    
+            # try:  
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
                 order_details_list =  User_orders.objects.filter(order_status="active" , order_to= userDetails)
                 earning_val = 0
                 for order_details in order_details_list:
-                    if(int(order_details.order_amount) <=40):
+                    if(round(float(order_details.order_amount)) < 40):
                         payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                         for p in payment_parameters:
                             serv_fees_val = p.service_fees
@@ -1704,7 +1896,7 @@ class earnings_view(View):
                             if(serv_fees_type == "flat"):
                                 service_fees_price =  int(serv_fees_val)
                             else:
-                                perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
                                 service_fees_price = round(perceof_budg,2)
                     else:
                         payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
@@ -1714,7 +1906,7 @@ class earnings_view(View):
                             if(serv_fees_type == "flat"):
                                 service_fees_price =  int(serv_fees_val)
                             else:
-                                perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                perceof_budg = float((float(order_details.order_amount)* int(serv_fees_val))/100)
                                 service_fees_price = round(perceof_budg,2)
                     earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
                 number_of_years = []
@@ -1751,7 +1943,7 @@ class order_activities_view(View):
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
                 order_details = User_orders.objects.get(order_no = orderid)
                 offer_details =  Request_Offers.objects.get(id = order_details.offer_id.id)
-                transaction_details = User_Transactions.objects.get(offer_id = offer_details,order_no= order_details)
+                transaction_details = User_Transactions.objects.get(offer_id = offer_details,order_no= order_details,paid_for="order")
                 ordered_by_user = User.objects.get(id= order_details.order_by.id)
                 ordered_to_user = User.objects.get(id= order_details.order_to.id)
                 extra_offer = User_orders_Extra_Gigs.objects.filter(order_no=order_details)
@@ -1785,8 +1977,8 @@ class order_activities_view(View):
                 due_date_format = ''
                 if(str(order_details.order_status) == "active" or str(order_details.order_status) == "delivered" ):
                     try:
-                        due_date = datetime.strptime(str(order_details.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S").date()
-                        due_date_format = datetime.strptime(str(order_details.due_date.replace("+00:00","")),"%Y-%m-%d %H:%M:%S")
+                        due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S").date()
+                        due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S")
                     except:
                         due_date = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f").date()
                         due_date_format = datetime.strptime(str(order_details.due_date),"%Y-%m-%d %H:%M:%S.%f")
@@ -2005,7 +2197,10 @@ class resolution_view(View):
                     d_minutes = 00
                     d_seconds = 00
                     formatted_due_date = "failed"
-                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":json.loads(offer_details.extra_parameters),"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
+                extraparameters = ''
+                if(len(offer_details.extra_parameters.strip()) != 0):
+                    extraparameters = json.loads(offer_details.extra_parameters)
+                s_gig_list.append({"gig_id":seller_gig_details.id, "gig_title":seller_gig_details.gig_title,"gig_image":imp_gig_image_url,"gig_username":ordered_to_user.username,"order_by_username":ordered_by_user.username,"order_status":order_status,"due_in_days":d_days,"due_in_hour":d_hours,"due_in_minutes":d_minutes,"due_in_seconds":d_seconds,"due_date":order_details.due_date,"order_amount":str(order_details.order_amount),"gig_offer_amount":str(offer_details.offer_budget),"order_no":str(order_details.order_no),"formatted_due_date":formatted_due_date,"offer_extra":extraparameters,"order_revisions":offer_details.no_revisions,"order_date":order_details.order_date})
                 charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "resolution_text"))
                 for c in charcterlimits:
                     if(c.Char_category_Name == "resolution_text"):
@@ -2126,6 +2321,7 @@ def save_content_view(request):
             with open("kworkapp/templates/"+upageName + '.html', "w", encoding = 'utf-8') as file:
                 file.write(html.unescape(str(soup.prettify()).replace("&lt;","<").replace("&gt;",">").replace("&nbsp;"," ").replace("&amp;","&").replace("&quot;",'"').replace("&apos;","'").replace("&cent;","¢").replace("&pound;","£").replace("&yen;","¥").replace("&euro;","€").replace("&copy;","©").replace("&reg;","®").replace("a&#769;","`").replace("a&#770;","^").replace("a&#771;","~").replace("a&#771;","~")))
             data = "sucess"
+            
         except Exception as e:
             data = (str(type(e)) + str(e))
         return HttpResponse(data)
@@ -2392,11 +2588,14 @@ def get_articles_view(request):
         try:
             suport_topic = supportTopic.objects.filter(support_topic_Name__contains=article_name)
             pathlists = []
-            for support in suport_topic:
+            for support in suport_topic: 
                 suport_topic = supportTopic.objects.get(support_topic_Name = support.support_topic_Name)
-                data1 = TopicDetails.objects.get(topic_Name = int(suport_topic.id))
-                support_list.append(support.support_topic_Name)
-                data.append({"title":data1.topic_Name.support_topic_Name,"contents":data1.topic_Desc})
+                try:
+                    data1 = TopicDetails.objects.get(topic_Name = suport_topic)
+                    support_list.append(support.support_topic_Name)
+                    data.append({"slug_name":support.slug,"title":data1.topic_Name.support_topic_Name,"contents":data1.topic_Desc})
+                except:
+                    support_list.append(support.support_topic_Name)
         except:
             data = []
             support_list = []
@@ -2600,7 +2799,7 @@ def post_create_gig_view(request):
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             try:    
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                numberof_gigs = SellerLevels.objects.get(level_name=str(userDetails.seller_level))
+                numberof_gigs = SellerLevels4.objects.get(level_slug=str(userDetails.user_level.level_slug))
                 gigs_used = 0
                 gig_id = 0
                 if(UserGigs.objects.filter(user_id=userDetails).exists() == True):
@@ -2608,8 +2807,11 @@ def post_create_gig_view(request):
                 if(gigs_used == int(numberof_gigs.No_of_gigs)):
                     gig_id = 0
                 else:
-                    user_gig_obj = UserGigs(user_id=userDetails)
+                    user_gig_obj = UserGigs(user_id=userDetails,gig_title ="New Gig Creation " + str(gigs_used))
                     user_gig_obj.save()
+                    get_gig_details = UserGigs.objects.get(pk = user_gig_obj.pk)
+                    gig_iamges = Usergig_image(gig_image="	/media/gig_images/blank_gig.png" ,package_gig_name=get_gig_details ,user_id=userDetails)
+                    gig_iamges.save()
                     gig_id = int(user_gig_obj.pk)
                 return HttpResponse(gig_id)
             except:
@@ -2622,12 +2824,14 @@ def post_sub_category_details_view(request):
     if request.method == 'GET':
         userid = request.GET['userid']
         select_id = request.GET['select_id']
-        userDetails = User.objects.get(pk=userid)
         sub_subcatDetails = []
-        category_inst = Categories.objects.get(id=select_id)
-        _subcatDetails = SubSubCategories.objects.filter(category_Name= category_inst)
-        for subcat in _subcatDetails:
-            sub_subcatDetails.append({"cat_name":subcat.sub_sub_category_Name,"cat_id":subcat.id})
+        try:
+            category_inst = Categories.objects.get(id=select_id)
+            _subcatDetails = SubSubCategories.objects.filter(category_Name= category_inst)
+            for subcat in _subcatDetails:
+                sub_subcatDetails.append({"cat_name":subcat.sub_sub_category_Name,"cat_id":subcat.id})
+        except:
+            pass
         return JsonResponse(sub_subcatDetails,safe=False)
 
 
@@ -2667,6 +2871,7 @@ def post_gig_save_view(request):
         userDetails =  User.objects.get(pk=u_user_id)
         gigDetails =  UserGigs.objects.get(pk=u_gig_id , user_id = userDetails)
         gigDetails.gig_title = u_gigtitle
+        gigDetails.gig_share_link = u_gigtitle.replace(" ","-")
         gigDetails.gig_category =  Categories.objects.get(pk=u_gig_category)
         gigDetails.gig_sub_category =  SubSubCategories.objects.get(pk=u_gig_sub_category)
         gigDetails.save()
@@ -2838,7 +3043,7 @@ def get_gig_details_view(request):
         u_user_id = request.GET['u_user_id']
         userDetails =  User.objects.get(pk=u_user_id)
         gigDetails =  UserGigs.objects.get(pk=int(u_gig_id.strip()))
-        if(len(gigDetails.gig_title) != 0):
+        if(len(gigDetails.gig_description) != 0):
             data_gig_details = []
             data_gig_details.append({"title":gigDetails.gig_title,"gig_category":str(gigDetails.gig_category.id),"gig_sub_category":str(gigDetails.gig_sub_category.id),"gig_description":gigDetails.gig_description})
             gigTags =  UserGigsTags.objects.filter(gig_name=gigDetails , user_id = userDetails)
@@ -2988,7 +3193,7 @@ def post_service_request_view(request):
         category_details = Categories.objects.get(pk=service_cat)
         sub_category = SubSubCategories.objects.get(pk=service_sub_cat)
         if(service_type == 'individual'):
-            send_to_user = User.objects.get(username=profile_user)
+            send_to_user = User.objects.get(username=send_to)
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,send_to=send_to_user,service_type=service_type)
             post_bu_req.save()
             get_buyer_request = Buyer_Post_Request.objects.get(pk = post_bu_req.pk)
@@ -2996,9 +3201,9 @@ def post_service_request_view(request):
                 message_cover_detls = Conversation.objects.get(initiator=userDetails,receiver = send_to_user)
             except:
                 try:
-                    message_cover_detls = Conversation.objects.get(initiator=userDetails,receiver = send_to_user)
+                    message_cover_detls = Conversation.objects.get(initiator=send_to_user,receiver = userDetails)
                 except:
-                    message_cover_detls = Conversation(initiator=userDetails,receiver = send_to_user,convers_type="active")
+                    message_cover_detls = Conversation(initiator=userDetails,receiver = send_to_user)
                     message_cover_detls.save()
             conversational_details =   Conversation.objects.get(pk = message_cover_detls.pk)
             create_message = Message.objects.create(sender=userDetails,receiver=send_to_user,text = "Custom Order Request",attachment = None,conversation_id=conversational_details,message_type = 'quote',buyer_request_id=get_buyer_request)
@@ -3006,10 +3211,6 @@ def post_service_request_view(request):
         else:
             post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,service_type=service_type)
             post_bu_req.save()
-        subject = 'hello'
-        to = 'infoswap90@gmail.com'
-        html_content = '<p>This is an <strong>important</strong> message.</p>'
-        SendEmailAct(to,html_content,subject)
         return HttpResponse('sucess')
 
 
@@ -3050,8 +3251,8 @@ def add_referral_link_view(request):
         userDetails = User.objects.get(affiliate_code=affiliate_code)
         ip_address = str(whatismyip.whatismyip())
         if(Referral_Users.objects.filter(affiliate_code=affiliate_code,ip_address=ip_address,refferal_user=None).exists() == False):
-            referral_user = Referral_Users(affiliate_code=affiliate_code,ip_address=ip_address,user_id=userDetails)
-            referral_user.save() 
+            affiliate_user = Referral_Users(affiliate_code=affiliate_code,ip_address=ip_address,user_id=userDetails)
+            affiliate_user.save() 
         return HttpResponse('sucess')
     
 def get_filter_gigs_details_view(request):
@@ -3087,13 +3288,7 @@ def get_filter_gigs_details_view(request):
             user_tags_str= ''
             for tg in user_tags:
                 user_tags_str = user_tags_str + ","+ tg["gig_tag_name"];
-            seller_levl= ''
-            if(g.user_id.seller_level=="level1"):
-                seller_levl = "New or higher"
-            elif(g.user_id.seller_level=="level2"):
-                seller_levl = "Advanced or higher"
-            elif(g.user_id.seller_level=="level3"):
-                seller_levl = "Professional"
+            seller_levl= str(g.user_id.user_level.level_name)
             gig_data.append({"gig_title":g.gig_title,"gig_img":gig_image_url,"gig_user_name":g.user_id.username,"gig_user_img":g.user_id.avatar,"start_price":start_price,"no_reviews":len(seller_reviews),"review_count":seller_count,"seller_level":seller_levl,"order_in_progress":g.user_id.ordersin_progress,"delivery_time":g.user_id.avg_delivery_time,"tags":user_tags_str})
         return JsonResponse(gig_data,safe=False)
 
@@ -3127,7 +3322,7 @@ def post_pause_request_view(request):
   
 def daily_routine():
     all_users = []
-    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         userDetails = User.objects.get(username = us.username)
         total_earning_val = 0
@@ -3154,10 +3349,13 @@ def daily_routine():
                 if(earn.credit_used != ''):
                     with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
             if(earn.aval_with != None or earn.clearence_status == "cleared" ):
-                if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
-                    avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
-                if(earn.clearence_status == "pending" ):
-                    current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
+                if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
+                    try:
+                        avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+                    except:
+                        avail_bal_val = round(float(avail_bal_val),2)
+            if(earn.clearence_status == "pending" ):
+                current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
             try:
                 earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
             except:
@@ -3192,16 +3390,58 @@ def daily_routine():
 
 def offers_module():
     all_users = []
-    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         userDetails = User.objects.get(username = us.username)
-        seller_lvel = SellerLevels.objects.get(level_name= userDetails.seller_level)
+        seller_lvel = SellerLevels4.objects.get(level_slug= userDetails.user_level.level_slug)
         userDetails.offers_left = seller_lvel.No_of_offers
         userDetails.save()
-
+        
+        
+def testing_job():
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
+    for us in all_users:
+        userDetails = User.objects.get(username = us.username)
+        no_of_gigs = UserGigs.objects.filter(user_id = userDetails).count()
+        if(no_of_gigs > 0):
+            seller_level =  ''.join(re.findall(r'\d+', str(userDetails.user_level.level_slug)))
+            get_seller_obj = SellerLevels4.objects.get(level_slug = "level"+ (seller_level))
+            order_compl_amount = int(get_seller_obj.up_order_amount)
+            order_compl_count = int(get_seller_obj.up_order_count)
+            order_upgrade_check = int(get_seller_obj.record_check)
+            today = datetime.today()
+            first = today.replace(day=1)
+            last_date = first - timedelta(days=1)
+            end_date = datetime.strptime(last_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            start_date = end_date -  relativedelta.relativedelta(months=int(order_upgrade_check))
+            str_start_date = datetime.strptime(start_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            completed_orders = User_orders.objects.filter(order_status = "completed",completed_date__range=(str_start_date, end_date),order_to=userDetails).count()
+            earned_amount = int(round(float(userDetails.total_earning)))
+            updgradelevl = None
+            downgradelevl = None
+            downgrade_levl =  SellerLevels4.objects.filter().last()
+            last_down_levl = ''.join(re.findall(r'\d+', str(downgrade_levl.level_slug)))
+            try:
+                updgradelevl = SellerLevels4.objects.get(level_slug = "level"+ str((int(seller_level)+1)))
+            except:
+                updgradelevl = None
+            try: 
+                downgradelevl = SellerLevels4.objects.get(level_slug = "level"+ str((int(seller_level)-1)))
+            except:
+                downgradelevl = None
+            if((completed_orders >= int(order_compl_count)) and (earned_amount >= int(order_compl_amount))):
+                if(updgradelevl != None):
+                    userDetails.user_level = updgradelevl
+                    userDetails.save()
+            else:
+                if((int(seller_level) != 1) and (int(seller_level) != int(last_down_levl))):
+                    if(downgradelevl != None):
+                        userDetails.user_level = downgradelevl
+                        userDetails.save()
+        
 def every_minute():
     all_users = []
-    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         userDetails = User.objects.get(username = us.username)
         average_delivery_str = 'Within 24 hours'
@@ -3221,7 +3461,7 @@ def every_minute():
                     clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
                 except:
 	                clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S.%f")
-                if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour) and int(todays_date.minute) == int(clearence_date.minute)):
+                if(int(todays_date.month) == int(clearence_date.month) and int(todays_date.day) == int(clearence_date.day) and int(todays_date.year) == int(clearence_date.year) and int(todays_date.hour) == int(clearence_date.hour)):
                     earn.aval_with = earn.earning_amount
                     earn.clearence_status = "cleared"
                     earn.cleared_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
@@ -3229,15 +3469,55 @@ def every_minute():
                     order_details = User_orders.objects.get(order_no= earn.order_no)
                     order_by = User.objects.get(username = order_details.order_by.username)
                     order_to = User.objects.get(username = order_details.order_to.username)
+                    
                     try:
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
                     except:
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    buyer_refferal = None
+                    try:
+                        buyer_refferal = Referral_Users.objects.get(refferal_user = order_by)
+                    except:
+                        buyer_refferal = None
+                    if(buyer_refferal != None):
+                        affiliate_amount = 0
+                        if(buyer_refferal.buyer_affi_done == False):
+                            if(float(order_details.order_amount) > 40):
+                                affiliate_amount = 5
+                                refferal_user = User.objects.get(pk =buyer_refferal.user_id.pk)
+                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=buyer_refferal)
+                                earnings_details.save()
+                                order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=buyer_refferal,activity_to=refferal_user)
+                                order_ativity.save()
+                                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=buyer_refferal,activity_to=refferal_user)
+                                order_ativity1.save()
+                                buyer_refferal.buyer_affi_amount = affiliate_amount
+                                buyer_refferal.buyer_affi_done = True
+                                buyer_refferal.save()
+                    seller_refferal = None
+                    try:
+                        seller_refferal = Referral_Users.objects.get(refferal_user = order_to)
+                    except:
+                        seller_refferal = None
+                    if(seller_refferal != None):
+                        s_affiliate_amount = 0
+                        if(seller_refferal.seller_affi_done == False):
+                            if(float(order_details.order_amount) > 40):
+                                affiliate_amount = 5
+                                refferal_user = User.objects.get(pk =buyer_refferal.user_id.pk)
+                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=seller_refferal)
+                                earnings_details.save()
+                                order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=seller_refferal,activity_to=refferal_user)
+                                order_ativity.save()
+                                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=seller_refferal,activity_to=refferal_user)
+                                order_ativity1.save()
+                                seller_refferal.seller_affi_amount = affiliate_amount
+                                seller_refferal.seller_affi_done = True
+                                seller_refferal.save()
                     order_activity = User_Order_Activity.objects.filter(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to,activity_date__year=earned_date.year,activity_date__month=earned_date.month, activity_date__day=earned_date.day)
                     for order_ac in order_activity:
                         order_ac.activity_type = "cleared"
                         order_ac.save()
-                    update_all_balancevalues(userDetails) 
         orders_count = User_orders.objects.filter(order_to=userDetails,order_status="active" ).count()
         user_orders = User_orders.objects.filter(order_to=userDetails)
         orders_deliv_lists = []
@@ -3296,19 +3576,19 @@ def every_minute():
                         order_details.save()
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
-                        transaction = User_Transactions.objects.get(order_no=order_details)
+                        transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                         refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                         refund_details.save()
                         try:    
                             cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                         except:
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read=True)
                         order_message.save()
                         order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
                         earning_val = 0
-                        if(int(order_details.order_amount) <=40):
+                        if(int(order_details.order_amount) <40):
                             payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                             for p in payment_parameters:
                                 serv_fees_val = p.service_fees
@@ -3334,7 +3614,7 @@ def every_minute():
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username)
                         service_fees_price = 0
-                        if(int(order_details.order_amount) <=40):
+                        if(int(order_details.order_amount) < 40):
                             payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                             for p in payment_parameters:
                                 serv_fees_val = p.service_fees
@@ -3376,19 +3656,19 @@ def every_minute():
                         order_details.save()
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
-                        transaction = User_Transactions.objects.get(order_no=order_details)
+                        transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                         refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                         refund_details.save()
                         try:
                             cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                         except:
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
                         order_message.save()
                         order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
                         earning_val = 0
-                        if(int(order_details.order_amount) <=40):
+                        if(int(order_details.order_amount) < 40):
                             payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                             for p in payment_parameters:
                                 serv_fees_val = p.service_fees
@@ -3414,7 +3694,7 @@ def every_minute():
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username)
                         service_fees_price = 0
-                        if(int(order_details.order_amount) <=40):
+                        if(int(order_details.order_amount) < 40):
                             payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                             for p in payment_parameters:
                                 serv_fees_val = p.service_fees
@@ -3454,162 +3734,163 @@ def every_minute():
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
                 except:
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
-                if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour) and int(todays_date.minute) == int(resolution_last_date.minute)):
+                if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour)):
                     if(res.resolution_type=="cancel"):
                         res.resolution_status = 'accepted'
                         res.save()
                         order_details = User_orders.objects.get(order_no = res_details.order_no)
-                        order_details.order_status = 'cancel'
-                        order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                        order_details.save()
-                        order_by_user = User.objects.get(username= order_details.order_by.username)
-                        order_to_user = User.objects.get(username= order_details.order_to.username)
-                        transaction = User_Transactions.objects.get(order_no=order_details)
-                        raised_by = User.objects.get(username = res.raised_by.username)
-                        raised_to = User.objects.get(username = res.raised_to.username)
-                        notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
-                        if(notification_cancel.is_active == True):
-                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
-                            noti_create.save()
-                        refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
-                        refund_details.save()
-                        try:    
-                            cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
-                        except:
-                            cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
-                        order_message.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
-                        order_ativity.save()
-                        earning_val = 0
-                        if(int(order_details.order_amount) <=40):
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                        else:
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                        earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                        order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
-                        order_ativity1.save()
-                        order_by =  User.objects.get(username= order_details.order_by.username)   
-                        order_to =  User.objects.get(username= order_details.order_to.username)
-                        service_fees_price = 0
-                        if(int(order_details.order_amount) <=40):
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                        else:
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                                earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                                refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
-                                refund_details.save()
-                                update_all_balancevalues(order_by_user)
-                                update_all_balancevalues(order_to_user)
+                        if(order_details.order_status != "completed"):  
+                            order_details.order_status = 'cancel'
+                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                            order_details.save()
+                            order_by_user = User.objects.get(username= order_details.order_by.username)
+                            order_to_user = User.objects.get(username= order_details.order_to.username)
+                            transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                            raised_by = User.objects.get(username = res.raised_by.username)
+                            raised_to = User.objects.get(username = res.raised_to.username)
+                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                            if(notification_cancel.is_active == True):
+                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
+                                noti_create.save()
+                            refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                            refund_details.save()
+                            try:    
+                                cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
+                            except:
+                                cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
+                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
+                            order_message.save()
+                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity.save()
+                            earning_val = 0
+                            if(int(order_details.order_amount) < 40):
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                            else:
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                            earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
+                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity1.save()
+                            order_by =  User.objects.get(username= order_details.order_by.username)   
+                            order_to =  User.objects.get(username= order_details.order_to.username)
+                            service_fees_price = 0
+                            if(int(order_details.order_amount) < 40):
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                            else:
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                                    earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+                                    refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
+                                    refund_details.save()
                     elif(res.resolution_type=="extention"):
-                        res.resolution_status = 'accepted'
-                        res.save()
-                        raised_by = User.objects.get(username = res.raised_by.username)
-                        raised_to = User.objects.get(username = res.raised_to.username)
-                        order_details = User_orders.objects.get(order_no = res_details.order_no)
-                        order_details.due_date = next_date
-                        order_details.save()   
-                        order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
-                        order_ativity.save()
-                        notification_extension = Notification_commands.objects.get(slug = "order_extended")
-                        if(notification_extension.is_active == True):
-                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
-                            noti_create.save()
-                        update_all_balancevalues(raised_by)
-                        update_all_balancevalues(raised_to)
+                        if(order_details.order_status != "completed"):  
+                            res.resolution_status = 'accepted'
+                            res.save()
+                            raised_by = User.objects.get(username = res.raised_by.username)
+                            raised_to = User.objects.get(username = res.raised_to.username)
+                            order_details = User_orders.objects.get(order_no = res_details.order_no)
+                            order_details.due_date = next_date
+                            order_details.save()   
+                            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
+                            order_ativity.save()
+                            notification_extension = Notification_commands.objects.get(slug = "order_extended")
+                            if(notification_extension.is_active == True):
+                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
+                                noti_create.save()
                     elif(res.resolution_type=="delivered"):
-                        res.resolution_status = 'accepted'
-                        res.save()
-                        raised_by = User.objects.get(username = res.raised_by.username)
-                        raised_to = User.objects.get(username = res.raised_to.username)
-                        notification_delivery = Notification_commands.objects.get(slug = "order_completed")
-                        order_details = User_orders.objects.get(order_no = res_details.order_no)
-                        if(notification_delivery.is_active == True):
-                            noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order Automatically Marked as completed.")
-                            noti_create.save()
-                        service_fees_price = 0
-                        if(int(order_details.order_amount) <=40):
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                        else:
-                            payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                            for p in payment_parameters:
-                                serv_fees_val = p.service_fees
-                                serv_fees_type = p.fees_type
-                                if(serv_fees_type == "flat"):
-                                    service_fees_price =  int(serv_fees_val)
-                                else:
-                                    perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                    service_fees_price = round(perceof_budg,2)
-                        earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                        withdrwal_val = 0
-                        withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
-                        for ext in withdrawal_ext:
-                            if(ext.parameter_name == "withdrawal_clearence_days"):
-                                withdrwal_val = ext.no_of_days
-                                today_date = datetime.today()
-                                clearencedate = today_date + timedelta(days=int(withdrwal_val))                
-                                order_details.order_status = 'completed'
-                                order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                                order_details.save()
-                                order_by =  User.objects.get(username= order_details.order_by.username)   
-                                order_to =  User.objects.get(username= order_details.order_to.username) 
-                                order_to.last_delivery= str(datetime.today().strftime('%d-%m-%Y'))
-                                order_to.save()
-                        try:    
-                            cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
-                        except:
-                            cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
-                        refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
-                        refund_details.save()
-                        order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity")
-                        order_message.save()
-                        get_message =  Order_Message.objects.get(pk = order_message.pk)
-                        resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
-                        resolution.save()
-                        order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
-                        order_ativity.save()
-                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                        order_ativity1.save()
+                        if(order_details.order_status != "completed"):
+                            res.resolution_status = 'accepted'
+                            res.save()
+                            raised_by = User.objects.get(username = res.raised_by.username)
+                            raised_to = User.objects.get(username = res.raised_to.username)
+                            notification_delivery = Notification_commands.objects.get(slug = "order_completed")
+                            order_details = User_orders.objects.get(order_no = res_details.order_no)
+                            if(notification_delivery.is_active == True):
+                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order Automatically Marked as completed.")
+                                noti_create.save()
+                            service_fees_price = 0
+                            if(int(order_details.order_amount) < 40):
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                            else:
+                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                for p in payment_parameters:
+                                    serv_fees_val = p.service_fees
+                                    serv_fees_type = p.fees_type
+                                    if(serv_fees_type == "flat"):
+                                        service_fees_price =  int(serv_fees_val)
+                                    else:
+                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                        service_fees_price = round(perceof_budg,2)
+                            earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+                            withdrwal_val = 0
+                            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
+                            for ext in withdrawal_ext:
+                                if(ext.parameter_name == "withdrawal_clearence_days"):
+                                    withdrwal_val = ext.no_of_days
+                            today_date = datetime.today()
+                            clearencedate = today_date + timedelta(days=int(withdrwal_val))                
+                            order_details.order_status = 'completed'
+                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                            order_details.save()
+                            order_by =  User.objects.get(username= order_details.order_by.username)   
+                            order_to =  User.objects.get(username= order_details.order_to.username) 
+                            order_to.u_last_delivery= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                            order_to.save()
+                            update_all_balancevalues(order_by)
+                            update_all_balancevalues(order_to)
+                            try:    
+                                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+                            except:
+                                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
+                            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
+                            refund_details.save()
+                            order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read=True)
+                            order_message.save()
+                            get_message =  Order_Message.objects.get(pk = order_message.pk)
+                            resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
+                            resolution.save()
+                            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
+                            order_ativity.save()
+                            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
+                            order_ativity1.save()
         userDetails.ordersin_progress = orders_count
         userDetails.avg_delivery_time = average_delivery_str
         userDetails.save()
@@ -3641,8 +3922,11 @@ def update_all_balancevalues(username):
             if(earn.credit_used != ''):
                 with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
         if(earn.aval_with != None or earn.clearence_status == "cleared" ):
-            if(earn.withdrawn_amount != "" or earn.credit_used != "" ):
-                avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+            if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
+                try:
+                    avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+                except:
+                    avail_bal_val = round(float(avail_bal_val),2)
         if(earn.clearence_status == "pending" ):
             current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
         try:
@@ -3689,7 +3973,7 @@ def monthly_routine():
     start_date = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
     end_date = datetime.strptime(last_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
     completed_orders1 = 0
-    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         time_diff = []
         mssg_responses =  Message_Response_Time.objects.filter(receiver = us).order_by('-timestamp')
@@ -3712,78 +3996,55 @@ def monthly_routine():
                 us.save()
             else:
                 us.avg_respons = round(average)
-                us.save()   
-        if(us.seller_level == "level1"):
-            userDetails = User.objects.get(username = us.username)
-            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 -  relativedelta.relativedelta(months=3)
-            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
-            order_to_complete = 0
-            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") )
-            for ordr in orders_ext:
-                if(ordr.parameter_name == "seller_level_1"):
-                    order_to_complete = ordr.no_of_days
-            if(completed_orders1 >= int(order_to_complete)):
-                us.seller_level = "level2"
                 us.save()
-        elif(us.seller_level == "level1"):
-            userDetails = User.objects.get(username = us.username)
-            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 -  relativedelta.relativedelta(months=3)
-            six_date = start_date1 -  relativedelta.relativedelta(months=6)
-            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
-            completed_orders2 = User_orders.objects.filter(order_status = "completed",completed_date__range=(s_month_date1, end_date)).count()
-            order_to_complete1 = 0
-            order_to_complete2 = 0
-            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") | Q(parameter_name="seller_level_2") )
-            for ordr in orders_ext:
-                if(ordr.parameter_name == "seller_level_1"):
-                    order_to_complete1 = ordr.no_of_days
-                elif(ordr.parameter_name == "seller_level_2"):
-                    order_to_complete2 = ordr.no_of_days
-            if(completed_orders2 >= int(order_to_complete2)):
-                us.seller_level = "level3"
-                us.save()
-            elif(completed_orders1 >= int(order_to_complete1)):
-                us.seller_level = "level1"
-                us.save()
-        elif(us.seller_level == "level1"):
-            userDetails = User.objects.get(username = us.username)
-            start_date1 = datetime.strptime(first_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            three_date = start_date1 -  relativedelta.relativedelta(months=3)
-            six_date = start_date1 -  relativedelta.relativedelta(months=6)
-            year_date = start_date1 -  relativedelta.relativedelta(months=12)
-            t_month_date1 = datetime.strptime(three_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            s_month_date1 = datetime.strptime(six_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            y_month_date1 = datetime.strptime(year_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-            completed_orders1 = User_orders.objects.filter(order_status = "completed",completed_date__range=(t_month_date1, end_date)).count()
-            completed_orders2 = User_orders.objects.filter(order_status = "completed",completed_date__range=(s_month_date1, end_date)).count()
-            completed_orders3 = User_orders.objects.filter(order_status = "completed",completed_date__range=(y_month_date1, end_date)).count()
-            order_to_complete1 = 0
-            order_to_complete2 = 0
-            order_to_complete3 = 0
-            orders_ext = Addon_Parameters.objects.filter(Q(parameter_name="seller_level_1") | Q(parameter_name="seller_level_2") | Q(parameter_name="seller_level_3") )
-            for ordr in orders_ext:
-                if(ordr.parameter_name == "seller_level_1"):
-                    order_to_complete1 = ordr.no_of_days
-                elif(ordr.parameter_name == "seller_level_2"):
-                    order_to_complete2 = ordr.no_of_days
-                elif(ordr.parameter_name == "seller_level_3"):
-                    order_to_complete3 = ordr.no_of_days
-            if(completed_orders3 >= int(order_to_complete3)):
-                us.seller_level = "level3"
-                us.save()
-            elif(completed_orders2 >= int(order_to_complete2)):
-                us.seller_level = "level2"
-                us.save()
-            elif(completed_orders1 >= int(order_to_complete1)):
-                us.seller_level = "level1"
-                us.save()
+        userDetails = User.objects.get(username = us.username)
+        no_of_gigs = UserGigs.objects.filter(user_id = userDetails).count()
+        if(no_of_gigs > 0):
+            seller_level =  ''.join(re.findall(r'\d+', str(userDetails.user_level.level_slug)))
+            get_seller_obj = SellerLevels4.objects.get(level_slug = "level"+ (seller_level))
+            order_compl_amount = int(get_seller_obj.up_order_amount)
+            order_compl_count = int(get_seller_obj.up_order_count)
+            order_upgrade_check = int(get_seller_obj.record_check)
+            today = datetime.today()
+            first = today.replace(day=1)
+            last_date = first - timedelta(days=1)
+            end_date = datetime.strptime(last_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            start_date = end_date -  relativedelta.relativedelta(months=int(order_upgrade_check))
+            str_start_date = datetime.strptime(start_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
+            completed_orders = User_orders.objects.filter(order_status = "completed",completed_date__range=(str_start_date, end_date),order_to=userDetails).count()
+            earned_amount = int(round(float(userDetails.total_earning)))
+            updgradelevl = None
+            downgradelevl = None
+            downgrade_levl =  SellerLevels4.objects.filter().last()
+            last_down_levl = ''.join(re.findall(r'\d+', str(downgrade_levl.level_slug)))
+            try:
+                updgradelevl = SellerLevels4.objects.get(level_slug = "level"+ str((int(seller_level)+1)))
+            except:
+                updgradelevl = None
+            try: 
+                downgradelevl = SellerLevels4.objects.get(level_slug = "level"+ str((int(seller_level)-1)))
+            except:
+                downgradelevl = None
+            if((completed_orders >= int(order_compl_count)) and (earned_amount >= int(order_compl_amount))):
+                if(updgradelevl != None):
+                    userDetails.user_level = updgradelevl
+                    userDetails.save()
+            else:
+                if((int(seller_level) != 1) and (int(seller_level) != int(last_down_levl))):
+                    if(downgradelevl != None):
+                        userDetails.user_level = downgradelevl
+                        userDetails.save()
+        
+    conn = psycopg2.connect(database="kworkDB", user='postgres', password='swapna234', host='127.0.0.1', port= '5432')
+    cursor = conn.cursor()
+    sql = "DELETE FROM public.channels_postgres_groupchannel;"
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
     Message_Response_Time.objects.filter(timestamp__range=(start_date, end_date)).delete()
     UploadFile.objects.filter(timestamp__range=(start_date, end_date)).delete()
+    channels_postgres.GroupChannel.objects.filter(expire__range=(start_date, end_date)).delete()
     
 def get_buyer_request_view(request):
     if request.method == 'GET':
@@ -3865,22 +4126,30 @@ def get_modal_show_request_details_view(request):
 
 def every_five_minute():
     all_users = []
-    all_users = User.objects.filter(Q(seller_level="level1") | Q(seller_level= "level2") | Q(seller_level= "level3"))
+    all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         get_active_orders = User_orders.objects.filter(Q(order_by=us) | Q(order_to= us),order_status = 'active' )
         for order in get_active_orders:
             get_order_messg = Order_Message.objects.filter(receiver=us,is_read=False).count()
             if(get_order_messg  > 0):
                 first_messg = Order_Message.objects.filter(receiver=us,is_read=False).first()
-                if(us.mail_order == True):
-                    mail_content = MailTemplates.chat_order_message(str(first_messg.sender.username).title(),str(first_messg.receiver.username).title(),str(first_messg.text),str(first_messg.timestamp.strftime('%d %b, %Y')),str(order.order_no).title())
-                    SendEmailAct(str(us.email),mail_content,"You've received messages.")
+                if(first_messg.mail_sent == False):
+                    if(us.mail_order == True):
+                        first_msg_obj = Order_Message.objects.get(pk = first_messg.pk)
+                        first_msg_obj.mail_sent = True
+                        first_msg_obj.save()
+                        mail_content = MailTemplates.chat_order_message(str(first_messg.sender.username).title(),str(first_messg.receiver.username).title(),str(first_messg.text),str(first_messg.timestamp.strftime('%d %b, %Y')),str(order.order_no).title())
+                        SendEmailAct(str(us.email),mail_content,"You've received messages.")
         get_chat_messg = Message.objects.filter(receiver=us,is_read=False).count()
         if(get_chat_messg  > 0):
             c_first_messg = Message.objects.filter(receiver=us,is_read=False).first()
-            if(us.mail_order == True):
-                c_mail_content = MailTemplates.chat_message(str(c_first_messg.sender.username).title(),str(c_first_messg.receiver.username).title(),str(c_first_messg.text),str(c_first_messg.timestamp.strftime('%d %b, %Y')))
-                SendEmailAct(str(us.email),c_mail_content,"You've received messages.")
+            if(c_first_messg.mail_sent == False):
+                if(us.mail_order == True):
+                    c_first_msg_obj = Message.objects.get(pk = c_first_messg.pk)
+                    c_first_msg_obj.mail_sent = True
+                    c_first_msg_obj.save()
+                    c_mail_content = MailTemplates.chat_message(str(c_first_messg.sender.username).title(),str(c_first_messg.receiver.username).title(),str(c_first_messg.text),str(c_first_messg.timestamp.strftime('%d %b, %Y')))
+                    SendEmailAct(str(us.email),c_mail_content,"You've received messages.")
                     
 def get_modal_show_gig_details_view(request):
     if request.method == 'GET':
@@ -3965,23 +4234,30 @@ def post_custom_offer_details_view(request):
         o_buyer_req_id = request.POST.get("o_buyer_req_id")
         o_offer_sender = request.POST.get("offer_sender")
         o_offer_receiver = request.POST.get("offer_receiver")
-        off_req= ''
-        if(o_text_req_gig == "true"):
-            off_req= True
-        else:
-            off_req= False
-        o_offer_type = request.POST.get("o_offer_type")
-        o_extra_params = request.POST['o_extra_params']
-        gigs_details = UserGigs.objects.get(id=o_gig_id)
-        user_off_sender = User.objects.get(username = o_offer_sender)
-        user_off_receiver = User.objects.get(username = o_offer_receiver)
-        if(o_buyer_req_id != 0):
-            buyer_req_details = Buyer_Post_Request.objects.get(pk = o_buyer_req_id)
-        else:
-            buyer_req_details = None
-        offer_details = Request_Offers(gig_name=gigs_details,user_id=user_off_sender,buyer_request=buyer_req_details,custom_user=user_off_receiver, offer_desc=o_text_desc, offer_budget=o_text_price, offer_time=o_text_del_time,no_revisions=o_text_no_revs, ask_requirements= off_req, extra_parameters=str(o_extra_params),offer_type=o_offer_type, )
-        offer_details.save()
-        return HttpResponse(offer_details.pk)
+        try:
+            off_req= ''
+            if(o_text_req_gig == "true"):
+                off_req= True
+            else:
+                off_req= False
+            o_offer_type = request.POST.get("o_offer_type")
+            o_extra_params = request.POST['o_extra_params']
+            gigs_details = UserGigs.objects.get(id=o_gig_id)
+            user_off_sender = User.objects.get(username = o_offer_sender)
+            user_off_receiver = User.objects.get(username = o_offer_receiver)
+            if(int(o_buyer_req_id) != 0):
+                try:
+                    buyer_req_details = Buyer_Post_Request.objects.get(pk = o_buyer_req_id)
+                except:
+                    buyer_req_details = None
+            else:
+                buyer_req_details = None
+            offer_details = Request_Offers(gig_name=gigs_details,user_id=user_off_sender,buyer_request=buyer_req_details,custom_user=user_off_receiver, offer_desc=o_text_desc, offer_budget=o_text_price, offer_time=o_text_del_time,no_revisions=o_text_no_revs, ask_requirements= off_req, extra_parameters=str(o_extra_params),offer_type=o_offer_type, )
+            offer_details.save()
+            data = offer_details.pk
+        except Exception as e:
+            data = (str(type(e)) + str(e))
+        return HttpResponse(data)
 
 
 def get_sorted_offers_view(request):
@@ -4007,14 +4283,9 @@ def get_sorted_offers_view(request):
                 seller_count = round(float(round(seller_count/len(seller_reviews),0)))
             except:
                 seller_count = 0
-            seller_levl = ''
+            
             user_details_off = User.objects.get(username = b_o.user_id.username)
-            if(user_details_off.seller_level=="level1"):
-                seller_levl = "New or higher"
-            elif(user_details_off.seller_level=="level2"):
-                seller_levl = "Advanced or higher"
-            elif(user_details_off.seller_level=="level3"):
-                seller_levl = "Professional"
+            seller_levl = str(user_details_off.user_level.level_name)
             buyer_offers_li.append({"buyer_username":b_o.user_id.username,"buyer_image":b_o.user_id.avatar,"gig_title":b_o.gig_name.gig_title ,"gig_image":gig_image_url,"seller_reviews":seller_count,"offer_desc":b_o.offer_desc,"offer_price":b_o.offer_budget,"offer_time":b_o.offer_time,"seller_level":seller_levl,"offer_date":str(b_o.offer_date),"offer_id":b_o.id})
         if(sort_val== "default"):
             buyer_offer_sorted_li = buyer_offers_li 
@@ -4108,7 +4379,7 @@ def post_flutterwave_transaction_view(request):
                                         r_earn.save()
                                         current_val = round(float(current_val) - float(current_val1),2)
                     if(float(current_val) != 0.0):
-                        total_earnng = User_Earnings.objects.filter(user_id=pay_by_user, )
+                        total_earnng = User_Earnings.objects.filter(user_id=pay_by_user )
                         for earn in total_earnng:
                             if(earn.aval_with != None):
                                 if(len(earn.aval_with) != 0):
@@ -4159,7 +4430,7 @@ def post_flutterwave_transaction_view(request):
                 order_activity.save()
                 user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
                 user_trans.save()
-                order_message = Order_Message(sender=pay_by_user,receiver=pay_to_user,text = "placed the order",conversation_id=cover_detls,order_no=order_details_get,message_type="chat")
+                order_message = Order_Message(sender=pay_by_user,receiver=pay_to_user,text = "placed the order",conversation_id=cover_detls,order_no=order_details_get,message_type="chat",is_read = True)
                 order_message.save()
                 meta_data_list = meta_data.split(",")
                 for meta in meta_data_list:
@@ -4187,7 +4458,9 @@ def post_flutterwave_transaction_view(request):
                 noti_create.save()
             notification_order = Notification_commands.objects.get(slug = "order_received")
             if(notification_order.is_active == True):
-                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
+                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
+                noti_create.save() 
+                noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
                 noti_create.save()
             if(pay_by_user.mail_order == True):
                 mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
@@ -4322,7 +4595,9 @@ def post_paypal_transaction_view(request):
                 noti_create.save()
             notification_order = Notification_commands.objects.get(slug = "order_received")
             if(notification_order.is_active == True):
-                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")   
+                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
+                noti_create.save()
+                noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
                 noti_create.save()
             if(pay_by_user.mail_order == True):
                 mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
@@ -4453,7 +4728,9 @@ def post_credit_transaction_view(request):
                 data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
             notification_order = Notification_commands.objects.get(slug = "order_received")
             if(notification_order.is_active == True):
-                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")   
+                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
+                noti_create.save()
+                noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
                 noti_create.save()
             if(pay_by_user.mail_order == True):
                 mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
@@ -4596,7 +4873,7 @@ def post_draft_object_view(request):
             cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
         except:
             cover_detls = Order_Conversation.objects.get(initiator=delivered_by,receiver = delivered_to)
-        order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity")
+        order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read = True)
         order_message.save()
         resolution_interval_gap = 2
         get_message =  Order_Message.objects.get(pk = order_message.pk)
@@ -4631,7 +4908,7 @@ def post_delivered_object_view(request):
             cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
         except:
             cover_detls = Order_Conversation.objects.get(initiator=delivered_by,receiver = delivered_to)
-        order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity")
+        order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read = True)
         order_message.save()
         get_message =  Order_Message.objects.get(pk = order_message.pk)
         today_date = datetime.today()
@@ -4695,7 +4972,7 @@ def post_resolutions_view(request):
             cover_detls = Order_Conversation.objects.get(initiator=raised_by_user,receiver = raised_to)
         except:
             cover_detls = Order_Conversation.objects.get(initiator=raised_to,receiver = raised_by_user)
-        order_message = Order_Message(sender=raised_by_user,receiver=raised_to,text = res_message,conversation_id=cover_detls,order_no=order_details,message_type="activity")
+        order_message = Order_Message(sender=raised_by_user,receiver=raised_to,text = res_message,conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read = True)
         order_message.save()
         next_date = ''
         get_message =  Order_Message.objects.get(pk = order_message.pk)
@@ -4814,50 +5091,53 @@ def get_all_order_messages_view(request):
         count_val = request.GET['current_count']
         id_list = request.GET['id_list']
         data = []
-        delivery_no=0
-        order_details = User_orders.objects.get(order_no = order_no)
-        cover_detls =  Order_Conversation.objects.get(pk = conver_id)
-        last_id = 0
-        first_id = 0
-        array_list = []
-        total_counts = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).count()
-        a_message = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')
-        for a_m in a_message:
-            array_list.append(int(a_m.pk))
-        if(id_list == "start"):
-            all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')[:int(count_val)]
-        else:
-            idlists = id_list.split(",")
-            all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details,id__in=idlists).order_by('-pk')
-        for all_m in all_messages:
-            if(all_m.message_type == "chat"):
-                print(all_m.message_type)
-                attachment_str = ''
-                if(all_m.attachment != None):
-                    if(len(all_m.attachment.strip()) != 0):
-                        attachment_str = all_m.attachment.strip()
+        try:
+            delivery_no=0
+            order_details = User_orders.objects.get(order_no = order_no)
+            cover_detls =  Order_Conversation.objects.get(pk = conver_id)
+            last_id = 0
+            first_id = 0
+            array_list = ''
+            total_counts = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).count()
+            # a_message = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')
+            # for a_m in a_message:
+            #     array_list.append(int(a_m.pk))
+            array_list =     ",".join(str(msg.pk) for msg in Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk'))
+            if(id_list == "start"):
+                all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details).order_by('-pk')[:int(count_val)]
+            else:
+                idlists = id_list.split(",")
+                all_messages = Order_Message.objects.filter(conversation_id= cover_detls, order_no= order_details,id__in=idlists).order_by('-pk')
+            attachment_str = ''
+            for all_m in all_messages:
+                if(all_m.message_type == "chat"):
+                    if(all_m.attachment != None):
+                        if(len(all_m.attachment.strip()) != 0):
+                            attachment_str = all_m.attachment.strip()
+                        else:
+                            attachment_str = "None"
                     else:
                         attachment_str = "None"
+                    data.append({"mssg_id":all_m.pk,"mssg_type":"chat","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
                 else:
-                    attachment_str = "None"
-                data.append({"mssg_id":all_m.pk,"mssg_type":"chat","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"mssg_time":all_m.timestamp})
-            else:
-                reolution_details = User_Order_Resolution.objects.filter(message=all_m).first()
-                if(reolution_details != None):
-                    delivery_description= ''
-                    delivery_images= ''
-                    message_str = ''
-                    if(reolution_details.resolution_type == "delivered"):
-                        order_del_details = Order_Delivery.objects.get(resolution = reolution_details)
-                        delivery_description = order_del_details.delivery_message
-                        delivery_images= order_del_details.attachment
+                    reolution_details = User_Order_Resolution.objects.filter(message=all_m).first()
+                    if(reolution_details != None):
+                        delivery_description= ''
+                        delivery_images= ''
                         message_str = ''
-                        delivery_no = delivery_no + 1
-                    else:
-                        message_str = reolution_details.resolution_desc
-                    data.append({"mssg_id":all_m.pk,"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
-        data.sort(key=operator.itemgetter('mssg_time'))
-        response_data = {"data":data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list}
+                        if(reolution_details.resolution_type == "delivered"):
+                            order_del_details = Order_Delivery.objects.get(resolution = reolution_details)
+                            delivery_description = order_del_details.delivery_message
+                            delivery_images= order_del_details.attachment
+                            message_str = ''
+                            delivery_no = delivery_no + 1
+                        else:
+                            message_str = reolution_details.resolution_desc
+                        data.append({"mssg_id":all_m.pk,"mssg_type":"activity","sender_username":all_m.sender.username,"sender_img":all_m.sender.avatar,"timestamp":all_m.timestamp,"message":all_m.text,"attachment":attachment_str,"receiver_name":all_m.receiver.username,"res_type":reolution_details.resolution_type,"res_status":reolution_details.resolution_status,"reciever_username":all_m.receiver.username,"reciever_img":all_m.receiver.avatar,"res_message":message_str,"res_prev_date":reolution_details.ext_prev_date,"res_next_date":reolution_details.ext_new_date,"res_last_date":reolution_details.resolution_last_date,"mssg_time":all_m.timestamp,"res_id":reolution_details.id,"del_descrp":delivery_description, "del_images":delivery_images,"delivery_No":delivery_no,"cancel_mssg":reolution_details.resolution_cancel_mssg})
+            data.sort(key=operator.itemgetter('mssg_time'))
+            response_data = {"data":data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list}
+        except Exception as e:
+            response_data = {"data":(str(type(e)) + str(e))}
         return JsonResponse(response_data,safe=False)
 
 
@@ -4881,8 +5161,6 @@ def post_accept_click_view(request):
                 order_details.save()
                 order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
                 order_ativity.save()
-                update_all_balancevalues(raised_by)
-                update_all_balancevalues(raised_to)
                 notification_extension = Notification_commands.objects.get(slug = "order_extended")
                 if(notification_extension.is_active == True):
                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= str(raised_to.username).title() + " agreed to extend Due Date.")
@@ -4897,19 +5175,19 @@ def post_accept_click_view(request):
                 order_details.save()
                 order_by_user = User.objects.get(username= order_details.order_by.username)
                 order_to_user = User.objects.get(username= order_details.order_to.username)
-                transaction = User_Transactions.objects.get(order_no=order_details)
+                transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                 refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                 refund_details.save()
                 try:    
                     cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                 except:
                     cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read = True)
                 order_message.save()
                 order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                 order_ativity.save()
                 earning_val = 0
-                if(float(order_details.order_amount) <=40):
+                if(float(order_details.order_amount) < 40):
                     payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
@@ -4935,7 +5213,7 @@ def post_accept_click_view(request):
                 order_by =  User.objects.get(username= order_details.order_by.username)   
                 order_to =  User.objects.get(username= order_details.order_to.username)
                 service_fees_price = 0
-                if(float(order_details.order_amount) <=40):
+                if(float(order_details.order_amount) < 40):
                     payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
@@ -4960,6 +5238,8 @@ def post_accept_click_view(request):
                 refund_details.save()
                 raised_by = User.objects.get(username = res_details.raised_by.username)
                 raised_to = User.objects.get(username = res_details.raised_to.username)
+                update_all_balancevalues(raised_by)
+                update_all_balancevalues(raised_to)
                 notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
                 if(notification_cancel.is_active == True):
                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " cancelled the Order.")
@@ -4970,8 +5250,6 @@ def post_accept_click_view(request):
                 if(order_to.mail_order == True):
                     mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
                     SendEmailAct(str(order_to.email),mail_content,"Your order with "+str(raised_to.username).title()+" was cancelled")
-                update_all_balancevalues(order_by_user)
-                update_all_balancevalues(order_to_user)
             elif(res_type == "delivered"):
                 raised_by = User.objects.get(username = res_details.raised_by.username)
                 raised_to = User.objects.get(username = res_details.raised_to.username)
@@ -4981,7 +5259,7 @@ def post_accept_click_view(request):
                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " Marked your Order as complete.")
                     noti_create.save()
                 service_fees_price = 0
-                if(float(order_details.order_amount) <=40):
+                if(float(order_details.order_amount) < 40):
                     payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
@@ -5003,7 +5281,6 @@ def post_accept_click_view(request):
                             service_fees_price = round(perceof_budg,2)
                 earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
                 withdrwal_val = 0
-                buyer_refferal = None
                 withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
                 for ext in withdrawal_ext:
                     if(ext.parameter_name == "withdrawal_clearence_days"):
@@ -5016,54 +5293,17 @@ def post_accept_click_view(request):
                 offer_details = Request_Offers.objects.get(pk = order_details.offer_id.pk)
                 order_by =  User.objects.get(username= order_details.order_by.username)   
                 order_to =  User.objects.get(username= order_details.order_to.username)
-                try:
-                    buyer_refferal = Referral_Users.objects.get(user_id =order_by)
-                except:
-                    buyer_refferal = None
-                if(buyer_refferal != None):
-                    affiliate_amount = 0
-                    if(buyer_refferal.buyer_affi_done == False):
-                        if(float(order_details.order_amount) > 40):
-                            affiliate_amount = 5
-                            earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=order_by)
-                            refund_details.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=order_by,activity_to=refferal_user)
-                            order_ativity.save()
-                            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=order_by,activity_to=refferal_user)
-                            order_ativity1.save()
-                        refferal_user = User.objects.get(user_id =buyer_refferal.refferal_user)
-                        refferal_user.buyer_affi_amount = affiliate_amount
-                        buyer_refferal.buyer_affi_done = True
-                        buyer_refferal.save()
-                seller_refferal = None
-                try:
-                    seller_refferal = Referral_Users.objects.get(user_id =order_to)
-                except:
-                    seller_refferal = None
-                if(seller_refferal != None):
-                    s_affiliate_amount = 0
-                    if(seller_refferal.seller_affi_done == False):
-                        if(float(order_details.order_amount) > 40):
-                            affiliate_amount = 5
-                            earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=order_by)
-                            refund_details.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=order_by,activity_to=refferal_user)
-                            order_ativity.save()
-                            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val ,activity_type="pending",activity_by=order_by,activity_to=refferal_user)
-                            order_ativity1.save()
-                        refferal_user = User.objects.get(user_id =seller_refferal.refferal_user)
-                        refferal_user.seller_affi_amount = affiliate_amount
-                        seller_refferal.seller_affi_done = True
-                        seller_refferal.save()
-                order_to.last_delivery= str(datetime.today().strftime('%d-%m-%Y'))
+                order_to.u_last_delivery= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                 order_to.save()
+                update_all_balancevalues(order_by)
+                update_all_balancevalues(order_to)
                 try:    
                     cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
                 except:
                     cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
                 earnings_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
                 earnings_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity")
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read = True)
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
                 resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
@@ -5140,12 +5380,12 @@ def post_seller_review_view(request):
             orderedto_user = User.objects.get(username = ord_details.order_to.username)
             gig_details = UserGigs.objects.get(gig_title = ord_details.package_gig_name.gig_title)  
             average_val =  round(float(int(int(s_comm) + int(s_serv)+ int(s_recomm)) / 3),2)
-            if(Seller_Reviews.objects.filter(order_no=ord_details,s_review_from=orderedby_user,s_review_to=orderedto_use,package_gig_name= gig_details).exists() == False):
+            if(Seller_Reviews.objects.filter(order_no=ord_details,s_review_from=orderedby_user,s_review_to=orderedto_user,package_gig_name= gig_details).exists() == False):
                 seller_reviews = Seller_Reviews(communication=s_comm,recommendation=s_recomm,service=s_serv,average_val=average_val,seller_response="",review_message=s_review_txt,order_no=ord_details,package_gig_name= gig_details,s_review_from=orderedby_user,s_review_to=orderedto_user,buyer_resp_date=None)
                 seller_reviews.save()
                 notification_seller = Notification_commands.objects.get(slug = "order_seller_reviews")
                 if(notification_seller.is_active == True):
-                    noti_create = CustomNotifications(sender = orderedby_user, recipient=orderedto_user,order_no= ord_details, verb='reviews',description= str(orderedby_user.username).title() + " left a " +round(average_val) + " star review.")  
+                    noti_create = CustomNotifications(sender = orderedby_user, recipient=orderedto_user,order_no= ord_details, verb='reviews',description= str(orderedby_user.username).title() + " left a " +str(round(average_val)) + " star review.")  
                     noti_create.save()
             data.append({"sucess" : str("sucess")})
         except Exception as e:
@@ -5289,8 +5529,8 @@ def post_credit_tip_details_view(request):
                         today_date = datetime.today()
                         clearencedate = today_date + timedelta(days=int(withdrwal_val)) 
                 earning_val = 0
-                if(float(base_price) <=40.0):
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                if(float(base_price) < 40.0):
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5300,7 +5540,7 @@ def post_credit_tip_details_view(request):
                             perceof_budg = float((int(base_price)* int(serv_fees_val))/100)
                             service_fees_price = round(perceof_budg,2)
                 else:
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5312,7 +5552,7 @@ def post_credit_tip_details_view(request):
                 earning_val = float(earning_val) + (round(float(round(float(base_price),2) - service_fees_price),2)) 
                 refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
                 refund_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity",is_read = True)
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
                 order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
@@ -5322,8 +5562,6 @@ def post_credit_tip_details_view(request):
                 if(order_to.mail_order == True):
                     mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.gig_title).title(),str(ord_details.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
                     SendEmailAct(str(order_to.email),mail_content," Great news: Your received an tip from buyer.") 
-                update_all_balancevalues(order_by)
-                update_all_balancevalues(order_to)
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -5405,8 +5643,8 @@ def post_flutter_tip_details_view(request):
                     cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
                 withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days"))
                 earning_val = 0
-                if(float(order_amount) <=40.0):
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                if(float(order_amount) < 40.0):
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5416,7 +5654,7 @@ def post_flutter_tip_details_view(request):
                             perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
                             service_fees_price = round(perceof_budg,2)
                 else:
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5433,7 +5671,7 @@ def post_flutter_tip_details_view(request):
                         clearencedate = today_date + timedelta(days=int(withdrwal_val))
                 refund_details = User_Earnings(order_amount=order_amount,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
                 refund_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity",is_read = True)
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
                 order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
@@ -5451,8 +5689,6 @@ def post_flutter_tip_details_view(request):
                 if(notification_tip.is_active == True):
                     noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
                     noti_create.save()
-                update_all_balancevalues(order_by)
-                update_all_balancevalues(order_to)
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -5528,8 +5764,8 @@ def post_paypal_tip_details_view(request):
                     cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)
                 withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days"))
                 earning_val = 0
-                if(float(base_price) <=40.0):
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="50"))
+                if(float(base_price) < 40.0):
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5539,7 +5775,7 @@ def post_paypal_tip_details_view(request):
                             perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
                             service_fees_price = round(perceof_budg,2)
                 else:
-                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees", service_amount="51"))
+                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
                     for p in payment_parameters:
                         serv_fees_val = p.service_fees
                         serv_fees_type = p.fees_type
@@ -5556,7 +5792,7 @@ def post_paypal_tip_details_view(request):
                         clearencedate = today_date + timedelta(days=int(withdrwal_val))
                 refund_details = User_Earnings(order_amount=base_price,earning_amount=earning_val,platform_fees=service_fees_price,aval_with="",clearence_date=clearencedate,clearence_status="pending",order_no= ord_details,cleared_on=None,user_id=order_to,earning_type="tip",affiliate_user=None)
                 refund_details.save()
-                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity")
+                order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity",is_read = True)
                 order_message.save()
                 get_message =  Order_Message.objects.get(pk = order_message.pk)
                 order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earning_val , order_no=ord_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
@@ -5574,8 +5810,6 @@ def post_paypal_tip_details_view(request):
                 if(notification_tip.is_active == True):
                     noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
                     noti_create.save()
-                update_all_balancevalues(order_by)
-                update_all_balancevalues(order_to)
                 data.append({'sucess' : 'sucess'})
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
@@ -5608,7 +5842,7 @@ def post_buyer_review_view(request):
                 buyer_reviews.save()
                 notification_buyer = Notification_commands.objects.get(slug = "order_buyer_reviews")
                 if(notification_buyer.is_active == True):
-                    noti_create = CustomNotifications(sender = orderedto_user, recipient=orderedby_user,order_no= ord_details, verb='reviews',description= str(orderedto_user.username).title() + " left a " +str(round(b_rating)) + " star review.")  
+                    noti_create = CustomNotifications(sender = orderedto_user, recipient=orderedby_user,order_no= ord_details, verb='reviews',description= str(orderedto_user.username).title() + " left a " +str(round(int(b_rating))) + " star review.")  
                     noti_create.save()
             data.append({'sucess' : 'sucess'})
         except Exception as e:
@@ -5659,6 +5893,9 @@ def get_conv_user_details_view(request):
                 message_cover_detls.save()  
         conversational_details =   Conversation.objects.get(pk = message_cover_detls.pk)
         user_details =[]
+        initiator_gigs = UserGigs.objects.filter(user_id=initiator, gig_status='active').count()
+        receiver_gigs = UserGigs.objects.filter(user_id=receiver, gig_status='active').count()
+        Message.objects.filter(conversation_id=conversational_details,is_read=False).update(is_read=True)
         messa_resp = Message_Response_Time(receiver=initiator, timestamp= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S'))
         messa_resp.save()
         language_inst = Languages.objects.get(lng_Name = "English")
@@ -5683,30 +5920,26 @@ def get_conv_user_details_view(request):
         except:
             buyer_rating = 0
         buyer_reviews = len(buyer_all_reviews)
-        seller_level_string = ''
-        if(receiver.seller_level == "level1"):
-            seller_level_string = "New or higher"
-        elif(receiver.seller_level == "level2"):
-            seller_level_string = "Advanced or higher"
-        elif(receiver.seller_level == "level3"):
-            seller_level_string = "Professional"
+        seller_level_string = str(receiver.user_level.level_name)
         user_details.append({"user_id":receiver.pk,"username":receiver.username,"userimg":receiver.avatar,"user_location":receiver.country.name,"user_start":receiver.created_at.strftime('%b %Y'),"user_english":user_langauges.lang_prof,"seller_level":seller_level_string,"response_time":receiver.avg_respons,"seller_rating":seller_rating,"buyer_rating":buyer_rating,"seller_reviews":seller_reviews,"buyer_reviews":buyer_reviews})
         order_details = []
         order_data = []
-        array_list = []
+        array_list = ''
         current_count = 10
         total_counts = Message.objects.filter(conversation_id= conversational_details).count()
-        a_message = Message.objects.filter(conversation_id= conversational_details).order_by('-pk')
-        for a_m in a_message:
-            array_list.append(int(a_m.pk))
+        # a_message = Message.objects.filter(conversation_id= conversational_details).order_by('-pk')
+        # for a_m in a_message:
+        #     array_list.append(int(a_m.pk))
+        array_list =     ",".join(str(msg.pk) for msg in Message.objects.filter(conversation_id= conversational_details).order_by('-pk'))
         all_messages = Message.objects.filter(conversation_id= conversational_details).order_by('-pk')[:int(10)]
         message_data = []
+        attachment_str = ''
         for all_m in all_messages:
+            attachment_str = ''
             if(all_m.is_read == False):
                 all_m.is_read = True
                 all_m.save()
             if(all_m.message_type == "chat"):
-                attachment_str = ''
                 if(all_m.attachment != None):
                     if(len(all_m.attachment.strip()) != 0):
                         attachment_str = all_m.attachment.strip()
@@ -5779,7 +6012,7 @@ def get_conv_user_details_view(request):
             if(gig_image != None):
                 gig_image_url = gig_image.gig_image
             order_data.append({"order_id":order.pk,"order_no":order.order_no,"order_amount":order.order_amount,"order_due_date":order.due_date.strftime('%b %d, %Y'),"gig_img":gig_image_url,"order_status":order.order_status,"gig_title":order.package_gig_name.gig_title}) 
-        response_data = {"response_userDetails":user_details,"conversation_id":conversational_details.pk,"no_of_orders":len(order_details),"curre_User":current_User,"order_details":order_data,"data_messages":message_data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list}
+        response_data = {"response_userDetails":user_details,"conversation_id":conversational_details.pk,"no_of_orders":len(order_details),"curre_User":current_User,"order_details":order_data,"data_messages":message_data, "total_count":total_counts,"current_count":count_val,"message_ids":array_list,"initiator_gigs":initiator_gigs,"receiver_gigs":receiver_gigs}
         return JsonResponse(response_data,safe=False)
     
 @csrf_exempt
@@ -5795,39 +6028,46 @@ def post_inbox_upload_view(request):
             return HttpResponse(res)
         else:
             if existingPath == 'null':
-                fileName = str(shortuuid.ShortUUID().random(length=15)) +"_"+ str(fileName)[0:8]  + pathlib.Path(fileName).suffix 
-                path = 'media/chat_files/' + fileName
-                with open(path, 'wb+') as destination: 
-                    destination.write(file)
-                FileFolder = UploadFile()
-                FileFolder.existingPath = fileName
-                FileFolder.eof = end
-                FileFolder.name = fileName
-                FileFolder.save()
-                if int(end):
-                    res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
-                else:
-                    res = JsonResponse({'existingPath': fileName})
+                try:
+                    fileName = str(shortuuid.ShortUUID().random(length=15)) +"_"+ str(fileName)[0:8]  + pathlib.Path(fileName).suffix 
+                    path = 'media/chat_files/' + fileName
+                    with open(path, 'wb+') as destination: 
+                        destination.write(file)
+                    FileFolder = UploadFile()
+                    FileFolder.existingPath = fileName
+                    FileFolder.eof = end
+                    FileFolder.name = fileName
+                    FileFolder.save()
+                    if int(end):
+                        res = JsonResponse({'data':'Uploaded Successfully','existingPath': fileName})
+                    else:
+                        res = JsonResponse({'existingPath': fileName})
+                except Exception as e:
+                    res = JsonResponse({'existingPath': (str(type(e)) + str(e))})
                 return HttpResponse(res)
             else:
                 path = 'media/chat_files/' + existingPath
                 model_id = UploadFile.objects.get(existingPath=existingPath)
-                if model_id.existingPath == existingPath:
-                    if not model_id.eof:
-                        with open(path, 'ab+') as destination: 
-                            destination.write(file)
-                        if int(end):
-                            model_id.eof = int(end)
-                            model_id.save()
-                            res = JsonResponse({'data':'Uploaded Successfully','existingPath':existingPath})
+                try:
+                    if model_id.existingPath == existingPath:
+                        if not model_id.eof:
+                            with open(path, 'ab+') as destination: 
+                                destination.write(file)
+                            if int(end):
+                                model_id.eof = int(end)
+                                model_id.save()
+                                res = JsonResponse({'data':'Uploaded Successfully','existingPath':existingPath})
+                            else:
+                                res = JsonResponse({'existingPath':existingPath})    
+                            return HttpResponse(res)
                         else:
-                            res = JsonResponse({'existingPath':existingPath})    
-                        return HttpResponse(res)
+                            res = JsonResponse({'data':'EOF found. Invalid request'})
+                            return HttpResponse(res)
                     else:
-                        res = JsonResponse({'data':'EOF found. Invalid request'})
+                        res = JsonResponse({'data':'No such file exists in the existingPath'})
                         return HttpResponse(res)
-                else:
-                    res = JsonResponse({'data':'No such file exists in the existingPath'})
+                except Exception as e:
+                    res = JsonResponse({'data':(str(type(e)) + str(e))})
                     return HttpResponse(res)
         
 def get_offer_details_view(request):
@@ -6181,7 +6421,9 @@ def get_chat_messages_view(request):
         idlists = id_list.split(",")
         all_messages = Message.objects.filter(conversation_id= cover_detls,id__in=idlists).order_by('-pk')
         message_data = []
+        attachment_str = ''
         for all_m in all_messages:
+            attachment_str = ''
             if(all_m.is_read == False):
                 all_m.is_read = True
                 all_m.save()
@@ -6247,3 +6489,23 @@ def get_chat_messages_view(request):
         response_data = {"data":message_data,"current_count":count_val}
         return JsonResponse(response_data,safe=False)
 
+def post_view_gig_offer_view(request):
+    if request.method == 'GET':
+        initiator = request.GET['initiator']
+        receiver = request.GET['receiver'] 
+        package = request.GET['package'] 
+        gig_id = request.GET['gig_id']
+        initiator = User.objects.get(username = initiator)
+        receiver = User.objects.get(pk = receiver)
+        gig_details = UserGigs.objects.get(pk = gig_id)
+        requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details ).count()
+        ask_req = False
+        if(requirements > 1):
+            ask_req = True
+        userpack= UserGigPackages.objects.filter(package_gig_name=gig_details, package_type= package).first()
+        o_text_no_revs = userpack.package_revisions
+        o_text_del_time = userpack.package_delivery
+        o_text_price = userpack.package_price
+        offer_details = Request_Offers(gig_name=gig_details,user_id=receiver,buyer_request=None,custom_user= initiator, offer_desc="Its an custom Order", offer_budget=o_text_price, offer_time=o_text_del_time,no_revisions=o_text_no_revs, ask_requirements= ask_req, extra_parameters=str(""),offer_type="custom" )
+        offer_details.save()
+        return HttpResponse(offer_details.pk)

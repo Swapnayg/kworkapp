@@ -311,7 +311,8 @@
         });
         $("#cat_dropdown").find('li:first').trigger("click");
 
-        $('#text_offer_desc').keyup(function() { 
+        $('#text_offer_desc').on('keyup', 'paste', function() { 
+         setTimeout(function() {
          var thisChars = this.value.replace(/{.*}/g, '').length; 
          var maxlength = $(this).attr("maxlength");
          if(thisChars > maxlength) 
@@ -321,6 +322,7 @@
          }else{
             $(".char-count").text( maxlength - thisChars + " /"+maxlength  +" Chars Max" ); 
          }
+      }, 500);
       });
       $("#offer_gig_req_form").submit(function(e)
       {

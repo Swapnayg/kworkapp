@@ -418,7 +418,7 @@
             $("#other_post_price").val(tip_val);
             $("#span_tip_val").text("$ " + tip_val);
             $("#act_tip_value").val(tip_val);
-            service_fees = parseFloat(parseInt(tip_val)* parseInt('{{serv_fees_val}}') /100).toFixed(2);
+            service_fees = parseFloat(parseInt(tip_val) + parseInt('{{serv_fees_val}}')).toFixed(2);
             total_val =  parseFloat( parseFloat(service_fees) + parseInt(tip_val)).toFixed(2);
             $("#span_tip_serv_fees").text(service_fees);
             $("#serv_total_fees").text("$ " + total_val);
@@ -452,7 +452,7 @@
             $("#modal_custom_tip_val").modal('hide');
             $("#span_tip_val").text("$ " + tip_val);
             $("#act_tip_value").val(tip_val);
-            service_fees = parseFloat(parseInt(tip_val)* parseInt('{{serv_fees_val}}') /100).toFixed(2);
+            service_fees = parseFloat(parseInt(tip_val) + parseInt('{{serv_fees_val}}')).toFixed(2);
             total_val =  parseFloat( parseFloat(service_fees) + parseInt(tip_val)).toFixed(2);
             $("#span_tip_serv_fees").text(service_fees);
             $("#serv_total_fees").text("$ " + total_val);

@@ -20,7 +20,7 @@
                            <span class="_1iCafnp custom-order-package-tooltip-content">
                               <section class="request-description">
                                  <p class="title">Describe the service you're looking to purchase - please be as detailed as possible:</p>
-                                 <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{character_post_request}}" onkeyup="textarea_post_reqonkeyup(this);" id="textarea_post_req" required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN" id="textarea_post_span">0/{{character_post_request}}</span></div>
+                                 <div class="_27meMuG _3Dil0zw description text-body-2"><textarea maxlength="{{character_post_request}}" onkeyup="textarea_post_reqonkeyup(this);" onpaste="textarea_post_reqonkeyup(this);" id="textarea_post_req" required placeholder="I'm looking for..."></textarea><span class="_5uzPJRN" id="textarea_post_span">0/{{character_post_request}}</span></div>
                                  <div class="description-footer">
                                     <div class="_2g7EPin fJuccPM file-uploader-tooltip">
                                        <span class="_1iCafnp file-uploader-tooltip-content" >
@@ -187,6 +187,7 @@
     });
     function textarea_post_reqonkeyup(ev)
     {
+      setTimeout(function() {
         var thisChars = $(ev).val().replace(/{.*}/g, '').length; 
         var maxlength = $(ev).attr("maxlength");
         if(thisChars > maxlength) 
@@ -196,6 +197,7 @@
         }else{
             $("#textarea_post_span").text( maxlength - thisChars + " /"+maxlength); 
         }
+      }, 500);
     }
     function upload_post_reqimgChange(ev)
     {

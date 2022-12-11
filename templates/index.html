@@ -72,7 +72,7 @@
          </div>
       </div>
    </div>
-   <div class="partners partners--en">
+   {% comment %} <div class="partners partners--en">
       <div class="kw-wrapper partners__wrapper partners__wrapper--en js-partners-slider">
          <div class="partners__items partners__items--en swiper-wrapper">
             <div class="partners__item-en swiper-slide js-partner-hint partners__item-en--ikea" data-tooltip-mhidden="true" data-tooltip-side="bottom" data-tooltip-content="#partners-hint">
@@ -101,7 +101,7 @@
             </div>
          </div>
       </div>
-   </div>
+   </div> {% endcomment %}
    <div class="rubrics">
       <div class="kw-wrapper" data-editable-demo="" data-name="page__heading2">
          <h2 class="page__heading2 kw-header--h2 p0">Explore Letworkbedone's Evergrowing Marketplace</h2>
@@ -116,7 +116,7 @@
             <div class="numbers__item">
                <div class="numbers__logo"><img class="js-lazy-load-image" src="{% static 'assets/images/logo.png' %}" alt="" /></div>
                <div class="numbers__text numbers__text--hint d-flex align-content-center justify-content-center">
-                  Freelance Marketplace <i class="icon-help--grey tooltipster ml5" data-tooltip-side="bottom" data-tooltip-content="#numbers-hint" data-tooltip-distance="5"></i>
+                  Freelance Marketplace 
                </div>
                <div class="hidden">
                   <div id="numbers-hint" class="numbers__hint">
@@ -243,10 +243,10 @@
    </div>
    <div class="banner-bottom js-animation-banner">
       <div class="kw-wrapper">
-         <div class="banner-bottom__bg js-bg-banner optimize m-hidden" data-style="background-image: url(/static/assets/images/banner-bg-bottom.jpg);"></div>
+         <div class="banner-bottom__bg js-bg-banner optimize m-hidden" style="background-image: url('/static/assets/images/banner-bg-bottom.jpg');"></div>
          <div
             class="banner-bottom__bg banner-bottom__bg--mobile js-lazy-load-image js-lazy-load-image-bg optimize m-visible"
-            data-style="background-image: url(/static/assets/images/portfolio/banner-bg-bottom-mobile.jpg );"
+            style="background-image: url('/static/assets/images/banner-bg-bottom-mobile.jpg' );"
             ></div>
          <div class="banner-bottom__inner" data-editable-demo="" data-name="page__heading11">
             <h2 class="page__heading11 kw-header--h2 p0">Start saving with freelance services today</h2>
@@ -333,6 +333,10 @@
    .anchor_tag_user
    {
       text-transform:capitalize;
+   }
+   .help-buisness__title, .help-buisness__text
+   {
+      padding-left:7%;
    }
 </style>
 <script>

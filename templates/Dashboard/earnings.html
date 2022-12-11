@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{% static 'assets/css/frontend/earnings.css' %}" type="text/css" />
 <div class="all_page page-flex__content pt0 m0">
    <div id="event_list" class="event-list js-event-list"></div>
+   <input type="hidden" id="custId" value="{{order_details}}">
+   <input type="hidden" id="custId1" value="{{user_details.current_earning}}">
    <div id="fox_notification_block"></div>
    <div class="row justify-content-center mt-0" id="manage_earning">
       <article class="db-new-content js-db-cont">
