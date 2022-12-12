@@ -16,7 +16,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'username', 'name','country','terms','profile_status')
+        fields = ('email', 'username', 'name','country','terms','profile_status','unblocked_count')
         widgets = {'country': CountrySelectWidget()}
 
     def clean_password2(self):
@@ -45,7 +45,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'username','first_name','last_name', 'name', 'password', 'is_admin', 'is_staff', 'is_active','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')
+        fields = ('email', 'username','first_name','last_name', 'name', 'password', 'is_admin', 'is_staff', 'is_active','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status','unblocked_count')
         widgets = {'country': CountrySelectWidget()}
 
     def clean_password(self):
@@ -65,7 +65,7 @@ class UserSignupForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'username','first_name','last_name','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')
+        fields = ('email', 'username','first_name','last_name','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status','unblocked_count')
         widgets = {'country': CountrySelectWidget()}
 
     def clean_password2(self):
@@ -85,7 +85,7 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email', 'username','first_name','last_name','name','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')
+        fields = ('email', 'username','first_name','last_name','name','country','terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status','unblocked_count')
         widgets = {'country': CountrySelectWidget()}
 
 class TopicDetailsForm(forms.ModelForm):

@@ -60,6 +60,8 @@ class ChatConsumer(WebsocketConsumer):
                 attachment = attachment,
                 conversation_id=conversation,
                 message_type = message_type,
+                is_read=False,
+                mail_sent=False,
             )
         else:
             request_offer = Request_Offers.objects.get(pk = offer_id)

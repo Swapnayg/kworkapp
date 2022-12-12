@@ -219,7 +219,7 @@
         $("#form_seller_review").submit(function(e)
         {
             e.preventDefault();
-            if(responsive_rating.length != 0 && service_rating.length != 0 && recommend_rating.length != 0 )
+            if(responsive_rating != 0 && service_rating != 0 && recommend_rating != 0 )
             {
                 $(".error-message-review").hide();
                 $.ajax({
@@ -229,7 +229,7 @@
                     success: function(data) 
                     {
                         jsonObject = JSON.parse(JSON.stringify(data));
-                        if(jsonObject['sucess'] == "sucess")
+                        if(jsonObject[0]['sucess'] == "sucess")
                         {
                             $("#seller_review_section").hide();
                             $("#thank_section").show();

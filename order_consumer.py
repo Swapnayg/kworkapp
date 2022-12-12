@@ -60,6 +60,8 @@ class Order_ChatConsumer(WebsocketConsumer):
             conversation_id=conversation,
             order_no = order_details,
             message_type = 'chat',
+            is_read=False,
+            mail_sent=False,
         )
         noti_create = CustomNotifications(sender = sender, recipient=receiver, verb='order_chat',description=message,order_no =order_details )
         noti_create.save()   

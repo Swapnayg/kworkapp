@@ -103,7 +103,7 @@
          success: function(data) 
          {  
             var base_url = window.location.origin;
-            $("#affiliate_link").val(base_url +"/"+ data.affiliate_code);
+            $("#affiliate_link").val(base_url +"/ref/"+ data.affiliate_code);
             $("#reff_count").text(data.referral_count);
             $("#reff_earning").text(data.referral_earnings);
             value_user = data.logged_user;

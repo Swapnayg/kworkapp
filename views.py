@@ -1082,7 +1082,7 @@ class warning_review_view(View):
                 warning_count =  User_warning.objects.filter(user_id = userDetails).count()
                 previous_page = request.META.get('HTTP_REFERER')
                 warning_count_text = ""
-                if(warning_count == 3):
+                if(warning_count == 4):
                     userDetails.profile_status = "blocked"
                     userDetails.save()
                     return render(request , 'Dashboard/blocked.html',{"username":username})
@@ -2022,7 +2022,6 @@ class order_activities_view(View):
                         elif(delivery_details.delivery_status == "completed"):
                             delivery_status = "completed"
                         del_doc_lists = []
-                    
                         if((delivery_details.attachment) == None):
                             del_doc_lists = []
                         else:
@@ -2055,7 +2054,12 @@ class order_activities_view(View):
                 try:
                     conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
                 except:
-                    conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
+                    try:
+                        conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
+                    except:
+                        conv_obj = Order_Conversation(initiator=ordered_by_user,receiver=ordered_to_user,order_no=order_details)
+                        conv_obj.save()
+                        conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
                 if(offer_details.ask_requirements == True):
                     requirements = "yes"
                     requirements_l = Buyer_Requirements.objects.filter(order_no= order_details)
@@ -2094,10 +2098,6 @@ class order_activities_view(View):
                         cancel_char = c.Max_No_of_char_allowed
                     elif(c.Char_category_Name == "seller_response"):
                         seller_res_char = c.Max_No_of_char_allowed
-                try:
-                    conversation = Order_Conversation.objects.get(initiator=ordered_by_user,receiver=ordered_to_user)
-                except:
-                    conversation = Order_Conversation.objects.get(initiator=ordered_to_user,receiver=ordered_by_user)
                 chat_words = list(ChatWords.objects.order_by().values_list('name').distinct())
                 chat_words_5_words = list(ChatWords.objects.order_by().values_list('name').distinct())[:5]
                 buyer_review = []
@@ -3474,6 +3474,14 @@ def every_minute():
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
                     except:
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+                    
+                    re_withdrwal_val = 0
+                    re_withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
+                    for ext in re_withdrawal_ext:
+                        if(ext.parameter_name == "withdrawal_clearence_days"):
+                            re_withdrwal_val = ext.no_of_days
+                    re_today_date = datetime.today()
+                    re_clearencedate = re_today_date + timedelta(days=int(re_withdrwal_val))   
                     buyer_refferal = None
                     try:
                         buyer_refferal = Referral_Users.objects.get(refferal_user = order_by)
@@ -3485,7 +3493,7 @@ def every_minute():
                             if(float(order_details.order_amount) > 40):
                                 affiliate_amount = 5
                                 refferal_user = User.objects.get(pk =buyer_refferal.user_id.pk)
-                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=buyer_refferal)
+                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=buyer_refferal)
                                 earnings_details.save()
                                 order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=buyer_refferal,activity_to=refferal_user)
                                 order_ativity.save()
@@ -3505,7 +3513,7 @@ def every_minute():
                             if(float(order_details.order_amount) > 40):
                                 affiliate_amount = 5
                                 refferal_user = User.objects.get(pk =buyer_refferal.user_id.pk)
-                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=seller_refferal)
+                                earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=refferal_user,earning_type="affiliate",affiliate_user=seller_refferal)
                                 earnings_details.save()
                                 order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,activity_type="affiliate",activity_by=seller_refferal,activity_to=refferal_user)
                                 order_ativity.save()
@@ -4130,9 +4138,9 @@ def every_five_minute():
     for us in all_users:
         get_active_orders = User_orders.objects.filter(Q(order_by=us) | Q(order_to= us),order_status = 'active' )
         for order in get_active_orders:
-            get_order_messg = Order_Message.objects.filter(receiver=us,is_read=False).count()
+            get_order_messg = Order_Message.objects.filter(receiver=us,is_read=False,message_type='chat').count()
             if(get_order_messg  > 0):
-                first_messg = Order_Message.objects.filter(receiver=us,is_read=False).first()
+                first_messg = Order_Message.objects.filter(receiver=us,is_read=False,message_type='chat').first()
                 if(first_messg.mail_sent == False):
                     if(us.mail_order == True):
                         first_msg_obj = Order_Message.objects.get(pk = first_messg.pk)
@@ -4140,9 +4148,9 @@ def every_five_minute():
                         first_msg_obj.save()
                         mail_content = MailTemplates.chat_order_message(str(first_messg.sender.username).title(),str(first_messg.receiver.username).title(),str(first_messg.text),str(first_messg.timestamp.strftime('%d %b, %Y')),str(order.order_no).title())
                         SendEmailAct(str(us.email),mail_content,"You've received messages.")
-        get_chat_messg = Message.objects.filter(receiver=us,is_read=False).count()
+        get_chat_messg = Message.objects.filter(receiver=us,is_read=False,message_type='chat').count()
         if(get_chat_messg  > 0):
-            c_first_messg = Message.objects.filter(receiver=us,is_read=False).first()
+            c_first_messg = Message.objects.filter(receiver=us,is_read=False,message_type='chat').first()
             if(c_first_messg.mail_sent == False):
                 if(us.mail_order == True):
                     c_first_msg_obj = Message.objects.get(pk = c_first_messg.pk)
@@ -4341,116 +4349,108 @@ def post_flutterwave_transaction_view(request):
         payment.token = api_details.secrete_key
         details = payment.get_payment_details(u_trans_id)
         data = [] 
-        try:       
-            flu_amout = details['data']['amount']
-            flu_app_fee = details['data']['app_fee']
-            flu_pay_type = details['data']['payment_type']
-            flu_accnt_id = details['data']['account_id']
-            flutt_flw_ref = details['data']['flw_ref']
-            meta_data =  details['data']['meta']['data_extra']
-            order_amount =  details['data']['meta']['base_price_wsdf']
-            u_service_fees =  details['data']['meta']['token']
-            u_credit_used =  round(float(details['data']['meta']['credit_used']),2)
-            u_base_price = request.GET['u_base_price']
-            u_total_price = request.GET['u_total_price']
-            already_submitted = 0
-            current_val = u_credit_used
-            if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user,paid_for='order').exists() == False):
-                if(float(u_credit_used) != 0.0):
-                    refund_earning = User_Refund.objects.filter(user_id=pay_by_user,refund_status="cancelled")
-                    for r_earn in refund_earning:
-                        previous_credit = 0.0
-                        if(r_earn.refund_amount != None):
-                            if(len(r_earn.refund_amount) != 0):
-                                prev_credit = float(r_earn.credit_used)
-                                actual_available = float(r_earn.refund_amount) - float(prev_credit)
-                                if(float(current_val) <= float(r_earn.refund_amount)):
-                                    previous_credit = round(float(current_val),2) + float(r_earn.credit_used)
-                                    current_val =  float(actual_available) - float(current_val)
+        # try:       
+        flu_amout = details['data']['amount']
+        flu_app_fee = details['data']['app_fee']
+        flu_pay_type = details['data']['payment_type']
+        flu_accnt_id = details['data']['account_id']
+        flutt_flw_ref = details['data']['flw_ref']
+        meta_data =  details['data']['meta']['data_extra']
+        order_amount =  details['data']['meta']['base_price_wsdf']
+        u_service_fees =  details['data']['meta']['token']
+        u_credit_used =  round(float(details['data']['meta']['credit_used']),2)
+        u_base_price = request.GET['u_base_price']
+        u_total_price = request.GET['u_total_price']
+        already_submitted = 0
+        current_val = u_credit_used
+        if(User_Transactions.objects.filter(gig_name= gig_details,offer_id=offers_sent,paid_by=pay_by_user,paid_to=pay_to_user,paid_for='order').exists() == False):
+            if(float(u_credit_used) != 0.0):
+                refund_earning = User_Refund.objects.filter(user_id=pay_by_user,refund_status="cancelled")
+                for r_earn in refund_earning:
+                    previous_credit = 0.0
+                    if(r_earn.refund_amount != None):
+                        if(len(r_earn.refund_amount) != 0):
+                            prev_credit = float(r_earn.credit_used)
+                            actual_available = float(r_earn.refund_amount) - float(prev_credit)
+                            if(float(current_val) <= float(r_earn.refund_amount)):
+                                previous_credit = round(float(current_val),2) + float(r_earn.credit_used)
+                                current_val =  float(actual_available) - float(current_val)
+                                r_earn.credit_used = str(round(float(previous_credit),2))
+                                r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                r_earn.save()
+                            elif(float(u_credit_used) > float(r_earn.refund_amount)):
+                                if(float(current_val) != 0.0):
+                                    current_val1 =  float(actual_available) - float(current_val)
+                                    previous_credit = round(float(actual_available),2) + float(prev_credit)
                                     r_earn.credit_used = str(round(float(previous_credit),2))
                                     r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                                     r_earn.save()
-                                elif(float(u_credit_used) > float(r_earn.refund_amount)):
+                                    current_val = round(float(current_val) - float(current_val1),2)
+                if(float(current_val) != 0.0):
+                    total_earnng = User_Earnings.objects.filter(user_id=pay_by_user )
+                    for earn in total_earnng:
+                        if(earn.aval_with != None):
+                            if(len(earn.aval_with) != 0):
+                                prev_credit = float(earn.credit_used)
+                                actual_available = float(earn.aval_with) - float(prev_credit)
+                                if(float(current_val) <= float(earn.aval_with)): 
+                                    previous_credit = round(float(current_val),2) + float(earn.credit_used)
+                                    current_val =  float(actual_available) - float(current_val)
+                                    earn.credit_used = str(round(float(previous_credit),2))
+                                    earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                    earn.save()
+                                elif(float(current_val) > float(earn.aval_with)):
                                     if(float(current_val) != 0.0):
                                         current_val1 =  float(actual_available) - float(current_val)
                                         previous_credit = round(float(actual_available),2) + float(prev_credit)
-                                        r_earn.credit_used = str(round(float(previous_credit),2))
-                                        r_earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                                        r_earn.save()
-                                        current_val = round(float(current_val) - float(current_val1),2)
-                    if(float(current_val) != 0.0):
-                        total_earnng = User_Earnings.objects.filter(user_id=pay_by_user )
-                        for earn in total_earnng:
-                            if(earn.aval_with != None):
-                                if(len(earn.aval_with) != 0):
-                                    prev_credit = float(earn.credit_used)
-                                    actual_available = float(earn.aval_with) - float(prev_credit)
-                                    if(float(current_val) <= float(earn.aval_with)): 
-                                        previous_credit = round(float(current_val),2) + float(earn.credit_used)
-                                        current_val =  float(actual_available) - float(current_val)
                                         earn.credit_used = str(round(float(previous_credit),2))
                                         earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                                         earn.save()
-                                    elif(float(current_val) > float(earn.aval_with)):
-                                        if(float(current_val) != 0.0):
-                                            current_val1 =  float(actual_available) - float(current_val)
-                                            previous_credit = round(float(actual_available),2) + float(prev_credit)
-                                            earn.credit_used = str(round(float(previous_credit),2))
-                                            earn.used_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                                            earn.save()
-                                            current_val = round(float(current_val) - float(current_val1),2)
-                no_of_days = int(offers_sent.offer_time)
-                Begindatestring = datetime.today()
-                due_date = Begindatestring + timedelta(days=no_of_days)
-                order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=order_amount,due_date=due_date)
-                order_details.save()   
-                order_details_get = User_orders.objects.get(pk = order_details.pk)
-                if(offers_sent.ask_requirements == True):
-                    already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details_get).count()
-                else:
-                    already_submitted = 2
-                try:    
-                    cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
-                except:
-                    try:
-                        cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-                    except:
-                        cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
-                        cover_detls.save()
-                try:    
-                    message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
-                except:
-                    try:
-                        message_cover_detls = Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
-                    except:
-                        message_cover_detls = Conversation(initiator=pay_to_user,receiver = pay_by_user,convers_type="active")
-                        message_cover_detls.save()  
-                cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
-                order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
-                order_activity.save()
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
-                user_trans.save()
-                order_message = Order_Message(sender=pay_by_user,receiver=pay_to_user,text = "placed the order",conversation_id=cover_detls,order_no=order_details_get,message_type="chat",is_read = True)
-                order_message.save()
-                meta_data_list = meta_data.split(",")
-                for meta in meta_data_list:
-                    if(meta != "None"):
-                        try:
-                            extra_gig = UserExtra_gigs.objects.get(pk = int(meta))
-                            user_extra_gig = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= extra_gig)
-                            user_extra_gig.save()
-                            order_activity = User_Order_Activity(order_message="×1"+ str(extra_gig.extra_gig_title),order_amount=extra_gig.extra_gig_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
-                            order_activity.save()
-                        except:
-                            pass 
-                data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+                                        current_val = round(float(current_val) - float(current_val1),2)
+            no_of_days = int(offers_sent.offer_time)
+            Begindatestring = datetime.today()
+            due_date = Begindatestring + timedelta(days=no_of_days)
+            order_details = User_orders(order_status="active",package_gig_name=gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user,order_amount=order_amount,due_date=due_date)
+            order_details.save()   
+            order_details_get = User_orders.objects.get(pk = order_details.pk)
+            if(offers_sent.ask_requirements == True):
+                already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details_get).count()
             else:
-                order_details = User_orders.objects.get(package_gig_name= gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user)
-                if(offers_sent.ask_requirements == True):
-                    already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details).count()
-                else:
-                    already_submitted = 2  
-                data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+                already_submitted = 2
+            try:    
+                cover_detls = Order_Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                try:
+                    cover_detls = Order_Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+                except:
+                    cover_detls = Order_Conversation(initiator=pay_by_user,receiver=pay_to_user,order_no=order_details_get)
+                    cover_detls.save()
+            try:    
+                message_cover_detls = Conversation.objects.get(initiator=pay_by_user,receiver = pay_to_user)
+            except:
+                try:
+                    message_cover_detls = Conversation.objects.get(initiator=pay_to_user,receiver = pay_by_user)
+                except:
+                    message_cover_detls = Conversation(initiator=pay_to_user,receiver = pay_by_user,convers_type="active")
+                    message_cover_detls.save()  
+            cover_detls =  Order_Conversation.objects.get(pk = cover_detls.pk)
+            order_activity = User_Order_Activity(order_message="×1"+ str(gig_details.gig_title),order_amount=u_base_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
+            order_activity.save()
+            user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='flutterwave',transaction_id=u_trans_id,payment_status=u_status,transaction_ref= u_trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=pay_by_user,paid_to=pay_to_user,order_no=order_details_get,paid_for='order')
+            user_trans.save()
+            order_message = Order_Message(sender=pay_by_user,receiver=pay_to_user,text = "placed the order",conversation_id=cover_detls,order_no=order_details_get,message_type="chat",is_read = True)
+            order_message.save()
+            meta_data_list = meta_data.split(",")
+            for meta in meta_data_list:
+                if(meta != "None"):
+                    try:
+                        extra_gig = UserExtra_gigs.objects.get(pk = int(meta))
+                        user_extra_gig = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= extra_gig)
+                        user_extra_gig.save()
+                        order_activity = User_Order_Activity(order_message="×1"+ str(extra_gig.extra_gig_title),order_amount=extra_gig.extra_gig_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
+                        order_activity.save()
+                    except:
+                        pass 
             notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
             if(notification_settings.is_active == True):
                 sender = User.objects.get(username = 'admin')
@@ -4463,13 +4463,21 @@ def post_flutterwave_transaction_view(request):
                 noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
                 noti_create.save()
             if(pay_by_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
+                mail_content2 = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_by_user.email),mail_content2,"Here's your receipt of order.")
             if(pay_to_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")
-        except Exception as e:
-            data.append({"error" : str(type(e)) + str(e)})
+                mail_content1 = MailTemplates.order_mail_seller(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                SendEmailAct(str(pay_to_user.email),mail_content1," Great news: Your offer has been accepted.")
+            data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        else:
+            order_details = User_orders.objects.get(package_gig_name= gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user)
+            if(offers_sent.ask_requirements == True):
+                already_submitted = Buyer_Requirements.objects.filter(user_id=pay_by_user,gig_name=gig_details,order_no=order_details).count()
+            else:
+                already_submitted = 2  
+            data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
+        # except Exception as e:
+        #     data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
 
 def post_paypal_transaction_view(request):
@@ -4580,6 +4588,23 @@ def post_paypal_transaction_view(request):
                             order_activity.save()
                         except:
                             pass
+                notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
+                if(notification_settings.is_active == True):
+                    sender = User.objects.get(username = 'admin')
+                    noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Paypal payment is sucessful.") 
+                    noti_create.save()
+                notification_order = Notification_commands.objects.get(slug = "order_received")
+                if(notification_order.is_active == True):
+                    noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
+                    noti_create.save()
+                    noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
+                    noti_create.save()
+                if(pay_by_user.mail_order == True):
+                    mail_content2 = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                    SendEmailAct(str(pay_by_user.email),mail_content2,"Here's your receipt of order.")
+                if(pay_to_user.mail_order == True):
+                    mail_content1 = MailTemplates.order_mail_seller(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                    SendEmailAct(str(pay_to_user.email),mail_content1," Great news: Your offer has been accepted.")
                 data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
             else:
                 order_details = User_orders.objects.get(package_gig_name= gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user)
@@ -4588,25 +4613,8 @@ def post_paypal_transaction_view(request):
                 else:
                     already_submitted = 2
                 data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
-            notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
-            if(notification_settings.is_active == True):
-                sender = User.objects.get(username = 'admin')
-                noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Paypal payment is sucessful.") 
-                noti_create.save()
-            notification_order = Notification_commands.objects.get(slug = "order_received")
-            if(notification_order.is_active == True):
-                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
-                noti_create.save()
-                noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
-                noti_create.save()
-            if(pay_by_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
-            if(pay_to_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")
         except Exception as e:
-            data.append({"error" : str(type(e)) + str(e)})
+            data.append({"error" : str(type(e)) + str(e) })
         return JsonResponse(json.dumps(data),safe=False)
 
 
@@ -4718,6 +4726,18 @@ def post_credit_transaction_view(request):
                             order_activity.save()
                         except:
                             pass
+                notification_order = Notification_commands.objects.get(slug = "order_received")
+                if(notification_order.is_active == True):
+                    noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
+                    noti_create.save()
+                    noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
+                    noti_create.save()
+                if(pay_by_user.mail_order == True):
+                    mail_content2 = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                    SendEmailAct(str(pay_by_user.email),mail_content2,"Here's your receipt of order.")
+                if(pay_to_user.mail_order == True):
+                    mail_content1 = MailTemplates.order_mail_seller(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
+                    SendEmailAct(str(pay_to_user.email),mail_content1," Great news: Your offer has been accepted.")                 
                 data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
             else:
                 order_details = User_orders.objects.get(package_gig_name= gig_details,offer_id=offers_sent,order_by=pay_by_user,order_to=pay_to_user)
@@ -4726,18 +4746,6 @@ def post_credit_transaction_view(request):
                 else:
                     already_submitted = 2
                 data.append({"order_no":str(order_details.order_no),"ordered_by":pay_by_user.username,"ordered_to":pay_to_user.username,"submitted":already_submitted})
-            notification_order = Notification_commands.objects.get(slug = "order_received")
-            if(notification_order.is_active == True):
-                noti_create = CustomNotifications(sender = pay_by_user, recipient=pay_to_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_to_user.username).title() + " is started.")   
-                noti_create.save()
-                noti_create = CustomNotifications(sender = pay_to_user, recipient=pay_by_user, verb='order' ,order_no = order_details,description="Congrates! Your Order with " + str(pay_by_user.username).title() + " is started.")
-                noti_create.save()
-            if(pay_by_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_receipt_buyer(str(pay_by_user.username).title(),str(pay_to_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_by_user.email),mail_content,"Here's your receipt of order.")
-            if(pay_to_user.mail_order == True):
-                mail_content = MailTemplates.order_mail_seller(str(pay_to_user.username).title(),str(pay_by_user.username).title(),"1",int(offers_sent.offer_time),str(user_trans.total_amount),str("#"+order_details.order_no),str(gig_details.gig_title).title())
-                SendEmailAct(str(pay_to_user.email),mail_content," Great news: Your offer has been accepted.")                 
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -4960,7 +4968,7 @@ def post_resolutions_view(request):
             new_date = prev_date + timedelta(days=int(res_days))
             if(raised_to.mail_order == True):
                 mail_content = MailTemplates.order_extension(str(raised_by_user.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
-                SendEmailAct(str(raised_to.email),mail_content," Great news: Your offer has been accepted.") 
+                SendEmailAct(str(raised_to.email),mail_content," Note: Modification Request from " + str(raised_by_user.username)) 
         else:
             notification_cancellation = Notification_commands.objects.get(slug = "cancellation_request")
             if(notification_cancellation.is_active == True):
@@ -5340,8 +5348,8 @@ def post_decline_click_view(request):
                 noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details ,description= "Your Order Extension Request has been Declined.")
                 noti_create.save()
             if(raised_by.mail_order == True):
-                mail_content = MailTemplates.order_extension_decline(str(raised_to.username).title(),str(raised_by.username).title(),str("#"+order_details.order_no))
-                SendEmailAct(str(raised_by.email),mail_content,"Extension declined by the " + str(raised_to.username).title() + ".")  
+                mail_content = MailTemplates.order_extension_decline(str(raised_to.username).title(),str(raised_by.username).title(),str("#"+order_details.order_no),str(res_text).title())
+                SendEmailAct(str(raised_by.email),mail_content,"Extension declined from " + str(raised_to.username).title() + ".")  
         elif(res_details.resolution_type == "delivered"):
             notification_extension_req = Notification_commands.objects.get(slug = "order_delivery_declined")
             if(notification_extension_req.is_active == True):
@@ -5473,6 +5481,7 @@ def post_credit_tip_details_view(request):
         order_by = User.objects.get(username = ord_details.order_by.username)
         refund_earning = User_Refund.objects.filter(user_id=order_by,refund_status="cancelled")
         current_val = float(base_price)
+        data = []
         try:
             if(User_Earnings.objects.filter(order_amount= base_price,order_no=ord_details,user_id=order_to,earning_type='tip').exists() == False):
                 if(float(current_val) != 0.0):
@@ -5559,8 +5568,12 @@ def post_credit_tip_details_view(request):
                 order_ativity1.save()
                 order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
+                notification_tip = Notification_commands.objects.get(slug = "order_tip_recieved")
+                if(notification_tip.is_active == True):
+                    noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
+                    noti_create.save()
                 if(order_to.mail_order == True):
-                    mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.gig_title).title(),str(ord_details.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
+                    mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.package_gig_name.gig_title).title(),str(ord_details.package_gig_name.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
                     SendEmailAct(str(order_to.email),mail_content," Great news: Your received an tip from buyer.") 
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
@@ -5569,6 +5582,7 @@ def post_credit_tip_details_view(request):
 
 def post_flutter_tip_details_view(request):
     if request.method == 'GET':
+        data = []
         order_no = request.GET['order_no']
         order_to_user = request.GET['order_to_user']
         status = request.GET['status']
@@ -5683,12 +5697,16 @@ def post_flutter_tip_details_view(request):
                 notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
                 if(notification_settings.is_active == True):
                     sender = User.objects.get(username = 'admin')
-                    noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Card payment is sucessful.") 
+                    noti_create = CustomNotifications(sender = sender, recipient=order_by, verb='payment',description="Your Card payment is sucessful.") 
                     noti_create.save()
                 notification_tip = Notification_commands.objects.get(slug = "order_tip_recieved")
                 if(notification_tip.is_active == True):
                     noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
                     noti_create.save()
+                if(order_to.mail_order == True):
+                    mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.package_gig_name.gig_title).title(),str(ord_details.package_gig_name.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
+                    SendEmailAct(str(order_to.email),mail_content," Great news: Your received an tip from buyer.")
+                data.append({'sucess' : 'sucess'})
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})
         return JsonResponse(json.dumps(data),safe=False)
@@ -5696,6 +5714,7 @@ def post_flutter_tip_details_view(request):
     
 def post_paypal_tip_details_view(request):
     if request.method == 'GET':
+        data = []
         order_to_user = request.GET['order_to_user']
         order_no = request.GET['order_no']
         payer_id = request.GET['payer_id']
@@ -5772,7 +5791,7 @@ def post_paypal_tip_details_view(request):
                         if(serv_fees_type == "flat"):
                             service_fees_price =  float(serv_fees_val)
                         else:
-                            perceof_budg = float((float(order_amount)* float(serv_fees_val))/100)
+                            perceof_budg = float((float(base_price)* float(serv_fees_val))/100)
                             service_fees_price = round(perceof_budg,2)
                 else:
                     payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Tip Seller Fees"))
@@ -5804,12 +5823,15 @@ def post_paypal_tip_details_view(request):
                 notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
                 if(notification_settings.is_active == True):
                     sender = User.objects.get(username = 'admin')
-                    noti_create = CustomNotifications(sender = sender, recipient=pay_by_user, verb='payment',description="Your Paypal payment is sucessful.")
+                    noti_create = CustomNotifications(sender = sender, recipient=order_by, verb='payment',description="Your Paypal payment is sucessful.")
                     noti_create.save()
                 notification_tip = Notification_commands.objects.get(slug = "order_tip_recieved")
                 if(notification_tip.is_active == True):
                     noti_create = CustomNotifications(sender = order_by, recipient=order_to, verb='tip',description= str(order_by.username).title() + " left you a Tip.")  
                     noti_create.save()
+                if(order_to.mail_order == True):
+                    mail_content = MailTemplates.order_tip_received(str(order_by.username).title(),str(ord_details.package_gig_name.gig_title).title(),str(ord_details.package_gig_name.gig_category.category_Name).title(),str(order_to.username).title(),str(ord_details.order_no).title())
+                    SendEmailAct(str(order_to.email),mail_content," Great news: Your received an tip from buyer.")
                 data.append({'sucess' : 'sucess'})
         except Exception as e:
             data.append({"error" : str(type(e)) + str(e)})

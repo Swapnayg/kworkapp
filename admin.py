@@ -47,17 +47,18 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('email', 'username','first_name','user_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id','mail_message','mail_order','mail_updates')
+    list_display = ('email', 'username','first_name','user_level','last_name', 'name', 'is_admin', 'is_staff', 'is_active','avatar','country',"profile_type",'terms','profile_status','affiliate_code','referrals_earnings','offers_left','current_earning','pay_pal_mail_id','mail_message','mail_order','mail_updates','unblocked_count')
     list_filter = ('is_admin', 'is_staff', 'is_active')
+    readonly_fields = ['unblocked_count']
     fieldsets = (
-        (None, {'fields': ('email', 'username','user_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status')}),
+        (None, {'fields': ('email', 'username','user_level', 'name', 'password','country',"profile_type",'terms',"avg_delivery_time","ordersin_progress",'offers_left',"avg_respons",'profile_status','unblocked_count')}),
         ('Permissions', {'fields': ('is_admin', 'is_staff', 'is_active')}),
     )
 
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2','country',"profile_type",'terms',"avg_delivery_time",'ordersin_progress','offers_left',"avg_respons",'profile_status')}
+            'fields': ('email', 'username', 'password1', 'password2','country',"profile_type",'terms',"avg_delivery_time",'ordersin_progress','offers_left',"avg_respons",'profile_status','unblocked_count')}
         ),
     )
     search_fields = ('email', 'username', 'name')
@@ -386,7 +387,6 @@ def update_order_status(sender, instance, **kwargs):
     if(instance.pk is None):
         pass
     else:
-        p
         try:
             previous_val = User_orders.objects.get(pk = instance.pk)
             previous_status =  str(previous_val.order_status)
@@ -402,14 +402,14 @@ def update_order_status(sender, instance, **kwargs):
                         cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                     except:
                         cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
+                    order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                    order_message.save()
                     get_message =  Order_Message.objects.get(pk = order_message.pk)
                     resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
                     resolution.save()
                     res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
                     refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                     refund_details.save()  
-                    order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
-                    order_message.save()
                     order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                     order_ativity.save()
                     earning_val = 0
@@ -497,39 +497,41 @@ def update_order_status(sender, instance, **kwargs):
                             earning_details.clearence_status = "cancelled"
                             earning_details.earning_type = "cancelled"
                             earning_details.save()
-                            refunded_val = float(float(refunded_val) + float(earning_details.order_amount))
-                            can_order_val = float(earning_details.order_amount)
-                            refunded_val = float(float(refunded_val) + float(earning_tip.order_amount))
                             transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                             try:    
                                 cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                             except:
                                 cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
+                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                            order_message.save()
                             get_message =  Order_Message.objects.get(pk = order_message.pk)
                             resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
                             resolution.save()
                             res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
-                            refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
-                            refund_details.save()
-                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
-                            order_message.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity.save()
-                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = can_order_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity1.save()
-                            User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_amount=can_order_val,order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
-                            User_Order_Activity.objects.filter(order_message="×1 Order Completed",order_amount=can_order_val,order_no=order_details,activity_type="completed",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            refunded_val = float(float(refunded_val) + float(earning_details.order_amount))
+                            can_order_val = float(earning_details.earning_amount)
                             if(earning_tip != None):
+                                refunded_val = float(float(refunded_val) + float(earning_tip.order_amount))
+                                can_tip_val = float(float(can_tip_val) + float(earning_tip.earning_amount))
                                 earning_tip.clearence_status = "cancelled"
                                 earning_tip.earning_type = "cancelled"
                                 earning_tip.save()
-                                can_tip_val = float(earning_tip.order_amount)
                                 order_ativity = User_Order_Activity(order_message = "×1 Tip Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                                 order_ativity.save()
                                 order_ativity1 = User_Order_Activity(order_message = "Cancelled Tip Refunded to Buyer",order_amount = can_tip_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
                                 order_ativity1.save()
-                                User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_amount=can_tip_val,order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
-                                User_Order_Activity.objects.filter(order_message="Tip Provide by Buyer",order_amount=can_tip_val,order_no=order_details,activity_type="tip",activity_by=order_by_user,activity_to=order_to_user).delete()
+                                User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
+                                User_Order_Activity.objects.filter(order_message="Tip Provide by Buyer",order_no=order_details,activity_type="tip",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            refund_details = User_Refund(refund_amount=refunded_val,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                            refund_details.save()
+                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity.save()
+                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = can_order_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                            order_ativity1.save()
+                            User_Order_Activity.objects.filter(order_message="Pending for Clearence",order_no=order_details,activity_type="pending",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            User_Order_Activity.objects.filter(order_message="×1 Order Completed",order_no=order_details,activity_type="completed",activity_by=order_by_user,activity_to=order_to_user).delete()
+                            Seller_Reviews.objects.filter(s_review_from=order_by_user,s_review_to=order_to_user).delete()
+                            Buyer_Reviews.objects.filter(b_review_from=order_to_user,b_review_to=order_by_user).delete()
                             update_all_balancevalues(order_by_user)
                             update_all_balancevalues(order_to_user)
                             notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")

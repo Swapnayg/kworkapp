@@ -99,6 +99,7 @@ class User(AbstractBaseUser):
     u_last_delivery = models.DateTimeField(default=timezone.now, blank=True)
     last_delivery = models.CharField(max_length=500, blank=True,default="1",null=True)
     ordersin_progress = models.CharField(max_length=500, blank=True,default="0",null=True)
+    unblocked_count = models.CharField(max_length=500, blank=True,default="0",null=True)
     avg_delivery_time = models.CharField(max_length=500, blank=True,default="Within 24 Hours",null=True)
     user_level =  models.ForeignKey(SellerLevels4, on_delete=models.CASCADE,default="level1",blank=True,null=True, related_name = "user_seller_level") 
     seller_level =  models.CharField(max_length=500, blank=True,default="level1",null=True)
