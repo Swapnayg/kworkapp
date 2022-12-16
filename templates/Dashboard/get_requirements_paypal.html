@@ -146,7 +146,6 @@
                 data: {'u_offer_id': offer_id,'u_user_id': {{request.user.id}},'u_paypal_id': paypal_id,'u_paypal_email': paypal_email,'u_trans_id': trans_id,'u_trans_status': trans_status,"u_base_price":base_price,"u_total_price":total_price,"u_service_fees":service_fees ,"u_extra_gigs":extra_gigs,"u_credits_used":credits_used},
                 success: function(data)
                 {
-                    
                     jsonObj = JSON.parse(data);
                     $("#order_no").val(jsonObj[0].order_no);
                     $("#order_by").val(jsonObj[0].ordered_by);

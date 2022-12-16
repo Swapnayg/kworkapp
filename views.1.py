@@ -87,7 +87,7 @@ class privacyView(View):
 class gig_View_View(View):
     return_url = None
     def get(self , request,username='',gig_title='',share = 0):
-        try:
+        # try:
             userDetails = User.objects.exclude(profile_status="blocked").get(username = username)
             if(userDetails != None):
                 languages = Languages.objects.exclude(lng_slug= u'english').order_by('lng_Name')
@@ -195,8 +195,8 @@ class gig_View_View(View):
                     return render(request , 'Dashboard/view_gig.html',{"has_records":"no"} )
             else:
                 return render(request , 'Dashboard/view_gig.html',{"has_records":"no"} )     
-        except:
-            return render(request , 'register.html')
+        # except:
+        #     return render(request , 'register.html')
             
 class buyer_protectionView(View):
     return_url = None
@@ -233,7 +233,13 @@ class categoriesView(View):
 class affiliate_programView(View):
     return_url = None
     def get(self , request,username=''):
-        return render(request , 'affiliate_program.html') 
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try: 
+                return render(request , 'affiliate_program.html')                 
+            # except:
+            #     return render(request , 'register.html')
+        else:
+            return render(request , 'register.html')
 
 class reviews_View(View):
     return_url = None
@@ -306,119 +312,116 @@ class login_view(View):
 class profile_view(View):
     return_url = None
     def get(self , request,username=''):
-        try: 
-            try:
-                userDetails = User.objects.get(username=username ,profile_status="active")
-            except:
-                userDetails = ''
-            if(userDetails != ''):
-                userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
-                userlanguages = UserLanguages.objects.filter(user_id=userDetails)
-                pro_last_delivery = ''
-                u_last_delivery = ''
-                u_created_on= ''
+        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+            # try: 
                 try:
-                    u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S.%f").date()
+                    userDetails = User.objects.get(username=username ,profile_status="active")
                 except:
-                    u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S").date()
-                try:
-                    u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S.%f").date()
-                except:
-                    u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S").date()
-                if(int(u_last_delivery.month) == int(u_created_on.month) and int(u_last_delivery.day) == int(u_created_on.day) and int(u_last_delivery.year) == int(u_created_on.year)):
-                    pro_last_delivery = "Just Started"
-                else:
-                    pro_last_delivery = userDetails.u_last_delivery
-                userlang = []
-                for lang in userlanguages:
-                    userlang.append({"name":lang.language_name.lng_Name,"proficiency":lang.lang_prof})  
-                active_gig_details = []
-                draft_gig_details = []
-                user_gigs_details = UserGigs.objects.filter(user_id=userDetails)
-                seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
-                buyer_reviews = Buyer_Reviews.objects.filter(b_review_to=userDetails)
-                categories = Categories.objects.all()
-                comm_count = 0
-                recc_count = 0
-                serv_count = 0
-                seller_count = 0
-                buyer_count = 0
-                b_review_date = ''
-                seller_rev_data = []
-                buyer_rev_data = []
-                for s_review in seller_reviews:
-                    comm_count = comm_count + int(s_review.communication)
-                    recc_count = recc_count + int(s_review.recommendation)
-                    serv_count = serv_count + int(s_review.service)
-                    seller_count = seller_count + float(s_review.average_val)
-                    s_review_date = s_review.review_date
-                    s_resp_date = s_review.buyer_resp_date
-                    country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
-                    seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
-                for b_review in buyer_reviews:
-                    buyer_count = buyer_count + int(b_review.rating_val)
-                    b_review_date = b_review.review_date
-                    b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
-                    buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
-                try:
-                    seller_count = round(float(round(seller_count/len(seller_reviews),0)))
-                except:
-                    seller_count = 0
-                try:
-                    comm_count = round(comm_count/len(seller_reviews),1)
-                except:
+                    userDetails = ''
+                if(userDetails != ''):
+                    userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
+                    userlanguages = UserLanguages.objects.filter(user_id=userDetails)
+                    pro_last_delivery = ''
+                    u_last_delivery = ''
+                    u_created_on= ''
+                    try:
+                        u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S.%f").date()
+                    except:
+                        u_last_delivery = datetime.strptime(str(userDetails.u_last_delivery),"%Y-%m-%d %H:%M:%S").date()
+                    try:
+                        u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S.%f").date()
+                    except:
+                        u_created_on = datetime.strptime(str(userDetails.created_at),"%Y-%m-%d %H:%M:%S").date()
+                    if(int(u_last_delivery.month) == int(u_created_on.month) and int(u_last_delivery.day) == int(u_created_on.day) and int(u_last_delivery.year) == int(u_created_on.year)):
+                        pro_last_delivery = "Just Started"
+                    else:
+                        pro_last_delivery = userDetails.u_last_delivery
+                    userlang = []
+                    for lang in userlanguages:
+                        userlang.append({"name":lang.language_name.lng_Name,"proficiency":lang.lang_prof})  
+                    active_gig_details = []
+                    draft_gig_details = []
+                    user_gigs_details = UserGigs.objects.filter(user_id=userDetails)
+                    seller_reviews = Seller_Reviews.objects.filter(s_review_to=userDetails)
+                    buyer_reviews = Buyer_Reviews.objects.filter(b_review_to=userDetails)
+                    categories = Categories.objects.all()
                     comm_count = 0
-                try:
-                    recc_count = round(recc_count/len(seller_reviews),1)
-                except:
                     recc_count = 0
-                try:
-                    serv_count = round(serv_count/len(seller_reviews),1)
-                except:
                     serv_count = 0
-                try: 
-                    buyer_count = round(buyer_count/len(buyer_reviews),1)
-                except:
+                    seller_count = 0
                     buyer_count = 0
-                user_availability= []
-                try:
-                    user_availability_list = UserAvailable.objects.get(Q(user_id=userDetails))
-                    user_availability.append({"available_from":datetime.strptime(str(user_availability_list.available_from), "%Y-%m-%d"),"available_to":datetime.strptime(str(user_availability_list.available_to), "%Y-%m-%d"),"available_mssg":str(user_availability_list.available_mssg),"available_for_new":str(user_availability_list.available_for_new),"available_types":str(user_availability_list.available_types)})
-                except:
-                    user_availability = []
-                charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="available_reason") | Q(Char_category_Name= "post_request_desc"))
-                available_char = 0
-                post_request_char = 0
-                min_selling_price = 0
-                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_starting_price") )
-                for ext in resolution_ext:
-                    if(ext.parameter_name == "min_starting_price"):
-                        min_selling_price = ext.no_of_days
-                for c in charcterlimits:
-                    if(c.Char_category_Name == "available_reason"):
-                        available_char = c.Max_No_of_char_allowed
-                    elif(c.Char_category_Name == "post_request_desc"):
-                        post_request_char = c.Max_No_of_char_allowed
-                for u_gig in user_gigs_details:
-                    userpack= UserGigPackages.objects.filter(package_gig_name=u_gig , user_id = userDetails , package_type= 'basic').first() 
-                    gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
-                    if(gig_image != None):
-                        gig_image_url = gig_image.gig_image
-                    else:
-                        gig_image_url = ''
-                    if(userpack != None):
-                        start_price = userpack.package_price
-                    else:
-                        start_price = 0 
-                    if(u_gig.gig_status == "active"):
-                        active_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
-                    elif(u_gig.gig_status == "draft"):
-                        draft_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
-                    
-                return render(request , 'Dashboard/profile.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"active_gigs":active_gig_details,"draft_gigs":draft_gig_details,"seller_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"buyer_count":buyer_count,"buyer_reviews":buyer_rev_data,"character_avail":int(available_char),"character_post_request":int(post_request_char),"user_avail":user_availability,"categories":categories,"profile_last_delivery":pro_last_delivery,"has_records":"yes","min_price":min_selling_price})                 
-            else:
-                return render(request , 'Dashboard/profile.html',{"has_records":"no"})
-        except:
+                    b_review_date = ''
+                    seller_rev_data = []
+                    buyer_rev_data = []
+                    for s_review in seller_reviews:
+                        comm_count = comm_count + int(s_review.communication)
+                        recc_count = recc_count + int(s_review.recommendation)
+                        serv_count = serv_count + int(s_review.service)
+                        seller_count = seller_count + float(s_review.average_val)
+                        s_review_date = s_review.review_date
+                        s_resp_date = s_review.buyer_resp_date
+                        country_flag_icon = '/static/assets/images/flags/'+ s_review.s_review_from.country.code.lower()+ '.svg'
+                        seller_rev_data.append({"message":s_review.review_message,"review":s_review.average_val,"sender":s_review.s_review_from,"review_date":s_review_date,"seller_resp_date":s_resp_date,"buyer_resp":s_review.seller_response,"country_flag":country_flag_icon})                 
+                    for b_review in buyer_reviews:
+                        buyer_count = buyer_count + int(b_review.rating_val)
+                        b_review_date = b_review.review_date
+                        b_country_flag_icon = '/static/assets/images/flags/'+ b_review.b_review_from.country.code.lower()+ '.svg'
+                        buyer_rev_data.append({"message":b_review.review_message,"review":b_review.rating_val,"sender":b_review.b_review_from,"review_date":b_review_date,"country_flag":b_country_flag_icon})
+                    try:
+                        seller_count = round(float(round(seller_count/len(seller_reviews),0)))
+                    except:
+                        seller_count = 0
+                    try:
+                        comm_count = round(comm_count/len(seller_reviews),1)
+                    except:
+                        comm_count = 0
+                    try:
+                        recc_count = round(recc_count/len(seller_reviews),1)
+                    except:
+                        recc_count = 0
+                    try:
+                        serv_count = round(serv_count/len(seller_reviews),1)
+                    except:
+                        serv_count = 0
+                    try: 
+                        buyer_count = round(buyer_count/len(buyer_reviews),1)
+                    except:
+                        buyer_count = 0
+                    user_availability= []
+                    try:
+                        user_availability_list = UserAvailable.objects.get(Q(user_id=userDetails))
+                        user_availability.append({"available_from":datetime.strptime(str(user_availability_list.available_from), "%Y-%m-%d"),"available_to":datetime.strptime(str(user_availability_list.available_to), "%Y-%m-%d"),"available_mssg":str(user_availability_list.available_mssg),"available_for_new":str(user_availability_list.available_for_new),"available_types":str(user_availability_list.available_types)})
+                    except:
+                        user_availability = []
+                    charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name="available_reason") | Q(Char_category_Name= "post_request_desc"))
+                    available_char = 0
+                    post_request_char = 0
+                    for c in charcterlimits:
+                        if(c.Char_category_Name == "available_reason"):
+                            available_char = c.Max_No_of_char_allowed
+                        elif(c.Char_category_Name == "post_request_desc"):
+                            post_request_char = c.Max_No_of_char_allowed
+                    for u_gig in user_gigs_details:
+                        userpack= UserGigPackages.objects.filter(package_gig_name=u_gig , user_id = userDetails , package_type= 'basic').first() 
+                        gig_image = Usergig_image.objects.filter(user_id=userDetails,package_gig_name=u_gig).first() 
+                        if(gig_image != None):
+                            gig_image_url = gig_image.gig_image
+                        else:
+                            gig_image_url = ''
+                        if(userpack != None):
+                            start_price = userpack.package_price
+                        else:
+                            start_price = 0 
+                        if(u_gig.gig_status == "active"):
+                            active_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
+                        elif(u_gig.gig_status == "draft"):
+                            draft_gig_details.append({"gig_id":u_gig.pk,"gig_Name":u_gig.gig_title,"gig_Share_link":u_gig.gig_share_link,"gig_UserName":u_gig.user_id.username,"gig_Image":gig_image_url,"start_price":start_price})
+                    return render(request , 'Dashboard/profile.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"active_gigs":active_gig_details,"draft_gigs":draft_gig_details,"seller_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"buyer_count":buyer_count,"buyer_reviews":buyer_rev_data,"character_avail":int(available_char),"character_post_request":int(post_request_char),"user_avail":user_availability,"categories":categories,"profile_last_delivery":pro_last_delivery,"has_records":"yes"})                 
+                else:
+                    return render(request , 'Dashboard/profile.html',{"has_records":"no"})
+            # except:
+            #     return render(request , 'register.html')
+        else:
             return render(request , 'register.html')
 
 class buyer_dashboard_view(View):
@@ -982,16 +985,11 @@ class post_request_view(View):
                 charcterlimits = CharacterLimit.objects.filter(Q(Char_category_Name= "post_request_desc"))
                 available_char = 0
                 post_request_char = 0
-                min_selling_price = 0
                 for c in charcterlimits:
                     if(c.Char_category_Name == "post_request_desc"):
                         post_request_char = c.Max_No_of_char_allowed
                 categories = Categories.objects.all()
-                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_starting_price") )
-                for ext in resolution_ext:
-                    if(ext.parameter_name == "min_starting_price"):
-                        min_selling_price = ext.no_of_days
-                return render(request , 'Dashboard/post_request.html',{"character_post_request":int(post_request_char),"categories":categories,"minimum_selling_price":min_selling_price})
+                return render(request , 'Dashboard/post_request.html',{"character_post_request":int(post_request_char),"categories":categories})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1058,12 +1056,7 @@ class inbox_view(View):
                 for c in charcterlimits:
                     if(c.Char_category_Name == "offer_description"):
                         offer_description = c.Max_No_of_char_allowed 
-                min_selling_price = 0
-                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_starting_price") )
-                for ext in resolution_ext:
-                    if(ext.parameter_name == "min_starting_price"):
-                        min_selling_price = ext.no_of_days
-                return render(request , 'Dashboard/chat.html',{"all_contacts":conversation_lists,"inbox_char":inbox_char,"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description,"min_price":min_selling_price})
+                return render(request , 'Dashboard/chat.html',{"all_contacts":conversation_lists,"inbox_char":inbox_char,"chat_words":json.dumps(chat_words),"five_chat_words":json.dumps(chat_words_5_words),"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1581,12 +1574,7 @@ class create_gig_view(View):
                     no_revisions = Parameter.objects.filter(Q(parameter_name="no_revisions"))
                     extra_days = Parameter.objects.filter(Q(parameter_name="extra_days"))
                     extra_time = Parameter.objects.filter(Q(parameter_name="extra_time"))
-                min_selling_price = 0
-                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_starting_price") )
-                for ext in resolution_ext:
-                    if(ext.parameter_name == "min_starting_price"):
-                        min_selling_price = ext.no_of_days
-                return render(request , 'Dashboard/create_gig.html',{"category":categorieslist,"Delivery_Time":delivery_time,"No_Revisions":no_revisions,"Extra_Days":extra_days,"Extra_Time":extra_time,"gig_title_char":gig_title_char,"gig_package_title_char":gig_package_title_char,"gig_package_description_char":gig_package_description_char,"gig_extra_description_char":gig_extra_description_char,"gig_extra_title_char":gig_extra_title_char,"gig_description_char":gig_description_char,"gig_faq_question_char":gig_faq_question_char,"gig_faq_answer_char":gig_faq_answer_char,"gig_requirements_ques_char":gig_requirements_ques_char,"gig_requirements_ans_char":gig_requirements_ans_char,"min_price":min_selling_price})
+                return render(request , 'Dashboard/create_gig.html',{"category":categorieslist,"Delivery_Time":delivery_time,"No_Revisions":no_revisions,"Extra_Days":extra_days,"Extra_Time":extra_time,"gig_title_char":gig_title_char,"gig_package_title_char":gig_package_title_char,"gig_package_description_char":gig_package_description_char,"gig_extra_description_char":gig_extra_description_char,"gig_extra_title_char":gig_extra_title_char,"gig_description_char":gig_description_char,"gig_faq_question_char":gig_faq_question_char,"gig_faq_answer_char":gig_faq_answer_char,"gig_requirements_ques_char":gig_requirements_ques_char,"gig_requirements_ans_char":gig_requirements_ans_char})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -1878,11 +1866,6 @@ class buyer_request_view(View):
                         offer_description = c.Max_No_of_char_allowed
                 offers_sent_list = []
                 offers_sent = Request_Offers.objects.filter(user_id= userDetails,offer_type='request')
-                min_selling_price = 0
-                resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="min_starting_price") )
-                for ext in resolution_ext:
-                    if(ext.parameter_name == "min_starting_price"):
-                        min_selling_price = ext.no_of_days
                 for off in offers_sent:
                     if(off != None):
                         service_time_str = ''
@@ -1895,7 +1878,7 @@ class buyer_request_view(View):
                         elif(off.buyer_request.service_time== "other"):
                             service_time_str = "Other"
                         offers_sent_list.append({"gig_title":off.gig_name.gig_title,"offer_desc":off.offer_desc,"duration":off.offer_time,"price":off.offer_budget,"buyer_img":off.buyer_request.user_id.avatar,"buyer_name":off.buyer_request.user_id.username,"buyer_req_desc":off.buyer_request.service_desc,"buyer_delivery_time":service_time_str, "buyer_price":off.buyer_request.service_budget})
-                return render(request , 'Dashboard/buyer_request.html',{"user_details":userDetails,"max_offers":seller_lvel.No_of_offers,"all_categories":all_categories,"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description,"offer_sent_req":offers_sent_list,"min_price":min_selling_price})
+                return render(request , 'Dashboard/buyer_request.html',{"user_details":userDetails,"max_offers":seller_lvel.No_of_offers,"all_categories":all_categories,"delivery_time":delivery_time, "no_revisions":no_revisions,"offer_description":offer_description,"offer_sent_req":offers_sent_list})
             # except:
             #     return render(request , 'register.html')
         else:
@@ -2170,16 +2153,16 @@ class order_activities_view(View):
                 chat_words_5_words = list(ChatWords.objects.order_by().values_list('name').distinct())[:5]
                 buyer_review = []
                 seller_review = []
-                if(Buyer_Reviews.objects.filter(b_review_from=ordered_to_user,b_review_to=ordered_by_user,order_no=order_details).exists() == True):
-                    buyer_review_det = Buyer_Reviews.objects.get(b_review_from=ordered_to_user,b_review_to=ordered_by_user,order_no=order_details)
+                if(Buyer_Reviews.objects.filter(b_review_from=ordered_to_user,b_review_to=ordered_by_user).exists() == True):
+                    buyer_review_det = Buyer_Reviews.objects.get(b_review_from=ordered_to_user,b_review_to=ordered_by_user)
                     average_list = []
                     for a in range(0,round(float(buyer_review_det.rating_val))):
                         average_list.append(a)
                     buyer_review.append({"review_id":buyer_review_det.id,"review_message":buyer_review_det.review_message,"average_val":average_list,"b_review_from_username":buyer_review_det.b_review_from.username,"b_review_from_img":buyer_review_det.b_review_from.avatar,"review_date":buyer_review_det.review_date,"b_review_to_username":buyer_review_det.b_review_to.username,"b_review_to_img":buyer_review_det.b_review_to.avatar})
                 else:
                     buyer_review = []
-                if(Seller_Reviews.objects.filter(s_review_from=ordered_by_user,s_review_to=ordered_to_user,order_no=order_details).exists() == True):
-                    seller_review_det = Seller_Reviews.objects.get(s_review_from=ordered_by_user,s_review_to=ordered_to_user,order_no=order_details)
+                if(Seller_Reviews.objects.filter(s_review_from=ordered_by_user,s_review_to=ordered_to_user).exists() == True):
+                    seller_review_det = Seller_Reviews.objects.get(s_review_from=ordered_by_user,s_review_to=ordered_to_user)
                     average_list = []
                     comm_list = []
                     recomm_list = []
@@ -4448,19 +4431,18 @@ def get_sent_offers_view(request):
     if request.method == 'GET':
         user_id = request.GET['user_id']
         userDetails = User.objects.get(pk=user_id)
-        offers_sent = Request_Offers.objects.filter(user_id= userDetails,offer_type='request')
+        offers_sent = Request_Offers.objects.filter(user_id= userDetails)
         offers_sent_list = []
         for off in offers_sent:
             service_time_str = ''
-            if(off.buyer_request.service_time != None):
-                if(off.buyer_request.service_time== "24hours"):
-                    service_time_str = "24 Hours"
-                elif(off.buyer_request.service_time== "3days"):
-                    service_time_str = "3 Days"
-                elif(off.buyer_request.service_time== "7days"):
-                    service_time_str = "7 Days"
-                elif(off.buyer_request.service_time== "other"):
-                    service_time_str = "Other"
+            if(off.buyer_request.service_time== "24hours"):
+                service_time_str = "24 Hours"
+            elif(off.buyer_request.service_time== "3days"):
+                service_time_str = "3 Days"
+            elif(off.buyer_request.service_time== "7days"):
+                service_time_str = "7 Days"
+            elif(off.buyer_request.service_time== "other"):
+                service_time_str = "Other"
             offers_sent_list.append({"gig_title":off.gig_name.gig_title,"offer_desc":off.offer_desc,"duration":off.offer_time,"price":off.offer_budget,"buyer_img":off.buyer_request.user_id.avatar,"buyer_name":off.buyer_request.user_id.username,"buyer_req_desc":off.buyer_request.service_desc,"buyer_delivery_time":service_time_str, "buyer_price":off.buyer_request.service_budget})
         return JsonResponse(json.dumps(offers_sent_list),safe=False)
 
@@ -4588,7 +4570,7 @@ def post_flutterwave_transaction_view(request):
                             extra_del_Details = UserGig_Extra_Delivery.objects.get(pk=int(str(meta.strip()).replace("del_","")))
                             user_extra_del = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= None,gig_extra_delivery= extra_del_Details)
                             user_extra_del.save()
-                            order_activity = User_Order_Activity(order_message="×1 Extra Fast Delivery",order_amount=extra_del_Details.extra_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
+                            order_activity = User_Order_Activity(order_message="×1 Extra Delivery",order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
                             order_activity.save()
                         except:
                             pass
@@ -4744,7 +4726,7 @@ def post_paypal_transaction_view(request):
                             extra_del_Details = UserGig_Extra_Delivery.objects.get(pk=int(main_string))
                             user_extra_del = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= None,gig_extra_delivery= extra_del_Details)
                             user_extra_del.save()
-                            order_activity = User_Order_Activity(order_message="×1 Extra Fast Delivery",order_amount=extra_del_Details.extra_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
+                            order_activity = User_Order_Activity(order_message="×1 Extra Delivery",order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
                             order_activity.save()
                         except:
                             pass
@@ -4902,7 +4884,7 @@ def post_credit_transaction_view(request):
                                 extra_del_Details = UserGig_Extra_Delivery.objects.get(pk=int(main_string))
                                 user_extra_del = User_orders_Extra_Gigs(order_no=order_details_get,package_gig_name=gig_details,gig_extra_package= None,gig_extra_delivery= extra_del_Details)
                                 user_extra_del.save()
-                                order_activity = User_Order_Activity(order_message="×1 Extra Fast Delivery",order_amount=extra_del_Details.extra_price,order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
+                                order_activity = User_Order_Activity(order_message="×1 Extra Delivery",order_no = order_details_get,activity_type="active",activity_by=pay_by_user,activity_to=pay_to_user)
                                 order_activity.save()
                             except:
                                 pass
@@ -6406,8 +6388,7 @@ def get_notifications_view(request):
                 if(all_c.convers_type == "active"):
                     unread_count = Message.objects.filter(conversation_id= all_c,is_read= False).count()
                     if(userDetails.username == all_c.initiator.username):
-                        pass
-                        #data.append({"user_Name":all_c.receiver.username,"unread_count":unread_count})
+                        data.append({"user_Name":all_c.receiver.username,"unread_count":unread_count})
                     else:
                         data.append({"user_Name":all_c.initiator.username,"unread_count":unread_count})
         except:

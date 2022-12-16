@@ -1,0 +1,66 @@
+{% include  'base.html' %}
+{% load static %}
+{% block contentarea%}
+<title> Internal Server Error| Letworkbedone </title>
+
+<div class="all_page page-flex__content pt0 m0">
+    <div id="event_list" class="event-list js-event-list"></div>
+    <div id="fox_notification_block"></div>
+    <div class="row justify-content-center mt-5 mb-5" id="profile_view">
+      <div class="col-md-12 mx-0">
+            <div class="row gig-page-wrapper">
+               <div class="top-nav">
+                  <div class="error-image">
+                     <img src="{% static 'assets/images/404_not_found.png' %}" alt="empty result image">
+                     <small><span>Made on Letworkbedone<br>by</span> <b>techdivaa</b></small>
+                  </div>
+               </div>
+            </div>
+      </div>
+   </div>
+</div>
+{% if request.session.userpage == "buyer" %}
+   {% include  'Dashboard/base_buyer.html' %}
+{% else %}
+   {% include  'Dashboard/base_seller.html' %}
+{% endif %}
+
+<style>
+   .all_page
+   {
+      margin-right:2% !important;
+      margin-left:2% !important;
+   }
+   .user-profile-image
+   {
+      position:relative;
+   }
+   .user-badge-round {
+      bottom: -65%;
+      overflow: hidden;
+      position: absolute;
+      right: -60%;
+      z-index: 7;
+      background-repeat: no-repeat;
+      background-size: 17%;
+      height: 100%;
+      width: 100%;
+  }
+  .error-image
+  {
+   width:80%;
+   margin:auto;
+  }
+  .error-image img{
+   width:80%%
+  }
+  .error-image small{
+   display:block;
+  }
+  .btn-custom-order
+  {
+   z-index:10;
+  }
+</style>
+
+{% endblock %}

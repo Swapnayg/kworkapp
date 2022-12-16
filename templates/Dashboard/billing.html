@@ -100,12 +100,16 @@
                                       <table class="table table-selectable" id="tbl_balance">
                                          <thead class="table-thead">
                                             <tr class="table-tr">
-                                               <th class="table-th table-col" colspan="3">Date</th>
-                                               <th class="table-th table-col table-hide-sm" colspan="4">Transaction</th>
-                                               <th class="table-th table-col table-hide-md" colspan="5">Service</th>
-                                               <th class="table-th table-col table-hide-md" colspan="3">Order</th>
-                                               <th class="table-th table-col table-hide-sm table-align-right" colspan="2">Currency</th>
-                                               <th class="table-th table-col table-align-right" colspan="3">Total</th>
+                                               <th class="table-th table-col" >Date</th>
+                                               <th class="table-th table-col table-hide-sm" >Transaction</th>
+                                               <th class="table-th table-col table-hide-md" >Type</th>
+                                               <th class="table-th table-col table-hide-md" >Service</th>
+                                               <th class="table-th table-col table-hide-md" >Order</th>
+                                               <th class="table-th table-col table-hide-md" >Value</th>
+                                               <th class="table-th table-col table-hide-sm table-align-right">Currency</th>
+                                               <th class="table-th table-col table-align-right" >Total</th>
+                                               <th class="table-th table-col table-align-right" >Credits Used</th>
+                                               <th class="table-th table-col table-align-right" >Status</th>
                                             </tr>
                                          </thead>
                                          <tbody class="table-tbody">
@@ -223,23 +227,23 @@
                                   <table class="table table-selectable" id="tbl_withdrawa">
                                      <thead class="table-thead">
                                         <tr class="table-tr">
-                                           <th class="table-th table-col" colspan="3">Date</th>
-                                           <th class="table-th table-col table-hide-sm" colspan="4">Amount</th>
-                                           <th class="table-th table-col table-hide-md" colspan="5">Message</th>
-                                           <th class="table-th table-col table-hide-md" colspan="3">Status</th>
-                                           <th class="table-th table-col table-hide-md" colspan="3">Cleared On</th>
-                                           <th class="table-th table-col table-hide-sm table-align-right" colspan="2">Currency</th>
+                                           <th class="table-th table-col" >Date</th>
+                                           <th class="table-th table-col table-hide-sm" >Amount</th>
+                                           <th class="table-th table-col table-hide-md" >Message</th>
+                                           <th class="table-th table-col table-hide-md" >Status</th>
+                                           <th class="table-th table-col table-hide-md" >Cleared On</th>
+                                           <th class="table-th table-col table-hide-sm table-align-right" >Currency</th>
                                         </tr>
                                      </thead>
                                      <tbody class="table-tbody">
                                         {% for list in withdrawal_list %}
                                             <tr class="table-tr"> 
-                                                <td class="table-td" colspan="3">{{list.initiated_date| date:"M d, Y" }}</td>
-                                                <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc"></p> {{list.withdrawal_amount|floatformat:2}}</td>
-                                                <td class="table-td table-hide-md" colspan="5"> {{list.withdrawal_message|title}}</td> 
-                                                <td class="table-td table-hide-md" colspan="3"> {{list.withdrawan_status|upper}} </td> 
-                                                <td class="table-td table-hide-md" colspan="3"> {{list.withdrawn_date| date:"M d, Y" }} </td> 
-                                                <td class="table-td table-hide-md" colspan="2"> USD </td> 
+                                                <td class="table-td" >{{list.initiated_date| date:"M d, Y" }}</td>
+                                                <td class="table-td table-hide-sm" > <p class="text-trunc"></p> {{list.withdrawal_amount|floatformat:2}}</td>
+                                                <td class="table-td table-hide-md" > {{list.withdrawal_message|title}}</td> 
+                                                <td class="table-td table-hide-md" > {{list.withdrawan_status|upper}} </td> 
+                                                <td class="table-td table-hide-md" > {{list.withdrawn_date| date:"M d, Y" }} </td> 
+                                                <td class="table-td table-hide-md"> USD </td> 
                                             </tr>
                                         {% endfor %}
                                      </tbody>
@@ -272,7 +276,7 @@
             {  
                 $("#tbl_balance tbody").empty();
                 $.each(data, function(i, v) {
-                    $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                    $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td">'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td><td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span> </td> <td class="table-td table-hide-sm table-align-right"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_credits+'</span></td>  <td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td></tr>');
                 });
             }
         });
@@ -289,7 +293,7 @@
                 {  
                     $("#tbl_balance tbody").empty();
                     $.each(data, function(i, v) {
-                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm" > <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td>  <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md" >'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td> </tr>');
                     });
                     $("#date_range_div").toggle();
                 }
@@ -312,7 +316,7 @@
                 {  
                     $("#tbl_balance tbody").empty();
                     $.each(data, function(i, v) {
-                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" colspan="3">'+v.t_date+'</td> <td class="table-td table-hide-sm" colspan="4"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md" colspan="5">'+v.t_category+'</td> <td class="table-td table-hide-md" colspan="3"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-sm table-align-right" colspan="2"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right" colspan="3"><span class="text-bold">'+v.t_amount+'</span></td> </tr>');
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td> <td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right" ><span class="text-bold">'+v.t_status+'</span></td> </tr>');
                     });
                 }
             });

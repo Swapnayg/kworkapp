@@ -642,7 +642,7 @@ class Buyer_Post_Request(models.Model):
     service_images = models.TextField(blank=True,default="",null=True)
     buyer_request_id = ShortUUIDField(length=6,max_length=10,alphabet="123456",blank=True, editable=True, default=shortuuid.uuid,null=True)
     service_category =  models.ForeignKey(Categories, on_delete=models.CASCADE,related_name="Post_Category_Name",null=False,blank=False)
-    service_sub_category =  models.ForeignKey(SubSubCategories, on_delete=models.CASCADE,related_name="Post_SubCategory_Name",null=False,blank=False)
+    service_sub_category =  models.ForeignKey(SubCategories, on_delete=models.CASCADE,related_name="Post_SubCategory_Name",null=False,blank=False)
     service_time = models.CharField(max_length=300,choices=BOOL_CHOICES,blank=True,default="Basic",null=True)
     service_budget = models.CharField(max_length=300,blank=True,default="",null=True)
     service_date = models.DateTimeField(default=timezone.now, blank=True)
@@ -759,6 +759,7 @@ class User_orders_Extra_Gigs(models.Model):
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     package_gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     gig_extra_package = models.ForeignKey(UserExtra_gigs, on_delete=models.CASCADE,null=True,blank=True)
+    gig_extra_delivery = models.ForeignKey(UserGig_Extra_Delivery, on_delete=models.CASCADE,null=True,blank=True)
     
     class Meta:
         verbose_name = _("Order Extra Offer")
@@ -825,7 +826,7 @@ class Buyer_Reviews(models.Model):
 class User_Transactions(models.Model):
     BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave'),('credit', 'Credit')]
     BOOL_CHOICES_PAID_FOR = [('order', 'Order'),('tip', 'Tip')]
-    BOOL_CHOICES_Status = [('active', 'Active'),('rufunded', 'Rufunded')]
+    BOOL_CHOICES_Status = [('active', 'Active'),('cancelled', 'Cancelled'),('rufunded', 'Rufunded')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=False,blank=False)
     payment_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
@@ -1055,11 +1056,6 @@ class SMTP_settings(models.Model):
 
     def __str__(self):
         return str(self.mail_host)
-
-
-
-
-
 
 
 class SpamDetection(models.Model):

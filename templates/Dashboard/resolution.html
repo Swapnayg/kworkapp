@@ -151,7 +151,7 @@
                   <div class="col-lg-7 right_pan pt-4">
                      <div class="sub-actions js-next-back">
                         <section class="btns mb-2">
-                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" data-label="details_res" data-next="last" type="button">Open Resolution</button>
+                           <button class="next fit-button fit-button-color-green fit-button-fill-full fit-button-size-large co-white btn-submit js-gig-upcrate-submit bg-co-green-700" id="submit_request" data-label="details_res" data-next="last" type="button">Send Request</button>
                         </section>
                         <button type="button" class="previous naked-button back co-green" data-label="details_res" data-previous="action_res">back</button>
                      </div>
@@ -203,7 +203,13 @@
 </div>
 {% include  'Dashboard/base_seller.html' %}
 <script src="{% static 'assets/js/moment.min.js' %}"></script>
-
+<style>
+    #submit_request:disabled{
+        cursor: not-allowed;
+        cursor: -moz-not-allowed;
+        cursor: -webkit-not-allowed;
+    }
+</style>
 <script>
    function extractContent(html) {
       return new DOMParser()
@@ -356,12 +362,14 @@
             }
             if(valid_message == true)
             {
+                $("#submit_request").prop("disabled",true);
                 $.ajax({
                     type:"POST",
                     url: "/post_resolutions/",
                     data: {"res_type":res_type,"res_text":res_text,"res_message":res_message,"res_desc":res_desc,"res_days":res_days,"raised_by":'{{request.user.username}}',"order_no":'{{seller_gig_details.0.order_no}}'},
                     success: function(data) 
                     {
+                        $("#submit_request").prop("disabled",false);
                         location_href =  $(location).attr('href').split("/");
                         window.location = location_href[0]+"//"+location_href[2] + '/user/{{request.user.username}}/manage_orders/{{seller_gig_details.0.order_no}}/activities';
                     }

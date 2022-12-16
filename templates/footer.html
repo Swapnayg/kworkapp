@@ -119,8 +119,8 @@
             <div class="py-5">
               <h2 class="text-center mb-5">Login to Letworkbedone</h2>
               <div class="col-8 mx-auto">
-                <a href="{% url 'social:begin' 'google-oauth2' %}" class="login_with google"><i class="fa fa-google lnlog google"></i><p> Login with Google</p></a>
-                <a href="{% url 'social:begin' 'facebook' %}" class="login_with linkedin"><i class="fa fa-facebook lnlog"></i><p>Login with Facebook</p></a>
+                <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="login_with google"><i class="fa fa-google lnlog google"></i><p> Login with Google</p></a>
+                <a href="{% url 'social:begin' 'facebook' %}?next={{ request.path }}" class="login_with linkedin"><i class="fa fa-facebook lnlog"></i><p>Login with Facebook</p></a>
               </div>
               <div class="clearfix"></div>
               <div class="text-center pt-4 pb-2">Don’t letworkbedone account?</div>
@@ -191,11 +191,14 @@
       }, 300000);
       if('{{warning_message}}' == "yes"){
          location_href =  $(location).attr('href').split("/");
-         window.location.href = location_href[0]+"//"+location_href[2] +"/warning/{{request.user.username}}"
+         if(window.location.href != location_href[0]+"//"+location_href[2] +"/contact_support"){
+            window.location.href = location_href[0]+"//"+location_href[2] +"/warning/{{request.user.username}}"
+         }
       }
       else if('{{block_message}}' == "yes"){
-         location_href =  $(location).attr('href').split("/");
-         window.location.href = location_href[0]+"//"+location_href[2] +"/blocked/{{request.user.username}}"
+         if(window.location.href != location_href[0]+"//"+location_href[2] +"/contact_support"){
+            window.location.href = location_href[0]+"//"+location_href[2] +"/blocked/{{request.user.username}}";
+         }
       }
       else{
          var base_url = window.location.origin;

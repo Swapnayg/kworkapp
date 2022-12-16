@@ -103,10 +103,13 @@
                                  <div class="budget-input">
                                     <small class="currency-symbol">$</small>
                                     <div class="_2XlT5rY D6s0wIv">
-                                       <div class="_3SnSqB3"><input class="_2DtRW7Q" type="number" id="service_price"  value="" required></div>
+                                       <div class="_3SnSqB3">
+                                          <input class="_2DtRW7Q" type="number" data-min="{{minimum_selling_price}}" id="service_price"  value="" required>
+                                       </div>
                                     </div>
                                  </div>
                               </section>
+                              <span id="service_price_Messg" class="error">Price should be greater than {{minimum_selling_price}}.</span>
                            </span>
                         </div>
                         <div class="_2g7EPin custom-order-package-tooltip">
@@ -131,10 +134,27 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
-
-
+<style>
+   #btn_save_quote:disabled{
+      cursor: not-allowed;
+      cursor: -moz-not-allowed;
+      cursor: -webkit-not-allowed;
+  }
+</style>
 <script>
     $(document).ready(function(){
+      $("#service_price_Messg").hide();
+      $("#service_price").keyup(function() {
+         min_val = $("#service_price").attr("data-min");
+         if(parseInt($('#service_price').val()) >= parseInt(min_val)){
+            $("#service_price_Messg").hide();
+            $("#service_price_Messg").text("valid");
+         }
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{minimum_selling_price}}.");
+            $("#service_price_Messg").show();
+         }
+       });
         $("#successMssg").hide();
         $('#post_category').change(function() {
             this_txt = $("#post_category option:selected").text().trim();
@@ -159,31 +179,41 @@
         $("#quote_form").submit(function(e)
         {
             e.preventDefault();
-            post_req_desc= $("#textarea_post_req").val();
-            imgList= '';
-            $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
-                imgList = imgList +", "+   $(this).find('.img_file_name').val();
-            });
-            post_category = $("#post_category").val();
-            post_sub_category = $("#post_sub_category").val();
-            service_time = $("input[type='radio'][name='post_time']:checked").val();
-            service_price = $("#service_price").val();
-            $.ajax({
-                type:"POST",
-                url: "/post_service_request/",
-                data: {'userid':'{{request.user.id}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"all",'send_to': window.location.pathname.split("/")[3]},
-                success: function(data) 
-                {  
-                    if(data == "sucess")
-                    {
-                        $('#quote_form')[0].reset();
-                        $("#quote_form").find("#image_list").empty();
-                        $("#image_list").empty();
-                        $("#successMssg").show();
-                    }
-                }   
-            });
-        });
+            if($("#service_price_Messg").text() == "valid"){
+               post_req_desc= $("#textarea_post_req").val();
+               imgList= '';
+               $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
+                  imgList = imgList +", "+   $(this).find('.img_file_name').val();
+               });
+               post_category = $("#post_category").val();
+               post_sub_category = $("#post_sub_category").val();
+               service_time = $("input[type='radio'][name='post_time']:checked").val();
+               service_price = $("#service_price").val();
+               $("#btn_save_quote").prop("disabled",true);
+               $.ajax({
+                  type:"POST",
+                  url: "/post_service_request/",
+                  data: {'userid':'{{request.user.id}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"all",'send_to': window.location.pathname.split("/")[3]},
+                  success: function(data) 
+                  {  
+                     if(data == "sucess")
+                     {
+                           $("#btn_save_quote").prop("disabled",false);
+                           $('#quote_form')[0].reset();
+                           $("#quote_form").find("#image_list").empty();
+                           $("#image_list").empty();
+                           $("#successMssg").show();
+                           location_href =  $(location).attr('href').split("/");
+                           window.location.href = location_href[0]+"//"+location_href[2] + "/buyer";
+                     }
+                  }   
+               });
+            }
+            else{
+               $("#service_price_Messg").text("Price should be greater than {{minimum_selling_price}}.");
+               $("#service_price_Messg").show();
+            }
+      });
     });
     function textarea_post_reqonkeyup(ev)
     {

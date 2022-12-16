@@ -19,18 +19,19 @@
       </div>
       <div class="referral-program__action referral-program__action--unauthorized">
          <div class="referral-program__container">
-            <div class="referral-program__action-container">
+            <div class="referral-program__action-container" id="affiliate_div">
                <div class="referral-program__action-columns">
-                  <div class="referral-program__action-generate" data-editable-demo="" data-name="page__heading1">
-                     
-                     
-                  <p class="kw-header--h4 ce-element ce-element--type-text">Your Affiliate Link</p><div id="referral-program-link" class="referral-program__action-form-wrapper ce-element ce-element--type-static">
+                  <div class="referral-program__action-generate" data-editable-demo="" data-name="page__heading1" > 
+                  <p class="kw-header--h4 ce-element ce-element--type-text">Your Affiliate Link</p>
+                  <div id="referral-program-link" class="referral-program__action-form-wrapper ce-element ce-element--type-static">
                         <div class="referral-program__action-form">
-                           <input type="text" placeholder="Paste URL" id="affiliate_link" class="referral-program__action-form-field" disabled="" value=""> <button class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__action-form-button" onclick="return cos_click()">
+                           <input type="text" placeholder="Paste URL" id="affiliate_link" class="referral-program__action-form-field" disabled="" value=""> 
+                           <button class="kw-button kw-button--green kw-button--size-40 kw-button--no-padding referral-program__action-form-button" onclick="return cos_click()">
                            Copy
                            </button> <!---->
                         </div>
-                     </div></div>
+                     </div>
+                  </div>
                   <div class="referral-program__action-generate mt-4" data-editable-demo="" data-name="page__heading1">
                      
                      
@@ -94,6 +95,7 @@
 {% include  'footer.html' %}
 <script>
  $(document).ready(function(){
+   $("#affiliate_div").hide();
       value_user = ''
       value_user_img = ''
       $.ajax({
@@ -110,6 +112,7 @@
             value_user_img = data.logged_user_img
             if(value_user.length != 0)
             {
+               $("#affiliate_div").show();
                $("#loginbtn").remove();
                $("#registerbtn").remove();
                $("#freelancerbtn").remove();
@@ -141,9 +144,11 @@
                   }).toggle();
                });
             }
+            else{
+               $("#affiliate_div").hide();
+            }
          }
       });
-    
    });
 
    function cos_click() { 

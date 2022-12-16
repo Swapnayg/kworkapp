@@ -3788,7 +3788,7 @@ def monthly_routine():
                 us.seller_level = "level1"
                 us.save()
     try:
-        dsn = "host='localhost' dbname='kworkapp' user='kworkappuser' password=>
+        dsn = "host='localhost' dbname='kworkapp' user='kworkappuser' password='kworkappPWD'"
         conn = psycopg2.connect(dsn)
         cursor = conn.cursor()
         sql = "DELETE FROM public.channels_postgres_groupchannel;"

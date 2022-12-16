@@ -1,9 +1,9 @@
-from datetime import datetime, timedelta,date
-from dateutil import relativedelta
-today = datetime.today()
-first = today.replace(day=1)
-last_date = first - timedelta(days=1)
-end_date = datetime.strptime(last_date.strftime("%Y-%m-%d"), "%Y-%m-%d")
-start_date = end_date -  relativedelta.relativedelta(months=int(3))
-print(end_date)
-print(start_date)
+my_str = 'hello'
+
+my_list = ['apple', 'one', 'he']
+
+if any(my_str.startswith(match := item) for item in my_list):
+    # 👇️ this runs
+    print('string starts with at least one of the elements from the list')
+
+    print(match)  # 👉️ 'he'

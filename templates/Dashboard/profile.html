@@ -1,7 +1,11 @@
 {% include  'base.html' %}
 {% load static %}
 {% block contentarea%}
-<title>{{request.user.username | title}} |{{profile_Details.main_category.category_Name}} ,  {{profile_Details.sub_category.sub_category_Name}} | Letworkbedone </title>
+{% if profile_Details.main_category.category_Name|length != 0 %}
+   <title>{{userDetails.username | title}} |{{profile_Details.main_category.category_Name}} ,  {{profile_Details.sub_category.sub_category_Name}} | Letworkbedone </title>
+{% else %}
+<title>{{userDetails.username | title}} | Letworkbedone </title>
+{% endif %}    
 <link rel="stylesheet" href="{% static 'assets/css/frontend/profile.css' %}" type="text/css" />
 
 <div class="all_page page-flex__content pt0 m0">
@@ -42,9 +46,7 @@
                                        </div>
                                        <input type="file" accept="image/png,image/jpeg" id="profile_image_4785022353223" class="hidden" name="profile[image]"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90">
                                     </label>
-                                    {% if userDetails.username != request.user.username %}
                                        <a  rel="nofollow" class="user-badge-round lg locale-en-us level-two-seller" style="background-image: url(/media/{{userDetails.user_level.level_badge}});"></a>
-                                    {% endif %}
                                  </div>
                               </div>
                               <div class="user-profile-label">
@@ -75,11 +77,13 @@
                               </div>
                            </div>
                            {% if userDetails.username != request.user.username %}
+                              {% if active_gigs|length != 0 %}   
                                 <div class="buttons-wrapper">
                                     <a class="FW1syM7 L1yjt43 p9qU5Ka co-white btn-contact-me bg-co-green-700" rel="nofollow" onclick="inbox_click('{{userDetails.username}}');">Contact Me</a>
                                     <button class="FW1syM7 wapdb+q xaFER3a p9qU5Ka co-grey-1000 btn-custom-order" onclick="getquoteclick();" id="get_quote_btn">Get a Quote</button>
                                 <div id="react-first-message-popup"></div>
                                 </div>
+                                {% endif %}
                            {% endif %}
                            <div class="user-stats-desc">
                               <ul class="user-stats with-border-top">
@@ -303,7 +307,8 @@
 
                         <div id="UserPageReviews-component" >
                             <div class="user-page-reviews-package user_page_reviews-package">
-                                <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
+                              {% if active_gigs|length != 0 %} 
+                                 <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
                                     <header class="reviews-header">
                                         <div class="details">
                                             <h2 class="text-display-5">Reviews as Seller<small class="review-rating"><span class="review-star rate-9 show-one"></span><span><span class="total-rating-out-five header-average-rating" data-impression-collected="true">{{seller_count}}</span></span><span><span class="total-rating header-total-rating" data-impression-collected="true">({{seller_reviews|length}})</span></span></small></h2>
@@ -366,8 +371,8 @@
                                              {% endfor %}
                                             </ul>
                                     </div>
-                                </div>
-
+                                 </div>
+                                {% endif %}
                                 <div class="reviews-package is-collapsed is-collapsable" id="seller_review">
                                     <header class="reviews-header">
                                         <div class="details">
@@ -453,10 +458,14 @@
    </div>
     {% endif %}
 </div>
-{% if request.session.userpage == "buyer" %}
-   {% include  'Dashboard/base_buyer.html' %}
+{% if request.user.username|length != 0%}
+   {% if request.session.userpage == "buyer" %}
+      {% include  'Dashboard/base_buyer.html' %}
+   {% else %}
+      {% include  'Dashboard/base_seller.html' %}
+   {% endif %}
 {% else %}
-   {% include  'Dashboard/base_seller.html' %}
+   {% include  'footer.html' %}
 {% endif %}
 
 <div class="modal" id="modal_share" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="myModalLabel">
@@ -686,10 +695,11 @@
                              <div class="budget-input">
                                 <small class="currency-symbol">$</small>
                                 <div class="_2XlT5rY D6s0wIv">
-                                   <div class="_3SnSqB3"><input class="_2DtRW7Q" type="number" id="service_price" value="" required></div>
+                                   <div class="_3SnSqB3"><input class="_2DtRW7Q" type="number"  data-min="{{min_price}}" id="service_price" value="" required></div>
                                 </div>
                              </div>
                           </section>
+                          <span id="service_price_Messg" class="error">Price should be greater than {{min_price}}.</span>
                        </span>
                     </div>
                  </div>
@@ -724,16 +734,37 @@
    width:80%;
    margin:auto;
   }
+  #btn_save_quote:disabled{
+   cursor: not-allowed;
+   cursor: -moz-not-allowed;
+   cursor: -webkit-not-allowed;
+}
   .error-image img{
    width:80%%
   }
   .error-image small{
    display:block;
   }
+  .btn-custom-order
+  {
+   z-index:10;
+  }
 </style>
 
 <script>
     $(document).ready(function(){
+      
+      $("#service_price").keyup(function() {
+         min_val = $("#service_price").attr("data-min");
+         if(parseInt($('#service_price').val()) >= parseInt(min_val)){
+            $("#service_price_Messg").hide();
+            $("#service_price_Messg").text("valid");
+         }
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{min_price}}.");
+            $("#service_price_Messg").show();
+         }
+       });
         $(".status-filter-bar").find("li:first").trigger("click");
         $("#save_availability").submit(function(e)
         {
@@ -763,27 +794,35 @@
         $("#quote_form").submit(function(e)
         {
             e.preventDefault();
-            post_req_desc= $("#textarea_post_req").val();
-            imgList= ''
-            $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
-                imgList = imgList +", "+  $(this).find('img').attr("src");
-            });
-            post_category = $("#post_category").val();
-            post_sub_category = $("#post_sub_category").val();
-            service_time = $("input[type='radio'][name='post_time']:checked").val();
-            service_price = $("#service_price").val();
-            $.ajax({
-                type:"POST",
-                url: "/post_service_request/",
-                data: {'userid':'{{request.user.id}}',"profile_user":'{{userDetails.username}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"individual",'send_to': window.location.pathname.split("/")[3]},
-                success: function(data) 
-                {  
-                    if(data == "sucess")
-                    {
+            if($("#service_price_Messg").text() == "valid"){
+               post_req_desc= $("#textarea_post_req").val();
+               imgList= ''
+               $("#quote_form").find("#image_list").find('.imagediv').each(function(ev){ 
+                  imgList = imgList +", "+  $(this).find('img').attr("src");
+               });
+               post_category = $("#post_category").val();
+               post_sub_category = $("#post_sub_category").val();
+               service_time = $("input[type='radio'][name='post_time']:checked").val();
+               service_price = $("#service_price").val();
+               $("#btn_save_quote").prop("disabled",true);
+               $.ajax({
+                  type:"POST",
+                  url: "/post_service_request/",
+                  data: {'userid':'{{request.user.id}}',"profile_user":'{{userDetails.username}}','service_descp':post_req_desc,'service_images':imgList,'service_cat':post_category,'service_sub_cat':post_sub_category,'service_time':service_time,'service_price':service_price,"service_type":"individual",'send_to': window.location.pathname.split("/")[3]},
+                  success: function(data) 
+                  {  
+                     if(data == "sucess")
+                     {
+                        $("#btn_save_quote").prop("disabled",false);
                         $("#modal_quote").modal('hide');
-                    }
-                }   
-            });
+                     }
+                  }   
+               });
+            }
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{min_price}}.");
+            $("#service_price_Messg").show();
+         }
         });
         $('#post_category').change(function() {
             this_txt = $("#post_category option:selected").text().trim();
@@ -848,9 +887,17 @@
     }
     function getquoteclick(gig_id,gig_name)
     {
+      logged_user = '{{request.user.username}}';
+      if(logged_user.length != 0){
         $('#quote_form')[0].reset(); 
         $("#image_list").empty();
+        $("#service_price_Messg").hide();
         $("#modal_quote").modal('show');
+      }
+      else
+      {
+         $("#ModalLogin").modal("show");
+      }
     }
     function show_menu(ev)
     {
@@ -1065,16 +1112,22 @@
     }
     function inbox_click(username)
     {
-       $.ajax({
-          type:"GET",
-          url: "/post_check_conver/",
-          data: {'initiator':'{{request.user.username}}','receiver':username},
-          success: function(data) 
-          {  
-             location_href =  $(location).attr('href').split("/");
-             window.location.href = location_href[0]+"//"+location_href[2] +"/inbox/"+ username;
-          }   
-      });
+      logged_user = '{{request.user.username}}';
+      if(logged_user.length != 0){
+         $.ajax({
+            type:"GET",
+            url: "/post_check_conver/",
+            data: {'initiator':'{{request.user.username}}','receiver':username},
+            success: function(data) 
+            {  
+               location_href =  $(location).attr('href').split("/");
+               window.location.href = location_href[0]+"//"+location_href[2] +"/inbox/"+ username;
+            }   
+        });
+      }
+      else{
+         $("#ModalLogin").modal("show");
+      }
        
     }
     function post_img_message_delete(ev)

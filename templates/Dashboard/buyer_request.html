@@ -240,8 +240,9 @@
                            </label>
                            <div class="input-wrap">
                               <small>$</small>
-                              <input type="text" name="offer[custom_offer][price]" required class="js-custom-offer-price js-force-digits"  id="text_offer_price" maxlength="5" placeholder="5000 max." value="">
+                              <input type="text" name="offer[custom_offer][price]" required class="js-custom-offer-price js-force-digits" data-min={{min_price}}  id="text_offer_price" maxlength="5" placeholder="5000 max." value="">
                            </div>
+                           <span id="service_price_Messg" class="error">Price should be greater than {{min_price}}.</span>
                         </li>
                         <li>
                            <label><small class="extra-text">Delivery Time</small></label>
@@ -292,7 +293,7 @@
                      <div class="error-container hidden js-error-container">
                         <p class="msg-error t-a-center">Something went wrong, please try again.</p>
                      </div>
-                     <input type="submit" class="btn-standard btn-green-grad js-fiverr-form-submit js-gtm-event-auto" value="Submit Offer"  />
+                     <input type="submit" class="btn-standard btn-green-grad js-fiverr-form-submit js-gtm-event-auto" id="submit_offer_btn" value="Submit Offer"  />
                      <a onclick="gig_back_click();" class="btn-back lf m-t-10 p-r-20 js-btn-back">Back</a>
                   </footer>
                   </form>
@@ -303,70 +304,115 @@
      </div>
    </div>
  </div>
-
+<style>
+ #submit_offer_btn:disabled{
+   cursor: not-allowed;
+   cursor: -moz-not-allowed;
+   cursor: -webkit-not-allowed;
+}
+.offer-extras-list ul li
+{
+   position: relative;
+}
+.error
+{
+   padding-left:0%;
+   position: absolute;
+   bottom: 0px;
+   left: 0px;
+}
+</style>
 <script>
     $(document).ready(function(){
+      $("#text_offer_price").keyup(function() {
+         min_val = $("#text_offer_price").attr("data-min");
+         if(parseInt($('#text_offer_price').val()) >= parseInt(min_val)){
+            $("#service_price_Messg").hide();
+            $("#service_price_Messg").text("valid");
+         }
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{min_price}}.");
+            $("#service_price_Messg").show();
+         }
+       });
+      $("#service_price").keyup(function() {
+         min_val = $("#service_price").attr("data-min");
+         if(parseInt($('#service_price').val()) >= parseInt(min_val)){
+            $("#service_price_Messg").hide();
+            $("#service_price_Messg").text("valid");
+         }
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{min_price}}.");
+            $("#service_price_Messg").show();
+         }
+       });
         $('.offers-left').hover(function (e) {
             $('.offers-left-tooltip').toggle();
         });
         $("#cat_dropdown").find('li:first').trigger("click");
 
-        $('#text_offer_desc').on('keyup', 'paste', function() { 
-         setTimeout(function() {
-         var thisChars = this.value.replace(/{.*}/g, '').length; 
-         var maxlength = $(this).attr("maxlength");
-         if(thisChars > maxlength) 
-         {
-            var CharsToDel = (thisChars-maxlength); 
-            this.value = this.value.substring(0,this.value.length-CharsToDel); 
-         }else{
-            $(".char-count").text( maxlength - thisChars + " /"+maxlength  +" Chars Max" ); 
-         }
-      }, 500);
+      $("#text_offer_desc").on("paste keyup", function(e){ 
+          setTimeout(function() {
+            var thisChars = $("#text_offer_desc").val().trim().replace(/{.*}/g, '').length; 
+            var maxlength = $("#text_offer_desc").attr("maxlength");
+            if(thisChars > maxlength) 
+            {
+               var CharsToDel = (thisChars-maxlength); 
+               $("#text_offer_desc").val($("#text_offer_desc").val().trim().substring(0,$("#text_offer_desc").val().trim().length-CharsToDel)); 
+            }else{
+               $(".char-count").text( maxlength - thisChars + " /"+maxlength  +" Chars Max" ); 
+            }
+         }, 500);
       });
       $("#offer_gig_req_form").submit(function(e)
       {
           e.preventDefault();
-          o_gig_id =  $("#tbl_gig_id").val();
-          o_b_req_id =  $("#tbl_req_id").val();
-          o_user_id = '{{request.user.id}}'
-          o_text_desc = $("#text_offer_desc").val();
-          o_text_price = $("#text_offer_price").val();
-          o_text_del_time = $("#delivery_time").val();
-          o_text_no_revs = $("#no_revisions").val();
-          o_text_req_gig = $("#req_gig").val();
-          o_text_req_gig = '';
-          if($("#req_gig").is(':checked')){
-            o_text_req_gig = "true";
-         } else {
-            o_text_req_gig = "false";
+          if($("#service_price_Messg").text() == "valid"){
+               o_gig_id =  $("#tbl_gig_id").val();
+               o_b_req_id =  $("#tbl_req_id").val();
+               o_user_id = '{{request.user.id}}'
+               o_text_desc = $("#text_offer_desc").val();
+               o_text_price = $("#text_offer_price").val();
+               o_text_del_time = $("#delivery_time").val();
+               o_text_no_revs = $("#no_revisions").val();
+            o_text_req_gig = $("#req_gig").val();
+            o_text_req_gig = '';
+            if($("#req_gig").is(':checked')){
+               o_text_req_gig = "true";
+            } else {
+               o_text_req_gig = "false";
+            }
+            o_extra_params = []
+            $("#offer_extra_li li").each(function (i, vt) {
+               if($(vt).find("input[type='checkbox']").is(':checked')){
+                  if($(vt).attr("data-type")== "input")
+                  {
+                     o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":$(vt).find(".js-extra-quantity").val()});
+                  }
+                  else
+                  {
+                     o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":"true"});
+                  }
+               }
+            });
+            $.ajax({
+               type:"POST",
+               url: "/post_offer_details/",
+               data: {'o_gig_id': o_gig_id,'o_b_req_id': o_b_req_id,"o_user_id":o_user_id,"o_text_desc":o_text_desc,"o_text_price":o_text_price,"o_text_del_time":o_text_del_time,"o_text_no_revs":o_text_no_revs,"o_text_req_gig":o_text_req_gig,"o_offer_type":"request","o_extra_params":JSON.stringify( o_extra_params )},
+               success: function(data) 
+               {  
+                  $(".js-offers-left").text(data);
+                  $("#tbl_buyer_req").find("#row"+ o_b_req_id).find("#o_txt_div"+o_b_req_id).html('<a class="btn-standard btn-gray-grad ">Offer Sent</a> ');
+                  $("#modal_send_offer").modal("hide");
+                  refresh_buyer_list('All Subcategories');
+                  refresh_sent_offers();
+               }
+            });
          }
-         o_extra_params = []
-         $("#offer_extra_li li").each(function (i, vt) {
-            if($(vt).find("input[type='checkbox']").is(':checked')){
-               if($(vt).attr("data-type")== "input")
-               {
-                  o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":$(vt).find(".js-extra-quantity").val()});
-               }
-               else
-               {
-                  o_extra_params.push({"name":$(vt).find(".extra-text").text(), "value":"true"});
-               }
-            }
-         });
-          $.ajax({
-            type:"POST",
-            url: "/post_offer_details/",
-            data: {'o_gig_id': o_gig_id,'o_b_req_id': o_b_req_id,"o_user_id":o_user_id,"o_text_desc":o_text_desc,"o_text_price":o_text_price,"o_text_del_time":o_text_del_time,"o_text_no_revs":o_text_no_revs,"o_text_req_gig":o_text_req_gig,"o_offer_type":"request","o_extra_params":JSON.stringify( o_extra_params )},
-            success: function(data) 
-            {  
-               $(".js-offers-left").text(data);
-               $("#tbl_buyer_req").find("#row"+ o_b_req_id).find("#o_txt_div"+o_b_req_id).html('<a class="btn-standard btn-gray-grad ">Offer Sent</a> ');
-               $("#modal_send_offer").modal("hide");
-               refresh_buyer_list('All Subcategories');
-               refresh_sent_offers();
-            }
-          });
+         else{
+            $("#service_price_Messg").text("Price should be greater than {{min_price}}.");
+            $("#service_price_Messg").show();
+         }
       });
     });
     function hoverhideaddclick(ev)
@@ -405,6 +451,7 @@
                });
                $("#tbl_row_id").val("row"+ev);
                $("#tbl_req_id").val(ev);
+               $("#service_price_Messg").hide();
                $("#modal_send_offer").modal("show");
             }
          }); 
@@ -487,7 +534,6 @@
          data: {'gig_id': gig_id, "user_id":'{{request.user.id}}'},
          success: function(data)
          {
-            console.log(data);
             var intRegex = /^\d+$/;
             img_url = $(ev).attr("data-label");
             gig_title = $(ev).attr("data-title");

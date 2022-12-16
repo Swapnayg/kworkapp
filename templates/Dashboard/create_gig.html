@@ -231,7 +231,7 @@
                                                                </select>
                                                                <span class="for-extra">for an extra</span>
                                                                <div class="fit-input-wrapper price-stepper fit-input-icon-start">
-                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div>
+                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input price_val " type="number"  step="5" min="5" max="1000" data-min="{{min_price}}"   value="0"></div>
                                                                </div>
                                                                <span class="for-extra-dollar left">$</span>
                                                             </div>
@@ -249,7 +249,7 @@
                                                                </select>
                                                                <span class="for-extra">for an extra</span>
                                                                <div class="fit-input-wrapper price-stepper fit-input-icon-start">
-                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div>
+                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" data-min="{{min_price}}"  value="0"></div>
                                                                </div>
                                                                <span class="for-extra-dollar left">$</span>
                                                             </div>
@@ -267,7 +267,7 @@
                                                                </select>
                                                                <span class="for-extra">for an extra</span>
                                                                <div class="fit-input-wrapper price-stepper fit-input-icon-start">
-                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div>
+                                                                  <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="1000" value="0"></div>
                                                                </div>
                                                                <span class="for-extra-dollar left">$</span>
                                                             </div>
@@ -650,6 +650,15 @@
 {
    width: 48%;
 }
+.inp_extra_pricediv
+{
+   position:relative;
+}
+.inp_extra_price_hidd{
+   position: absolute;
+   right: 5px;
+   bottom: 0;
+}
 </style>
  <script>
    var tagobjects = []
@@ -758,7 +767,7 @@
                user_gig_extra_package = data.gig_extra_pack;
                user_gig_extra_delivery = data.gig_extra_delivery;
                $.each(data.extra_gigs, function(i, v66) {
-                  $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value="'+v66.extra_gig_title+'"></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value="'+v66.extra_gig_description+'"></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="'+v66.extra_gig_price+'"></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
+                  $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value="'+v66.extra_gig_title+'"></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value="'+v66.extra_gig_description+'"></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="inp_extra_pricediv fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="'+v66.extra_gig_price+'" data-min="{{min_price}}" ><div class="inp_extra_price_hidd error_help"> <div class="helptext_desc" style="left: 19px; top: 28px;">.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="extra_gig_price help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
                   just_added_elem= $("#extra_gig_container").find("li.custom-extra-row:last");
                   $(just_added_elem).find(".inp_extra_days").val(v66.extra_gig_duration);
                });
@@ -800,16 +809,18 @@
                }
                if(data.gig_image.length>0)
                {
-                  $(".delete_img_anchor").hide(); 
-                  $.each(data.gig_image, function(l, v88) {
-                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().find("img").attr("src",v88.fields["gig_image"]);  
-                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().hide();  
-                     $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().show();
-                  });
-                  $("#gig_image_contents").prop('checked', true);
+                  $(".gig_img_del_ico").hide();
+                  if(data.gig_image[0].fields["gig_image"].trim() != "/media/gig_images/blank_gig.png"){
+                     $.each(data.gig_image, function(l, v88) {
+                        $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().find("img").attr("src",v88.fields["gig_image"]);  
+                        $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().hide();  
+                        $("#gallery_images_div").find("#image"+(l+1)).parent().parent().parent().next().find(".gig_img_del_ico").show();
+                     });
+                     $("#gig_image_contents").prop('checked', true);
+                  }
                }
                else{
-                  $(".delete_img_anchor").hide(); 
+                  $(".gig_img_del_ico").hide(); 
                }
    
                $('#textarea_iwill').trigger('keyup');
@@ -1047,7 +1058,7 @@
                            $("#tbl_packages tbody").append('<tr> <td class="first-table-col" data-label-type="'+v.package_type+'"> '+v.package_name+' <div class="help_div sub_head"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" '+checked1+'> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span>  </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </label> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" '+checked2+'> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label>  </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" '+checked3+'> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </td> </tr>');
                         }
                      });
-                      $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+basic_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+standard_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+enterprise_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
+                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value="'+basic_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value="'+standard_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value="'+enterprise_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(2)").find("select").val(basic_delivery);
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(3)").find("select").val(standard_delivery);
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(4)").find("select").val(enterprise_delivery);
@@ -1091,7 +1102,7 @@
                            {
                               if(v.e_package_type == "number")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" data-min="{{min_price}}"  value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                                  just_added_elem= $("#extra_addOn").find("li.pf-container:last");
                                  $(just_added_elem).find(".add_on_click").prop('checked', true).trigger("change");
                                  $(just_added_elem).find(".fit-input").val(extra_val[0].price);
@@ -1107,7 +1118,7 @@
                               }
                               else if(v.e_package_type== "none")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" data-min="{{min_price}}" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                                  just_added_elem= $("#extra_addOn").find("li.pf-container:last");
                                  $(just_added_elem).find(".add_on_click").prop('checked', true).trigger("change");
                                  $(just_added_elem).find(".fit-input").val(extra_val[0].price);
@@ -1116,7 +1127,7 @@
                            else{
                               if(v.e_package_type == "number")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                               }
                               else if(v.e_package_type== "extra_time")
                               {
@@ -1124,7 +1135,7 @@
                               }
                               else if(v.e_package_type== "none")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                               }
                            }
                         });
@@ -1146,12 +1157,12 @@
                            $("#tbl_packages tbody").append('<tr> <td class="first-table-col" data-label-type="'+v.package_type+'"> '+v.package_name+' <div class="help_div sub_head"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span>  </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </label> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label>  </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </td> </tr>');
                         }
                      });
-                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
+                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"   max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
                      $("#extra_addOn").empty();
                      $.each(e_packageObj, function(i, v) {
                         if(v.e_package_type == "number")
                         {
-                           $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                           $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                         }
                         else if(v.e_package_type== "extra_time")
                         {
@@ -1159,7 +1170,7 @@
                         }
                         else if(v.e_package_type== "none")
                         {
-                           $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                           $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                         }
                      });      
                   }
@@ -1298,7 +1309,7 @@
                            $("#tbl_packages tbody").append('<tr> <td class="first-table-col" data-label-type="'+v.package_type+'"> '+v.package_name+' <div class="help_div sub_head"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span>  </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </label> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label>  </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </td> </tr>');
                         }
                      });
-                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+basic_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+standard_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value="'+enterprise_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
+                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5"  data-min="{{min_price}}"   max="10000" value="'+basic_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"   max="10000" value="'+standard_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"   max="10000" value="'+enterprise_price+'"> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(2)").find("select").val(basic_delivery);
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(3)").find("select").val(standard_delivery);
                      $( "#tbl_packages tr:nth-child(3) td:nth-child(4)").find("select").val(enterprise_delivery);
@@ -1323,7 +1334,7 @@
                            {
                               if(v.e_package_type == "number")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                                  just_added_elem= $("#extra_addOn").find("li.pf-container:last");
                                  $(just_added_elem).find(".add_on_click").prop('checked', true).trigger("change");
                                  $(just_added_elem).find(".fit-input").val(extra_val[0].price);
@@ -1339,7 +1350,7 @@
                               }
                               else if(v.e_package_type== "none")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                                  just_added_elem= $("#extra_addOn").find("li.pf-container:last");
                                  $(just_added_elem).find(".add_on_click").prop('checked', true).trigger("change");
                                  $(just_added_elem).find(".fit-input").val(extra_val[0].price);
@@ -1348,7 +1359,7 @@
                            else{
                               if(v.e_package_type == "number")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                                 $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                               }
                               else if(v.e_package_type== "extra_time")
                               {
@@ -1356,7 +1367,7 @@
                               }
                               else if(v.e_package_type== "none")
                               {
-                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                                 $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                               }
                            }
                         });
@@ -1399,12 +1410,12 @@
                            $("#tbl_packages tbody").append('<tr> <td class="first-table-col" data-label-type="'+v.package_type+'"> '+v.package_name+' <div class="help_div sub_head"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span>  </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </label> </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label>  </div> </td> <td> <div class="pkg-extra-container pf-item"> <label class="fit-checkbox checkbox-wrapper fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"> </path> </svg> </span> </span> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </label> <div class="help_div error_help"> <div class="helptext_desc">'+v.helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </td> </tr>');
                         }
                      });
-                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input" type="number" step="5" min="5" max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
+                     $("#tbl_packages tbody").append('<tr class="pricing_row"> <td class="first-table-col" > Price <div class="help_div sub_head"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div>  </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span><div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> <td class="pkg-price-cell"> <div class="pkg-price-container"> <div class="fit-input-wrapper price-input fit-input-has-icon"> <div class="fit-input-inner-wrapper"> <input class="fit-input price_val" type="number" step="5" min="5" data-min="{{min_price}}"  max="10000" value=""> <span class="fit-icon fit-input-icon" style="width: 14px; height: 14px;">$ </span> <div class="help_div error_help"> <div class="helptext_desc">Set package prices so that the prices are between $5 and $10,000.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div> </div> </div> </td> </tr>');
                      $("#extra_addOn").empty();
                      $.each(e_packageObj, function(i, v) {
                         if(v.e_package_type == "number")
                         {
-                           $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
+                           $("#extra_addOn").append('<li class="pf-container" data-label-type="'+v.e_package_type+'"> <ul> <li class="pf-row"> <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"> <input type="checkbox" class="add_on_click" onchange="add_on_click(this);" > <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span> '+ v.e_package_name +' </label> </div> <div class="extra-values m-r-28" style="display:none;"> <span class="for-extra">for an extra</span> <div class="fit-input-wrapper price-stepper fit-input-icon-start"> <div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}" ></div> </div> <span class="for-extra">$</span><span class="for-additional">and additional</span> <select class="days_input fit-input"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select> </div> </li> </ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </li>');
                         }
                         else if(v.e_package_type== "extra_time")
                         {
@@ -1412,7 +1423,7 @@
                         }
                         else if(v.e_package_type== "none")
                         {
-                           $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input" type="number" step="5" min="5" max="1000" value="0"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
+                           $("#extra_addOn").append('<li class="pf-container nonelist" data-label-type="'+v.e_package_type+'"><ul><li class="pf-row"><div class="factor-title"><label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" class="add_on_click" onchange="add_on_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span>'+ v.e_package_name +'</label></div><div class="extra-values m-r-4" style="display:none;"><span class="for-extra">for an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="fit-input price_val" type="number" step="5" min="5" max="1000" value="0" data-min="{{min_price}}"></div></div><span class="for-extra">$</span></div></li></ul> <div class="help_div sub_head"> <div class="helptext_desc">'+v.e_helper_txt+'</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li>');
                         }
                      });      
                   }
@@ -1420,6 +1431,7 @@
             }       
          });
       });
+      
       $(".previous").click(function(){
          current_fs = $(this).attr("data-label");
          previous_fs =  $(this).attr("data-previous"); 
@@ -1517,7 +1529,7 @@
                                  helperdiv = $(this).find(".help_div");
                                  $(helperdiv).hide();
                                  $(helperdiv).find(".helptext_desc").text('valid');
-                                 validmessage.push("true");
+                                 validmessage.push("true");              
                               }
                            }
                            else if(ele_event.get(0).tagName == "INPUT")
@@ -1533,10 +1545,23 @@
                                     validmessage.push("false");
                                  }
                                  else{
-                                    helperdiv = $(this).find(".help_div");
-                                    $(helperdiv).hide();
-                                    $(helperdiv).find(".helptext_desc").text('valid');
-                                    validmessage.push("true");
+                                    curr_min_val  = ele_event.val().trim();
+                                    min_val = ele_event.attr("data-min");
+                                    if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                    {
+                                       helperdiv = $(this).find(".help_div");
+                                       $(helperdiv).hide();
+                                       $(helperdiv).find(".helptext_desc").text('valid');
+                                       validmessage.push("true");
+                                    }
+                                    else
+                                    {
+                                       helperdiv = $(this).find(".help_div");
+                                       $(helperdiv).removeClass("info_help").addClass("error_help");
+                                       $(helperdiv).show();
+                                       $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                       validmessage.push("false");
+                                    }                    
                                  }
                              }
                            } 
@@ -1634,12 +1659,26 @@
                                     validmessage.push("false");
                                  }
                                  else{
+
                                     if(j==1)
                                     {
-                                       helperdiv = $(this).find(".help_div");
-                                       $(helperdiv).hide();
-                                       $(helperdiv).find(".helptext_desc").text('valid');
-                                       validmessage.push("true");
+                                       curr_min_val  = ele_event.val().trim();
+                                       min_val = ele_event.attr("data-min").trim();
+                                       if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                       {
+                                          helperdiv = $(this).find(".help_div");
+                                          $(helperdiv).hide();
+                                          $(helperdiv).find(".helptext_desc").text('valid');
+                                          validmessage.push("true");
+                                       }
+                                       else
+                                       {
+                                          helperdiv = $(this).find(".help_div");
+                                          $(helperdiv).removeClass("info_help").addClass("error_help");
+                                          $(helperdiv).show();
+                                          $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                          validmessage.push("false");
+                                       }                       
                                     }
                                     else if(j==2){
                                        rowprice1val = $("#tbl_packages tr:last td:nth-child(2)").find("input").val();
@@ -1849,7 +1888,34 @@
                               $(helperdiv).find(".helptext_desc").text('Basic delivery time must be shorter than actual delivery time.');
                               validmessage.push("false");
                            }                          
-                        }    
+                        }
+                        if($("#extra_basic").find(".fit-input").val().trim().length == 0)
+                        {
+                           helperdiv = $("#extra_basic").find(".help_div");
+                           $(helperdiv).removeClass("info_help").addClass("error_help");
+                           $(helperdiv).show();
+                           $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                           validmessage.push("false");
+                        }
+                        else{
+                           curr_min_val  = $("#extra_basic").find(".fit-input").val().trim();
+                           min_val = $("#extra_basic").find(".fit-input").attr("data-min");
+                           if(parseInt(curr_min_val) >=  parseInt(min_val))
+                           {
+                              helperdiv = $("#extra_basic").find(".help_div");
+                              $(helperdiv).hide();
+                              $(helperdiv).find(".helptext_desc").text('valid');
+                              validmessage.push("true");
+                           }
+                           else
+                           {
+                              helperdiv = $("#extra_basic").find(".help_div");
+                              $(helperdiv).removeClass("info_help").addClass("error_help");
+                              $(helperdiv).show();
+                              $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                              validmessage.push("false");
+                           }    
+                        }
                      }
                      else if(no_columns == 3)
                      {
@@ -1933,7 +1999,89 @@
                               $(helperdiv).find(".helptext_desc").text('Premium delivery time must be shorter than actual delivery time.');
                               validmessage.push("false");
                            }
-                        }    
+                        }  
+                        if($("#extra_basic").find(".fit-input").val().trim().length == 0)
+                        {
+                           helperdiv = $("#extra_basic").find(".help_div");
+                           $(helperdiv).removeClass("info_help").addClass("error_help");
+                           $(helperdiv).show();
+                           $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                           validmessage.push("false");
+                        }
+                        else{
+                           curr_min_val  = $("#extra_basic").find(".fit-input").val().trim();
+                           min_val = $("#extra_basic").find(".fit-input").attr("data-min");
+                           if(parseInt(curr_min_val) >=  parseInt(min_val))
+                           {
+                              helperdiv = $("#extra_basic").find(".help_div");
+                              $(helperdiv).hide();
+                              $(helperdiv).find(".helptext_desc").text('valid');
+                              validmessage.push("true");
+                           }
+                           else
+                           {
+                              helperdiv = $("#extra_basic").find(".help_div");
+                              $(helperdiv).removeClass("info_help").addClass("error_help");
+                              $(helperdiv).show();
+                              $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                              validmessage.push("false");
+                           }    
+                        }
+                        if($("#extra_standard").find(".fit-input").val().trim().length == 0)
+                        {
+                           helperdiv = $("#extra_standard").find(".help_div");
+                           $(helperdiv).removeClass("info_help").addClass("error_help");
+                           $(helperdiv).show();
+                           $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                           validmessage.push("false");
+                        }
+                        else{
+                           curr_min_val  = $("#extra_standard").find(".fit-input").val().trim();
+                           min_val = $("#extra_standard").find(".fit-input").attr("data-min");
+                           if(parseInt(curr_min_val) >=  parseInt(min_val))
+                           {
+                              helperdiv = $("#extra_standard").find(".help_div");
+                              $(helperdiv).hide();
+                              $(helperdiv).find(".helptext_desc").text('valid');
+                              validmessage.push("true");
+                           }
+                           else
+                           {
+                              helperdiv = $("#extra_standard").find(".help_div");
+                              $(helperdiv).removeClass("info_help").addClass("error_help");
+                              $(helperdiv).show();
+                              $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                              validmessage.push("false");
+                           }    
+                        }
+
+                        if($("#extra_premium").find(".fit-input").val().trim().length == 0)
+                        {
+                           helperdiv = $("#extra_premium").find(".help_div");
+                           $(helperdiv).removeClass("info_help").addClass("error_help");
+                           $(helperdiv).show();
+                           $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                           validmessage.push("false");
+                        }
+                        else{
+                           curr_min_val  = $("#extra_premium").find(".fit-input").val().trim();
+                           min_val = $("#extra_premium").find(".fit-input").attr("data-min");
+                           if(parseInt(curr_min_val) >=  parseInt(min_val))
+                           {
+                              helperdiv = $("#extra_premium").find(".help_div");
+                              $(helperdiv).hide();
+                              $(helperdiv).find(".helptext_desc").text('valid');
+                              validmessage.push("true");
+                           }
+                           else
+                           {
+                              helperdiv = $("#extra_premium").find(".help_div");
+                              $(helperdiv).removeClass("info_help").addClass("error_help");
+                              $(helperdiv).show();
+                              $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                              validmessage.push("false");
+                           }    
+                        }
                      }
                      $("#extra_gig_container").find('li.custom-extra-row li').each(function(l, vvvv) {
                         $(vvvv).find('input,select').each(function(m, v1)
@@ -1957,6 +2105,35 @@
                                     validmessage.push("true");
                                  }
                               }
+                              else if($(this).attr('type')=="number")
+                              {
+                                 if($(this).val().trim().length == 0)
+                                 {
+                                    helperdiv =$(vvvv).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('This field is required.');
+                                    validmessage.push("false");
+                                 }
+                                 else{
+                                    curr_min_val  =$(this).val().trim().trim();
+                                    min_val = $(this).attr("data-min");
+                                    if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                    {
+                                       helperdiv = $(this).parent().find(".inp_extra_price_hidd");
+                                       $(helperdiv).hide();
+                                       $(helperdiv).find(".helptext_desc").text('valid');
+                                       validmessage.push("true");
+                                    }
+                                    else{
+                                       helperdiv1 =$(this).parent().find(".inp_extra_price_hidd");
+                                       $(helperdiv1).removeClass("info_help").addClass("error_help");
+                                       $(helperdiv1).show();
+                                       $(helperdiv1).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                       validmessage.push("false");
+                                    }
+                                 }
+                              } 
                            }
                            else if($(this).get(0).tagName == "SELECT")
                            {
@@ -2005,6 +2182,33 @@
                                  $(helperdiv).find(".helptext_desc").text('valid');
                                  validmessage.push("true");
                               }
+                              if($(vvv).find(".fit-input").val().trim().length == 0)
+                              {
+                                 helperdiv =$(this).find(".help_div");
+                                 $(helperdiv).removeClass("info_help").addClass("error_help");
+                                 $(helperdiv).show();
+                                 $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                                 validmessage.push("false");
+                              }
+                              else{
+                                 curr_min_val  = $(vvv).find(".fit-input").val().trim();
+                                 min_val = $(vvv).find(".fit-input").attr("data-min");
+                                 if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).hide();
+                                    $(helperdiv).find(".helptext_desc").text('valid');
+                                    validmessage.push("true");
+                                 }
+                                 else
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                    validmessage.push("false");
+                                 }    
+                              }
                            }
                            else if($(vvv).attr("data-label-type") == "extra_time")
                            {
@@ -2026,6 +2230,33 @@
                            }
                            else if($(vvv).attr("data-label-type") == "none")
                            {
+                              if($(vvv).find(".fit-input").val().trim().length == 0)
+                              {
+                                 helperdiv =$(this).find(".help_div");
+                                 $(helperdiv).removeClass("info_help").addClass("error_help");
+                                 $(helperdiv).show();
+                                 $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                                 validmessage.push("false");
+                              }
+                              else{
+                                 curr_min_val  = $(vvv).find(".fit-input").val().trim();
+                                 min_val = $(vvv).find(".fit-input").attr("data-min");
+                                 if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).hide();
+                                    $(helperdiv).find(".helptext_desc").text('valid');
+                                    validmessage.push("true");
+                                 }
+                                 else
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                    validmessage.push("false");
+                                 }    
+                              }
                               u_add_on_package_details.push({"name":$(vvv).find(".factor-title").text().trim(),"type":"none","price":$(vvv).find(".fit-input").val()})
                            }         
                         }
@@ -2082,6 +2313,33 @@
                                  $(helperdiv).find(".helptext_desc").text('valid');
                                  validmessage.push("true");
                               }
+                              if($(vvv).find(".fit-input").val().trim().length == 0)
+                              {
+                                 helperdiv =$(this).find(".help_div");
+                                 $(helperdiv).removeClass("info_help").addClass("error_help");
+                                 $(helperdiv).show();
+                                 $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                                 validmessage.push("false");
+                              }
+                              else{
+                                 curr_min_val  = $(vvv).find(".fit-input").val().trim();
+                                 min_val = $(vvv).find(".fit-input").attr("data-min");
+                                 if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).hide();
+                                    $(helperdiv).find(".helptext_desc").text('valid');
+                                    validmessage.push("true");
+                                 }
+                                 else
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                    validmessage.push("false");
+                                 }    
+                              }
                            }
                            else if($(vvv).attr("data-label-type") == "extra_time")
                            {
@@ -2103,6 +2361,33 @@
                            }
                            else if($(vvv).attr("data-label-type") == "none")
                            {
+                              if($(vvv).find(".fit-input").val().trim().length == 0)
+                              {
+                                 helperdiv =$(this).find(".help_div");
+                                 $(helperdiv).removeClass("info_help").addClass("error_help");
+                                 $(helperdiv).show();
+                                 $(helperdiv).find(".helptext_desc").text('Select no. of days.');
+                                 validmessage.push("false");
+                              }
+                              else{
+                                 curr_min_val  = $(vvv).find(".fit-input").val().trim();
+                                 min_val = $(vvv).find(".fit-input").attr("data-min");
+                                 if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).hide();
+                                    $(helperdiv).find(".helptext_desc").text('valid');
+                                    validmessage.push("true");
+                                 }
+                                 else
+                                 {
+                                    helperdiv = $(this).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                    validmessage.push("false");
+                                 }    
+                              }
                               u_add_on_package_details.push({"name":$(vvv).find(".factor-title").text().trim(),"type":"none","price":$(vvv).find(".fit-input").val()})
                            }         
                         }
@@ -2129,6 +2414,35 @@
                                     validmessage.push("true");
                                  }
                               }
+                              else if($(this).attr('type')=="number")
+                              {
+                                 if($(this).val().trim().length == 0)
+                                 {
+                                    helperdiv =$(vvvv).find(".help_div");
+                                    $(helperdiv).removeClass("info_help").addClass("error_help");
+                                    $(helperdiv).show();
+                                    $(helperdiv).find(".helptext_desc").text('This field is required.');
+                                    validmessage.push("false");
+                                 }
+                                 else{
+                                    curr_min_val  =$(this).val().trim().trim();
+                                    min_val = $(this).attr("data-min");
+                                    if(parseInt(curr_min_val) >=  parseInt(min_val))
+                                    {
+                                       helperdiv = $(this).parent().find(".inp_extra_price_hidd");
+                                       $(helperdiv).hide();
+                                       $(helperdiv).find(".helptext_desc").text('valid');
+                                       validmessage.push("true");
+                                    }
+                                    else{
+                                       helperdiv1 =$(this).parent().find(".inp_extra_price_hidd");
+                                       $(helperdiv1).removeClass("info_help").addClass("error_help");
+                                       $(helperdiv1).show();
+                                       $(helperdiv1).find(".helptext_desc").text('Price should be greater than '+ min_val +".");
+                                       validmessage.push("false");
+                                    }
+                                 }
+                              } 
                            }
                            else if($(this).get(0).tagName == "SELECT")
                            {
@@ -2472,40 +2786,40 @@
       }).toggle();
    });
     
-   $('#textarea_iwill').on('keyup', 'paste', function() {
+   $("#textarea_iwill").on("paste keyup", function(e){ 
       setTimeout(function() {
-      var thisChars = this.value.replace(/{.*}/g, '').length; 
-      var maxlength = $(this).attr("maxlength");
+      var thisChars = $("#textarea_iwill").val().trim().replace(/{.*}/g, '').length; 
+      var maxlength = $("#textarea_iwill").attr("maxlength");
       if(thisChars > maxlength) 
       {
          var CharsToDel = (thisChars-maxlength); 
-         this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         $("#textarea_iwill").val($("#textarea_iwill").val().trim().substring(0,$("#textarea_iwill").val().trim().length-CharsToDel)); 
       }else{
          $(".gig_title_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
       }
    }, 500);  
    }); 
-   $('#faq_question').on('keyup', 'paste', function() { 
+   $("#faq_question").on("paste keyup", function(e){ 
       setTimeout(function() {
-      var thisChars = this.value.replace(/{.*}/g, '').length; 
-      var maxlength = $(this).attr("maxlength");
+      var thisChars = $("#faq_question").val().trim().replace(/{.*}/g, '').length; 
+      var maxlength = $("#faq_question").attr("maxlength");
       if(thisChars > maxlength) 
       {
          var CharsToDel = (thisChars-maxlength); 
-         this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         $("#faq_question").val($("#faq_question").val().trim().substring(0,$("#faq_question").val().trim().length-CharsToDel)); 
       }else{
          $("#faq_ques_counter").text( maxlength - thisChars + " /"+maxlength); 
       }
    }, 500);  
    }); 
-   $('#faq_answer').on('keyup', 'paste', function() {
+   $("#faq_answer").on("paste keyup", function(e){ 
       setTimeout(function() {
-      var thisChars = this.value.replace(/{.*}/g, '').length; 
-      var maxlength = $(this).attr("maxlength");
+      var thisChars = $("#faq_answer").val().trim().replace(/{.*}/g, '').length; 
+      var maxlength = $("#faq_answer").attr("maxlength");
       if(thisChars > maxlength) 
       {
          var CharsToDel = (thisChars-maxlength); 
-         this.value = this.value.substring(0,this.value.length-CharsToDel); 
+         $("#faq_answer").val($("#faq_answer").val().trim().substring(0,$("#faq_answer").val().trim().length-CharsToDel)); 
       }else{
          $("#faq_ans_counter").text( maxlength - thisChars + " /"+maxlength); 
       }
@@ -2643,11 +2957,11 @@ function add_gigonclick(ev)
    gig_length = $("#extra_gig_container li.custom-extra-row").length;
    if(gig_length == 0)
    {
-      $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value=""></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value=""></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="0"></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
+      $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value=""></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value=""></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="inp_extra_price fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="0" data-min="{{min_price}}" > <div class="inp_extra_price_hidd error_help"> <div class="helptext_desc" style="left: 19px; top: 28px;">.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div> </div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
    }
    else if(gig_length == 1)
    {
-      $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value=""></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value=""></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="0"></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
+      $("#extra_gig_container").append('<li class="custom-extra-row"><ul class="extra-values"><li><label class="fit-checkbox extra-active fit-checkbox-color-white fit-checkbox-shape-square"><input type="checkbox" checked="" onchange="extra_row_click(this);"><span class="checkmark-box"><span class="fit-icon check-icon" style="width: 10px; height: 10px;"><svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"><path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path></svg></span></span></label><span class="attr">Title</span><div class="div_text_title fit-input-wrapper title-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_title fit-input" type="text" onkeyup="extratitleonchange(this)" onpaste="extratitleonchange(this)" required placeholder="Title your extra service" maxlength="'+$("#char_gig_extra_title").val()+'" minlength="3" value=""></div></div><i class="info_txt">0 / '+$("#char_gig_extra_title").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr">Description</span><div class="description-container"><span class="i-will">I will</span><div class="div_text_description fit-input-wrapper description-input fit-input-icon-start"><div class="fit-input-inner-wrapper"><input class="inp_extra_description fit-input"  type="text"  maxlength="'+$("#char_gig_extra_description").val()+'" onkeyup="extradesonchange(this)" onpaste="extradesonchange(this)" required placeholder="describe your offering" value=""></div></div></div> <i class="info_txt">0 / '+$("#char_gig_extra_description").val()+' max</i><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li><li><span class="attr for-extra">For an extra</span><div class="fit-input-wrapper price-stepper fit-input-icon-start"><div class="inp_extra_price fit-input-inner-wrapper"><input class="inp_extra_price fit-input" type="number" step="5"  value="0" data-min="{{min_price}}"><div class="inp_extra_price_hidd error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; ">.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></div></div><span class="for-extra">$</span><span class="for-additional">and an additional</span> <select  class="inp_extra_days"> <option value="">Select</option>  {% for e_days in Extra_Days %}<option value="{{e_days.parameter_value}}">{{e_days.parameter_value}} days</option>{% endfor %}</select><div class="help_div error_help"> <div class="helptext_desc" style="left: 19px; top: 28px; display: none;">Extra fast delivery time must be shorter than your basic delivery time.</div> <span class="help_text_span" onmouseover="helptextOnhover(this)" onmouseout="helptextOnhover(this)"><i class="fa fa-question-circle" aria-hidden="true"></i></span> </div></li></ul></li>');
       $("#add_container_btn").hide();
    }
 }

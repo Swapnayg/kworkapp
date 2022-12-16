@@ -82,10 +82,12 @@
                     data: {'order_no':order_no,'order_to_user':order_to_username,'status':status, 'trans_ref':trans_ref,'trans_id':trans_id},
                     success: function(data) 
                     {  
-                        console.log(data)
                         if(data == "sucess")
                         {
-                            
+                            setTimeout(function() {
+                                location_href =  $(location).attr('href').split("/");
+                                window.location.href = location_href[0]+"//"+location_href[2] +"/manage_orders";
+                            }, 60000);
                         }
                     }
                 });

@@ -72,6 +72,20 @@ def model_post_delete(sender, instance, **kwargs):
     else:
         userobj = User.objects.get(email = instance.email)
         UserSocialAuth.objects.filter(user=userobj).delete()
+        
+@receiver(pre_save, sender=User)
+def update_blocked_status(sender, instance, **kwargs):
+    if(instance.pk is None):
+        pass
+    else:
+        previous_val = User.objects.get(pk = instance.pk)
+        prev_unblock_val =  int(str(previous_val.unblocked_count))
+        previous_status =  str(previous_val.profile_status)
+        if(previous_status == "blocked"):
+            if(instance.profile_status == "active"):
+                User_warning.objects.filter(user_id=previous_val).delete()
+                SpamDetection.objects.filter(user_id=previous_val).delete()
+                instance.unblocked_count = str(int(prev_unblock_val) + 1) 
 
 def get_app_list(self, request):
     """
@@ -398,14 +412,18 @@ def update_order_status(sender, instance, **kwargs):
                     order_by_user = User.objects.get(username= order_details.order_by.username)
                     order_to_user = User.objects.get(username= order_details.order_to.username)
                     transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                    transaction.transaction_status = "cancelled"
+                    transaction.save()
                     try:    
                         cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                     except:
                         cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
                     order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                     order_message.save()
+                    User_Order_Resolution.objects.filter(raised_by = order_by_user, raised_to= order_to_user,resolution_status="pending").update(resolution_status="rejected")
+                    User_Order_Resolution.objects.filter(raised_by = order_to_user, raised_to= order_by_user,resolution_status="pending").update(resolution_status="rejected")
                     get_message =  Order_Message.objects.get(pk = order_message.pk)
-                    resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
+                    resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Cancellation Request",resolution_message="Cancellation Request",resolution_desc="Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
                     resolution.save()
                     res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
                     refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
@@ -468,10 +486,10 @@ def update_order_status(sender, instance, **kwargs):
                         noti_create.save()
                     if(order_by_user.mail_order == True):
                         mail_content = MailTemplates.order_cancelled_buyer(str(order_by_user.username).title(),str("#"+order_details.order_no))
-                        SendEmailAct(str(order_by_user.email),mail_content,"Admin have Cancelled the Order: " + str("#"+order_details.order_no))
+                        SendEmailAct(str(order_by_user.email),mail_content,"Your order has been cancelled.")
                     if(order_to_user.mail_order == True):
                         mail_content = MailTemplates.order_cancelled_seller(str(order_to_user.username).title(),str(order_by_user.username).title(),str("#"+order_details.order_no))
-                        SendEmailAct(str(order_to_user.email),mail_content,"Your order with "+str(order_by_user.username).title()+" was cancelled")
+                        SendEmailAct(str(order_to_user.email),mail_content,"Your order has been cancelled.")
             else:
                 if(previous_status == "completed"):
                     if(instance.order_status == "cancel"):
@@ -498,6 +516,8 @@ def update_order_status(sender, instance, **kwargs):
                             earning_details.earning_type = "cancelled"
                             earning_details.save()
                             transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                            transaction.transaction_status = "cancelled"
+                            transaction.save()
                             try:    
                                 cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                             except:
@@ -505,12 +525,15 @@ def update_order_status(sender, instance, **kwargs):
                             order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                             order_message.save()
                             get_message =  Order_Message.objects.get(pk = order_message.pk)
-                            resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Admin Cancellation Request",resolution_message="Admin Cancellation Request",resolution_desc="Admin Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
+                            resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Cancellation Request",resolution_message="Cancellation Request",resolution_desc="Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
                             resolution.save()
                             res_details = User_Order_Resolution.objects.get(pk = resolution.pk)
                             refunded_val = float(float(refunded_val) + float(earning_details.order_amount))
                             can_order_val = float(earning_details.earning_amount)
                             if(earning_tip != None):
+                                transaction_tip = User_Transactions.objects.get(order_no=order_details,paid_for='tip')
+                                transaction_tip.transaction_status = "cancelled"
+                                transaction_tip.save()
                                 refunded_val = float(float(refunded_val) + float(earning_tip.order_amount))
                                 can_tip_val = float(float(can_tip_val) + float(earning_tip.earning_amount))
                                 earning_tip.clearence_status = "cancelled"
@@ -540,10 +563,10 @@ def update_order_status(sender, instance, **kwargs):
                                 noti_create.save()
                             if(order_by_user.mail_order == True):
                                 mail_content = MailTemplates.order_cancelled_buyer(str(order_by_user.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_by_user.email),mail_content,"Admin have Cancelled the Order: " + str("#"+order_details.order_no))
+                                SendEmailAct(str(order_by_user.email),mail_content,"Your order has been cancelled.")
                             if(order_to_user.mail_order == True):
                                 mail_content = MailTemplates.order_cancelled_seller(str(order_to_user.username).title(),str(order_by_user.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_to_user.email),mail_content,"Your order with "+str(order_by_user.username).title()+" was cancelled")
+                                SendEmailAct(str(order_to_user.email),mail_content,"Your order has been cancelled.")
                             
         except:
             pass
@@ -662,7 +685,7 @@ admin.site.register(Message_Response_Time, AdminMessage_Response_Time)
 
 
 class AdminUser_orders_Extra_Gigs(admin.ModelAdmin):
-    list_display = ['order_no','package_gig_name','gig_extra_package']
+    list_display = ['order_no','package_gig_name','gig_extra_package','gig_extra_delivery']
 
 admin.site.register(User_orders_Extra_Gigs, AdminUser_orders_Extra_Gigs)
 

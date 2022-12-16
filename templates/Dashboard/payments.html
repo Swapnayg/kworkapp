@@ -9,8 +9,11 @@
     <input type="hidden"  value="{{gig_details.0.serv_fees_type}}" id="ser_fee_type" />
     <input type="hidden" value="{{gig_details.0.serv_fees_val}}" id="ser_fee_val" />
     <input type="hidden" value="{{gig_details.0.offer_revisions}}" id="base_rev" />
+    <input type="hidden" value="{{gig_details.0.offer_time}}" id="base_time" />
     <input type="hidden" value="" id="base_price_wout_sf" />
     <input type="hidden" value="" id="extra_gig_val" />
+    <input type="hidden" value="{{service_fees_flat}}" id="service_f_flat" />
+    <input type="hidden" value="{{service_fees_per}}" id="service_f_perc" />
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-0" id="manage_payments">
         <div class="col-11 text-center p-0 mt-3 mb-2">
@@ -235,7 +238,7 @@
                                              <div class="quantity-price-container "><span class="order-details-general-quantity ">{{e_gigs.extra_gig_duration}} days</span><span class="price order-details-general-price">$ {{e_gigs.extra_gig_price}}</span></div>
                                           </div>
                                           <div class="factor-decription">  
-                                             <p> {{e_gigs.extra_gig_description}}
+                                             <p> {{e_gigs.extra_gig_description}} 
                                              </p>
                                           </div> 
                                        </li>
@@ -243,7 +246,23 @@
                                        </li>
                                        </ul>
                                        {% endfor %} 
-                                    </div> 
+                                    </div>
+                                     
+                                    <div class="extra-border" id= "extra_delivery">
+                                       {% if gig_extra_delivery.package_type.strip|length != 0 %}
+                                      <ul class="flex flex-col extra-delivery extra-pricing-factor-list">
+                                       <li class="pf-container" data-label-type="number"> 
+                                       <ul>   
+                                       <li class="pf-row"> 
+                                          <div class="factor-title"> <label class="fit-checkbox fit-checkbox-color-white fit-checkbox-shape-square" for="lbel_delivery"> <input type="checkbox" class="add_on_click" onchange="add_on_click();" id="lbel_delivery" data-label="{{gig_extra_delivery.id}}" value="{{gig_extra_delivery.extra_price}}"> <span class="checkmark-box"> <span class="fit-icon check-icon" style="width: 10px; height: 10px;"> <svg width="11" height="9" viewBox="0 0 11 9" xmlns="http://www.w3.org/2000/svg"> <path d="M3.64489 8.10164L0.158292 4.61504C-0.0511769 4.40557 -0.0511769 4.06594 0.158292 3.85645L0.916858 3.09786C1.12633 2.88837 1.46598 2.88837 1.67545 3.09786L4.02419 5.44658L9.05493 0.41586C9.2644 0.206391 9.60405 0.206391 9.81352 0.41586L10.5721 1.17445C10.7816 1.38392 10.7816 1.72355 10.5721 1.93303L4.40348 8.10166C4.19399 8.31113 3.85436 8.31113 3.64489 8.10164V8.10164Z"></path> </svg> </span> </span>Extra Delivery </label> 
+                                             <div class="quantity-price-container "><span class="order-details-general-quantity ">{{gig_extra_delivery.delivery_in.parameter_value}} days</span><span class="price order-details-general-price">$ {{gig_extra_delivery.extra_price}}</span></div>
+                                          </div>
+                                       </li>
+                                       </ul> 
+                                       </li>
+                                       </ul>
+                                       {% endif %}
+                                    </div>
                                       <ul class="order-details-items-container" id="revisiondiv">
                                          <li class="order-details-item">
                                             <span class="item-title">
@@ -272,7 +291,7 @@
                                    </div>
                                    <div class="summary-footer">
                                       <div class="table-row total-price"><span class="row-title">Total</span><span class="price" id="serv_total_fees">$ {{gig_details.0.total_amount}}</span></div>
-                                      <div class="table-row delivery-date"><span class="row-title">Total Delivery Time</span><span class="date" id="serv_days">{{gig_details.0.offer_revisions}} days</span></div>
+                                      <div class="table-row delivery-date"><span class="row-title">Total Delivery Time</span><span class="date" id="serv_days">{{gig_details.0.offer_time}} days</span></div>
 
                                       <div class="table-row fee-row pf-row" >
                                        <div class="factor-title mb-3 mt-2" id="available_credit_check"> 
@@ -505,7 +524,7 @@
           $("#credit_button").hide();
           $("#flutter_button").hide();
           $("#paypal_button").hide();
-          $("#flutter_amount").val(you_have_to_pay);
+          $("#flutter_amount").val(service_charge);
           $("#flutter_credit_used").val(0);
           $("#used_credits").val(0);
           $(".fit-radio").removeClass("selected");
@@ -520,55 +539,93 @@
       base_price = $("#offer_price").text().match(/\d+/)[0];
       service_fees = $("#serv_fees").text().match(/\d+/)[0];
       service_total = $("#serv_total_fees").text().match(/\d+/)[0];
-      service_days = $("#base_rev").val().match(/\d+/)[0];
+      service_days = $("#base_time").val().trim();
       service_fee_val = $("#ser_fee_val").val();
       service_fee_type = $("#ser_fee_type").val();
       chckedPrice = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
          return $(this).val();
      }).get();
+     chckeddel_Price = $("#extra_delivery").find(".extra-delivery").find('input[type="checkbox"]:checked').map(function() {
+      return $(this).val();
+      }).get();
+      extra_delivery_id = $("#extra_delivery").find(".extra-delivery").find('input[type="checkbox"]:checked').map(function() {
+         return "del_"+$(this).attr("data-label");
+      }).get();
      extra_gig_vals = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
          return $(this).attr("data-label");
-     }).get().join(",");
-     if(extra_gig_vals.trim().length == 0)
+     }).get();
+     if(extra_gig_vals.length == 0)
      {
-         extra_gig_vals = "None";
+         extra_gig_vals.push("None");
      }
      revision_days = $("#extra_addOn").find(".extra-factors").find('input[type="checkbox"]:checked').map(function() {
          return $(this).parent().parent().find('.order-details-general-quantity').text().match(/\d+/)[0];
       }).get();
+      extra_del_days = $("#extra_delivery").find(".extra-delivery").find('input[type="checkbox"]:checked').map(function() {
+         return $(this).parent().parent().find('.order-details-general-quantity').text().match(/\d+/)[0];
+      }).get().join(",");   
      var price = 0;
      for (var i = 0; i < chckedPrice.length; i++) {
       price += chckedPrice[i] << 0;
+   }
+   for (var i = 0; i < chckeddel_Price.length; i++) {
+      price += chckeddel_Price[i] << 0;
    }
    var duration = 0;
      for (var i = 0; i < revision_days.length; i++) {
       duration += revision_days[i] << 0;
    }
-
+   if(extra_delivery_id.length == 0)
+   {
+      extra_delivery_id.push("None");
+   }
+   else{
+      duration = extra_del_days;
+   }
+   extra_ids = []
+   for (var i = 0; i < extra_gig_vals.length; i++) {
+       extra_ids.push(extra_gig_vals[i]);
+   }
+   for (var i = 0; i < extra_delivery_id.length; i++) {
+       extra_ids.push(extra_delivery_id[i]);
+   }
+   extra_id_string = ''
+   if(extra_ids.length == 0)
+   {
+      extra_id_string = "None";
+   }
+   else{
+      extra_id_string =  extra_ids.join(", ");
+   }
       if($('.pf-container').find('input[type=checkbox]').is(":checked"))
       {
-
          totl_price_cal = parseInt(base_price) + parseInt(price);
-         ser_fee_cal = ''
-         if(service_fee_type == "flat")
-         {
-            ser_fee_cal = service_fee_val;
+         if(parseInt(totl_price_cal) > 39){
+            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)) * parseInt($("#service_f_perc").val())/100).toFixed(2);
          }
-         else
-         {
-            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)* parseInt(service_fee_val))/100).toFixed(2);
+         else{
+            ser_fee_cal = parseInt($("#service_f_flat").val());
          }
          $("#base_price_wout_sf").val(totl_price_cal);
          $("#flutter_base_price_wsdf").val(totl_price_cal);
          totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
          $("#serv_total_fees").text("$ "+  totl_price_cal);
          $("#flutter_amount").val(totl_price_cal);
-         $("#flutter_extra_gigs").val(extra_gig_vals);
-         $("#extra_gig_val").val(extra_gig_vals);
+         $("#flutter_extra_gigs").val(extra_id_string);
+         $("#extra_gig_val").val(extra_id_string);
          $("#bottom_price").text("$ "+  totl_price_cal);
          $("#serv_fees").text("$ "+  ser_fee_cal);
          $("#flutter_service_fees_wsdf").val(ser_fee_cal);
-         $("#serv_days").text(parseInt(duration) + parseInt(service_days) + " days");
+         if(extra_delivery_id[0] != "None" )
+         {
+            console.log(extra_delivery_id[0]);
+            console.log(duration);
+            $("#serv_days").text(parseInt(duration) + " days");
+         }
+         else
+         {
+            $("#serv_days").text(parseInt(duration) +parseInt(service_days) + " days");
+         }
          $("#flutter_credit_used").val(0);
       }
       else
@@ -577,23 +634,30 @@
          $("#flutter_base_price_wsdf").val(totl_price_cal);
          totl_price_cal = parseInt(base_price) + parseInt(price);
          ser_fee_cal = ''
-         if(service_fee_type == "flat")
-         {
-            ser_fee_cal = service_fee_val;
+         if(parseInt(totl_price_cal) > 39){
+            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)) * parseInt($("#service_f_perc").val())/100).toFixed(2);
          }
-         else
-         {
-            ser_fee_cal = parseFloat((parseFloat(totl_price_cal)* parseInt(service_fee_val))/100).toFixed(2);
+         else{
+            ser_fee_cal = parseInt($("#service_f_flat").val());
          }
          totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
          $("#serv_total_fees").text("$ "+  totl_price_cal);
          $("#serv_fees").text("$ "+  ser_fee_cal);
          $("#flutter_service_fees_wsdf").val(ser_fee_cal);
-         $("#extra_gig_val").val(extra_gig_vals);
-         $("#flutter_extra_gigs").val(extra_gig_vals);
+         $("#extra_gig_val").val(extra_id_string);
+         $("#flutter_extra_gigs").val(extra_id_string);
          $("#flutter_credit_used").val(0);
          $("#bottom_price").text("$ "+  totl_price_cal);
-         $("#serv_days").text(parseInt(duration) + parseInt(service_days) + " days");
+         if(extra_delivery_id[0] != "None")
+         {
+            console.log(extra_delivery_id[0]);
+            console.log(duration);
+            $("#serv_days").text(parseInt(duration) + " days");
+         }
+         else
+         {
+            $("#serv_days").text(parseInt(duration) +parseInt(service_days) + " days");
+         }
          $("#flutter_amount").val(totl_price_cal);
       }
       Add_credit_click();

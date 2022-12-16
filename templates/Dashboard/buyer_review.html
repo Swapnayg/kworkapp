@@ -150,14 +150,14 @@
         }});
         $(".error-message").hide();
 
-        $('#textarea_buyer_desc').on('keyup', 'paste', function() {
+        $("#textarea_buyer_desc").on("paste keyup", function(e){ 
             setTimeout(function() {  
-            var thisChars = this.value.replace(/{.*}/g, '').length; 
-            var maxlength = $(this).attr("maxlength");
+            var thisChars = $("#textarea_buyer_desc").val().trim().replace(/{.*}/g, '').length; 
+            var maxlength =  $("#textarea_buyer_desc").attr("maxlength");
             if(thisChars > maxlength) 
             {
                var CharsToDel = (thisChars-maxlength); 
-               this.value = this.value.substring(0,this.value.length-CharsToDel); 
+               $("#textarea_buyer_desc").val($("#textarea_buyer_desc").val().trim().substring(0,$("#textarea_buyer_desc").val().trim().length-CharsToDel)); 
             }else{
                $(".buyer_desc_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
             }
@@ -180,6 +180,10 @@
                          $("#review_section").hide();
                          $("#thank_section").show();
                          $(".error-message-review").hide();
+                         setTimeout(function() {
+                            location_href =  $(location).attr('href').split("/");
+                            window.location.href = location_href[0]+"//"+location_href[2] +"/user/{{request.user.username}}/manage_orders";
+                        }, 60000);
                        }
                     }
                 });
