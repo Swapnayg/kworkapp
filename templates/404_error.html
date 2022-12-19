@@ -8,7 +8,7 @@
     <div id="fox_notification_block"></div>
     <div class="row justify-content-center mt-5 mb-5" id="profile_view">
       <div class="col-md-12 mx-0">
-            <div class="row gig-page-wrapper">
+            <div class="row gig-page-wrapper" id="row_div">
                <div class="top-nav">
                   <div class="error-image">
                      <img src="{% static 'assets/images/404_not_found.png' %}" alt="empty result image">
@@ -30,6 +30,10 @@
 
 
 <style>
+   #row_div
+   {
+      display: block;
+   }
    .all_page
    {
       margin-right:2% !important;
@@ -56,7 +60,7 @@
    margin:auto;
   }
   .error-image img{
-   width:80%%
+   width:100%;
   }
   .error-image small{
    display:block;

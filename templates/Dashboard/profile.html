@@ -249,7 +249,7 @@
                                        <div class="header-gig-card">
                                           <a href="/gigs/{{active.gig_UserName}}/{{active.gig_Name}}">
                                              <div>
-                                                <figure><img src="{{active.gig_Image}}" alt="{{active.gig_Name}}"></figure>
+                                                <figure><img src="{{active.gig_Image.strip}}" alt="{{active.gig_Name}}"></figure>
                                              </div>
                                              <h3>{{active.gig_Name | title}}</h3>
                                           </a>
@@ -265,6 +265,7 @@
                                     </span>
                                     </div>
                                     {% endfor %}
+                                    <a class="gig-card-base add-new-gig" onclick="create_gig_onclick();" >Create a new Gig</a>
                             </div>
                             <div id="drafts_div">
                                 {% for draft in draft_gigs %}
@@ -283,7 +284,7 @@
                                        <div class="header-gig-card">
                                           <a href="/user/{{request.user.username}}/edit_gig/{{draft.gig_id}}">
                                              <div>
-                                                <figure><img src="{{draft.gig_Image}}" alt="{{draft.gig_Name}}"></figure>
+                                                <figure><img src="{{draft.gig_Image.strip}}" alt="{{draft.gig_Name}}"></figure>
                                              </div>
                                              <h3>{{draft.gig_Name | title}}</h3>
                                           </a>
@@ -298,9 +299,7 @@
                                        </a>
                                     </span>
                                     </div>
-                                    {% endfor %}
-
-                                    <a class="gig-card-base add-new-gig" onclick="create_gig_onclick();" >Create a new Gig</a>
+                                    {% endfor %}   
                             </div>
                          </div>
                         </section>
@@ -655,7 +654,6 @@
                                    <div class="_2g7EPin _2SsU-73 _1dJ3UV8 categories-select _2FV4hzr">
                                       <select id="post_sub_category" required>
                                          <option value="">Select Sub-Category</option>
-                                         <option value="1"> Options 1</option>
                                       </select>
                                    </div>
                                 </div>
@@ -749,6 +747,22 @@
   {
    z-index:10;
   }
+  .gig-card-base.seller-gig-card .header-gig-card
+  {
+      z-index: 10;
+  }
+  .add-new-gig
+  {
+      cursor:pointer;
+  }
+  .disable-click{
+   pointer-events:none;
+   cursor:not-allowed;
+}
+.seller-gig-card .gig-menu
+{
+   z-index:20;
+}
 </style>
 
 <script>
@@ -883,7 +897,7 @@
       $("#modal_share").modal('show');
       $("#share_gig_id").val(gig_id);
       $("#share_gig_name").val(gig_name);
-      $("#share_gig_link").val(gig_name);
+      $("#share_gig_link").val(gig_share_link);
     }
     function getquoteclick(gig_id,gig_name)
     {
@@ -973,14 +987,15 @@
       }
         function create_gig_onclick()
         {
+          $(".add-new-gig").addClass("disable-click");
             $.ajax({
                 type:"GET",
                 url: "/post_create_gig/",
                 data: {},
                 success: function(data) 
                 {  
-                  console.log(data)
-                    if(data != "error" && data != 0)
+                     $(".add-new-gig").removeClass("disable-click");
+                     if(data != "error" && data != 0)
                     {
                         random_string = makeid(6);
                         var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');

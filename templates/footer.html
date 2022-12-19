@@ -52,7 +52,6 @@
                   <div class="footer__menu-links">
                      <a href="{% url 'for_freelancer' %}" target="_blank">For Freelancers</a>
                      <a href="{% url 'earn_letworkbdone' %}" target="_blank">How to Earn on Letworkbedone</a>
-                     <a href="{% url 'categories' %}" target="_blank">Categories</a>
                      <a class="nowrap" href="{% url 'affiliate_program' %}" target="_blank">Affiliate Program</a> 
                      <a href="{% url 'reviews' %}" class="nowrap" target="_blank">Letworkbedone Reviews</a>
                   </div>
@@ -165,6 +164,7 @@
 </style>
 <script>
    $(document).ready(function(){
+      $(".header_top").show();
       $(document).mouseup(function(e) { 
          container = $('#message_show_div');
          container1 = $('#notification_show_div')
@@ -249,8 +249,13 @@
         }
      });
      $('#btn_search').click(function (e) {
-        window.open('/search/'+$("#input_search").val(), "_blank");
-        $("#input_search").val('');
+         if($("#input_search").val().trim().length != 0){
+            window.open('/search/'+$("#input_search").val(), "_blank");
+            $("#input_search").val('');
+         }
+         else{
+            alert("Please enter some keyword");
+         }
      });
      $("#main1-menu").on("click","li", function(){
       m_length = $("#main1-menu li").length;

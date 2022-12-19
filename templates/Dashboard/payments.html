@@ -395,6 +395,16 @@
  </div>
  {% include  'footer.html' %}
 <style>
+   #credit_pay_button:disabled{
+      cursor: not-allowed;
+      cursor: -moz-not-allowed;
+      cursor: -webkit-not-allowed;
+   }
+   .disable-click{
+      pointer-events:none;
+      cursor:not-allowed;
+   }
+
 
 </style>
 <script>
@@ -618,8 +628,6 @@
          $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          if(extra_delivery_id[0] != "None" )
          {
-            console.log(extra_delivery_id[0]);
-            console.log(duration);
             $("#serv_days").text(parseInt(duration) + " days");
          }
          else
@@ -650,8 +658,6 @@
          $("#bottom_price").text("$ "+  totl_price_cal);
          if(extra_delivery_id[0] != "None")
          {
-            console.log(extra_delivery_id[0]);
-            console.log(duration);
             $("#serv_days").text(parseInt(duration) + " days");
          }
          else
@@ -664,7 +670,7 @@
     }
     function credit_button_click(ev)
     {
-        
+         $("#credit_pay_button").addClass("disable-click");
         base_price = $("#flutter_base_price_wsdf").val();
         total_price = $("#flutter_amount").val();
         fees = $("#flutter_service_fees_wsdf").val();

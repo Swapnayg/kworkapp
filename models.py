@@ -7,6 +7,7 @@ from django.forms import DateField
 from django_countries.fields import CountryField
 import shortuuid
 from django.core.files import File
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.core.files.base import ContentFile
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
@@ -69,7 +70,7 @@ class SellerLevels4(models.Model):
     level_slug =  models.CharField(max_length=500,blank=False,default="",null=False,primary_key=True,help_text='slug name should follow the sequence of levels, i.e, level1, level2, etc.')
     No_of_gigs = models.CharField(max_length=200,blank=True,default="0",null=True)
     No_of_offers = models.CharField(max_length=200,blank=True,default="0",null=True)
-    level_badge = models.FileField(upload_to = badgeupload ,max_length=255, null=True,blank=True)
+    level_badge = models.FileField(upload_to = badgeupload ,max_length=255, null=True,blank=True,validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'jpeg'])],help_text='Only jpg, png, jpeg images are allowed.')
     up_order_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
     up_order_count = models.CharField(max_length=200,blank=True,default="0",null=True)
     record_check = models.CharField(max_length=200,blank=True,default="0",null=True)
@@ -298,9 +299,10 @@ class LearningTopicDetails(models.Model):
     topic_Name = models.CharField(max_length=500, blank=True, null=True,unique=True)
     timeof_read_in_minute = models.CharField(max_length=200, blank=True, null=True)
     topic_description = models.CharField(max_length=1000, blank=True, null=True)
-    image = models.FileField(upload_to = servicefilename ,max_length=255, null=True,blank=True)
+    image = models.FileField(upload_to = servicefilename ,max_length=255, null=True,blank=True,validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'jpeg'])],help_text='Only jpg, png, jpeg images are allowed.')
     image_Text =  models.CharField(max_length=200, blank=True, null=True)
-    video_url =  models.URLField(max_length=300, blank=True, null=True)
+    video_url =  models.URLField(max_length=300, blank=True, null=True,default=None)
+    upload_pdf =  models.FileField(upload_to = servicefilename ,max_length=255, null=True,default=None,blank=True,validators=[FileExtensionValidator(allowed_extensions=["pdf"])],help_text='Only pdf files are allowed.')
     created_at = models.DateTimeField(default=datetime.datetime.now(), blank=True , null=True)
     
     class Meta:
@@ -333,7 +335,7 @@ def subcategoryfilename(instance, filename):
     return os.path.join( 'category/subcategory/'+filename)
 
 class Categories(models.Model):
-    image = models.FileField(upload_to = categoryfilename ,max_length=255, null=True,blank=True,help_text='Max width and height of the image will be 480:330')
+    image = models.FileField(upload_to = categoryfilename ,max_length=255, null=True,blank=True,help_text='Max width and height of the image will be 480:330',validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'jpeg'])])
     category_quote = models.CharField(max_length=800, blank=True, null=True)
     category_Name = models.CharField(max_length=500, blank=True, null=True)
     slug = models.CharField(max_length=300, blank=True, null=True)
@@ -347,7 +349,7 @@ class Categories(models.Model):
 class SubCategories(models.Model):
     category_Name = models.ForeignKey(Categories, on_delete=models.CASCADE,related_name="Category_Name",null=False,blank=False)
     sub_category_Name = models.CharField(max_length=500, blank=True, null=True)
-    image = models.FileField(upload_to = subcategoryfilename ,max_length=255, null=True,blank=True,help_text='Max width and height of the image will be 480:330')
+    image = models.FileField(upload_to = subcategoryfilename ,max_length=255, null=True,blank=True,help_text='Max width and height of the image will be 480:330',validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'jpeg'])])
     slug = models.CharField(max_length=300, blank=True, null=True)
     class Meta:
         verbose_name = _("Sub Category")
@@ -737,6 +739,7 @@ class Addon_Parameters(models.Model):
 
 class User_orders(models.Model):
     BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('completed', 'Completed')]
+    inc_req_calls =[('site', 'Site'),('admin', 'Admin')]
     order_no =  ShortUUIDField(length=6,max_length=6,alphabet="123456",primary_key=True,)
     order_status =  models.CharField(max_length=200,choices=BOOL_CHOICES,blank=True,default="Basic",null=True)
     order_amount =   models.CharField(max_length=200,blank=True,null=True)
@@ -747,6 +750,7 @@ class User_orders(models.Model):
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=True,blank=True)
     order_by = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_by",null=True,blank=True)
     order_to = models.ForeignKey(User, on_delete=models.CASCADE,related_name="order_to",null=True,blank=True)
+    incoming_request = models.CharField(max_length=200,choices=inc_req_calls,blank=True,default="admin",null=True)
     
     class Meta:
         verbose_name = _("Order")
@@ -1191,7 +1195,7 @@ def logofilename(instance, filename):
     return os.path.join( 'logo/'+filename)
 
 class LogoImages(models.Model):
-    image = models.FileField(upload_to = logofilename, null=True,blank=True,help_text='Max width and height of the image will be 460:100')
+    image = models.FileField(upload_to = logofilename, null=True,blank=True,help_text='Max width and height of the image will be 460:100',validators=[FileExtensionValidator(allowed_extensions=['jpg', 'png', 'jpeg'])])
     slug = models.CharField(max_length=300, blank=True, null=True)
     
     class Meta:

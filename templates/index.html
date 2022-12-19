@@ -49,9 +49,7 @@
             </h1>
             <div id="index-banner-search">
                <form action="/search" method="GET" class="custom-search general-search-index js-index-search">
-                  <select id="query_type"  required class="js-index-search-input js-static-search form-control" >
-                     <option></option>   
-                  </select>
+                  <input name="buyer_query_type" type="text" id="buyer_query_type" placeholder="Find Services" spellcheck="false" class="js-header-search js-static-search header-search form-control" value="">
                   <span class="search-button"><button class="button button-success" type="button" id="home_search_btn">Search</button></span>
                   <span class="js-clear-button clear-button hidden bg-none-important">
                      <svg class="pointer-en" xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none">
@@ -268,7 +266,15 @@
       </div>
    </div>
 </div>
-{% include  'footer.html' %}
+{% if request.user.username|length != 0%}
+   {% if request.session.userpage == "buyer" %}
+      {% include  'Dashboard/base_buyer.html' %}
+   {% else %}
+      {% include  'Dashboard/base_seller.html' %}
+   {% endif %}
+{% else %}
+   {% include  'footer.html' %}
+{% endif %}
 <style>
    .banner-bottom__link:hover
    {
@@ -312,6 +318,12 @@
    {
       padding-left:7%;
    }
+   #home_search_btn:disabled{
+      cursor: not-allowed;
+      cursor: -moz-not-allowed;
+      cursor: -webkit-not-allowed;
+      pointer-events:none;
+   }
 </style>
 <script>
    $(document).ready(function(){
@@ -348,72 +360,28 @@
                   $("#category_list").append('<a class="banner-market__popular-link" href="/categories/'+cat.cat_name+'/'+cat.subcat_name+'/'+cat.subsubcat_name+'/" target="_blank"><span class="anchor_tag_user">'+cat.subsubcat_name+'</span></a>');
                }
            });
-           var configParamsObj = {
-            data: array,
-            placeholder: 'Try "social media design"', 
-            minimumResultsForSearch: 3,
-            tags: true
-         };
-         $("#query_type").select2(configParamsObj);
-         $("#query_type").change(function () {
-         
-         });
-         if(logged_in_user.length != 0)
-         {
-            $("#loginbtn").remove();
-            $("#registerbtn").remove();
-            $("#freelancerbtn").remove();
-            $('#message_show_div').hide();
-            $('#notification_show_div').hide();
-            $("#notification").find("#not_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-bell-o" aria-hidden="true"></i></span></a>');
-            $("#messages").find("#mssg_anchor").append('<a  class="header-funds-link"><span><i class="fa fa-envelope-o" aria-hidden="true"></i></span></a>');
-            $("#help_not").append('<div class="des">Help & Resources</div><a href="/faq" class="header-funds-link"><span><i class="fa fa-question-circle" aria-hidden="true"></i></span></a>');
-            $("#favourite").append('<div class="des">Favourites</div><a href="/favourites" class="header-funds-link"><span><i class="fa fa-heart-o" aria-hidden="true"></i></span></a>');
-            $("#profile_btn").append('<div class="logoutheader"><div class="usernamebox droparrow js-username-box"><a class="user-box" ><img class="user-avatar js-user-avatar_block " src="'+logged_in_img+'" id="logged_in_user_image" onerror="imageLoadError(this)"/></a><div class="dropdownbox dropdownbox--profile js-dropdownbox-profile"><div class="user-popup"><div class="user-popup-name"><a href="/user/profile/'+logged_in_user+'" class="dropdownbox__username anchor_tag_user">'+logged_in_user+'</a></div><div class="user-popup-items mb-3"></div><div class="user-popup-item"><a href="/user/profile/'+logged_in_user+'" id="logged_in_user_name" class="user-popup-link">Profile</a></div><div class="user-popup-item"><a href="/affiliate_program" class="user-popup-link">Refer a Friend</a></div><div class="user-popup-item"><a href="/account_settings" class="user-popup-link">Settings</a></div><div class="user-popup-item"><a href="/billing" class="user-popup-link">Billing</a></div><div class="user-popup-item"><a href="/faq" class="user-popup-link">Help</a></div><div class="user-popup-item user-popup-item-logout"><a href="/logoutsocial" class="user-popup-link js-logout">Sign out</a></div></div></div></div></div><div class="clear"/></div>');
-            $('#help_not a').hover(function (e) {
-               $('#help_not .des').css({
-                  left: e.offsetX + 80,
-                  top: e.offsetY + 40
-               }).toggle();
-            });
-            $('#notification a').click(function (e) {
-               $('#message_show_div').hide();
-               $('#notification_show_div').toggle();
-            });
-            $('#messages a').click(function (e) {
-               $('#notification_show_div').hide();
-               $('#message_show_div').toggle();
-            });
-            $('#favourite a').hover(function (e) {
-               $('#favourite .des').css({
-                  left: e.offsetX + 60,
-                  top: e.offsetY + 40
-               }).toggle();
-            });
-         }
          }
       });
     
      
 $("#home_search_btn").click(function () {
-   if($("#query_type").val().trim().length != 0)
+   if($("#buyer_query_type").val().trim().length != 0)
    {
+      $("#home_search_btn").prop("disabled",true);
       $.ajax({
          type:"POST",
          url: "/post_search_key/",
-         data: {'keyword':$('#query_type').find(":selected").text(),"keyword_type":"keyword"},
+         data: {'keyword':$('#buyer_query_type').val().trim(),"keyword_type":"keyword"},
          success: function(data) 
          {  
-            
-            location_href =  $(location).attr('href').split("/");
-            value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#query_type').find(":selected").text();});
-            $('#query_type').val("");
-            window.open( location_href[0]+"//"+location_href[2] + '/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
+            $("#home_search_btn").prop("disabled",false);
+            window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
+            $('#buyer_query_type').val("");
          }
       });
    }
    else{
-      alert("Select any category");
+      alert("Please enter some keyword");
    }
 });
     

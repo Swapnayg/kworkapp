@@ -14,9 +14,7 @@
           <div class="payer-banner__search">
              <div id="app">
                 <div class="custom-search general-search-index">
-                  <select id="buyer_query_type"  required class="js-index-search-input js-static-search form-control" >
-                     <option></option>   
-                  </select>
+                  <input name="buyer_query_type" type="text" id="buyer_query_type" placeholder="Find Services" spellcheck="false" class="js-header-search js-static-search header-search form-control" value="">
                   <span class="search-button"><button class="button button-success" type="button" id="buyer_search_btn">Search</button></span>
                 </div>
              </div>
@@ -215,7 +213,7 @@
    }
    .rating-block__count
    {
-      padding-top: 30%;
+      padding-top: 32%;
    }
    .inspire__user-avatar
    {
@@ -242,6 +240,9 @@
    .select2-container .select2-selection--single
    {
       width: 103%;
+   }
+   .kwork-card-carousel__card-list .kwork-card-item .cusongsblock__panel .mr2 i{
+      padding-top: 20%;
    }
    .payer-banner__search .custom-search.general-search-index .search-button .button
    {
@@ -278,42 +279,33 @@
       width: 31px;
       display: inline-flex;
    }
+
+   #buyer_search_btn:disabled{
+      cursor: not-allowed;
+      cursor: -moz-not-allowed;
+      cursor: -webkit-not-allowed;
+      pointer-events:none;
+   }
 </style>
 <script>
-   hidden_val = eval(JSON.parse(JSON.stringify($("#buyer_catlist_hidden").val())));
-      var array = [];
-      $(hidden_val).each(function(i, li) {  
-         array.push({id: li.cat_name,text: li.subsubcat_name});
-     });
-     var configParamsObj = {
-      data: array,
-      placeholder: 'Try "social media design"', 
-      minimumResultsForSearch: 3,
-      tags: true
-   };
-  $("#buyer_query_type").select2(configParamsObj);
-  $("#buyer_query_type").change(function () {
-
-});
 $("#buyer_search_btn").click(function () {
    if($("#buyer_query_type").val().trim().length != 0)
    {
+      $("#buyer_search_btn").prop("disabled",true);
       $.ajax({
          type:"POST",
          url: "/post_search_key/",
-         data: {'keyword':$('#buyer_query_type').find(":selected").text(),"keyword_type":"keyword"},
+         data: {'keyword':$("#buyer_query_type").val().trim(),"keyword_type":"keyword"},
          success: function(data) 
-         {  
-            
-            location_href =  $(location).attr('href').split("/");
-            value3 = jQuery.grep(hidden_val, function(obj) {return obj.subsubcat_name.trim() === $('#buyer_query_type').find(":selected").text();});
+         {   
+            $("#buyer_search_btn").prop("disabled",false);
+            window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
             $('#buyer_query_type').val("");
-            window.open( location_href[0]+"//"+location_href[2] + '/categories/'+value3[0].cat_name+'/'+value3[0].subcat_name+'/'+value3[0].subsubcat_name+'/', "_blank");
          }
       });
    }
    else{
-      alert("Select any category");
+      alert("Please enter some keyword");
    }
 });
 </script>

@@ -26,7 +26,7 @@
                            <li><a href="#modificationtab" role="tab" data-toggle="tab">Requirements</a></li>
                         {% endif %}
                         {% if delivery == 'yes' %}
-                        <li><a href="#deliverytab" role="tab" data-toggle="tab">Dellivery Details</a></li>
+                        <li><a href="#deliverytab" role="tab" data-toggle="tab">Delivery Details</a></li>
                         {% endif %}
                     </ul>
                     <div class="tab-content">
@@ -186,41 +186,197 @@
                                                                         </div>
                                                                      </li>
                                                                   </ul>
-                                                                 {% if seller_review.0.seller_response|length == 0 %}
-                                                                 {% if current_user == "Seller" %}
-                                                                     <div class="activity-collapsible-content" id="response_div">
-                                                                        <form id="form_response">
-                                                                           <div class="LsC-Zuk p-r-0 form-text-area">
-                                                                              <textarea maxlength="{{seller_resp_char}}" placeholder="give response for your review." id="text_response_mssg" required></textarea>
-                                                                           </div>
-                                                                           <span class="control-bar flex-end"><span class="text-counter" id="span_response_mssg">0 / {{seller_resp_char}}</span></span>
-                                                                           <div class="col-lg-12" id="sub_resp_div">
-                                                                              <input type="submit" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="btn_sub_response" value="Give Response">
-                                                                           </div>
-                                                                        </form>
-                                                                     </div>
+                                                                 {% if buyer_review.0.review_message.strip|length == 0 %}
+                                                                     {% if current_user == "Seller" %}
+                                                                        <div class="activity-collapsible-content" id="response_div">
+                                                                           <article class="payment-methods">
+                                                                              <div class="cash">
+                                                                                 <div class="radio-group">
+                                                                                    <article class="payment-methods" id="review_section">
+                                                                                        <section class="summary">
+                                                                                            <form id="form_buyer_review">
+                                                                                             <div class="row tab7 mt-5 mb-5" >
+                                                                                                <div class="col-lg-6">
+                                                                                                    <h5  class="header_txt1">
+                                                                                                        Overall experience with Buyer
+                                                                                                     </h5>
+                                                                                                     <label class="message1">
+                                                                                                        How would you like to rate buyer in terms of customer support, communication skills, understanding ability?
+                                                                                                     </label>
+                                                                                                </div>
+                                                                                                <div class="col-lg-6" style="text-align:right;">
+                                                                                                    <select id="rating_buyer" name="rating">
+                                                                                                        <option value="1">1</option>
+                                                                                                        <option value="2">2</option>
+                                                                                                        <option value="3">3</option>
+                                                                                                        <option value="4">4</option>
+                                                                                                        <option value="5">5</option>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                             </div>
+                                                                                             <div class="row tab7 mt-3 mb-5" >
+                                                                                                <div class="col-lg-12">
+                                                                                                    <h5  class="header_txt1">
+                                                                                                        What was it like working with this buyer?
+                                                                                                     </h5>
+                                                                                                     <textarea maxlength="{{buyer_descp_count}}" required placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" ></textarea>
+                                                                                                    <span class="buyer_desc_count">0 / {{buyer_descp_count}} max</span>
+                                                                                                </div>
+                                                                                                <div class="col-lg-3">
+                                                                                                    
+                                                                                                </div>
+                                                                                             </div>
+                                                                                             <div class="row tab7 mt-3 mb-5" >
+                                                                                                <div class="col-lg-12" style="text-align:right;">
+                                                                                                   <button type="submit" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="buyer_rev_submit">Submit Review</button>
+                                                                                                </div>
+                                                                                             </div>
+                                                                                             <div class="row tab7 mt-3 mb-5" >
+                                                                                                <div class="col-lg-7">
+                                                                                                    <div class="error-message-review">
+                                                                                                        <span class="error">Please fill all the details.</span>
+                                                                                                    </div> 
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            </form>
+                                                                                            </section>
+                                                                                    </article>
+                                                
+                                                                                   
+                                                                                    
+                                                                                 </div>
+                                                                              </div>
+                                                                           </article>
+                                                                        </div>
                                                                      {% endif %}
                                                                   {% else %}
-                                                                     <div class="user-message response"  >
-                                                                        <a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="stamp link">
-                                                                           <div class="user-profile-image"><label class="profile-pict" for="profile_image_3297531691274" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{seller_review.0.s_review_to_img}}" class="profile-pict-img" alt="elasho"></label></div>
-                                                                        </a>
-                                                                        <div class="message-column">
-                                                                        <p>
-                                                                           <div class="flex"><span class="username"><span><a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="username-url">{{seller_review.0.s_review_to_username}}</a></span>'s response:</span></div>
-                                                                        </p>
-                                                                        <p id="response_message">{{seller_review.0.seller_response}}</p>
+                                                                  {% if current_user == "Seller"  %}
+                                                                  <section class="activity-wrap order-rated-by-seller">
+                                                                     <article class="LF267+J H1pvagJ PpAciwT">
+                                                                     <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                                        <div class="CLdO82Y">
+                                                                           <label>
+                                                                              <span class="stamp order-rated-by-seller"></span>
+                                                                              <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">You</a></span> left a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
+                                                                           </label>
+                                                                        </div>
+                                                                        <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                                           <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                                              <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                                                 <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                                              </svg>
+                                                                           </span>
                                                                         </div>
                                                                      </div>
-                                                                     {% if buyer_review.0.review_message.strip|length == 0  %}
-                                                                        {% if current_user == "Seller"  %}
-                                                                        <div class="row tab7 mt-3 mb-5" >
-                                                                           <div class="col-lg-12 seller_btn_review_div">
-                                                                              <a class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" href="/buyer_reviews/{{order_details.order_no}}" target="_self" id="seller_rev_btn">Give Feedback</a>
+                                                                     <div class="activity-collapsible-content">
+                                                                        <div style="max-height: unset; overflow: unset;">
+                                                                           <div>
+                                                                              <article class="activity-body">
+                                                                                 <div class="rating-activity">
+                                                                                    <section class="card-wrap">
+                                                                                       <header class="card-header"><span class="card-title">Your's Review</span> </header>
+                                                                                       <div class="card-content">
+                                                                                          <div class="user-message">
+                                                                                             <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
+                                                                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
+                                                                                             </a>
+                                                                                             <div class="message-column">
+                                                                                                <p>
+                                                                                                <div class="flex">
+                                                                                                   <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">Your</a></span>'s message</span>
+                                                                                                   <div class="flex">
+                                                                                                      <div class="orca-rating color-yellow tbody-6">
+                                                                                                         <div class="stars">
+                                                                                                            {% for review in buyer_review.0.average_val %}
+                                                                                                            <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                                               <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                                               </svg>
+                                                                                                            </span>
+                                                                                                            {% endfor %}
+                                                                                                         </div>
+                                                                                                         <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
+                                                                                                      </div>
+                                                                                                   </div>
+                                                                                                </div>
+                                                                                                </p>
+                                                                                                <p>{{buyer_review.0.review_message}}
+                                                                                                </p>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                       </div>
+                                                                                    </section>
+                                                                                 </div>
+                                                                              </article>
                                                                            </div>
                                                                         </div>
-                                                                        {% endif %}
-                                                                     {% endif %}
+                                                                     </div>
+                                                                     </article>
+                                                                  </section>
+                                                                  {% else %}
+                                                                  <section class="activity-wrap order-rated-by-seller">
+                                                                     <article class="LF267+J H1pvagJ PpAciwT">
+                                                                     <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                                        <div class="CLdO82Y">
+                                                                           <label>
+                                                                              <span class="stamp order-rated-by-seller"></span>
+                                                                              <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span> left you a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
+                                                                           </label>
+                                                                        </div>
+                                                                        <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                                           <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                                              <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                                                 <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                                              </svg>
+                                                                           </span>
+                                                                        </div>
+                                                                     </div>
+                                                                     <div class="activity-collapsible-content">
+                                                                        <div style="max-height: unset; overflow: unset;">
+                                                                           <div>
+                                                                              <article class="activity-body">
+                                                                                 <div class="rating-activity">
+                                                                                    <section class="card-wrap">
+                                                                                       <header class="card-header"><span class="card-title">{{ buyer_review.0.b_review_from_username}}'s Review</span> </header>
+                                                                                       <div class="card-content">
+                                                                                          <div class="user-message">
+                                                                                             <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
+                                                                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
+                                                                                             </a>
+                                                                                             <div class="message-column">
+                                                                                                <p>
+                                                                                                <div class="flex">
+                                                                                                   <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span>'s message</span>
+                                                                                                   <div class="flex">
+                                                                                                      <div class="orca-rating color-yellow tbody-6">
+                                                                                                         <div class="stars">
+                                                                                                            {% for review in buyer_review.0.average_val %}
+                                                                                                            <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                                               <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                                               </svg>
+                                                                                                            </span>
+                                                                                                            {% endfor %}
+                                                                                                         </div>
+                                                                                                         <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
+                                                                                                      </div>
+                                                                                                   </div>
+                                                                                                </div>
+                                                                                                </p>
+                                                                                                <p>{{buyer_review.0.review_message}}
+                                                                                                </p>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                       </div>
+                                                                                    </section>
+                                                                                 </div>
+                                                                              </article>
+                                                                           </div>
+                                                                        </div>
+                                                                     </div>
+                                                                     </article>
+                                                                  </section>
+                                                                  {% endif %}
                                                                   {% endif %}
                                                                </div>
                                                             </section>
@@ -229,24 +385,7 @@
                                                    </div>
                                                 </div>
                                              </div>
-                                              <div id="seller_resp_div1">
-                                                <div class="user-message response"  >
-                                                   <a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="stamp link">
-                                                      <div class="user-profile-image"><label class="profile-pict" for="profile_image_3297531691274" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{seller_review.0.s_review_to_img}}" class="profile-pict-img" alt="elasho"></label></div>
-                                                   </a>
-                                                   <div class="message-column">
-                                                   <p>
-                                                      <div class="flex"><span class="username"><span><a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="username-url">{{seller_review.0.s_review_to_username}}</a></span>'s response:</span></div>
-                                                   </p>
-                                                   <p id="response_message">{{seller_review.0.seller_response}}</p>
-                                                   </div>
-                                                </div>
-                                                <div class="row tab7 mt-3 mb-5" >
-                                                   <div class="col-lg-12 seller_btn_review_div">
-                                                      <a class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" href="/buyer_reviews/{{order_details.order_no}}" target="_self" id="seller_rev_btn">Give Feedback</a>
-                                                   </div>
-                                                </div>
-                                             </div>
+                                            
                                           </article>
                                        </section>
                                        {% elif  current_user == "Seller"  %}
@@ -344,39 +483,198 @@
                                                                         </div>
                                                                      </li>
                                                                   </ul>
-                                                                 {% if seller_review.0.seller_response|length == 0 %}
+                                                                 {% if  buyer_review.0.review_message.strip|length == 0  %}
                                                                      <div class="activity-collapsible-content" id="response_div">
-                                                                        <form id="form_response">
-                                                                           <div class="LsC-Zuk p-r-0 form-text-area">
-                                                                              <textarea maxlength="{{seller_resp_char}}" placeholder="give response for your review." id="text_response_mssg" required></textarea>
+                                                                        <article class="payment-methods">
+                                                                           <div class="cash">
+                                                                              <div class="radio-group">
+                                                                                 <article class="payment-methods" id="review_section">
+                                                                                     <section class="summary">
+                                                                                         <form id="form_buyer_review">
+                                                                                          <div class="row tab7 mt-5 mb-5" >
+                                                                                             <div class="col-lg-6">
+                                                                                                 <h5  class="header_txt1">
+                                                                                                     Overall experience with Buyer
+                                                                                                  </h5>
+                                                                                                  <label class="message1">
+                                                                                                     How would you like to rate buyer in terms of customer support, communication skills, understanding ability?
+                                                                                                  </label>
+                                                                                             </div>
+                                                                                             <div  class="col-lg-6" style="text-align:right;">
+                                                                                                 <select id="rating_buyer" name="rating">
+                                                                                                     <option value="1">1</option>
+                                                                                                     <option value="2">2</option>
+                                                                                                     <option value="3">3</option>
+                                                                                                     <option value="4">4</option>
+                                                                                                     <option value="5">5</option>
+                                                                                                 </select>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                          <div class="row tab7 mt-3 mb-5" >
+                                                                                             <div class="col-lg-12">
+                                                                                                 <h5  class="header_txt1">
+                                                                                                     What was it like working with this buyer?
+                                                                                                  </h5>
+                                                                                                  <textarea maxlength="{{buyer_descp_count}}" required placeholder="Did Buyer Provided enough Requirements? Did the buyer helped you to achieve your Goal." id="textarea_buyer_desc" ></textarea>
+                                                                                                 <span class="buyer_desc_count">0 / {{buyer_descp_count}} max</span>
+                                                                                             </div>
+                                                                                             <div class="col-lg-3">
+                                                                                                 
+                                                                                             </div>
+                                                                                          </div>
+                                                                                          <div class="row tab7 mt-3 mb-5" >
+                                                                                             <div class="col-lg-12" style="text-align:right;">
+                                                                                                <button type="submit" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="buyer_rev_submit">Submit Review</button>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                          <div class="row tab7 mt-3 mb-5" >
+                                                                                             <div class="col-lg-7">
+                                                                                                 <div class="error-message-review">
+                                                                                                     <span class="error">Please fill all the details.</span>
+                                                                                                 </div> 
+                                                                                             </div>
+                                                                                         </div>
+                                                                                         </form>
+                                                                                         </section>
+                                                                                 </article>
+                                             
+                                                                                 <article class="payment-methods" id="thank_section">
+                                                                                     <div class="cash">
+                                                                                         <div class="radio-group">
+                                                                                            
+                                                                              </div>
                                                                            </div>
-                                                                           <span class="control-bar flex-end"><span class="text-counter" id="span_response_mssg">0 / {{seller_resp_char}}</span></span>
-                                                                           <div class="col-lg-12" id="sub_resp_div">
-                                                                              <input type="submit" class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" id="btn_sub_response" value="Give Response">
-                                                                           </div>
-                                                                        </form>
+                                                                        </article>
                                                                      </div>
                                                                   {% else %}
-                                                                     <div class="user-message response"  >
-                                                                        <a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="stamp link">
-                                                                           <div class="user-profile-image"><label class="profile-pict" for="profile_image_3297531691274" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{seller_review.0.s_review_to_img}}" class="profile-pict-img" alt="elasho"></label></div>
-                                                                        </a>
-                                                                        <div class="message-column">
-                                                                        <p>
-                                                                           <div class="flex"><span class="username"><span><a href="/user/profile/{{seller_review.0.s_review_to_username}}" class="username-url">Your</a></span>'s response:</span></div>
-                                                                        </p>
-                                                                        <p id="response_message">{{seller_review.0.seller_response}}</p>
+                                                                   
+                                                                  {% if current_user == "Seller"  %}
+                                                                  <section class="activity-wrap order-rated-by-seller">
+                                                                     <article class="LF267+J H1pvagJ PpAciwT">
+                                                                     <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                                        <div class="CLdO82Y">
+                                                                           <label>
+                                                                              <span class="stamp order-rated-by-seller"></span>
+                                                                              <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">You</a></span> left a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
+                                                                           </label>
+                                                                        </div>
+                                                                        <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                                           <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                                              <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                                                 <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                                              </svg>
+                                                                           </span>
                                                                         </div>
                                                                      </div>
-                                                                     {% if buyer_review.0.review_message.strip|length == 0  %}
-                                                                        {% if current_user == "Seller"  %}
-                                                                        <div class="row tab7 mt-3 mb-5" >
-                                                                           <div class="col-lg-12 seller_btn_review_div">
-                                                                              <a class="mt-3 agqrXOY BvNepr1 r+NFCla co-white pay-button bg-co-green-700" href="/buyer_reviews/{{order_details.order_no}}" target="_self" id="seller_rev_btn">Give Feedback</a>
+                                                                     <div class="activity-collapsible-content">
+                                                                        <div style="max-height: unset; overflow: unset;">
+                                                                           <div>
+                                                                              <article class="activity-body">
+                                                                                 <div class="rating-activity">
+                                                                                    <section class="card-wrap">
+                                                                                       <header class="card-header"><span class="card-title">Your's Review</span> </header>
+                                                                                       <div class="card-content">
+                                                                                          <div class="user-message">
+                                                                                             <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
+                                                                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
+                                                                                             </a>
+                                                                                             <div class="message-column">
+                                                                                                <p>
+                                                                                                <div class="flex">
+                                                                                                   <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">Your</a></span>'s message</span>
+                                                                                                   <div class="flex">
+                                                                                                      <div class="orca-rating color-yellow tbody-6">
+                                                                                                         <div class="stars">
+                                                                                                            {% for review in buyer_review.0.average_val %}
+                                                                                                            <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                                               <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                                               </svg>
+                                                                                                            </span>
+                                                                                                            {% endfor %}
+                                                                                                         </div>
+                                                                                                         <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
+                                                                                                      </div>
+                                                                                                   </div>
+                                                                                                </div>
+                                                                                                </p>
+                                                                                                <p>{{buyer_review.0.review_message}}
+                                                                                                </p>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                       </div>
+                                                                                    </section>
+                                                                                 </div>
+                                                                              </article>
                                                                            </div>
                                                                         </div>
-                                                                        {% endif %}
-                                                                     {% endif %}
+                                                                     </div>
+                                                                     </article>
+                                                                  </section>
+                                                                  {% else %}
+                                                                  <section class="activity-wrap order-rated-by-seller">
+                                                                     <article class="LF267+J H1pvagJ PpAciwT">
+                                                                     <div class="AuUenGR activity-collapsible-title-wrapper">
+                                                                        <div class="CLdO82Y">
+                                                                           <label>
+                                                                              <span class="stamp order-rated-by-seller"></span>
+                                                                              <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span> left you a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
+                                                                           </label>
+                                                                        </div>
+                                                                        <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
+                                                                           <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
+                                                                              <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
+                                                                                 <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
+                                                                              </svg>
+                                                                           </span>
+                                                                        </div>
+                                                                     </div>
+                                                                     <div class="activity-collapsible-content">
+                                                                        <div style="max-height: unset; overflow: unset;">
+                                                                           <div>
+                                                                              <article class="activity-body">
+                                                                                 <div class="rating-activity">
+                                                                                    <section class="card-wrap">
+                                                                                       <header class="card-header"><span class="card-title">{{ buyer_review.0.b_review_from_username}}'s Review</span> </header>
+                                                                                       <div class="card-content">
+                                                                                          <div class="user-message">
+                                                                                             <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
+                                                                                                <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
+                                                                                             </a>
+                                                                                             <div class="message-column">
+                                                                                                <p>
+                                                                                                <div class="flex">
+                                                                                                   <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span>'s message</span>
+                                                                                                   <div class="flex">
+                                                                                                      <div class="orca-rating color-yellow tbody-6">
+                                                                                                         <div class="stars">
+                                                                                                            {% for review in buyer_review.0.average_val %}
+                                                                                                            <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
+                                                                                                               <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
+                                                                                                                  <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
+                                                                                                               </svg>
+                                                                                                            </span>
+                                                                                                            {% endfor %}
+                                                                                                         </div>
+                                                                                                         <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
+                                                                                                      </div>
+                                                                                                   </div>
+                                                                                                </div>
+                                                                                                </p>
+                                                                                                <p>{{buyer_review.0.review_message}}
+                                                                                                </p>
+                                                                                             </div>
+                                                                                          </div>
+                                                                                       </div>
+                                                                                    </section>
+                                                                                 </div>
+                                                                              </article>
+                                                                           </div>
+                                                                        </div>
+                                                                     </div>
+                                                                     </article>
+                                                                  </section>
+                                                                  {% endif %}
                                                                   {% endif %}
                                                                </div>
                                                             </section>
@@ -415,137 +713,7 @@
                                           </div>
                                           {% endif %}
                                        {% endif %} 
-                                       {% if current_user == "Buyer"  %} 
-                                       {% if  buyer_review|length != 0 %}
-                                          <section class="activity-wrap order-rated-by-seller">
-                                             <article class="LF267+J H1pvagJ PpAciwT">
-                                             <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                <div class="CLdO82Y">
-                                                   <label>
-                                                      <span class="stamp order-rated-by-seller"></span>
-                                                      <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span> left you a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
-                                                   </label>
-                                                </div>
-                                                <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
-                                                   <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
-                                                      <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
-                                                         <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
-                                                      </svg>
-                                                   </span>
-                                                </div>
-                                             </div>
-                                             <div class="activity-collapsible-content">
-                                                <div style="max-height: unset; overflow: unset;">
-                                                   <div>
-                                                      <article class="activity-body">
-                                                         <div class="rating-activity">
-                                                            <section class="card-wrap">
-                                                               <header class="card-header"><span class="card-title">{{ buyer_review.0.b_review_from_username}}'s Review</span> </header>
-                                                               <div class="card-content">
-                                                                  <div class="user-message">
-                                                                     <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
-                                                                        <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
-                                                                     </a>
-                                                                     <div class="message-column">
-                                                                        <p>
-                                                                        <div class="flex">
-                                                                           <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">{{buyer_review.0.b_review_from_username}}</a></span>'s message</span>
-                                                                           <div class="flex">
-                                                                              <div class="orca-rating color-yellow tbody-6">
-                                                                                 <div class="stars">
-                                                                                    {% for review in buyer_review.0.average_val %}
-                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
-                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
-                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
-                                                                                       </svg>
-                                                                                    </span>
-                                                                                    {% endfor %}
-                                                                                 </div>
-                                                                                 <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
-                                                                              </div>
-                                                                           </div>
-                                                                        </div>
-                                                                        </p>
-                                                                        <p>{{buyer_review.0.review_message}}
-                                                                        </p>
-                                                                     </div>
-                                                                  </div>
-                                                               </div>
-                                                            </section>
-                                                         </div>
-                                                      </article>
-                                                   </div>
-                                                </div>
-                                             </div>
-                                             </article>
-                                          </section>
-                                       {% endif %}
-                                       {% else %} 
-                                       {% if  buyer_review|length != 0 %}
-                                          <section class="activity-wrap order-rated-by-seller">
-                                             <article class="LF267+J H1pvagJ PpAciwT">
-                                             <div class="AuUenGR activity-collapsible-title-wrapper">
-                                                <div class="CLdO82Y">
-                                                   <label>
-                                                      <span class="stamp order-rated-by-seller"></span>
-                                                      <p class="header-base rating-header"><span class="title-text"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">You</a></span> left you a {{buyer_review.0.average_val|length}}-star review</span><i class="time-stamp">{{ buyer_review.0.review_date|date:"M d, h:i A" }}</i></p>
-                                                   </label>
-                                                </div>
-                                                <div class="aTcRZG+ activity-collapsible-chevron-wrapper">
-                                                   <span class="lFICM06 qwVjRQp" aria-hidden="true" style="width: 14px; height: 14px;">
-                                                      <svg width="8" height="16" viewBox="0 0 8 16" xmlns="http://www.w3.org/2000/svg">
-                                                         <path d="M0.772126 1.19065L0.153407 1.80934C0.00696973 1.95578 0.00696973 2.19322 0.153407 2.33969L5.80025 8L0.153407 13.6603C0.00696973 13.8067 0.00696973 14.0442 0.153407 14.1907L0.772126 14.8094C0.918563 14.9558 1.156 14.9558 1.30247 14.8094L7.84666 8.26519C7.99309 8.11875 7.99309 7.88131 7.84666 7.73484L1.30247 1.19065C1.156 1.04419 0.918563 1.04419 0.772126 1.19065Z"></path>
-                                                      </svg>
-                                                   </span>
-                                                </div>
-                                             </div>
-                                             <div class="activity-collapsible-content">
-                                                <div style="max-height: unset; overflow: unset;">
-                                                   <div>
-                                                      <article class="activity-body">
-                                                         <div class="rating-activity">
-                                                            <section class="card-wrap">
-                                                               <header class="card-header"><span class="card-title">Your's Review</span> </header>
-                                                               <div class="card-content">
-                                                                  <div class="user-message">
-                                                                     <a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="stamp link">
-                                                                        <div class="user-profile-image"><label class="profile-pict" for="profile_image_8597941691280" style="width: 40px; height: 40px; font-size: 1em;"><img src="{{ buyer_review.0.b_review_from_img}}" class="profile-pict-img" alt="{{buyer_review.0.b_review_from_username}}"></label></div>
-                                                                     </a>
-                                                                     <div class="message-column">
-                                                                        <p>
-                                                                        <div class="flex">
-                                                                           <span class="username"><span><a href="/user/profile/{{buyer_review.0.b_review_from_username}}" class="username-url">Your</a></span>'s message</span>
-                                                                           <div class="flex">
-                                                                              <div class="orca-rating color-yellow tbody-6">
-                                                                                 <div class="stars">
-                                                                                    {% for review in buyer_review.0.average_val %}
-                                                                                    <span class="zv900so orca-star" aria-hidden="true" style="width: 15px; height: 15px;">
-                                                                                       <svg width="16" height="15" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg">
-                                                                                          <path fill-rule="evenodd" clip-rule="evenodd" d="M16 5.81285C16 5.98299 15.875 6.14367 15.75 6.26654L12.2596 9.61248L13.0865 14.3384C13.0962 14.4045 13.0962 14.4612 13.0962 14.5274C13.0962 14.7732 12.9808 15 12.7019 15C12.5673 15 12.4327 14.9527 12.3173 14.8866L8 12.656L3.68269 14.8866C3.55769 14.9527 3.43269 15 3.29808 15C3.01923 15 2.89423 14.7732 2.89423 14.5274C2.89423 14.4612 2.90385 14.4045 2.91346 14.3384L3.74038 9.61248L0.240385 6.26654C0.125 6.14367 0 5.98299 0 5.81285C0 5.5293 0.298077 5.41588 0.538462 5.37807L5.36539 4.68809L7.52885 0.387524C7.61539 0.207939 7.77885 0 8 0C8.22115 0 8.38462 0.207939 8.47115 0.387524L10.6346 4.68809L15.4615 5.37807C15.6923 5.41588 16 5.5293 16 5.81285Z"></path>
-                                                                                       </svg>
-                                                                                    </span>
-                                                                                    {% endfor %}
-                                                                                 </div>
-                                                                                 <b class="rating-score">{{buyer_review.0.average_val|length}}</b>
-                                                                              </div>
-                                                                           </div>
-                                                                        </div>
-                                                                        </p>
-                                                                        <p>{{buyer_review.0.review_message}}
-                                                                        </p>
-                                                                     </div>
-                                                                  </div>
-                                                               </div>
-                                                            </section>
-                                                         </div>
-                                                      </article>
-                                                   </div>
-                                                </div>
-                                             </div>
-                                             </article>
-                                          </section>
-                                       {% endif %}
-                                       {% endif %} 
+                                     
                                        </div>
                                     </div>
                                 {% endif %}  
@@ -623,39 +791,21 @@
                                        <div class="table-row header-row"><span class="header-cell" style="text-align:left;">Extra Gigs</span></div>
                                        {% for extra_off in extra_offer %}
                                        {% if extra_off.gig_extra_package.extra_gig_title|length != 0 %}
-                                       <div class="table-body">
+                                       <div class="table-body extra_offer">
                                           <div class="table-row">
                                              <span class="package-cell">
-                                                <h4 class="text-body-2">{{extra_off.gig_extra_package.extra_gig_title}}</h4>
-                                                <ul>
-                                                   <li class="flex p-b-4">
-                                                      <span class="lFICM06 check-icon" aria-hidden="true" style="width: 16px; height: 16px;">
-                                                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13.6202 2.6083L5.4001 10.8284L2.37973 7.80805C2.23329 7.66161 1.99585 7.66161 1.84939 7.80805L0.96551 8.69193C0.819073 8.83836 0.819073 9.0758 0.96551 9.22227L5.13492 13.3917C5.28135 13.5381 5.51879 13.5381 5.66526 13.3917L15.0344 4.02252C15.1809 3.87608 15.1809 3.63865 15.0344 3.49218L14.1505 2.6083C14.0041 2.46186 13.7667 2.46186 13.6202 2.6083Z"></path>
-                                                         </svg>
-                                                      </span>
-                                                      
-                                                   </li>
-                                                </ul>
+                                                <h4 class="text-body-2">{{extra_off.gig_extra_package.extra_gig_title |title}}</h4>
+                                              
                                              </span>
                                              <span class="quantity-cell">1</span><span class="">{{extra_off.gig_extra_package.extra_gig_duration}} days</span><span>${{extra_off.gig_extra_package.extra_gig_price}}</span>
                                           </div>
                                        </div>
                                        {% else %}
-                                       <div class="table-body">
+                                       <div class="table-body extra_offer">
                                           <div class="table-row">
                                              <span class="package-cell">
                                                 <h4 class="text-body-2">Extra Delivery</h4>
-                                                <ul>
-                                                   <li class="flex p-b-4">
-                                                      <span class="lFICM06 check-icon" aria-hidden="true" style="width: 16px; height: 16px;">
-                                                         <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M13.6202 2.6083L5.4001 10.8284L2.37973 7.80805C2.23329 7.66161 1.99585 7.66161 1.84939 7.80805L0.96551 8.69193C0.819073 8.83836 0.819073 9.0758 0.96551 9.22227L5.13492 13.3917C5.28135 13.5381 5.51879 13.5381 5.66526 13.3917L15.0344 4.02252C15.1809 3.87608 15.1809 3.63865 15.0344 3.49218L14.1505 2.6083C14.0041 2.46186 13.7667 2.46186 13.6202 2.6083Z"></path>
-                                                         </svg>
-                                                      </span>
-                                                      
-                                                   </li>
-                                                </ul>
+                                              
                                              </span>
                                              <span class="quantity-cell">1</span><span class="">{{extra_off.gig_extra_delivery.delivery_in}} days</span><span>${{extra_off.gig_extra_delivery.extra_price}}</span>
                                           </div>
@@ -1063,12 +1213,15 @@
       {% include  'Dashboard/base_seller.html' %}
 {% endif %}
 
+
 <script src="{% static 'assets/js/select2.min.js' %}"></script>
 <script src="{% static 'assets/js/jquery.flipper-responsive.js' %}"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/jquery.emojipicker.css' %}" />
 <script src="{% static 'assets/js/jquery.emojipicker.js' %}"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="{% static 'assets/css/frontend/jquery.emojipicker.tw.css' %}" />
 <script src="{% static 'assets/js/jquery.emojis.js' %}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/themes/fontawesome-stars.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bar-rating/1.2.2/jquery.barrating.min.js"></script>
 <style>
    #btn_save_draft:disabled, #btn_delivery_submit:disabled, #btn_cancel_submit:disabled{
       cursor: not-allowed;
@@ -1082,6 +1235,56 @@
    a.username-url,.user-message p
    {
       text-transform:capitalize;
+   }
+   .extra_offer h4{
+      font-size:12px;
+   }
+   #review_section .header_txt1
+   {
+      font-size:15px;
+   }
+   #review_section .message1
+   {
+      font-size: 13px;
+      font-weight: 400;
+      margin-top: 2%;
+   }
+
+   
+     .disable-click{
+      cursor:not-allowed;
+      pointer-events:none;
+   }
+   .search
+   {
+      margin-left:auto;
+   }
+   #buyer_rev_submit
+   {
+      width:35%;
+   }
+   .br-theme-fontawesome-stars .br-widget a
+   {
+      margin-right:5px;
+   }
+   .br-theme-fontawesome-stars .br-widget a.br-selected:after, .br-theme-fontawesome-stars .br-widget a.br-active:after
+   {
+      color: #ffb33e !important;
+   }
+   #textarea_buyer_desc
+   {
+      width: 100%;
+      margin-top: 2%;
+      font-size: 13px !important;
+      height: 100px;
+   }
+   .buyer_desc_count
+   {
+      float:right;
+   }
+   .order-rated-by-seller
+   {
+      margin-top:2%;
    }
 </style>
 <script>
@@ -1172,6 +1375,13 @@ function relativeTime(date, isUtc=false) {
    $(document).ready(function(){
       $("#message_errors").hide();
       $("#seller_resp_div1").hide();
+      $(".error-message-review").hide();
+      rating_buyer = 0;
+      $('#rating_buyer').barrating({ theme: 'fontawesome-stars',initialRating: '0',allowEmpty: false,emptyValue: '',deselectable: true,onSelect: function(value, text, event) {
+          if (typeof(event) !== 'undefined') {
+              rating_buyer = value;
+          } 
+      }});
       jsonObj1 = eval($("#chat_words_hidd").val());
       five_jsonObj1 = eval($("#five_chat_words_hidd").val());
       $.ajax({
@@ -1241,7 +1451,7 @@ function relativeTime(date, isUtc=false) {
                            }
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined mutual-cancellation"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
-                              message_type = 'You decided not to cancel this order'
+                              message_type = 'You decided not to cancel this order';
                               if(v.cancel_mssg.trim().length != 0)
                               {
                                  cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
@@ -1250,7 +1460,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "extention")
@@ -1275,7 +1485,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> requested to extend the delivery date';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "delivered")
@@ -1304,7 +1514,7 @@ function relativeTime(date, isUtc=false) {
                            }
                            else if(v.res_status.trim() == "rejected"){
                               classtype = '<span class="stamp resolution-declined delivery-received"><span class="lFICM06 stamp-icon" aria-hidden="true" style="width: 18px; height: 18px;"><svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M8 0.25C3.71875 0.25 0.25 3.71875 0.25 8C0.25 12.2812 3.71875 15.75 8 15.75C12.2812 15.75 15.75 12.2812 15.75 8C15.75 3.71875 12.2812 0.25 8 0.25ZM11.8 10.0344C11.9469 10.1813 11.9469 10.4187 11.8 10.5656L10.5625 11.8C10.4156 11.9469 10.1781 11.9469 10.0312 11.8L8 9.75L5.96562 11.8C5.81875 11.9469 5.58125 11.9469 5.43437 11.8L4.2 10.5625C4.05312 10.4156 4.05312 10.1781 4.2 10.0312L6.25 8L4.2 5.96562C4.05312 5.81875 4.05312 5.58125 4.2 5.43437L5.4375 4.19688C5.58437 4.05 5.82188 4.05 5.96875 4.19688L8 6.25L10.0344 4.2C10.1813 4.05312 10.4187 4.05312 10.5656 4.2L11.8031 5.4375C11.95 5.58437 11.95 5.82188 11.8031 5.96875L9.75 8L11.8 10.0344Z"></path></svg></span></span>'
-                              message_type = 'Sorry your delivery was rejected'
+                              message_type = 'Sorry your delivery was rejected';
                               if(v.cancel_mssg.trim().length != 0)
                               {
                                  cancel_mssg = '<div class="activity-collapsible-content cancel_div"><div style="max-height: unset; overflow: unset;"><div><article class="activity-body"><section class="card-wrap revision-request"><header class="card-header"><span class="card-title">Rejected Message</span> </header><div class="card-content"><div class="user-message"><a href="/user/profile/'+v.sender_username+'" class="stamp link"><div class="user-profile-image"><label class="profile-pict" for="profile_image_2825267375510" style="width: 40px; height: 40px; font-size: 1em;"><img src="'+v.sender_img+'" class="profile-pict-img" alt="'+v.sender_username+'"></label></div></a><div class="message-column"><p><div class="flex"><span class="username"><span><a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a></span>s message</span></div></p><p> '+v.cancel_mssg+'</p></div></div></div></section></article></div></div></div>'
@@ -1313,7 +1523,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened delivery-received"></span>'
                               message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
                            } 
                         }
                         else if(v.res_type.trim() == "completed")
@@ -1500,7 +1710,42 @@ function relativeTime(date, isUtc=false) {
          }
       }, 500); 
       }); 
-
+      $("#textarea_buyer_desc").on("paste keyup", function(e){ 
+         setTimeout(function() {  
+         var thisChars = $("#textarea_buyer_desc").val().trim().replace(/{.*}/g, '').length; 
+         var maxlength =  $("#textarea_buyer_desc").attr("maxlength");
+         if(thisChars > maxlength) 
+         {
+            var CharsToDel = (thisChars-maxlength); 
+            $("#textarea_buyer_desc").val($("#textarea_buyer_desc").val().trim().substring(0,$("#textarea_buyer_desc").val().trim().length-CharsToDel)); 
+         }else{
+            $(".buyer_desc_count").text( maxlength - thisChars + " /"+maxlength  +" max" ); 
+         }
+     }, 500);  
+      });
+      $("#form_buyer_review").submit(function(e)
+      {
+          e.preventDefault();
+          if(rating_buyer != 0 )
+          {
+              $.ajax({
+                  type:"GET",
+                  url: "/post_buyer_review/",
+                  data: {"order_no":'{{order_details.order_no}}',"b_review_txt":$("#textarea_buyer_desc").val(),"b_rating":rating_buyer},
+                  success: function(data) 
+                  {
+                      jsonObject = JSON.parse(data);
+                     if(jsonObject[0]['sucess'] == "sucess")
+                     {
+                       location.reload();
+                     }
+                  }
+              });
+          }
+          else{
+              $(".error-message-review").show();
+          }
+      });
       $("#text_cancel_messsg").on("paste keyup", function(e){ 
          setTimeout(function() {  
          var thisChars = $("#text_cancel_messsg").val().trim().replace(/{.*}/g, '').length; 
@@ -1916,12 +2161,14 @@ function relativeTime(date, isUtc=false) {
          prev_date = new Date();
          next_date = new Date();
       }
+      $(".res_accept_btn").addClass("disable-click");
       $.ajax({
          type:"GET",
          url: "/post_accept_click/",
          data: {"res_id":$(ev).attr("data-label"),"res_type":$(ev).attr("data-text"),"pre_date": prev_date, "next_date":next_date},
          success: function(data) 
          {
+            $(".res_accept_btn").removeClass("disable-click");
             if($(ev).attr("data-text") == "delivered")
             {
                location_href =  $(location).attr('href').split("/");
@@ -2045,7 +2292,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened mutual-cancellation"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  asked to cancel this order'
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be canceled</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "extention")
@@ -2070,7 +2317,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened extend-delivery"></span>'
                               message_type = '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a> requested to extend the delivery date';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically extended</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Decline</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Accept Request</button></div>';
                            }
                         }
                         else if(v.res_type.trim() == "delivered")
@@ -2108,7 +2355,7 @@ function relativeTime(date, isUtc=false) {
                            else if(v.res_status.trim() == "pending"){
                               classtype = '<span class="stamp resolution-opened delivery-received"></span>'
                               message_type =  '<a href="/user/profile/'+v.sender_username+'" class="username-url">'+v.sender_username+'</a>  delivered your order';
-                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
+                              buttons_txt = '<div class="HRhxExy ZBfSqH+ gCuoMYn" role="alert"> <span class="zv900so uB+IefT GManzyj" aria-hidden="true" style="width: 16px; height: 16px;"> <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"> <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 12C7.4 12 7 11.6 7 11C7 10.4 7.4 10 8 10C8.6 10 9 10.4 9 11C9 11.6 8.6 12 8 12ZM9 9H7V4H9V9Z"></path> </svg> </span> <div class="IjzCHAs"> <div> <p>You must respond by '+formatAMPM(new Date(v.res_last_date))+' or this order will be automatically marked as completed</p> </div> </div> </div><div class="extend-actions"><button class="ORLWF8p T2YhX76 co-grey-1100 bg-co-grey-300 res_decline_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" onclick="res_declineClick(this);">Request Revision</button><button class="ORLWF8p _0MkXbqi co-white bg-co-green-700 res_accept_btn" data-label="'+v.res_id+'" data-text="'+v.res_type+'" data-prev-date="'+v.res_prev_date+'" data-next-date="'+v.res_next_date+'" onclick="res_acceptClick(this);">Mark As Completed</button></div>';
                            } 
                         }
                         else if(v.res_type.trim() == "completed")

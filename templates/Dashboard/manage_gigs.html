@@ -14,7 +14,7 @@
                     <h1 class="alt">Gigs</h1>
                 </div>
                 <div class="col-md-12 db-manage-gigs">
-                    <a class="btn-standard btn-green btn-create-gig  " onclick="create_gig_onclick();" id="btn-create-gig">Create a New Gig</a>
+                    <a class="btn-standard btn-green btn-create-gig " onclick="create_gig_onclick();" id="btn-create-gig">Create a New Gig</a>
                 </div>
                 <div class="col-md-12 mx-0">
                     <ul class="nav nav-tabs" role="tablist">
@@ -549,6 +549,10 @@
                   <input type="hidden" id="share_gig_id">
                   <input type="hidden" id="share_gig_name">
                   <input type="hidden" id="share_gig_link">
+                  <div class="share-text">
+                     <h2 class="sharing-title">Boost Your Traffic</h2>
+                     <div class="sharing-description"><p>Share your Gig to grow your audience</p><p>engage with potential buyers and earn more trust.</p></div>
+                    </div>
                   <div class="share-buttons-container">
                      <div class="share-list">
                    
@@ -581,9 +585,21 @@
    </div>
  </div>
  <style>
- .gig-image-small
+   .gig-image-small
    {
       width:25px;
+   }
+   .share-text h2 {
+      font-size: 18px;
+      text-align: center;
+      color: #555;
+      padding: 10px 0;
+  }
+  .share-text p {
+      font-size: 15px;
+      line-height: 15px;
+      text-align: center;
+      color: #999;
    }
 </style>
 <script>
@@ -608,6 +624,7 @@
    }
     function create_gig_onclick()
     {
+         $(".btn-create-gig").addClass("disable-click");
         $.ajax({
             type:"GET",
             url: "/post_create_gig/",
@@ -616,6 +633,7 @@
             {  
                 if(data != "error" && data != 0)
                 {
+                     $(".btn-create-gig").removeClass("disable-click");
                      location_href =  $(location).attr('href').split("/");
                      random_string = makeid(6);
                      var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
@@ -714,8 +732,8 @@
    
    function cos_click() { 
       var pathurl =  window.location.origin;
-      var username = '{{gig_details.user_id.username}}';
-      var gig_link = '{{gig_details.gig_share_link}}';
+      var username = '{{request.user.username}}';
+      var gig_link = $("#share_gig_link").val();
       var completeUrl = pathurl + "/gigs/" + username + "/" + gig_link.toString() + "/1";
          navigator.clipboard.writeText(completeUrl).then(
            function() {

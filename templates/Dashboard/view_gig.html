@@ -367,19 +367,19 @@
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.0.package_price}}</p>
                                          </div>
-                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','basic');">Select</button>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700 package_offer" type="button" onclick="continue_offer('{{userDetails.id}}','basic');">Select</button>
                                       </td>
                                       <td>
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.1.package_price}}</p>
                                          </div>
-                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','standard');" >Select</button>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700 package_offer" type="button" onclick="continue_offer('{{userDetails.id}}','standard');" >Select</button>
                                       </td>
                                       <td>
                                          <div class="price-wrapper">
                                             <p class="tbody-5">$ {{gig_package_Details.2.package_price}}</p>
                                          </div>
-                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700" type="button" onclick="continue_offer('{{userDetails.id}}','enterprise');">Select</button>
+                                         <button class="ZQi_S8t AOOSxop co-white btn-select-package bg-co-green-700 package_offer" type="button" onclick="continue_offer('{{userDetails.id}}','enterprise');">Select</button>
                                       </td>
                                    </tr>
                                    {% endif %}
@@ -522,18 +522,6 @@
                                            </div>
                                            <section><span></span></section>
                                            <span class="summarize"><time class="text-body-2">{{review.review_date|timesince}} </time></span>
-                                           <span class="review_seller_comment_is_shown-wrapper">
-                                              <div class="response-item">
-                                                 <div class="user-profile-image"><label class="profile-pict" for="profile_image_9752182660853" style="width: 32px; height: 32px; font-size: 1em;"><img src="{{userDetails.avatar}}" class="profile-pict-img" alt="swap_soln_90" loading="lazy"></label></div>
-                                                 <header>
-                                                    <h5 class="response-title">Seller's Response</h5>
-                                                 </header>
-                                                 <div class="review-description">
-                                                    <p class="text-body-2">{{review.buyer_resp}} </p>
-                                                 </div>
-                                                 <span class="summarize"><time class="text-body-2">{{review.seller_resp_date|timesince}}  </time></span>
-                                              </div>
-                                           </span>
                                         </li>
                                      </span>
                                   </section>
@@ -605,7 +593,7 @@
                                        </ul>
                                     </article>
                                     {% if userDetails.username != request.user.username %}
-                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="continue_offer('{{userDetails.id}}','basic');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
+                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700 package_offer" target="_blank" onclick="continue_offer('{{userDetails.id}}','basic');" ><span>Continue</span><span> ( $ {{gig_package_Details.0.package_price}})</span></a></footer>
                                     {% endif %}
                                  </div>
                                  <div class="package-content zxTHQ6r mt-4" id="standard_contents">
@@ -648,7 +636,7 @@
                                         </ul>
                                      </article>
                                      {% if userDetails.username != request.user.username %}
-                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank" onclick="continue_offer('{{userDetails.id}}','standard');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
+                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700 package_offer" target="_blank" onclick="continue_offer('{{userDetails.id}}','standard');" ><span>Continue</span><span> ( $ {{gig_package_Details.1.package_price}})</span></a></footer>
                                      {% endif %}
                                     </div>
                                  <div class="package-content zxTHQ6r mt-4" id="premium_contents">
@@ -691,7 +679,7 @@
                                         </ul>
                                      </article>
                                      {% if userDetails.username != request.user.username %}
-                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700" target="_blank"  onclick="continue_offer('{{userDetails.id}}','enterprise');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
+                                       <footer class="tab-footer"><a class="ZQi_S8t AOOSxop co-white bg-co-green-700 package_offer" target="_blank"  onclick="continue_offer('{{userDetails.id}}','enterprise');" ><span>Continue</span><span> ( $ {{gig_package_Details.2.package_price}})</span></a></footer>
                                     {% endif %}
                                  </div>
                              </div>
@@ -893,6 +881,20 @@
    font-size: 75px;
    font-weight: 600;
   }
+  .gig-gallery-component .gallery-slideshow
+  {
+   height:auto !important;
+  }
+
+  .package_offer:disabled{
+   cursor: not-allowed;
+   cursor: -moz-not-allowed;
+   cursor: -webkit-not-allowed;
+}
+.disable-click{
+   pointer-events:none;
+   cursor:not-allowed;
+}
 </style>
 
 <script src="{% static 'assets/js/jquery.light-carousel.js' %}"></script>
@@ -1075,6 +1077,7 @@ function inbox_click(username)
 
 function continue_offer(gig_user,package)
 {
+   $(".package_offer").addClass("disable-click");
    logged_user = '{{request.user.username}}';
    if(logged_user.length != 0){
       $.ajax({
@@ -1083,6 +1086,7 @@ function continue_offer(gig_user,package)
          data: {'initiator':'{{request.user.username}}','receiver':gig_user,"package":package,'gig_id':'{{gig_details.id}}'},
          success: function(data) 
          {  
+            $(".package_offer").removeClass("disable-click");
             location_href =  $(location).attr('href').split("/");
             window.location.href = location_href[0]+"//"+location_href[2] +"/payments/0/"+ data;
          }   

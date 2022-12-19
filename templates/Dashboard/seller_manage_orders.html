@@ -76,7 +76,11 @@
                                    
                                     </div>
                                     <div class="col-md-1 db-manage-gigs ">
-                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% if o_act.order_amount == 0 %}
+                                            <div class="tbl-cell total"></div>
+                                        {% else %}
+                                            <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-2 db-manage-gigs ">
                                     
@@ -141,7 +145,11 @@
                                    
                                     </div>
                                     <div class="col-md-1 db-manage-gigs ">
-                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% if o_act.order_amount == 0 %}
+                                            <div class="tbl-cell total"></div>
+                                        {% else %}
+                                            <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-2 db-manage-gigs ">
                                     
@@ -205,7 +213,11 @@
                                    
                                     </div>
                                     <div class="col-md-1 db-manage-gigs ">
-                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% if o_act.order_amount == 0 %}
+                                            <div class="tbl-cell total"></div>
+                                        {% else %}
+                                            <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-2 db-manage-gigs ">
                                     
@@ -263,13 +275,17 @@
                                     <div class="col-md-3 db-manage-gigs ">
                                     </div>
                                     <div class="col-md-5 db-manage-gigs ">
-                                        <div class="order-gig-title"><div class="gig-name">{{o_act.order_message}}></div></div>
+                                        <div class="order-gig-title"><div class="gig-name">{{o_act.order_message}}</div></div>
                                     </div>
                                     <div class="col-md-1 db-manage-gigs ">
                                    
                                     </div>
                                     <div class="col-md-1 db-manage-gigs ">
-                                        <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% if o_act.order_amount == 0 %}
+                                            <div class="tbl-cell total"></div>
+                                        {% else %}
+                                            <div class="tbl-cell total">${{o_act.order_amount}}</div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-md-2 db-manage-gigs ">
                                     

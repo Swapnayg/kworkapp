@@ -323,7 +323,7 @@
                         <div class="form-card" id="created_form">
                            <div class="body mt-4 mb-4 pb-4">
                               <h2 class="mb-5">Your account is created successfully</h2>
-                              <a  onclick="create_gig_onclick();" class="btn outline_theme">Create A Gig</a>
+                              <a  onclick="create_gig_onclick();" class="btn outline_theme create_gig_a">Create A Gig</a>
 
                               <a  onclick="profile_onclick();" class="btn outline_theme" style="background:#2E5DC5;color: white;">View Profile</a>
                            </div>
@@ -343,6 +343,9 @@
    .image{
       margin-left: 0%;
       width: 60%;
+   }
+   .disable-click{
+      pointer-events:none;
    }
 </style>
 <script>
@@ -483,36 +486,43 @@
                   emailval = isEmail(user_email);
                   if(emailval == true)
                   {
-                     $("#create_error").hide();
-                     $.ajax({
-                        type:"GET",
-                        url: "/post_useremail_Details/",
-                        data: {'userid': $("#userprimaryval").val(),'username': userName,'useremail': user_email,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
-                        success: function(data)
-                        {  
-                           if(data== "success")
-                           {
-                              if(user_roll_val == "Buyer")
+                     if(userName.length > 4)
+                     {
+                        $("#create_error").hide();
+                        $.ajax({
+                           type:"GET",
+                           url: "/post_useremail_Details/",
+                           data: {'userid': $("#userprimaryval").val(),'username': userName,'useremail': user_email,'usercountry': country_val,'userrole': user_roll_val,'userterms': user_terms_val},
+                           success: function(data)
+                           {  
+                              if(data== "success")
                               {
-                                 window.location = "/buyer"
-                              }else{
-                                 $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
-                                    next_fs.show(); 
-                                 current_fs.animate({opacity: 0}, {
-                                 step: function(now) {
-                                 opacity = 1 - now;
-                                 current_fs.css({
-                                    'display': 'none',
-                                    'position': 'relative'
+                                 if(user_roll_val == "Buyer")
+                                 {
+                                    window.location = "/buyer"
+                                 }else{
+                                    $("#progressbar li").eq($("fieldset").index(next_fs)).addClass("active");
+                                       next_fs.show(); 
+                                    current_fs.animate({opacity: 0}, {
+                                    step: function(now) {
+                                    opacity = 1 - now;
+                                    current_fs.css({
+                                       'display': 'none',
+                                       'position': 'relative'
+                                    });
+                                    next_fs.css({'opacity': opacity});
+                                 }, 
+                                 duration: 600
                                  });
-                                 next_fs.css({'opacity': opacity});
-                              }, 
-                              duration: 600
-                              });
-                           }   
-                        }       
-		               }
-	               });
+                              }   
+                           }       
+                        }
+                     });   
+                     }
+                  else{
+                     $("#create_error").show();
+                     $("#create_error").text("username must be atleast 4 character long.");
+                  }
                }
                else{
                   $("#create_error").show();
@@ -522,6 +532,8 @@
             }
             else{
                $("#create_error").hide();
+               if(userName.length > 4)
+               {
                $.ajax({
                   type:"GET",
                   url: "/post_user_Details/",
@@ -551,6 +563,11 @@
                      }       
 		            }
 	            });
+            }
+            else{
+               $("#create_error").show();
+               $("#create_error").text("username must be atleast 4 character long.");
+            }
             }
          }
          else{
@@ -904,6 +921,7 @@ function profile_onclick()
 }
 function create_gig_onclick()
 {
+   $(".create_gig_a").addClass("disable-click");
     $.ajax({
         type:"GET",
         url: "/post_create_gig/",
@@ -912,6 +930,7 @@ function create_gig_onclick()
         {  
             if(data != "error" && data != 0)
             {
+               $(".create_gig_a").removeClass("disable-click");
                random_string = makeid(6);
                var output = [random_string.slice(0, 3), data, random_string.slice(3)].join('');
                window.location = '/user/{{request.user.username}}/create_gig/' + output + '/NEW';
