@@ -206,9 +206,9 @@
 
                 </div>
                 <div class="col-lg-7">
-                    <div id="react-seller-gigs">
-                        {% if userDetails.username == request.user.username %}
+                    <div id="react-seller-gigs"> 
                         {% if user_avail|length != 0 %}
+                        {% if userDetails.username == request.user.username %}
                         <div class="out-of-office" data-reactroot="">
                             <div class="banner-available new-seller">
                               <input type="hidden" value="{{user_avail.0.available_from}}" id="user_avail_list">
@@ -222,6 +222,20 @@
                                </div>
                             </div>
                          </div>
+                         {% else %}
+                         <div class="out-of-office" data-reactroot="">
+                           <div class="banner-available new-seller">
+                             <input type="hidden" value="{{user_avail.0.available_from}}" id="user_avail_list">
+                              <div class="content new-seller seller-view">
+                                 <div><i class="icn-calender"></i></div>
+                                 <div>
+                                    <p class="start-time-status">{{userDetails.username | title}} be unavailable starting of {{user_avail.0.available_from| date:"M d, Y"}}</p>
+                                    <p class="end-time-status">You won't be able to receive new orders or messages until  <b>{{user_avail.0.available_to}}.</b></p>
+                                    <q class="buyer-message">{{user_avail.0.available_mssg | title}}</q>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
                          {% endif %}
                          {% endif %}
                          <section data-reactroot="" class="seller-gigs cf">
@@ -801,6 +815,7 @@
                     if(data == "sucess")
                     {
                         $("#modal_availability").modal('hide');
+                        location.reload();
                     }
                 }   
             });
@@ -1087,6 +1102,7 @@
                 if(data == "sucess")
                 {
                     $("#modal_availability").modal('hide');
+                    location.reload();
                 }
             }
         });

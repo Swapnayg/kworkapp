@@ -3,8 +3,8 @@ def every_minute():
     all_users = User.objects.filter(is_admin=False,profile_status="active")
     for us in all_users:
         userDetails = User.objects.get(username = us.username)
-        average_delivery_str = 'Within 24 hours'
-        total_earnng = User_Earnings.objects.filter(user_id=userDetails)
+        average_delivery_str = 'Within 24 hours'        
+        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         if(UserAvailable.objects.filter(user_id=userDetails).exists() == True):
             user_avail_details = UserAvailable.objects.get(user_id=userDetails)
             try:
@@ -13,7 +13,7 @@ def every_minute():
 	            availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d").date()
             if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
                 UserAvailable.objects.filter(user_id=userDetails).delete()
-        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+        total_earnng = User_Earnings.objects.filter(user_id=userDetails)
         for earn in total_earnng:
             if(earn.clearence_date != None or earn.clearence_status == "pending" ):
                 try:
@@ -146,13 +146,15 @@ def every_minute():
                         transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                         transaction.transaction_status = "cancelled"
                         transaction.save()
+                        User_Order_Resolution.objects.filter(raised_by = order_by_user, raised_to= order_to_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
+                        User_Order_Resolution.objects.filter(raised_by = order_to_user, raised_to= order_by_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
                         refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                         refund_details.save()
                         try:    
                             cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                         except:
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read=True)
+                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by " + str(order_by_user.username).title() ,conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read=True)
                         order_message.save()
                         order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
@@ -216,16 +218,12 @@ def every_minute():
                         if(order_to.mail_order == True):
                             mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
                             SendEmailAct(str(order_to.email),mail_content,"Your order has been cancelled.")
-                        update_all_balancevalues(order_by_user)
-                        update_all_balancevalues(order_to_user)
                     else:
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
                         refund_details = User_Refund.objects.get(order_no= order_details,transaction=pay)
                         refund_details.refund_status='refunded'
                         refund_details.save()
-                        update_all_balancevalues(order_by_user)
-                        update_all_balancevalues(order_to_user)
             if(pay.payment_type == "flutterwave"):
                if(pay.transaction_status == "rufunded"):
                     order_details = User_orders.objects.get(order_no = pay.order_no)
@@ -238,13 +236,15 @@ def every_minute():
                         transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                         transaction.transaction_status = "cancelled"
                         transaction.save()
+                        User_Order_Resolution.objects.filter(raised_by = order_by_user, raised_to= order_to_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
+                        User_Order_Resolution.objects.filter(raised_by = order_to_user, raised_to= order_by_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
                         refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
                         refund_details.save()
                         try:
                             cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                         except:
                             cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
+                        order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by " + str(order_by_user.username).title(),conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
                         order_message.save()
                         order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
                         order_ativity.save()
@@ -308,203 +308,12 @@ def every_minute():
                         if(order_to.mail_order == True):
                             mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
                             SendEmailAct(str(order_to.email),mail_content,"Your order has been cancelled.")
-                        update_all_balancevalues(order_by_user)
-                        update_all_balancevalues(order_to_user)
                     else:
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
                         refund_details = User_Refund.objects.get(order_no= order_details,transaction=pay)
                         refund_details.refund_status='refunded'
                         refund_details.save()
-                        update_all_balancevalues(order_by_user)
-                        update_all_balancevalues(order_to_user)
-        reolution_details = User_Order_Resolution.objects.filter( Q(resolution_status="pending") | Q(raised_to= userDetails))
-        for res in reolution_details:
-            if(res.resolution_last_date != None):
-                try:
-                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S")
-                except:
-                    resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
-                if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour)):
-                    if(res.resolution_type=="cancel"):
-                        res.resolution_status = 'accepted'
-                        res.save()
-                        order_details = User_orders.objects.get(order_no = res_details.order_no)
-                        if(order_details.order_status != "completed"):  
-                            order_details.order_status = 'cancel'
-                            order_details.incoming_request = 'site'
-                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_details.save()
-                            order_by_user = User.objects.get(username= order_details.order_by.username)
-                            order_to_user = User.objects.get(username= order_details.order_to.username)
-                            transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
-                            transaction.transaction_status = "cancelled"
-                            transaction.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
-                            if(notification_cancel.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
-                                noti_create.save()
-                            refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
-                            refund_details.save()
-                            try:    
-                                cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
-                            except:
-                                cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
-                            order_message.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity.save()
-                            earning_val = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity1.save()
-                            order_by =  User.objects.get(username= order_details.order_by.username)   
-                            order_to =  User.objects.get(username= order_details.order_to.username)
-                            User_Order_Resolution.objects.filter(raised_by = order_by, raised_to= order_to,resolution_status="pending").update(resolution_status="rejected")
-                            User_Order_Resolution.objects.filter(raised_by = order_to, raised_to= order_by,resolution_status="pending").update(resolution_status="rejected")
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
-                            if(notification_cancel.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= str(raised_to.username).title() + " cancelled the Order.")
-                                noti_create.save()
-                            if(order_by.mail_order == True):
-                                mail_content = MailTemplates.order_cancelled_buyer(str(order_by.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_by.email),mail_content,"Your order has been cancelled.")
-                            if(order_to.mail_order == True):
-                                mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_to.email),mail_content,"Your order has been cancelled.")
-                            service_fees_price = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                                    earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                                    refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
-                                    refund_details.save()
-                    elif(res.resolution_type=="extention"):
-                        if(order_details.order_status != "completed"):  
-                            res.resolution_status = 'accepted'
-                            res.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            order_details = User_orders.objects.get(order_no = res_details.order_no)
-                            order_details.due_date = next_date
-                            order_details.save()   
-                            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
-                            order_ativity.save()
-                            notification_extension = Notification_commands.objects.get(slug = "order_extended")
-                            if(notification_extension.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
-                                noti_create.save()
-                            if(raised_by.mail_order == True):
-                                mail_content = MailTemplates.order_extension_accepted(str(raised_by.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved by " + str(raised_to.username).title() + ".")
-                    elif(res.resolution_type=="delivered"):
-                        if(order_details.order_status != "completed"):
-                            res.resolution_status = 'accepted'
-                            res.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            User_Order_Resolution.objects.filter(raised_by = raised_by, raised_to= raised_to,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Completed.")
-                            User_Order_Resolution.objects.filter(raised_by = raised_to, raised_to= raised_by,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Completed.")
-                            notification_delivery = Notification_commands.objects.get(slug = "order_completed")
-                            order_details = User_orders.objects.get(order_no = res_details.order_no)
-                            if(notification_delivery.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order Automatically Marked as completed.")
-                                noti_create.save()
-                            service_fees_price = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                            withdrwal_val = 0
-                            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
-                            for ext in withdrawal_ext:
-                                if(ext.parameter_name == "withdrawal_clearence_days"):
-                                    withdrwal_val = ext.no_of_days
-                            today_date = datetime.today()
-                            clearencedate = today_date + timedelta(days=int(withdrwal_val))                
-                            order_details.order_status = 'completed'
-                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_details.save()
-                            order_by =  User.objects.get(username= order_details.order_by.username)   
-                            order_to =  User.objects.get(username= order_details.order_to.username) 
-                            order_to.u_last_delivery= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_to.save()
-                            update_all_balancevalues(order_by)
-                            update_all_balancevalues(order_to)
-                            try:    
-                                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
-                            except:
-                                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
-                            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res_details,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
-                            refund_details.save()
-                            order_message = Order_Message(sender=order_by,receiver=order_to,text = "completed",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read=True)
-                            order_message.save()
-                            get_message =  Order_Message.objects.get(pk = order_message.pk)
-                            resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="successfuly completed",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
-                            resolution.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
-                            order_ativity.save()
-                            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                            order_ativity1.save()
         userDetails.ordersin_progress = orders_count
         userDetails.avg_delivery_time = average_delivery_str
         userDetails.save()
-

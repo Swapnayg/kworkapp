@@ -1088,7 +1088,7 @@
                   </li>
                   {% if seller_gig.0.order_status == 'late' or  seller_gig.0.order_status == 'resolution' or seller_gig.0.order_status == 'progress' or seller_gig.0.order_status == 'delivered' %}
                   <li class="item-wrapper">
-                     <a href="/user/{{order_by.username}}/manage_orders/{{order_details.order_no}}/resolution" class="link p-t-16">
+                     <a href="/user/{{request.user.username}}/manage_orders/{{order_details.order_no}}/resolution" class="link p-t-16">
                         <span class="lFICM06 item-icon" aria-hidden="true" style="width: 16px; height: 16px;">
                            <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
                               <path d="M8 0C3.6 0 0 3.6 0 8C0 12.4 3.6 16 8 16C12.4 16 16 12.4 16 8C16 3.6 12.4 0 8 0ZM8 10C6.9 10 6 9.1 6 8C6 6.9 6.9 6 8 6C9.1 6 10 6.9 10 8C10 9.1 9.1 10 8 10ZM8 2C8.9 2 9.8 2.2 10.6 2.6L9.044 4.156C8.283 3.949 7.717 3.949 6.955 4.156L5.4 2.6C6.2 2.2 7.1 2 8 2ZM2 8C2 7.1 2.2 6.2 2.6 5.4L4.156 6.956C3.949 7.717 3.949 8.283 4.156 9.045L2.6 10.6C2.2 9.8 2 8.9 2 8ZM8 14C7.1 14 6.2 13.8 5.4 13.4L6.956 11.844C7.717 12.051 8.283 12.051 9.045 11.844L10.6 13.4C9.8 13.8 8.9 14 8 14ZM13.4 10.6L11.844 9.044C12.051 8.283 12.051 7.717 11.844 6.955L13.4 5.4C13.8 6.2 14 7.1 14 8C14 8.9 13.8 9.8 13.4 10.6Z"></path>

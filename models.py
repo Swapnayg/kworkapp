@@ -123,7 +123,7 @@ class User(AbstractBaseUser):
     updated_at = models.DateTimeField(default=timezone.now, blank=True)
     created_at = models.DateTimeField(default=timezone.now, blank=True)
     affiliate_code= ShortUUIDField(length=6,max_length=6,alphabet="123456",blank=True,unique=True, editable=False, default=shortuuid.uuid,null=True)
-    referrals_earnings =  models.IntegerField(blank=True,default="0",null=True)
+    referrals_earnings =   models.CharField(max_length=200,blank=True,default="0",null=True)
     pay_pal_mail_id = models.EmailField(max_length=300, blank=True, null=True)
     objects = UserManager()
     mail_message = models.BooleanField(default=True)
@@ -680,6 +680,7 @@ class Referral_Users(models.Model):
     buyer_affi_amount =  models.CharField(max_length=300,blank=True,default="",null=True)
     buyer_affi_done =  models.BooleanField(default=False)
     seller_affi_done =  models.BooleanField(default=False)
+    refer_date = models.DateTimeField(default=timezone.now, blank=True)
     
     class Meta:
         verbose_name = _("Referral")
@@ -830,7 +831,7 @@ class Buyer_Reviews(models.Model):
 class User_Transactions(models.Model):
     BOOL_CHOICES_TYPES = [('paypal', 'Paypal'),('flutterwave', 'Flutterwave'),('credit', 'Credit')]
     BOOL_CHOICES_PAID_FOR = [('order', 'Order'),('tip', 'Tip')]
-    BOOL_CHOICES_Status = [('active', 'Active'),('cancelled', 'Cancelled'),('rufunded', 'Rufunded')]
+    BOOL_CHOICES_Status = [('active', 'Active'),('completed', 'Completed'),('cancelled', 'Cancelled'),('rufunded', 'Rufunded')]
     gig_name = models.ForeignKey(UserGigs, on_delete=models.CASCADE,null=False,blank=False)
     offer_id = models.ForeignKey(Request_Offers, on_delete=models.CASCADE,null=False,blank=False)
     payment_type = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
@@ -864,7 +865,7 @@ class User_Transactions(models.Model):
         return str(self.payment_type)
 
 class User_Order_Activity(models.Model):
-    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending'),('cleared', 'Cleared'),('tip', 'tip'),('affiliate', 'Affiliate')]
+    BOOL_CHOICES =[('active', 'Active'),('delivered', 'Delivered'),('cancel', 'Cancelled'),('e_cancel', 'E_Cancelled'),('extension', 'Extension'),('completed', 'Completed'),('transaction', 'Transaction'),('withdrawal', 'Withdrawal'),('credit', 'Credit'),('pending', 'Pending'),('cleared', 'Cleared'),('tip', 'tip'),('affiliate', 'Affiliate'),('used_credit', 'Credits Used')]
     order_message =  models.CharField(max_length=1000,blank=True,null=True)
     order_amount =   models.CharField(max_length=200,blank=True,null=True)
     activity_date = models.DateTimeField(default=timezone.now, blank=True)
@@ -987,6 +988,9 @@ class User_Refund(models.Model):
     resolution =   models.ForeignKey(User_Order_Resolution, on_delete=models.CASCADE,null=True,blank=True)
     order_no =   models.ForeignKey(User_orders, on_delete=models.CASCADE,null=True,blank=True)
     transaction =   models.ForeignKey(User_Transactions, on_delete=models.CASCADE,null=True,blank=True)
+    withdrawn_on = models.DateTimeField(default=timezone.now, blank=True,null=True)
+    withdrawn_status = models.BooleanField(default=False)
+    withdrawn_amount = models.CharField(max_length=500,blank=True,default=None,null=True)
     user_id =  models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True,related_name="refunded_to",)
     refund_status =  models.CharField(max_length=300,choices=BOOL_CHOICES_STATUS,blank=True,default="cancelled",null=True)
     
@@ -1122,9 +1126,12 @@ class Order_Delivery(models.Model):
 
 class Withdrwal_initiated(models.Model):
     BOOL_CHOICES_TYPES = [('initiated', 'Initiated'),('pending', 'Pending'),('partial', 'Partial'),('sucess', 'Sucess')]
+    Withdrawal_TYPES = [('earnings', 'Earnings'),('refund', 'Refund')]
     withdrawal_amount =models.CharField(max_length=500,blank=True,null=True)
     withdrawal_message =models.CharField(max_length=1000,blank=True,null=True)
     initiated_date = models.DateTimeField(default=timezone.now, blank=True)
+    with_email = models.CharField(max_length=1000,blank=True,null=True)
+    initiated_type = models.CharField(max_length=300,choices=Withdrawal_TYPES,blank=True,default="",null=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,related_name="withdrawn_by",null=True,blank=True)
     withdrawan_status = models.CharField(max_length=300,choices=BOOL_CHOICES_TYPES,blank=True,default="",null=True)
     withdrawn_date = models.DateTimeField( blank=True,default="",null=True)

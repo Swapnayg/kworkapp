@@ -108,7 +108,9 @@
                                                <th class="table-th table-col table-hide-md" >Value</th>
                                                <th class="table-th table-col table-hide-sm table-align-right">Currency</th>
                                                <th class="table-th table-col table-align-right" >Total</th>
-                                               <th class="table-th table-col table-align-right" >Credits Used</th>
+                                               <th class="table-th table-col table-align-right" >Purchase Credits</th>
+                                               <th class="table-th table-col table-align-right" >Refund Credits</th>
+                                               <th class="table-th table-col table-align-right" >Withdrawn Credits</th>
                                                <th class="table-th table-col table-align-right" >Status</th>
                                             </tr>
                                          </thead>
@@ -167,7 +169,7 @@
                                                   </div>
                                                </div>
                                                <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{cancel_bal}}</dd>
-                                               <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Use for purchases.</dd>
+                                               <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;"></dd>
                                             </div>
                                          </dl>
                                       </div>
@@ -188,6 +190,7 @@
                                                </div>                                             
                                                <dd class="text-display-3 text-bold co-grey-1100" style="margin-top: 24px;">$ {{avail_bal}}</dd>
                                                <dd class="tbody-6 co-grey-1000 text-normal text-trunc" style="margin-top: 8px;">Use for purchases.</dd>
+                                            
                                             </div>
 
                                             <div class="p-t-24 p-b-24 IiCJj-i b-0">
@@ -231,6 +234,7 @@
                                            <th class="table-th table-col table-hide-sm" >Amount</th>
                                            <th class="table-th table-col table-hide-md" >Message</th>
                                            <th class="table-th table-col table-hide-md" >Status</th>
+                                           <th class="table-th table-col table-hide-md" >Paypal Address</th>
                                            <th class="table-th table-col table-hide-md" >Cleared On</th>
                                            <th class="table-th table-col table-hide-sm table-align-right" >Currency</th>
                                         </tr>
@@ -242,6 +246,7 @@
                                                 <td class="table-td table-hide-sm" > <p class="text-trunc"></p> {{list.withdrawal_amount|floatformat:2}}</td>
                                                 <td class="table-td table-hide-md" > {{list.withdrawal_message|title}}</td> 
                                                 <td class="table-td table-hide-md" > {{list.withdrawan_status|upper}} </td> 
+                                                <td class="table-td table-hide-md" > {{list.with_email|title}} </td> 
                                                 <td class="table-td table-hide-md" > {{list.withdrawn_date| date:"M d, Y" }} </td> 
                                                 <td class="table-td table-hide-md"> USD </td> 
                                             </tr>
@@ -264,8 +269,12 @@
 {% else %}
    {% include  'Dashboard/base_seller.html' %}
 {% endif %}
-
-
+<style>
+   .table th, .table td
+   {
+      font-size:11px;
+   }
+</style>
 <script>
     $(document).ready(function(){
         $.ajax({
@@ -276,7 +285,7 @@
             {  
                 $("#tbl_balance tbody").empty();
                 $.each(data, function(i, v) {
-                    $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td">'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td><td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span> </td> <td class="table-td table-hide-sm table-align-right"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_credits+'</span></td>  <td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td></tr>');
+                    $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td">'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md"> <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td><td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span> </td> <td class="table-td table-hide-sm table-align-right"><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.tp_credits+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_credits+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_withdrawal+'</span></td>  <td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td></tr>');
                 });
             }
         });
@@ -293,17 +302,19 @@
                 {  
                     $("#tbl_balance tbody").empty();
                     $.each(data, function(i, v) {
-                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm" > <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td>  <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md" >'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td> </tr>');
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm" > <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td>  <td class="table-td table-hide-md">'+v.t_type+'</td><td class="table-td table-hide-md" >'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.tp_credits+'</span></td>  <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right"><span class="text-bold">'+v.t_withdrawal+'</span></td><td class="table-td table-align-right"><span class="text-bold">'+v.t_status+'</span></td> </tr>');
                     });
                     $("#date_range_div").toggle();
                 }
             });
         });
+
     });
     function date_select_click(ev)
     {
         $("#date_range_div").toggle();
     }
+ 
     function categoryonChange(ev)
     {
         if(ev.value.trim().length != 0)
@@ -316,11 +327,12 @@
                 {  
                     $("#tbl_balance tbody").empty();
                     $.each(data, function(i, v) {
-                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td> <td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td> <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right" ><span class="text-bold">'+v.t_status+'</span></td> </tr>');
+                        $("#tbl_balance tbody").append(' <tr class="table-tr"> <td class="table-td" >'+v.t_date+'</td> <td class="table-td table-hide-sm"> <p class="text-trunc">Payment</p> <p class="tbody-7 text-trunc co-text-medium">'+v.t_id+'</p> </td> <td class="table-td table-hide-md">'+v.t_type+'</td> <td class="table-td table-hide-md">'+v.t_category+'</td> <td class="table-td table-hide-md" > <div class="W46fKfn k-kBZXW"><span class="_5-fo9i5"><a class="invoices-order-link text-trunc" href="/user/{{request.user.username}}/manage_orders/'+v.t_order_no+'/activities" target="_blank" rel="noreferrer noopener" delay="120" content="View order" position="top" boxclassname="_8UHHk5Q" boxcontentclassname="Yn90o2E">'+v.t_order_no+'</a></span></div> </td> <td class="table-td table-hide-md"><span class="text-bold">'+v.t_base_price+'</span></td><td class="table-td table-hide-sm table-align-right" ><span class="text-bold">'+v.t_currency+'</span></td> <td class="table-td table-align-right"><span class="text-bold">'+v.t_amount+'</span></td><td class="table-td table-align-right" ><span class="text-bold">'+v.tp_credits+'</span></td>  <td class="table-td table-align-right" ><span class="text-bold">'+v.t_credits+'</span></td><td class="table-td table-align-right"><span class="text-bold">'+v.t_withdrawal+'</span></td><td class="table-td table-align-right" ><span class="text-bold">'+v.t_status+'</span></td> </tr>');
                     });
                 }
             });
         }
     }
+
 </script>
 {% endblock %}

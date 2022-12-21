@@ -225,7 +225,7 @@ class AdminsupportTopic(admin.ModelAdmin):
 admin.site.register(supportTopic, AdminsupportTopic)
 
 class AdminWithdrwal_initiated(admin.ModelAdmin):
-    list_display = ['withdrawal_amount','withdrawal_message','initiated_date','user_id','withdrawan_status','withdrawn_date']
+    list_display = ['withdrawal_amount','withdrawal_message','initiated_date','user_id','withdrawan_status','withdrawn_date','initiated_type','with_email']
     readonly_fields = ['withdrawal_amount','initiated_date','user_id','withdrawn_date']
     
 admin.site.register(Withdrwal_initiated, AdminWithdrwal_initiated)
@@ -243,16 +243,20 @@ def update_pay_status(sender, instance, **kwargs):
                 if(earn.aval_with != None):
                     if(round(float(earn.aval_with),2) != 0.00):
                         if(earn.withdrawn_amount == None):
-                            with_draw_amount = round(float(earn.aval_with),2)
-                            earn.withdrawn_amount = round(float(earn.aval_with),2)
+                            prev_credit = float(earn.credit_used)
+                            actual_available = float(earn.aval_with) - float(prev_credit)
+                            with_draw_amount = round(float(actual_available),2)
+                            earn.withdrawn_amount = round(float(actual_available),2)
                             earn.aval_with = 0.00
                             earn.withdrawn_status = True
                             earn.withdrawn_on = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                             earn.clearence_status = "completed"
                             earn.save()
+                            instance.withdrawn_date =  datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
                             order_details = User_orders.objects.get(pk = earn.order_no.pk)
                             order_by = User.objects.get(pk = order_details.order_by.pk)
                             order_to = User.objects.get(pk = order_details.order_to.pk)
+                            User_Order_Activity.objects.filter(order_message="Available for Withdrawal.",order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to).delete()
                             order_ativity1 = User_Order_Activity(order_message = "Withdrawal Completed !",order_amount = with_draw_amount, order_no=order_details,activity_type="withdrawal",activity_by=order_by,activity_to=order_to)
                             order_ativity1.save()
 
@@ -265,7 +269,7 @@ def update_trasactions_status(sender, instance, **kwargs):
         previous = Withdrwal_initiated.objects.get(id=instance.id)
         if(previous.withdrawan_status == "sucess"):
             senderObj = User.objects.get(username = 'admin')
-            receiverObj =  User.objects.get(username = gig_details.user_id.username)
+            receiverObj =  User.objects.get(username = previous.user_id.username)
             notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
             if(notification_settings.is_active == True):
                 noti_create = CustomNotifications(sender = senderObj, recipient=receiverObj, verb='withdrawal',description="Your Withdrawal of "+ str(previous.withdrawal_amount) + " is sucessful.")
@@ -302,24 +306,26 @@ def update_all_balancevalues(username):
         if(earn.aval_with != None or earn.clearence_status == "cleared" ):
             if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
                 try:
-                    avail_bal_val = round(float(float(avail_bal_val) + float(earn.aval_with)),2)
+                    e_prev_credit = float(earn.credit_used)
+                    e_actual_available = float(earn.aval_with) - float(e_prev_credit)
+                    avail_bal_val = round(float(float(avail_bal_val) + float(e_actual_available)),2)
                 except:
                     avail_bal_val = round(float(avail_bal_val),2)
         if(earn.clearence_status == "pending" ):
             current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
         try:
-            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-        except:
             earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+        except:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-        if(int(todays_date.month) == int(earned_date.month)):
-            cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
     refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
-    for r_earn in refund_earning:
-        availcredit_bal_val = round(float(float(availcredit_bal_val) + float(r_earn.refund_amount)),2)
+    for r_earn in refund_earning: 
+        prev_credit = float(r_earn.credit_used)
+        actual_available = float(r_earn.refund_amount) - float(prev_credit)
+        availcredit_bal_val = round(float(float(availcredit_bal_val) + float(actual_available)),2)
         if(r_earn.credit_used != None):
             if(r_earn.credit_used != ''):
-                ref_used_credit_val = round(float(float(ref_used_credit_val) + float(r_earn.credit_used)),2)
+                ref_used_credit_val = round(float(float(ref_used_credit_val) + float(prev_credit)),2)
     if(UserAvailable.objects.filter(user_id=userDetails).exists() == True):
         user_avail_details = UserAvailable.objects.get(user_id=userDetails)
         try:
@@ -328,7 +334,7 @@ def update_all_balancevalues(username):
 	        availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
         if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
             UserAvailable.objects.filter(user_id=userDetails).delete()
-    userDetails.total_earning = total_earning_val
+    userDetails.total_earning =  round(float(float(total_earning_val) + float(affilite_earn_val)),2)
     userDetails.current_earning = current_earning_val
     userDetails.cancelled_earning = cancelled_earning_val
     userDetails.avail_bal = avail_bal_val
@@ -418,10 +424,9 @@ def update_order_status(sender, instance, **kwargs):
                         cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
                     except:
                         cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)
-                    order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled",conversation_id=cover_detls,order_no=order_details,message_type="chat")
+                    order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Cancelled by Admin",conversation_id=cover_detls,order_no=order_details,message_type="chat")
                     order_message.save()
-                    User_Order_Resolution.objects.filter(raised_by = order_by_user, raised_to= order_to_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
-                    User_Order_Resolution.objects.filter(raised_by = order_to_user, raised_to= order_by_user,resolution_status="pending").update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
+                    User_Order_Resolution.objects.filter(Q(raised_by = order_by_user, raised_to= order_to_user,resolution_status="pending" ,order_no = order_details) | Q(raised_by = order_to_user, raised_to= order_by_user,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
                     get_message =  Order_Message.objects.get(pk = order_message.pk)
                     resolution= User_Order_Resolution(resolution_type='cancel',resolution_text = "Cancellation Request",resolution_message="Cancellation Request",resolution_desc="Cancellation Request",resolution_status="accepted",order_no=order_details,raised_by=order_by_user,raised_to=order_to_user,message=get_message)
                     resolution.save()
@@ -590,7 +595,7 @@ class AdminUploadFile(admin.ModelAdmin):
 admin.site.register(UploadFile, AdminUploadFile)
 
 class AdminUser_Refund(admin.ModelAdmin):
-    list_display = ['refund_amount','refund_date','used_on','used_offer_id','resolution','order_no','credit_used','transaction','refund_status','user_id']
+    list_display = ['refund_amount','refund_date','used_on','used_offer_id','resolution','order_no','credit_used','transaction','refund_status','user_id','withdrawn_on','withdrawn_status','withdrawn_amount']
 
 admin.site.register(User_Refund, AdminUser_Refund)
 

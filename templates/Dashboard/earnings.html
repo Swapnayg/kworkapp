@@ -31,41 +31,41 @@
             <div class="dd-wrap js-ddown-transactions">
                <div class="filter-select cf ">
                   <div class="fake-dropdown" style="visibility: visible;">
-                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="137" data-min-width="137" style="width: 137px;">EVERYTHING</a>
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="137" data-min-width="137" id="selected_value" style="width: 137px;">EVERYTHING</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 180px;">
                         <li>
-                           <a data-type="transactions" data-val="all" onclick="transaction_click('all_t');">
+                           <a data-type="transactions" data-val="all" onclick="transaction_click('all_t','EVERYTHING');">
                            <span class="text-inner">EVERYTHING</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="withdrawn" onclick="transaction_click('withdrawal');">
+                           <a data-type="transactions" data-val="withdrawn" onclick="transaction_click('withdrawal','WITHDRAWN');">
                            <span class="text-inner">WITHDRAWN</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="pending_clearance" onclick="transaction_click('pending');">
+                           <a data-type="transactions" data-val="pending_clearance" onclick="transaction_click('pending','PENDING CLEARANCE');">
                            <span class="text-inner">PENDING CLEARANCE</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('e_cancel');">
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('e_cancel','CANCELLED REVENUES');">
                            <span class="text-inner">CANCELLED REVENUES</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('tip');">
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('tip','TIP REVENUES');">
                            <span class="text-inner">TIP REVENUES</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('affiliate');">
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('affiliate','AFFILIATE REVENUES');">
                            <span class="text-inner"> AFFILIATE REVENUES</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="transactions" data-val="revenue_purchases" onclick="transaction_click('credit');">
-                           <span class="text-inner">USED FOR PURCHASES</span>
+                           <a data-type="transactions" data-val="cancelled_revenues" onclick="transaction_click('used_credit','USED FOR PURCHASES');">
+                           <span class="text-inner"> USED FOR PURCHASES</span>
                            </a>
                         </li>
                      </ul>
@@ -75,7 +75,7 @@
             <div class="dd-wrap js-ddown-years">
                <div class="filter-select cf ">
                   <div class="fake-dropdown" style="visibility: visible;">
-                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="32" data-min-width="32" style="width: 32px;">2022</a>
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="32" data-min-width="32" id="select_year" style="width: 32px;">2022</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 72px;">
                         {% for year in number_of_years %}
                            <li>
@@ -91,70 +91,70 @@
             <div class="dd-wrap js-ddown-months">
                <div class="filter-select cf ">
                   <div class="fake-dropdown" style="visibility: visible;">
-                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="77" data-min-width="77" style="width: 77px;">All months</a>
+                     <a class="dropdown-toggle max-width" data-toggle="dropdown" data-max-width="77" data-min-width="77" id="select_month" style="width: 77px;">All months</a>
                      <ul class="dropdown-menu  " role="menu" style="top: -2px; width: 120px;">
                         <li>
-                           <a data-type="months" data-val="13" onclick="month_click('all');">
+                           <a data-type="months" data-val="13" onclick="month_click('all','All months');">
                            <span class="text-inner">All months</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="1" onclick="month_click('1');">
+                           <a data-type="months" data-val="1" onclick="month_click('1','January');">
                            <span class="text-inner">January</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="2" onclick="month_click('2');">
+                           <a data-type="months" data-val="2" onclick="month_click('2','February');">
                            <span class="text-inner">February</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="3" onclick="month_click('3');">
+                           <a data-type="months" data-val="3" onclick="month_click('3','March');">
                            <span class="text-inner">March</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="4" onclick="month_click('4');">
+                           <a data-type="months" data-val="4" onclick="month_click('4','April');">
                            <span class="text-inner">April</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="5" onclick="month_click('5');">
+                           <a data-type="months" data-val="5" onclick="month_click('5','May');">
                            <span class="text-inner">May</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="6" onclick="month_click('6');">
+                           <a data-type="months" data-val="6" onclick="month_click('6','June');">
                            <span class="text-inner">June</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="7" onclick="month_click('7');">
+                           <a data-type="months" data-val="7" onclick="month_click('7','July');">
                            <span class="text-inner">July</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="8" onclick="month_click('8');">
+                           <a data-type="months" data-val="8" onclick="month_click('8','August');">
                            <span class="text-inner">August</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="9" onclick="month_click('9');">
+                           <a data-type="months" data-val="9" onclick="month_click('9','September');">
                            <span class="text-inner">September</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="10" onclick="month_click('10');">
+                           <a data-type="months" data-val="10" onclick="month_click('10','October');">
                            <span class="text-inner">October</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="11" onclick="month_click('11');">
+                           <a data-type="months" data-val="11" onclick="month_click('11','November');">
                            <span class="text-inner">November</span>
                            </a>
                         </li>
                         <li>
-                           <a data-type="months" data-val="12" onclick="month_click('12');">
+                           <a data-type="months" data-val="12" onclick="month_click('12','December');">
                            <span class="text-inner">December</span>
                            </a>
                         </li>
@@ -233,14 +233,34 @@
  </div>
 </div>
 
+<style>
+   #withdrawal_btn:disabled{
+      cursor: not-allowed;
+      cursor: -moz-not-allowed;
+      cursor: -webkit-not-allowed;
+   }
+   .affiliate,.tip{
+      color:#2E5DC5;
+   }
+   .used_credit,.credit,.withdrawal{
+      color:green;
+   }
+   .pending
+   {
+      color:#555;
+   }
+   .e_cancel
+   {
+      color:orangered;;
+   }
 
+</style>
 <script>
    $(document).ready(function(){
       $( "#export_csv" ).click(function() {
          $('#reports_table').csvExport();
       });
       refresh_table("all_t","transactions");
-
    });
 
    function formatDate(date) {
@@ -260,7 +280,6 @@
       strTime =  monthNames[month] + " " + _date+ ", " + year ;  
       return strTime;
     }
-   
    function refresh_table(parameter,type)
    {
       $.ajax({
@@ -271,27 +290,30 @@
          {
             $("#reports_table tbody").empty();
             $.each(data, function(i, v) {
-               if(v.a_type=="cancel"){
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td><td class="amount"> <span class="order_no"> <span>#'+v.a_order_no+' </span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td> <td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+' </span> </div> </td> <td class="amount"> <span class="money-out"> <span>-$'+v.a_amount+'</span> </span> </td> </tr>');
+               clearence_txt = '';
+               if(v.a_clear_date != '')
+               {
+                  clearence_txt = '<span tooltip="Clearence Date"> ( '+v.a_clear_date+') </span>';
                }
-               else{
-                  $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="amount"> <span class="order_no"> <span>#'+v.a_order_no+'</span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td><td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+v.a_message+'</span> </div> </td> <td class="amount"> <span class="money-in"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
-               }
-               
+               $("#reports_table tbody").append(' <tr class="hidden-action-link"> <td class="date "> <span>'+formatDate(new Date(v.a_date)) +'</span> </td> <td class="amount"> <span class="order_no"> <span>#'+v.a_order_no+'</span> <a href="/user/{{request.user.username}}/manage_orders/'+v.a_order_no+'/activities" target="_blank">(view order)</a> </span> </td><td class="ellipsis-wrap "> <div class="ellipsis"> <span>'+ v.a_message + clearence_txt + '</span> </div> </td> <td class="amount"> <span class="'+v.a_type+'"> <span>$'+v.a_amount+'</span> </span> </td> </tr>');
             });
          }
       });
    }
-   function month_click(ev)
+
+   function month_click(ev,value)
    {
+      $("#select_month").text(value);
       refresh_table(ev,'month');
    }
-   function transaction_click(ev)
+   function transaction_click(ev,value)
    {
+      $("#selected_value").text(value);
       refresh_table(ev,'transactions');
    }
    function year_click(ev)
    {
+      $("#select_year").text(ev);
       refresh_table(ev,'year');
    }
    function withdrawal_click(ev)
@@ -302,14 +324,15 @@
 
    function initiate_withdrawal()
    {
+      $("#withdrawal_btn").attr("disabled",true);
       $.ajax({
          type:"GET",
          url: "/post_initiate_withdrawl/",
-         data: {'username': '{{request.user.username}}',"available_balance":'{{avail_withdrawal}}'},
+         data: {'username': '{{request.user.username}}',"available_balance":'{{avail_withdrawal}}',"initiation_type":"earnings","pay_id":'{{user_details.pay_pal_mail_id}}'},
          success: function(data)
          {  
             $("#modal_withdrawal").modal('hide');
-            $("#withdrawal_btn").attr("disabled","disabled");
+            $("#withdrawal_btn").attr("disabled",false);
             location.reload();
          }
       });
