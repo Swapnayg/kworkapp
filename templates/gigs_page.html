@@ -468,16 +468,40 @@
       padding-left: 4%;
       color:#333;
    }
+   .kwork-list-cards .kwork-card-item__content
+   {
+      position: relative;
+   }
+   .kwork-list-cards .kwork-card-item__panel
+   {
+      position: absolute;
+      bottom: 47%;
+      right: 5%;
+   }
+   .kwork-list-cards .kwork-card-item__username
+   {
+      margin-top: 3%;
+   }
+   .kwork-card-item__title
+   {
+      width: 75%;
+      margin-top: 5%;
+   }
+   .cusongsblock-panel__rating-list
+   {
+      padding-top: 17%;
+   }
+   .price_text
+   {
+      font-size: .65em !important;
+      text-transform:capitalize !important;
+   }
 </style>
 <script>
    var JsonObj = [];
    var filteredObj = [];
       $(document).ready(function(){
-    value_user = '{{request.user.username}}'
-    if(value_user.length != 0)
-    {
-       refresh_gigs();
-    }
+         refresh_gigs();
     if(window.location.pathname.split("/")[4].length != 0)
     {
       $("#sub_cat_list").find("li").removeClass("active");
@@ -501,10 +525,11 @@
       $(ev).addClass("active");
       itemObj = jQuery.grep(filteredObj, function(obj) {return obj.name.trim() === "price";});
       if(itemObj.length != 0){
+
          itemObj[0].value = $(ev).find(".popup-filter__prop-title--mob").text();
       }
       else{
-         filteredObj.push({"name":"price","value":$(ev).find(".popup-filter__prop-title--mob").text()});
+         filteredObj.push({"name":"price","value":$(ev).find(".popup-filter__prop-title--mob").text().trim()});
       }
       refresh_filter_data();
    }
@@ -587,7 +612,7 @@
             JsonObj = data;
             $("#catalog-cards").empty();
             $.each(data, function(i, v) {
-               $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div><div class="div_seller_levl"> <a href="/user/profile/'+v.gig_user_name+'" title="'+v.gig_title+'">'+v.gig_user_name+'</a> <span class="_5-fo9i5">'+v.seller_level+'</span></div></div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">'+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
+               $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div><div class="div_seller_levl"> <a href="/user/profile/'+v.gig_user_name+'" title="'+v.gig_title+'">'+v.gig_user_name+'</a> <span class="_5-fo9i5">'+v.seller_level+'</span></div></div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">I will '+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="price_text">Starting at </span><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
             });
          }
        });
@@ -621,7 +646,7 @@
                min = 320;
                max= "unlimted";
             }
-            jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.start_price.trim() > parseInt(min) && obj.start_price.trim() < parseInt(max) });
+            jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.start_price.trim() >= parseInt(min) && obj.start_price.trim() <= parseInt(max) });
          }
          else if(v_ed.name == "tag")
          {
@@ -647,16 +672,17 @@
          {
             review_val = v_ed.value.trim().match(/\d+/);
             if(jsonfiltered != null)
-
             {
-               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.review_count <= review_val[0];});
+               jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.no_reviews <= review_val[0];});
             }
             else{
-               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.review_count <= review_val[0]; });
+               jsonfiltered = jQuery.grep(JsonObj, function(obj) {return obj.no_reviews <= review_val[0]; });
             }
          }
          else if(v_ed.name == "delivery")
          {
+            console.log(JsonObj);
+            console.log(v_ed.value);
             if(jsonfiltered != null)
             {
                jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.delivery_time.trim() == v_ed.value.trim();});
@@ -668,6 +694,8 @@
          else if(v_ed.name == "order")
          {
             order_val = '';
+            console.log(JsonObj);
+            
             if(v_ed.value.trim() == "None")
             {
                order_val= 0;
@@ -676,6 +704,7 @@
                order_val = v_ed.value.trim().match(/\d+/);
                order_val = order_val[0];
             }
+            console.log(order_val);
             if(jsonfiltered != null)
             {
                jsonfiltered = jQuery.grep(jsonfiltered, function(obj) {return obj.order_in_progress.trim() <= order_val;});
@@ -689,7 +718,7 @@
       {
          $("#catalog-cards").empty();
          $.each(jsonfiltered, function(i, v) {
-            $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div> <div class="div_seller_levl"> <a href="/user/profile/'+v.gig_user_name+'" title="'+v.gig_title+'">'+v.gig_user_name+'</a> <span class="_5-fo9i5">'+v.seller_level+'</span></div> </div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">'+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
+            $("#catalog-cards").append('<div  class="cusongsblock js-kwork-card cards-layout-item kwork-card-item kwork-card"> <div class="kwork-card-item__wrapper"> <div class="songperson cusongsblock__content kwork-card-item__left kwork-card-item__preview"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class="ispinner-container"> <picture class="js-lazy-load-image lazy-load_webp lazy-load_initialized js-lazy-load-without-viewport"> <img src="'+v.gig_img+'"  alt="'+v.gig_title+'" width="230" height="153"> </picture> </a> </div> <div class="ta-left padding-content kwork-card-item__content kwork-card-item__right"> <div class="kwork-card-item__username m-hidden"> <div class="kwork-card-item__user-avatar"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <span class="user-avatar t-user-avatar"><img src="'+v.gig_user_img+'" alt="" class="user-avatar__picture rounded"></span></div> <div class="div_seller_levl"> <a href="/user/profile/'+v.gig_user_name+'" title="'+v.gig_title+'">'+v.gig_user_name+'</a> <span class="_5-fo9i5">'+v.seller_level+'</span></div> </div> <p class="kwork-card-item__title"> <a href="/gigs/'+v.gig_user_name+'/'+v.gig_title+'" class=""><span class="first-letter breakwords">I will '+v.gig_title+'</span></a> </p> <div class="kwork-card-item__panel"> <div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> </div> <div class="cusongsblock__panel m-visible-i"> <div class="pull-left cusongsblock-panel__user-name m-hidden oneline-faded w120"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link">'+v.gig_user_name+'</a></div> <div class="cusongsblock-panel__rating d-flex align-items-center"> <ul class="rating-block cusongsblock-panel__rating-list ul-outside"> <li class="mr2 v-align-m"><i aria-hidden="true" class="fa fa-star gold"></i></li> <li class="rating-block__rating-item--number fw600 v-align-m">'+v.review_count+'</li> </ul> <span class="rating-block__count rating-block__count-star">('+v.no_reviews+')</span> </div> </div> <div class="userdata kwork-card-item__userdata"> <div class="kwork-card-item__userdata-details m-hidden"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"> <span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"> <svg class="icon-heart-card__big"> <use href="#svg-like-big"></use> </svg> <svg class="icon-heart-card__small"> <use href="#svg-like"></use> </svg> </span> </div> </div> <div class="clear"></div> </div> <div class="price pull-right m-pull-right"> <div class=""><span class="price-wrap"><span class="price_text">Starting at </span><span class="usd">$</span>'+v.start_price+'</span></div> </div> <div class="otherdetails pull-right m-visible"> </div> <div class="pull-left cusongsblock-panel__user-name m-visible w50p"><i data-user-id="10853940" class="js-user-online-block dot-user-status track--item__title-status dot-user-offline"></i> <a href="user/profile/'+v.gig_user_name+'" title="'+v.gig_user_name+'" class="dark-link dib v-align-m oneline-faded adapt w100">'+v.gig_user_name+'</a></div> </div> <div class="m-visible"> <div data-id="21772885" class="cusongsblock__favorites pull-left js-favorites-signup"> <div data-tooltip-text="<span class=&quot;js-favorites-signin kw-link&quot; data-id=&quot;21772885&quot;>Sign in</span> to favorite this kwork" class="dib tooltipster"><span class="cur kwork-icon icon-heart icon-heart_hover icon-heart-card"></span></div> </div> </div> </div> </div> </div>');
          });
       }
    }

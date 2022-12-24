@@ -295,18 +295,8 @@
 $("#buyer_search_btn").click(function () {
    if($("#buyer_query_type").val().trim().length != 0)
    {
-      $("#buyer_search_btn").prop("disabled",true);
-      $.ajax({
-         type:"POST",
-         url: "/post_search_key/",
-         data: {'keyword':$("#buyer_query_type").val().trim(),"keyword_type":"keyword"},
-         success: function(data) 
-         {   
-            $("#buyer_search_btn").prop("disabled",false);
-            window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
-            $('#buyer_query_type').val("");
-         }
-      });
+      window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
+      $('#buyer_query_type').val("");
    }
    else{
       alert("Please enter some keyword");

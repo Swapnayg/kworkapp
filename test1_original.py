@@ -6147,22 +6147,37 @@ def get_earn_data_view(request):
         learning_Details = []
         l_username = ''
         l_user_img = ''
-        if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
-            userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-            l_username = userDetails.username
-            l_user_img = userDetails.avatar
-        learning_topics_all = LearnTopics.objects.all()
-        for l in learning_topics_all:
-            learning_topics.append({"name":l.topic_names})
-        learning_Details = []
-        learning_topics_Details = LearningTopicDetails.objects.all()
-        num_counts = 0
-        for l_details in learning_topics_Details:
-            num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
-            learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":str(l_details.image),"image_Text":l_details.image_Text,"video_url":l_details.video_url,"num_counts":num_counts})
-        responseData =  {"topics":learning_topics,"topics_Details":learning_Details,"logged_user":l_username,"logged_user_img":l_user_img}
+        responseData = {}
+        data = ''
+        try:
+            if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
+                userDetails =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
+                l_username = userDetails.username
+                l_user_img = userDetails.avatar
+            learning_topics_all = LearnTopics.objects.all()
+            for l in learning_topics_all:
+                learning_topics.append({"name":l.topic_names})
+            learning_Details = []
+            learning_topics_Details = LearningTopicDetails.objects.all()
+            num_counts = 0
+            for l_details in learning_topics_Details:
+                num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
+                url_link = ''
+                try:
+                    if(l_details.upload_pdf.url != None):
+                        url_link =   request.build_absolute_uri("/") + str(l_details.upload_pdf.url).replace("/home/kworkuser/myprojectdir/","")
+                        if(len(l_details.upload_pdf.url) == 0):
+                            url_link = str(l_details.video_url)
+                    else:
+                        url_link = str(l_details.video_url)
+                except:
+                    url_link = str(l_details.video_url)
+                learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":str(l_details.image),"image_Text":l_details.image_Text,"video_url":url_link,"num_counts":num_counts})
+            responseData =  {"topics":learning_topics,"topics_Details":learning_Details,"logged_user":l_username,"logged_user_img":l_user_img}
+        except Exception as e:
+            data = (str(type(e)) + str(e))
+            responseData = {"data":data}
         return JsonResponse(responseData,safe=False)
-    
     
 def get_freelancer_data_view(request):
     if request.method == 'GET':

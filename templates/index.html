@@ -45,7 +45,7 @@
          <div class="banner-market__inner" data-editable-demo="" data-name="page__heading1">
             <h1 class="page__heading1 kw-header--h1 p0">
                Buy affordable freelance services <br />
-               on the go
+               on the go 
             </h1>
             <div id="index-banner-search">
                <form action="/search" method="GET" class="custom-search general-search-index js-index-search">
@@ -367,18 +367,8 @@
 $("#home_search_btn").click(function () {
    if($("#buyer_query_type").val().trim().length != 0)
    {
-      $("#home_search_btn").prop("disabled",true);
-      $.ajax({
-         type:"POST",
-         url: "/post_search_key/",
-         data: {'keyword':$('#buyer_query_type').val().trim(),"keyword_type":"keyword"},
-         success: function(data) 
-         {  
-            $("#home_search_btn").prop("disabled",false);
-            window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
-            $('#buyer_query_type').val("");
-         }
-      });
+      window.open('/search/'+$("#buyer_query_type").val().trim(), "_blank");
+      $('#buyer_query_type').val("");
    }
    else{
       alert("Please enter some keyword");

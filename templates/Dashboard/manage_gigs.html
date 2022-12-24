@@ -198,6 +198,9 @@
                            </div>
                         </div>
                         <div class="tab-pane" id="modificationtab">
+                           <div class="col-md-12 db-manage-gigs ">
+                              <h5 class="reject_txt">You will receive an email with the required modification details.</h5>
+                           </div>
                            <div class="db-new-main-table js-db-table">
                               <table>
                                  <thead>
@@ -601,9 +604,20 @@
       text-align: center;
       color: #999;
    }
+   .reject_txt
+   {
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      color: #2E5DC5;
+      margin-bottom: 1%;
+   }
 </style>
 <script>
     $(document).ready(function(){
+      $(document).mouseup(function(e) { 
+         $(".dropdown-menu").hide();
+      });
     });
     function makeid(length) {
       var result           = '';

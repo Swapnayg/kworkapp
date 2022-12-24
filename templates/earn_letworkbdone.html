@@ -100,6 +100,7 @@ function startLessonClick(ev)
 {
    video_url = $(ev).attr("data-label");
    lesson_id = $(ev).attr("data-id");
+   console.log(video_url)
    $.ajax({
       type:"GET",
       url: "/post_increase_count/",
@@ -107,7 +108,7 @@ function startLessonClick(ev)
       success: function(data) 
       {  
          $(ev).next().find(".count_val").text(data);
-         $("#url_iframe").attr("src",video_url.replace("http://","https://"));
+         $("#url_iframe").attr("src",video_url);
          $("#ModalPdfViewer").modal("show");
       }
    });

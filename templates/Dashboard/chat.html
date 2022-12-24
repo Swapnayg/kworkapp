@@ -692,6 +692,7 @@ function relativeTime(date, isUtc=false) {
          this.upload_file(0, null);
       }
       upload_file(start, model_id) {
+         $("#inbox_chat_file").prop("disabled",true);
          var end;
          var self = this;
          var existingPath = model_id;
@@ -737,12 +738,12 @@ function relativeTime(date, isUtc=false) {
             console.log(xhr.statusText);
          },
          success: function (res) {
-            console.log(res)
             if (nextChunk < self.file.size) {
                existingPath = res.existingPath
                self.upload_file(nextChunk, existingPath);
                $("#inbox_chat_mssg_send").prop("disabled",true);
             } else {
+               $("#inbox_chat_file").prop("disabled",false);
                $("#file_progress_div").empty();
                var no_of_imgs = $("#files_list").find(".imagediv").length;
                $("#files_list").append('<div class="mssg_img'+(no_of_imgs+1)+' imagediv" id="mssg_img'+(no_of_imgs+1)+'"><input type="hidden" value="'+res.existingPath+'" class="img_file_name"> <span class= "fa fa-file-o fileicon"><i class="fa fa-trash" onclick="post_img_message_delete(this);" data-label="mssg_img'+(no_of_imgs+1)+' "></i></span><span class="file_name">...'+res.existingPath.slice(-20)+'</span></div>');

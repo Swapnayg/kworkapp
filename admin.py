@@ -30,7 +30,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save,pre_save
 from django_summernote.admin import SummernoteModelAdmin
 from django.shortcuts import render
-from kworkapp.models import Categories,UserGigPackages,SMTP_settings,SellerLevels4,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,AdminLogging,UserGigPackages,SMTP_settings,SellerLevels4,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 from mainKwork import settings
 from django.core.files.base import ContentFile
 from .forms import UserChangeForm, UserCreationForm
@@ -166,6 +166,7 @@ def get_app_list(self, request):
                 'Notifications':62,
                 'Logo':63,
                 'SMTP Settings':64,
+                'Logging':65
             }
             app['models'].sort(key=lambda x: ordering[x['name']])
 
@@ -190,7 +191,6 @@ admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 admin.site.unregister(Attachment)
 admin.site.unregister(Tag)
-#admin.site.unregister(Site)
 
 class AdminPageEditor(admin.ModelAdmin):
     list_display = ['page_name','page_slug','timestamp','edit_page_mode']
@@ -282,6 +282,7 @@ def update_all_balancevalues(username):
     userDetails = User.objects.get(username = username)
     total_earning_val = 0
     current_earning_val = 0
+    current_month_earning_val = 0
     cancelled_earning_val = 0
     avail_bal_val = 0
     availcredit_bal_val = 0
@@ -289,35 +290,39 @@ def update_all_balancevalues(username):
     withdrawed_credit_val = 0
     with_used_credit_val = 0
     ref_used_credit_val = 0
+    total_earnng = User_Earnings.objects.filter(user_id=userDetails)
+    todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
     total_earnng = User_Earnings.objects.filter(user_id=userDetails) 
     for earn in total_earnng:
+        try:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+        except:
+            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
         if(earn.earning_type == "cancelled"):
             cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
         if(earn.earning_type == "affiliate"):
+            if(todays_date.month == earned_date.month):
+                current_month_earning_val = round(float(float(current_month_earning_val) + float(earn.earning_amount)),2)
             affilite_earn_val = round(float(float(affilite_earn_val) + float(earn.earning_amount)),2)
         if(earn.earning_type != "cancelled"):
             total_earning_val = round(float(float(total_earning_val) + float(earn.earning_amount)),2)
-        if(earn.withdrawn_amount != None):
+            if(todays_date.month == earned_date.month):
+                current_month_earning_val = round(float(float(current_month_earning_val) + float(earn.earning_amount)),2)
+        if(earn.clearence_status == "completed"):
             if(earn.withdrawn_amount != ''):
                 withdrawed_credit_val = round(float(float(withdrawed_credit_val) + float(earn.withdrawn_amount)),2)
         if(earn.credit_used != None):
             if(earn.credit_used != ''):
                 with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-        if(earn.aval_with != None or earn.clearence_status == "cleared" ):
-            if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
-                try:
-                    e_prev_credit = float(earn.credit_used)
-                    e_actual_available = float(earn.aval_with) - float(e_prev_credit)
-                    avail_bal_val = round(float(float(avail_bal_val) + float(e_actual_available)),2)
-                except:
-                    avail_bal_val = round(float(avail_bal_val),2)
-        if(earn.clearence_status == "pending" ):
+        if(earn.clearence_status == "cleared" ):
+            try:
+                e_prev_credit = float(earn.credit_used)
+                e_actual_available = float(earn.aval_with) - float(e_prev_credit)
+                avail_bal_val = round(float(float(avail_bal_val) + float(e_actual_available)),2)
+            except:
+                avail_bal_val = round(float(avail_bal_val),2)
+        if(earn.clearence_status == "pending"):
             current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
-        try:
-            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
-        except:
-            earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
     refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
     for r_earn in refund_earning: 
         prev_credit = float(r_earn.credit_used)
@@ -334,7 +339,7 @@ def update_all_balancevalues(username):
 	        availableto_date = datetime.strptime(str(user_avail_details.available_to),"%Y-%m-%d %H:%M:%S.%f").date()
         if(int(todays_date.month) == int(availableto_date.month) and int(todays_date.day) == int(availableto_date.day) and int(todays_date.year) == int(availableto_date.year) ):
             UserAvailable.objects.filter(user_id=userDetails).delete()
-    userDetails.total_earning =  round(float(float(total_earning_val) + float(affilite_earn_val)),2)
+    userDetails.total_earning =  total_earning_val
     userDetails.current_earning = current_earning_val
     userDetails.cancelled_earning = cancelled_earning_val
     userDetails.avail_bal = avail_bal_val
@@ -834,7 +839,7 @@ admin.site.register(UserAvailable, AdminUserAvailable)
 class AdminBuyer_Post_Request(admin.ModelAdmin):
     list_display = ['service_desc','service_images','service_category','send_to','service_type','buyer_request_id','service_sub_category','service_time','service_budget','service_date','user_id','service_status','individual_request_status']
     class Media:
-        css = {'all': ('assets/css/frontend/admin_post_request.css', )}
+        css = {'all': ('assets/css/frontend/admin_post_request.css', )}    
         
 @receiver(post_save, sender=Buyer_Post_Request)
 def update_post_status(sender, instance, **kwargs):
@@ -858,6 +863,52 @@ def update_post_status(sender, instance, **kwargs):
                 noti_create.save()
 admin.site.register(Buyer_Post_Request, AdminBuyer_Post_Request)
 
+
+class AdminMainLogging(admin.ModelAdmin):
+    list_display = ['username','reqst_details','reqst_message','mail_address','log_type','rejection_message','log_status','log_created','view_request']
+    readonly_fields = ['username','reqst_details','reqst_message','mail_address','log_type','log_created']
+    list_filter = ('log_type', 'log_created', 'log_status')
+    
+    class Media:
+        js = ('https://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js','assets/js/logging.js')
+
+admin.site.register(AdminLogging, AdminMainLogging)
+
+
+@receiver(pre_save, sender=AdminLogging)
+def update_admin_log_status(sender, instance, **kwargs):
+    if(instance.id is None):
+        pass
+    else:
+        if(instance.log_type == "gig_creation"):
+            if(instance.log_status == "rejected"):
+                if(len(str(instance.rejection_message)) != 0):
+                    gig_details = UserGigs.objects.get(pk= int(instance.reqst_details))
+                    gig_details.gig_status = "modification"
+                    gig_details.save()
+                    mail_content = MailTemplates.gig_modifications(str(gig_details.gig_title).title(),str(gig_details.gig_category.category_Name).title(),str(instance.rejection_message),str(gig_details.user_id.username))
+                    SendEmailAct(str(gig_details.user_id.email),mail_content,"Your Gig Requires Some Modifications.")
+            elif(instance.log_status == "approve"):
+                gig_details = UserGigs.objects.get(pk= int(instance.reqst_details))
+                gig_details.gig_status = "active"
+                gig_details.save()
+        elif(instance.log_type == "request_post"):
+            if(instance.log_status == "rejected"):
+                if(len(str(instance.rejection_message)) != 0):
+                    request_details = Buyer_Post_Request.objects.get(pk= int(instance.reqst_details))
+                    request_details.service_status = "rejected"
+                    request_details.save()
+                    mail_content = MailTemplates.request_modifications(str(request_details.user_id.username).title(),str(request_details.service_category.category_Name).title(),str(request_details.service_sub_category.sub_category_Name),str(request_details.service_date.strftime('%d %b, %Y')),str(instance.rejection_message).capitalize())
+                    SendEmailAct(str(request_details.user_id.email),mail_content,"Your Request Requires Some Modifications.")
+            elif(instance.log_status == "approve"):
+                gig_details = Buyer_Post_Request.objects.get(pk= int(instance.reqst_details))
+                gig_details.gig_status = "active"
+                gig_details.save()
+        elif(instance.log_type == "support"):
+            if(instance.log_status == "close"):
+                contact_details = Contactus.objects.get(pk= int(instance.reqst_details))
+                contact_details.status = "Contacted"
+                contact_details.save()
 
 class AdminUserPackageGig(admin.ModelAdmin):
     list_display = ['package_type','package_title','package_description','package_delivery','package_revisions','package_data','package_price','package_gig_name','user_id']
@@ -950,19 +1001,18 @@ class AdminPayment_Parameters(admin.ModelAdmin):
 
 admin.site.register(Payment_Parameters, AdminPayment_Parameters)
 
-def get_admin_urls(urls):
-    def get_urls():
-        my_urls =  [
-           path('content_edit/<str:Id>/', content_editView,name='content_edit'), 
-        ]
-        return my_urls + urls
-    return get_urls
 
-admin.autodiscover()
 
-admin_urls = get_admin_urls(admin.site.get_urls())
-admin.site.get_urls = admin_urls
-
+def view_requestView(request,Req_Id ='',Id='',Req_Type=''):
+    if(Req_Type=="gig_creation"):
+        return redirect('/admin/kworkapp/usergigs/'+str(Req_Id)+'/change/')
+    elif(Req_Type=="request_post"):
+        return redirect('/admin/kworkapp/buyer_post_request/'+str(Req_Id)+'/change/')
+    elif(Req_Type=="withdrawal"):
+        return redirect('/admin/kworkapp/withdrwal_initiated/'+str(Req_Id)+'/change/')
+    elif(Req_Type=="support"):
+        return redirect('/admin/kworkapp/contactus/'+str(Req_Id)+'/change/')
+    
 def content_editView(request,Id=''):
     if(Id == "index"):
         context = {'templateName':Id+ ".html"}
@@ -986,21 +1036,6 @@ def content_editView(request,Id=''):
         context = {'templateName':Id+ ".html"}
     return render(request , 'contents.html',context)
 
-
-def get_admin_urls(urls):
-    def get_urls():
-        my_urls =  [
-            path('view_admin_dashboard/', view_admin_dashboard, name="view_admin_dashboard"),
-        ]
-        return my_urls + urls
-    return get_urls
-
-admin.autodiscover()
-
-admin_urls = get_admin_urls(admin.site.get_urls())
-admin.site.get_urls = admin_urls
-
-
 def SendEmailAct(sendto,message,subject):
     mailsettings = SMTP_settings.objects.filter(is_active= True).first()
     sender_address = mailsettings.mail_address
@@ -1020,3 +1055,19 @@ def SendEmailAct(sendto,message,subject):
     smtp.sendmail(sender_address, sendto, themsg)
     smtp.quit()
     return "mail Sent" 
+
+
+def get_admin_urls(urls):
+    def get_urls():
+        my_urls =  [
+        path('view_admin_dashboard/', view_admin_dashboard, name="view_admin_dashboard"),
+           path('content_edit/<str:Id>/', content_editView,name='content_edit'), 
+           path('view_request/<str:Req_Id>/<str:Id>/<str:Req_Type>', view_requestView,name='content_edit'), 
+        ]
+        return my_urls + urls
+    return get_urls
+
+admin.autodiscover()
+
+admin_urls = get_admin_urls(admin.site.get_urls())
+admin.site.get_urls = admin_urls

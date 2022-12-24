@@ -36,7 +36,7 @@ from bs4 import BeautifulSoup
 from html.parser import HTMLParser
 from django.core import serializers
 import json
-from kworkapp.models import Categories,UserGigPackages,SellerLevels4,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
+from kworkapp.models import Categories,UserGigPackages,AdminLogging,SellerLevels4,SMTP_settings,LogoImages,CustomNotifications,UploadFile,Withdrwal_initiated,Notification_commands,Api_keys,SpamDetection,User_warning,User_Refund,User_Earnings,ChatWords,Gig_favourites,User_orders_Extra_Gigs,Conversation,Conversation,Order_Message,Order_Conversation,Order_Delivery,Message_Response_Time,User_Order_Activity,User_Order_Resolution,User_Transactions,Payment_Parameters,Request_Offers,Referral_Users,UserGigPackage_Extra,Buyer_Post_Request,Seller_Reviews,Buyer_Reviews,UserGigsImpressions,User_orders,UserSearchTerms,UserGig_Extra_Delivery,UserExtra_gigs,Usergig_faq,Usergig_image,Usergig_requirement,Parameter,Category_package_Extra_Service,Category_package_Details, CharacterLimit,UserAvailable,UserGigs,UserGigsTags,Contactus, Languages, LearnTopics, LearningTopicCounts, LearningTopicDetails, SubCategories, SubSubCategories, TopicDetails, User,PageEditor, UserLanguages,Addon_Parameters,Buyer_Requirements, UserProfileDetails, supportMapping, supportTopic,Message
 import operator
 
 class indexView(View):
@@ -90,6 +90,10 @@ class gig_View_View(View):
         try:
             userDetails = User.objects.exclude(profile_status="blocked").get(username = username)
             if(userDetails != None):
+                ipAddress = ''
+                x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                if x_forwarded_for:
+                    ipAddress = x_forwarded_for.split(',')[0]
                 languages = Languages.objects.exclude(lng_slug= u'english').order_by('lng_Name')
                 userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
                 pro_last_delivery = ''
@@ -183,10 +187,10 @@ class gig_View_View(View):
                         curr_fav = 'no'
                     if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
                         userDetails1 = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-                        impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details, user_id=userDetails1)
+                        impressions = UserGigsImpressions(ip_address=str(ipAddress),impress_type ="click" ,gig_name=gig_details, user_id=userDetails1)
                         impressions.save()
                     else:   
-                        impressions = UserGigsImpressions(ip_address=str(whatismyip.whatismyip()),impress_type ="click" ,gig_name=gig_details)
+                        impressions = UserGigsImpressions(ip_address=str(ipAddress),impress_type ="click" ,gig_name=gig_details)
                         impressions.save()
                     extra_gigs = UserExtra_gigs.objects.filter(package_gig_name=gig_details)
                     return render(request , 'Dashboard/view_gig.html',{'userDetails':userDetails,"profile_Details":userProfileDetails,"userlanguages":userlang,"gig_details":gig_details,"gig_package_Details":gig_package_details,"gig_image_Details":gig_image_details,"gig_reviews":seller_rev_data,"seller_count":seller_count,"comm_count":comm_count,"recc_count":recc_count,"serv_count":serv_count,"seller_level":seller_levl,"seller_all_review":seller_all_reviews,"seller_all_count":seller_all_count,"Other_gigs":active_gigs_data,"fav_count":favourite_Count,"current_user_fav":curr_fav,"extra_gigs":extra_gigs,"active_orders":active_orders_cnt,"profile_last_delivery":pro_last_delivery,"has_records":"yes"})      
@@ -307,7 +311,6 @@ class profile_view(View):
     return_url = None
     def get(self , request,username=''):
         try:
-            userDetails1 =  User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)               
             try:
                 userDetails = User.objects.get(username=username ,profile_status="active")
             except:
@@ -475,6 +478,7 @@ class buyer_dashboard_view(View):
                 search_term = UserSearchTerms.objects.filter(user_id=userDetails).values("search_words").distinct()
                 search_data = []
                 gig_names_list = []
+                gigs_details = []
                 for search in search_term:
                     filterList =  search["search_words"].strip().split(" ")
                     query = Q()
@@ -508,7 +512,7 @@ class buyer_dashboard_view(View):
                     elif(len(gig_sub_category_details2)!=0):
                         for gig_cat in gig_sub_category_details2:
                             gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")        
-                    else:
+                    if(len(gigs_details) == 0):
                         gigs_details = UserGigs.objects.filter(gig_title__icontains= search["search_words"].strip(), gig_status='active').exclude(user_id__profile_status="blocked")
                         if(len(gigs_details) ==0):
                             gigs_details = UserGigs.objects.filter(query2, gig_status='active').exclude(user_id__profile_status="blocked")
@@ -545,12 +549,17 @@ class buyer_dashboard_view(View):
 class search_gig_view(View):
     return_url = None
     def get(self , request,keyword=''):
+        ipAddress = ''
+        keyword = keyword. lower()
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ipAddress = x_forwarded_for.split(',')[0]
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-            search_term= UserSearchTerms(search_words=keyword,ip_address = str(whatismyip.whatismyip()),search_types="keyword")
+            search_term= UserSearchTerms(search_words=keyword,ip_address = str(ipAddress),search_types="keyword")
             search_term.save()
         else:   
-            search_term= UserSearchTerms(search_words=keyword,ip_address = str(whatismyip.whatismyip()),search_types="keyword")
+            search_term= UserSearchTerms(search_words=keyword,ip_address = str(ipAddress),search_types="keyword")
             search_term.save()
         filterList = keyword.strip().split(" ")
         query = Q()
@@ -566,25 +575,26 @@ class search_gig_view(View):
         gig_category_details2 = Categories.objects.filter(query)
         gig_sub_category_details1 = SubSubCategories.objects.filter(sub_sub_category_Name=keyword.strip())
         gig_sub_category_details2 = SubSubCategories.objects.filter(query1)
+        gigs_details = []
         if(len(gig_category_details)!=0):
             for gig_cat in gig_category_details:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")
+                gigs_details = UserGigs.objects.filter(gig_category =gig_cat, gig_status='active').exclude(user_id__profile_status="blocked")
         elif(len(gig_category_details1)!=0):
             for gig_cat in gig_category_details1:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")
+                gigs_details = UserGigs.objects.filter(gig_category =gig_cat, gig_status='active').exclude(user_id__profile_status="blocked")
         elif(len(gig_category_details2)!=0):
             for gig_cat in gig_category_details2:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")
+                gigs_details = UserGigs.objects.filter(gig_category =gig_cat, gig_status='active').exclude(user_id__profile_status="blocked")
         elif(len(gig_sub_category_details)!=0):
-            for gig_cat in gig_sub_category_details:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked") 
+            for sub_gig_cat in gig_sub_category_details:
+                gigs_details = UserGigs.objects.filter(gig_sub_category =sub_gig_cat, gig_status='active').exclude(user_id__profile_status="blocked") 
         elif(len(gig_sub_category_details1)!=0):
-            for gig_cat in gig_sub_category_details1:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")     
+            for sub_gig_cat in gig_sub_category_details1:
+                gigs_details = UserGigs.objects.filter(gig_sub_category =sub_gig_cat, gig_status='active').exclude(user_id__profile_status="blocked")     
         elif(len(gig_sub_category_details2)!=0):
-            for gig_cat in gig_sub_category_details2:
-                gigs_details = UserGigs.objects.filter(gig_category =gig_cat.pk, gig_status='active').exclude(user_id__profile_status="blocked")   
-        else:
+            for sub_gig_cat in gig_sub_category_details2:
+                gigs_details = UserGigs.objects.filter(gig_sub_category =sub_gig_cat, gig_status='active').exclude(user_id__profile_status="blocked")   
+        if(len(gigs_details) == 0):
             gigs_details = UserGigs.objects.filter(gig_title__icontains=keyword, gig_status='active').exclude(user_id__profile_status="blocked")
             if(len(gigs_details) ==0):
                 gigs_details = UserGigs.objects.filter(query2, gig_status='active').exclude(user_id__profile_status="blocked")
@@ -615,16 +625,21 @@ class search_gig_view(View):
                 active_gigs_data.append({"gig_title":u_gig.gig_title, "gig_img_url":gig_image_url,"start_price":start_price,"seller_count":seller_count,"review_count":len(seller_reviews),"gig_username":u_gig.user_id.username, "gig_gig_img":u_gig.user_id.avatar,"gig_seller_level":u_gig.user_id.user_level.level_name})
         return render(request , 'search_gig.html',{"active_gigs":active_gigs_data,"keyword":keyword})
 
+
 class search_profile_view(View):
     return_url = None
     def get(self , request,keyword=''):
         user_details_li= []
+        ipAddress = ''
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ipAddress = x_forwarded_for.split(',')[0]
         if((request.session.get('userEmail'))!=None or ((request.user!=None) and (len(str(request.user.username).strip())) != 0)):
             userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
-            search_term= UserSearchTerms(search_words=keyword,ip_address = str(whatismyip.whatismyip()),search_types="user")
+            search_term= UserSearchTerms(search_words=keyword,ip_address = str(ipAddress),search_types="user")
             search_term.save()
         else:   
-            search_term= UserSearchTerms(search_words=keyword,ip_address = str(whatismyip.whatismyip()),search_types="user")
+            search_term= UserSearchTerms(search_words=keyword,ip_address = str(ipAddress),search_types="user")
             search_term.save()
         user_details = User.objects.filter(username__icontains=keyword).exclude(profile_status="blocked")
         for u in user_details:
@@ -722,7 +737,7 @@ class seller_main_view(View):
                         completed_per = round(float(len(s_completed_orders_detls)/total_orders)*100,2)
                     except:
                         completed_per = 0
-                    return render(request , 'Dashboard/seller_dashboard.html',{"active_orders":s_active_orders,"delivered_orders":s_delivered_orders,"completed_orders":s_completed_orders,"cancelled_orders":s_cancelled_orders,"Active_earning":active_earnings,"resp_time":userDetails.avg_respons,"this_earning":userDetails.current_earning,"active_per":active_per,"delivered_per":delivered_per,"completed_per":completed_per})
+                    return render(request , 'Dashboard/seller_dashboard.html',{"active_orders":s_active_orders,"delivered_orders":s_delivered_orders,"completed_orders":s_completed_orders,"cancelled_orders":s_cancelled_orders,"Active_earning":active_earnings,"resp_time":userDetails.avg_respons,"this_earning":userDetails.current_month_earning,"active_per":active_per,"delivered_per":delivered_per,"completed_per":completed_per})
                 else:
                     return redirect('account_settings') 
             except:
@@ -2023,7 +2038,7 @@ class earnings_view(View):
             try:  
                 userDetails = User.objects.get(pk=request.session.get('userId')  if request.session.get('userId') !=None else request.user.id)
                 if(username.strip() == userDetails.username.strip()):
-                    order_details_list =  User_orders.objects.filter(order_status="active" , order_to= userDetails)
+                    order_details_list =  User_orders.objects.filter(Q(order_status="active" , order_to= userDetails) | Q(order_status="delivered" , order_to= userDetails))
                     earning_val = 0
                     for order_details in order_details_list:
                         if(round(float(order_details.order_amount)) < 40):
@@ -2569,6 +2584,8 @@ def post_contact_support_view(request):
         uform_message = request.GET['uform_message']
         contact_us = Contactus(email=uemail_address,message=uform_message)
         contact_us.save()
+        a_logging = AdminLogging(username="Contact User",reqst_message="Received an Contact Request from " + str(uemail_address),reqst_details=str(contact_us.pk),mail_address=uemail_address,log_type="support")
+        a_logging.save()
         ticket = contact_us.id
         mail_content = """
 <!doctype html>
@@ -2767,7 +2784,11 @@ def subcategories_for_category_view(request):
 def post_increase_count_view(request):
     if request.method == 'GET':
         ulesson_id = request.GET['ulesson_id']
-        uip_address = str(whatismyip.whatismyip())
+        ipAddress = ''
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ipAddress = x_forwarded_for.split(',')[0]
+        uip_address = str(ipAddress)
         topic_details = LearningTopicDetails.objects.get(pk = ulesson_id)
         num_counts = 0
         if(LearningTopicCounts.objects.filter(topic_name=topic_details,ip_address=uip_address).exists() == False):
@@ -3187,6 +3208,8 @@ def post_publish_save_view(request):
         else:
             gigDetails.gig_status = "pending"
             gigDetails.save()
+            a_logging = AdminLogging(username=userDetails.username,reqst_details=str(gigDetails.pk),reqst_message="New Gig is ready for review, Title: " + str(gigDetails.gig_title),mail_address=userDetails.email,log_type="gig_creation")
+            a_logging.save()
         return HttpResponse('sucess')
 
 def get_gig_details_view(request):
@@ -3370,6 +3393,8 @@ def post_service_request_view(request):
                 try:
                     post_bu_req= Buyer_Post_Request(service_desc= service_descp,service_images=service_images,service_category=category_details,service_sub_category=sub_category,service_time=service_time,service_budget=service_price,user_id=userDetails,service_type=service_type)
                     post_bu_req.save()
+                    a_logging = AdminLogging(username=userDetails.username,reqst_message="Buyer Request is ready to view, Category: " + str(post_bu_req.service_sub_category.sub_category_Name),reqst_details=str(post_bu_req.pk),mail_address=userDetails.email,log_type="request_post")
+                    a_logging.save()
                     data = 'sucess'
                 except Exception as e:
                     data = (str(type(e)) + str(e))               
@@ -3412,7 +3437,11 @@ def add_referral_link_view(request):
     if request.method == 'GET':
         affiliate_code = request.GET['affiliate_code']
         userDetails = User.objects.get(affiliate_code=affiliate_code)
-        ip_address = str(whatismyip.whatismyip())
+        ipAddress = ''
+        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+        if x_forwarded_for:
+            ipAddress = x_forwarded_for.split(',')[0]
+        ip_address = str(ipAddress)
         if(Referral_Users.objects.filter(affiliate_code=affiliate_code,ip_address=ip_address,refferal_user=None).exists() == False):
             affiliate_user = Referral_Users(affiliate_code=affiliate_code,ip_address=ip_address,user_id=userDetails)
             affiliate_user.save() 
@@ -3426,10 +3455,10 @@ def get_filter_gigs_details_view(request):
         category = SubCategories.objects.get(pk= category_name)
         if(len(sub_Cat_Name.strip()) !=0):
             subcat_inst = SubSubCategories.objects.get(sub_sub_category_Name= sub_Cat_Name)
-            gig_details = UserGigs.objects.filter(gig_sub_category= subcat_inst).exclude(user_id__profile_status ="blocked")
+            gig_details = UserGigs.objects.filter(gig_sub_category= subcat_inst,gig_status="active" ).exclude(user_id__profile_status ="blocked")
         else:
             cat_int = Categories.objects.get(category_Name=category.category_Name)
-            gig_details = UserGigs.objects.filter(gig_category= cat_int).exclude(user_id__profile_status ="blocked")
+            gig_details = UserGigs.objects.filter(gig_category= cat_int,gig_status="active" ).exclude(user_id__profile_status ="blocked")
         for g in gig_details:
             seller_reviews = Seller_Reviews.objects.filter(package_gig_name= g)
             seller_count = 0
@@ -3494,6 +3523,7 @@ def daily_routine():
         average_delivery_str = 'Within 24 hours'
         total_earning_val = 0
         current_earning_val = 0
+        current_month_earning_val = 0
         cancelled_earning_val = 0
         avail_bal_val = 0
         availcredit_bal_val = 0
@@ -3504,6 +3534,7 @@ def daily_routine():
         orders_count = User_orders.objects.filter(order_to=userDetails,order_status="active").count()
         user_orders = User_orders.objects.filter((Q(order_status="delivered",order_to=userDetails) | Q(order_status="completed",order_to=userDetails)))
         orders_deliv_lists = []
+        todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         for u_order in user_orders:
             try:
                 order_date = datetime.strptime(str(u_order.order_date),"%Y-%m-%d %H:%M:%S")
@@ -3556,33 +3587,35 @@ def daily_routine():
                     SendEmailAct(str(us.email),c_mail_content,"You've received messages from " + str(first_messg.sender.username).title() + ".")
         total_earnng = User_Earnings.objects.filter(user_id=userDetails) 
         for earn in total_earnng:
+            try:
+                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
+            except:
+                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
             if(earn.earning_type == "cancelled"):
                 cancelled_earning_val = round(float(float(cancelled_earning_val) + float(earn.earning_amount)),2)
             if(earn.earning_type == "affiliate"):
+                if(todays_date.month == earned_date.month):
+                    current_month_earning_val = round(float(float(current_month_earning_val) + float(earn.earning_amount)),2)
                 affilite_earn_val = round(float(float(affilite_earn_val) + float(earn.earning_amount)),2)
             if(earn.earning_type != "cancelled"):
-                total_earning_val = round(float(float(total_earning_val) + float(earn.earning_amount)),2)
-            if(earn.withdrawn_amount != None):
+                total_earning_val = total_earning_val
+                if(todays_date.month == earned_date.month):
+                    current_month_earning_val = round(float(float(current_month_earning_val) + float(earn.earning_amount)),2)
+            if(earn.clearence_status == "completed"):
                 if(earn.withdrawn_amount != ''):
                     withdrawed_credit_val = round(float(float(withdrawed_credit_val) + float(earn.withdrawn_amount)),2)
             if(earn.credit_used != None):
                 if(earn.credit_used != ''):
                     with_used_credit_val = round(float(float(with_used_credit_val) + float(earn.credit_used)),2)
-            if(earn.aval_with != None or earn.clearence_status == "cleared" ):
-                if(earn.withdrawn_amount != "" or earn.credit_used != "" or  earn.aval_with != "" or len(earn.aval_with.strip()) != 0):
-                    try:
-                        e_prev_credit = float(earn.credit_used)
-                        e_actual_available = float(earn.aval_with) - float(e_prev_credit)
-                        avail_bal_val = round(float(float(avail_bal_val) + float(e_actual_available)),2)
-                    except:
-                        avail_bal_val = round(float(avail_bal_val),2)
-            if(earn.clearence_status == "pending" ):
+            if(earn.clearence_status == "cleared" ):
+                try:
+                    e_prev_credit = float(earn.credit_used)
+                    e_actual_available = float(earn.aval_with) - float(e_prev_credit)
+                    avail_bal_val = round(float(float(avail_bal_val) + float(e_actual_available)),2)
+                except:
+                    avail_bal_val = round(float(avail_bal_val),2)
+            if(earn.clearence_status == "pending"):
                 current_earning_val = round(float(float(current_earning_val) + float(earn.earning_amount)),2)
-            try:
-                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
-            except:
-                earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S").date()
-            todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         refund_earning = User_Refund.objects.filter(user_id=userDetails,refund_status="cancelled")
         for r_earn in refund_earning: 
             prev_credit = float(r_earn.credit_used)
@@ -3595,6 +3628,7 @@ def daily_routine():
         userDetails.current_earning = current_earning_val
         userDetails.cancelled_earning = cancelled_earning_val
         userDetails.avail_bal = avail_bal_val
+        userDetails.current_month_earning = current_month_earning_val
         userDetails.availcredit_bal = availcredit_bal_val
         userDetails.referrals_earnings = affilite_earn_val
         userDetails.withdrawn_amount = withdrawed_credit_val
@@ -3607,6 +3641,7 @@ def daily_routine():
 def offers_module():
     all_users = []
     all_users = User.objects.filter(is_admin=False,profile_status="active")
+    todays_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
     for us in all_users:
         userDetails = User.objects.get(username = us.username)
         seller_lvel = SellerLevels4.objects.get(level_slug= userDetails.user_level.level_slug)
@@ -3633,98 +3668,99 @@ def every_minute():
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
                 if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour)):
                     if(res.resolution_type=="cancel"):
-                        res.resolution_status = 'accepted'
-                        res.save()
                         order_details = User_orders.objects.get(order_no = res.order_no)
-                        if(order_details.order_status != "completed" or order_details.order_status != "cancel"): 
-                            order_details.order_status = 'cancel'
-                            order_details.incoming_request = 'site'
-                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_details.save()
-                            order_by_user = User.objects.get(username= order_details.order_by.username)
-                            order_to_user = User.objects.get(username= order_details.order_to.username)
-                            transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
-                            transaction.transaction_status = "cancelled"
-                            transaction.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
-                            if(notification_cancel.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
-                                noti_create.save()
-                            refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user)
-                            refund_details.save()
-                            try:    
-                                cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
-                            except:
-                                cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
-                            order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Marked as Cancelled.",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
-                            order_message.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity.save()
-                            earning_val = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
-                            order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
-                            order_ativity1.save()
-                            order_by =  User.objects.get(username= order_details.order_by.username)   
-                            order_to =  User.objects.get(username= order_details.order_to.username)
-                            User_Order_Resolution.objects.filter(Q(raised_by = order_by, raised_to= order_to,resolution_status="pending" ,order_no = order_details) | Q(raised_by = order_to, raised_to= order_by,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
-                            if(notification_cancel.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description=  "Your Order #"+ str(order_details.order_no) +" Automatically Marked as Cancelled.")
-                                noti_create.save()
-                            if(order_by.mail_order == True):
-                                mail_content = MailTemplates.order_cancelled_buyer(str(order_by.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_by.email),mail_content,"Your order has been cancelled.")
-                            if(order_to.mail_order == True):
-                                mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(order_to.email),mail_content,"Your order has been cancelled.")
-                            service_fees_price = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                            earning_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
-                            earning_details.save()
+                        transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                        order_by_user = User.objects.get(username= order_details.order_by.username)
+                        order_to_user = User.objects.get(username= order_details.order_to.username)
+                        if(User_Refund.objects.filter(resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user).exists() == False):
+                            res.resolution_status = 'accepted'
+                            res.save()
+                            if(order_details.order_status != "completed" or order_details.order_status != "cancel"): 
+                                order_details.order_status = 'cancel'
+                                order_details.incoming_request = 'site'
+                                order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                order_details.save()
+                                transaction.transaction_status = "cancelled"
+                                transaction.save()
+                                raised_by = User.objects.get(username = res.raised_by.username)
+                                raised_to = User.objects.get(username = res.raised_to.username)
+                                notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                                if(notification_cancel.is_active == True):
+                                    noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
+                                    noti_create.save()
+                                refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                                refund_details.save()
+                                try:    
+                                    cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
+                                except:
+                                    cover_detls = Order_Conversation.objects.get(initiator=order_to_user,receiver = order_by_user)   
+                                order_message = Order_Message(sender=order_by_user,receiver=order_to_user,text = "Order Marked as Cancelled.",conversation_id=cover_detls,order_no=order_details,message_type="chat",is_read= True)
+                                order_message.save()
+                                order_ativity = User_Order_Activity(order_message = "×1 Order Cancelled" , order_no=order_details,activity_type="cancel",activity_by=order_by_user,activity_to=order_to_user)
+                                order_ativity.save()
+                                earning_val = 0
+                                if(float(order_details.order_amount) < 40):
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                else:
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                earning_val = float(earning_val) + (round(float(round(float(order_details.order_amount),2) - service_fees_price),2))
+                                order_ativity1 = User_Order_Activity(order_message = "Cancelled Payment Refunded to Buyer",order_amount = earning_val , order_no=order_details,activity_type="e_cancel",activity_by=order_by_user,activity_to=order_to_user)
+                                order_ativity1.save()
+                                order_by =  User.objects.get(username= order_details.order_by.username)   
+                                order_to =  User.objects.get(username= order_details.order_to.username)
+                                User_Order_Resolution.objects.filter(Q(raised_by = order_by, raised_to= order_to,resolution_status="pending" ,order_no = order_details) | Q(raised_by = order_to, raised_to= order_by,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Cancelled.")
+                                raised_by = User.objects.get(username = res.raised_by.username)
+                                raised_to = User.objects.get(username = res.raised_to.username)
+                                notification_cancel = Notification_commands.objects.get(slug = "order_cancelled")
+                                if(notification_cancel.is_active == True):
+                                    noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description=  "Your Order #"+ str(order_details.order_no) +" Automatically Marked as Cancelled.")
+                                    noti_create.save()
+                                if(order_by.mail_order == True):
+                                    mail_content = MailTemplates.order_cancelled_buyer(str(order_by.username).title(),str("#"+order_details.order_no))
+                                    SendEmailAct(str(order_by.email),mail_content,"Your order has been cancelled.")
+                                if(order_to.mail_order == True):
+                                    mail_content = MailTemplates.order_cancelled_seller(str(order_to.username).title(),str(order_by.username).title(),str("#"+order_details.order_no))
+                                    SendEmailAct(str(order_to.email),mail_content,"Your order has been cancelled.")
+                                service_fees_price = 0
+                                if(float(order_details.order_amount) < 40):
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                else:
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+                                earning_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
+                                earning_details.save()
                     elif(res.resolution_type=="extention"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
                         if(order_details.order_status != "completed" or order_details.order_status != "cancel"):  
@@ -3745,70 +3781,71 @@ def every_minute():
                                 SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved by " + str(raised_to.username).title() + ".")
                     elif(res.resolution_type=="delivered"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
-                        if(order_details.order_status != "completed" or order_details.order_status != "cancel"):
-                            res.resolution_status = 'accepted'
-                            res.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
-                            transaction.transaction_status = "completed"
-                            transaction.save()
-                            User_Order_Resolution.objects.filter(Q(raised_by = raised_by, raised_to= raised_to,resolution_status="pending",order_no = order_details) | Q(raised_by = raised_to, raised_to= raised_by,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Completed.")
-                            notification_delivery = Notification_commands.objects.get(slug = "order_completed")
-                            if(notification_delivery.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order #" + str(order_details.order_no) +" Automatically Marked as completed.")
-                                noti_create.save()
-                            service_fees_price = 0
-                            if(int(order_details.order_amount) < 40):
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            else:
-                                payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
-                                for p in payment_parameters:
-                                    serv_fees_val = p.service_fees
-                                    serv_fees_type = p.fees_type
-                                    if(serv_fees_type == "flat"):
-                                        service_fees_price =  int(serv_fees_val)
-                                    else:
-                                        perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
-                                        service_fees_price = round(perceof_budg,2)
-                            earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
-                            withdrwal_val = 0
-                            withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
-                            for ext in withdrawal_ext:
-                                if(ext.parameter_name == "withdrawal_clearence_days"):
-                                    withdrwal_val = ext.no_of_days
-                            today_date = datetime.today()
-                            clearencedate = today_date + timedelta(days=int(withdrwal_val))                
-                            order_details.order_status = 'completed'
-                            order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_details.save()
-                            order_by =  User.objects.get(username= order_details.order_by.username)   
-                            order_to =  User.objects.get(username= order_details.order_to.username) 
-                            order_to.u_last_delivery= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
-                            order_to.save()
-                            try:    
-                                cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
-                            except:
-                                cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
-                            refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
-                            refund_details.save()
-                            order_message = Order_Message(sender=order_by,receiver=order_to,text = "Order Marked as completed.",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read=True)
-                            order_message.save()
-                            get_message =  Order_Message.objects.get(pk = order_message.pk)
-                            resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="Automatically Marked as Completed.",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
-                            resolution.save()
-                            order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
-                            order_ativity.save()
-                            order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
-                            order_ativity1.save()
+                        order_by =  User.objects.get(username= order_details.order_by.username)   
+                        order_to =  User.objects.get(username= order_details.order_to.username) 
+                        if(User_Earnings.objects.filter(resolution=res,order_no= order_details,user_id=order_to,earning_type="order").exists() == False):
+                            if(order_details.order_status != "completed" or order_details.order_status != "cancel"):
+                                service_fees_price = 0
+                                if(float(order_details.order_amount) < 40):
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="40"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                else:
+                                    payment_parameters = Payment_Parameters.objects.filter(Q(parameter_name="Seller Order Fees", service_amount="41"))
+                                    for p in payment_parameters:
+                                        serv_fees_val = p.service_fees
+                                        serv_fees_type = p.fees_type
+                                        if(serv_fees_type == "flat"):
+                                            service_fees_price =  int(serv_fees_val)
+                                        else:
+                                            perceof_budg = float((int(order_details.order_amount)* int(serv_fees_val))/100)
+                                            service_fees_price = round(perceof_budg,2)
+                                earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
+                                withdrwal_val = 0
+                                withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
+                                for ext in withdrawal_ext:
+                                    if(ext.parameter_name == "withdrawal_clearence_days"):
+                                        withdrwal_val = ext.no_of_days
+                                today_date = datetime.today()
+                                res.resolution_status = 'accepted'
+                                res.save()
+                                raised_by = User.objects.get(username = res.raised_by.username)
+                                raised_to = User.objects.get(username = res.raised_to.username)
+                                transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
+                                transaction.transaction_status = "completed"
+                                transaction.save()
+                                notification_delivery = Notification_commands.objects.get(slug = "order_completed")
+                                if(notification_delivery.is_active == True):
+                                    noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order' ,order_no = order_details,description= "Your order #" + str(order_details.order_no) +" Automatically Marked as completed.")
+                                    noti_create.save()
+                                clearencedate = today_date + timedelta(days=int(withdrwal_val))                
+                                order_details.order_status = 'completed'
+                                order_details.completed_date = datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                order_details.save()
+                                order_to.u_last_delivery= datetime.strptime(datetime.today().strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
+                                order_to.save()
+                                try:    
+                                    cover_detls = Order_Conversation.objects.get(initiator=order_by,receiver = order_to)
+                                except:
+                                    cover_detls = Order_Conversation.objects.get(initiator=order_to,receiver = order_by)   
+                                refund_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res,order_no= order_details,clearence_date=clearencedate,clearence_status="pending",cleared_on=None,user_id=order_to,earning_type="order",affiliate_user=None)
+                                refund_details.save()
+                                order_message = Order_Message(sender=order_by,receiver=order_to,text = "Order Marked as completed.",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read=True)
+                                order_message.save()
+                                get_message =  Order_Message.objects.get(pk = order_message.pk)
+                                resolution= User_Order_Resolution(resolution_type="completed",resolution_text = "Completed",resolution_message="Completed",resolution_desc="Automatically Marked as Completed.",resolution_status="accepted",order_no=order_details,raised_by=order_by,raised_to=order_to,message=get_message)
+                                resolution.save()
+                                order_ativity = User_Order_Activity(order_message = "×1 Order Completed" , order_no=order_details,activity_type="completed",activity_by=order_by,activity_to=order_to)
+                                order_ativity.save()
+                                order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = earned_val , order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to)
+                                order_ativity1.save()
+                                User_Order_Resolution.objects.filter(Q(raised_by = raised_by, raised_to= raised_to,resolution_status="pending",order_no = order_details) | Q(raised_by = raised_to, raised_to= raised_by,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Completed.")
         total_earnng = User_Earnings.objects.filter(user_id=userDetails,clearence_status = "pending")
         for earn in total_earnng:
             if(earn.clearence_date != None):
@@ -3879,7 +3916,7 @@ def every_minute():
                                     seller_refferal.seller_affi_amount = affiliate_amount
                                     seller_refferal.seller_affi_done = True
                                     seller_refferal.save()    
-                    
+                                                        
 def monthly_routine():
     all_users = []
     today = datetime.today()
@@ -5624,7 +5661,7 @@ def post_credit_tip_details_view(request):
                 u_trans_status = "successful"
                 cs = shortuuid.ShortUUID(alphabet="0123456789")
                 c_u_trans_id = cs.random(length=8)
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='credit',transaction_id=c_u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=base_price,total_amount=used_credits,processing_fees= fees,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="active",credits_used=used_credits)
+                user_trans = User_Transactions(gig_name= gig_details,offer_id=offers_sent,payment_type='credit',transaction_id=c_u_trans_id,payment_status=u_trans_status,payment_currency="USD",offer_amount=base_price,total_amount=used_credits,processing_fees= fees,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="completed",credits_used=used_credits)
                 user_trans.save()
                 order_message = Order_Message(sender=order_by,receiver=order_to,text = "tip",conversation_id=cover_detls,order_no=ord_details,message_type="activity",is_read = True)
                 order_message.save()
@@ -5774,7 +5811,7 @@ def post_flutter_tip_details_view(request):
                 order_ativity1.save()
                 order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="active")
+                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='flutterwave',transaction_id=trans_id,payment_status=status,transaction_ref= trans_ref,payment_currency="USD",offer_amount=order_amount,total_amount=flu_amout,processing_fees= u_service_fees,credits_used=meta_data,flutter_fluw_ref= flutt_flw_ref,flutter_account_id=flu_accnt_id,flutter_app_fee=flu_app_fee,flutter_pay_type=flu_pay_type,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="completed")
                 user_trans.save()
                 notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
                 if(notification_settings.is_active == True):
@@ -5916,7 +5953,7 @@ def post_paypal_tip_details_view(request):
                 order_ativity1.save()
                 order_ativity1 = User_Order_Activity(order_message = "Tip Provide by Buyer",order_amount = earning_val , order_no=ord_details,activity_type="tip",activity_by=order_by,activity_to=order_to)
                 order_ativity1.save()
-                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="active",credits_used=used_credits)
+                user_trans = User_Transactions(gig_name= gig_details,offer_id=offer_details,payment_type='paypal',transaction_id=trans_id,payment_status=trans_status,payment_currency="USD",offer_amount=base_price,total_amount=total_price,processing_fees= service_fees,paypal_id=payer_id,paypal_email=payer_email,paid_by=order_by,paid_to=order_to,order_no=ord_details,paid_for='tip',transaction_status="completed",credits_used=used_credits)
                 user_trans.save()
                 notification_settings = Notification_commands.objects.get(slug = "payment_sucessful")
                 if(notification_settings.is_active == True):
@@ -5979,6 +6016,8 @@ def post_initiate_withdrawl_view(request):
         userDetails = User.objects.get(username = username)
         withdrawal_initiated = Withdrwal_initiated(withdrawal_amount=round(float(available_balance),2),user_id= userDetails,withdrawan_status="initiated",withdrawn_date=None,initiated_type=initiation_type,with_email=pay_id )
         withdrawal_initiated.save()
+        a_logging = AdminLogging(username=userDetails.username,reqst_message="Withdrawal is initiated Amount: " + str(round(float(available_balance),2)),reqst_details=str(withdrawal_initiated.pk),mail_address=userDetails.email,log_type="withdrawal")
+        a_logging.save()
         return HttpResponse('sucess')
     
 def post_check_conver_view(request):
@@ -6495,17 +6534,21 @@ def get_earn_data_view(request):
             for l_details in learning_topics_Details:
                 num_counts = LearningTopicCounts.objects.filter(topic_name=l_details).count()
                 url_link = ''
-                if(l_details.video_url != None):
+                try:
+                    if(l_details.upload_pdf.url != None):
+                        url_link =   request.build_absolute_uri("/") + str(l_details.upload_pdf.url).replace("/home/kworkuser/myprojectdir/","")
+                        if(len(l_details.upload_pdf.url) == 0):
+                            url_link = str(l_details.video_url)
+                    else:
+                        url_link = str(l_details.video_url)
+                except:
                     url_link = str(l_details.video_url)
-                if(l_details.upload_pdf != None):
-                    url_link = request.build_absolute_uri("/media/") + str(l_details.upload_pdf)
                 learning_Details.append({"id":l_details.id,"topic_Name":l_details.topic_Name,"timeof_read_in_minute":l_details.timeof_read_in_minute,"topic_description":l_details.topic_description,"image":str(l_details.image),"image_Text":l_details.image_Text,"video_url":url_link,"num_counts":num_counts})
             responseData =  {"topics":learning_topics,"topics_Details":learning_Details,"logged_user":l_username,"logged_user_img":l_user_img}
         except Exception as e:
             data = (str(type(e)) + str(e))
             responseData = {"data":data}
         return JsonResponse(responseData,safe=False)
-    
     
 def get_freelancer_data_view(request):
     if request.method == 'GET':

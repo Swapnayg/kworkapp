@@ -114,6 +114,7 @@ class User(AbstractBaseUser):
     terms = models.BooleanField(default=False)
     total_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     current_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
+    current_month_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     cancelled_earning = models.CharField(max_length=200,blank=True,default="0",null=True)
     withdrawn_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
     with_credits_used_amount = models.CharField(max_length=200,blank=True,default="0",null=True)
@@ -1195,6 +1196,7 @@ class CustomNotifications(models.Model):
 
     def __str__(self):
         return str(self.timestamp)
+    
 def logofilename(instance, filename):
     ext = filename.split('.')[-1]
     filenm = os.path.splitext(filename)[0]
@@ -1215,11 +1217,27 @@ class LogoImages(models.Model):
 
 
 
+class AdminLogging(models.Model):
+    LOG_TYPES = [('gig_creation', 'Gig Creation'),('request_post', 'Buyer Request'),('withdrawal', 'Withdrawal'),('support', 'Support')]
+    LOG_STATUS = [('approve', 'Approved'),('rejected', 'Rejected'),('close', 'Close Ticket'),('pending', 'Pending')]
+    username = models.CharField(max_length=100,blank=True,null=True)
+    reqst_details = models.CharField(max_length=1000,blank=True,null=True)
+    reqst_message = models.CharField(max_length=1000,blank=True,null=True)
+    mail_address = models.CharField(max_length=1000,blank=True,null=True)
+    log_type = models.CharField(max_length=300,choices=LOG_TYPES,blank=True,default="",null=True)
+    rejection_message = models.TextField(blank=True,default="",null=True)
+    log_status = models.CharField(max_length=300,choices=LOG_STATUS,blank=True,default="pending",null=True)
+    log_created = models.DateTimeField(default=timezone.now, blank=True)
+    
+    def view_request(self):
+            return format_html(
+        '<a class="btn" target="_blank" href="/admin/view_request/{}/{}/{}">View Request</a>',
+        self.reqst_details,self.pk,self.log_type
+    )
+            
+    class Meta:
+        verbose_name = _("Logging")
+        verbose_name_plural = _("Logging")
 
-
-
-
-
-
-
-
+    def __str__(self):
+        return str(self.log_created)

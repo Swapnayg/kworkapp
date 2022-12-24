@@ -542,6 +542,12 @@
           $(".payment-method-radio").find("input[type='radio']").prop('checked', false);
           $("#bottom_price").text("$ "+  service_charge);
       }
+
+      console.log($("#flutter_base_price_wsdf").val());
+      console.log($("#flutter_amount").val());
+      console.log($("#flutter_service_fees_wsdf").val());
+      console.log( $("#flutter_extra_gigs").val());
+      console.log($("#flutter_credit_used").val());
     }
 
     function add_on_click()
@@ -607,7 +613,7 @@
    else{
       extra_id_string =  extra_ids.join(", ");
    }
-      if($('.pf-container').find('input[type=checkbox]').is(":checked"))
+      if($('.pf-container').find('input[type=checkbox]').is(":checked") )
       {
          totl_price_cal = parseInt(base_price) + parseInt(price);
          if(parseInt(totl_price_cal) > 39){
@@ -616,8 +622,8 @@
          else{
             ser_fee_cal = parseInt($("#service_f_flat").val());
          }
-         $("#base_price_wout_sf").val(totl_price_cal);
-         $("#flutter_base_price_wsdf").val(totl_price_cal);
+         $("#flutter_base_price_wsdf").val(base_price);
+         $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
          $("#serv_total_fees").text("$ "+  totl_price_cal);
          $("#flutter_amount").val(totl_price_cal);
@@ -625,7 +631,6 @@
          $("#extra_gig_val").val(extra_id_string);
          $("#bottom_price").text("$ "+  totl_price_cal);
          $("#serv_fees").text("$ "+  ser_fee_cal);
-         $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          if(extra_delivery_id[0] != "None" )
          {
             $("#serv_days").text(parseInt(duration) + " days");
@@ -638,8 +643,8 @@
       }
       else
       {
-         $("#base_price_wout_sf").val(totl_price_cal);
-         $("#flutter_base_price_wsdf").val(totl_price_cal);
+         $("#flutter_base_price_wsdf").val(base_price);
+         $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          totl_price_cal = parseInt(base_price) + parseInt(price);
          ser_fee_cal = ''
          if(parseInt(totl_price_cal) > 39){

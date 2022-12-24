@@ -22,7 +22,7 @@
                                  </div>
                                  <div class="user-details-text-wrapper">
                                     <div class="user-details">
-                                       <a href="/user/profile/{{request.user.username}}" target="blank" class="username-link text-display-6">{{request.user.username}}</a>
+                                       <a href="/user/profile/{{request.user.username}}" target="blank" class="username-link text-display-6">{{request.user.username|title}}</a>
                                        <div class="ratings-details flex flex-items-center help hint--top" data-hint="Maintain a rating of 4.7 or more, over the course of 60 days"></div>
                                     </div>
                                  </div>
@@ -41,7 +41,7 @@
                                        </span>
                                     </div>
                                  </li>
-                                 <li class="kpi-bar-ir-wrapper">
+                                 {% comment %} <li class="kpi-bar-ir-wrapper">
                                     <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
                                        <span class="FPMjOVo kpi-bar-tooltip-content">
                                           <a rel="noreferrer" class="_1DtaAoI kpi-bar-tooltip specific-z-index" delay="120" content="[object Object]" position="top" boxclassname="LIc0-hX" boxcontentclassname="l9wFBjm" contentclassname="kpi-bar-tooltip-content">
@@ -63,7 +63,7 @@
                                             
                                         </div>
                                     </div>
-                                 </li>
+                                 </li> {% endcomment %}
                                  <li class="kpi-bar-ir-wrapper">
                                     <div class="e4rLWCQ _5tFuFhP _1DtaAoI kpi-bar-tooltip specific-z-index">
                                        <span class="FPMjOVo kpi-bar-tooltip-content">

@@ -197,6 +197,9 @@
                              </div>
                            </div>
                         <div class="tab-pane" id="unapprovedtab">
+                           <div class="col-md-12 db-manage-gigs ">
+                              <h5 class="reject_txt">You will receive an email with the required modification details.</h5>
+                          </div>
                             <div class="db-new-main-table js-db-table">
                                 <table>
                                     <thead>
@@ -258,8 +261,22 @@
     </div>
  </div>
 {% include  'Dashboard/base_buyer.html' %}
-
+<style>
+   .reject_txt
+   {
+      font-size: 12px;
+      font-weight: 600;
+      text-align: left;
+      color: #2E5DC5;
+      margin-bottom: 1%;
+   }
+</style>
 <script>
+   $(document).ready(function(){
+      $(document).mouseup(function(e) { 
+         $(".dropdown-menu").hide();
+      });
+    });
     function dropdownclick(ev)
     {
       $(".dropdown-menu").hide();
