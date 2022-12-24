@@ -1458,7 +1458,7 @@
                $.ajax({
                   type:"POST",
                   url: "/post_gig_save/",
-                  data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_gigtitle': $("#textarea_iwill").val(),'u_gig_category': $("#gig_category").val(),'u_gig_sub_category': $("#gig_subcategory").val(),'u_gig_tags': JSON.stringify($("#gig_tags").val())},
+                  data: {'u_gig_id': gig_id.toString().trim().match(/\d+/)[0],'u_user_id': {{request.user.id}},'u_gigtitle': $("#textarea_iwill").val().trim(),'u_gig_category': $("#gig_category").val(),'u_gig_sub_category': $("#gig_subcategory").val(),'u_gig_tags': JSON.stringify($("#gig_tags").val())},
                   success: function(data)
                   {  
                      if(data == "sucess")
