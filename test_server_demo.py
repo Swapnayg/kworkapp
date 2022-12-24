@@ -2108,7 +2108,7 @@ class order_activities_view(View):
                     Order_Message.objects.filter(receiver=userDetails,is_read=False).update(is_read=True)
                     if(userDetails.username == ordered_by_user.username):
                         current_user = "Buyer"
-                        buyer_price = str(transaction_details.total_amount)
+                        buyer_price = round(float(float(transaction_details.offer_amount) + float(transaction_details.processing_fees)),2)
                         buyer_user_name = str(ordered_by_user.username)
                         seller_user_name = str(ordered_to_user.username) 
                     else:
@@ -3667,12 +3667,12 @@ def every_minute():
                 except:
                     resolution_last_date = datetime.strptime(str(res.resolution_last_date ),"%Y-%m-%d %H:%M:%S.%f")
                 if(int(todays_date.month) == int(resolution_last_date.month) and int(todays_date.day) == int(resolution_last_date.day) and int(todays_date.year) == int(resolution_last_date.year) and int(todays_date.hour) == int(resolution_last_date.hour)):
-                    if(res.resolution_type=="cancel"):
+                    if(res.resolution_type == "cancel" and res.resolution_status == "pending"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
                         transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                         order_by_user = User.objects.get(username= order_details.order_by.username)
                         order_to_user = User.objects.get(username= order_details.order_to.username)
-                        if(User_Refund.objects.filter(resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user).exists() == False):
+                        if(User_Refund.objects.filter(order_no=order_details,transaction=transaction).exists() == False):
                             res.resolution_status = 'accepted'
                             res.save()
                             if(order_details.order_status != "completed" or order_details.order_status != "cancel"): 
@@ -3688,7 +3688,7 @@ def every_minute():
                                 if(notification_cancel.is_active == True):
                                     noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description= "Your order Automatically Cancelled.")
                                     noti_create.save()
-                                refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                                refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res,order_no=order_details,transaction=transaction ,user_id=order_by_user,refund_status= 'cancelled')
                                 refund_details.save()
                                 try:    
                                     cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
@@ -3761,7 +3761,7 @@ def every_minute():
                                 earned_val = round(float(round(float(order_details.order_amount),2) - service_fees_price),2)
                                 earning_details = User_Earnings(order_amount=order_details.order_amount,earning_amount=earned_val,platform_fees=service_fees_price,aval_with="",resolution=res,order_no= order_details,clearence_date=None,clearence_status="cancelled",cleared_on=None,user_id=order_to,earning_type="cancelled",affiliate_user=None)
                                 earning_details.save()
-                    elif(res.resolution_type=="extention"):
+                    elif(res.resolution_type=="extention" and res.resolution_status == "pending"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
                         if(order_details.order_status != "completed" or order_details.order_status != "cancel"):  
                             res.resolution_status = 'accepted'
@@ -3779,11 +3779,11 @@ def every_minute():
                             if(raised_by.mail_order == True):
                                 mail_content = MailTemplates.order_extension_accepted(str(raised_by.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
                                 SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved by " + str(raised_to.username).title() + ".")
-                    elif(res.resolution_type=="delivered"):
+                    elif(res.resolution_type=="delivered" and res.resolution_status == "pending"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username) 
-                        if(User_Earnings.objects.filter(resolution=res,order_no= order_details,user_id=order_to,earning_type="order").exists() == False):
+                        if(User_Earnings.objects.filter(order_no= order_details,user_id=order_to,earning_type="order").exists() == False):
                             if(order_details.order_status != "completed" or order_details.order_status != "cancel"):
                                 service_fees_price = 0
                                 if(float(order_details.order_amount) < 40):
@@ -4946,31 +4946,11 @@ def post_draft_object_view(request):
         order_details = User_orders.objects.get(order_no=d_orde_no)
         delivered_by  = User.objects.get(pk=order_details.order_to.id)
         delivered_to  = User.objects.get(pk=order_details.order_by.id)
-        try:    
-            cover_detls = Order_Conversation.objects.get(initiator=delivered_to,receiver = delivered_by)
-        except:
-            cover_detls = Order_Conversation.objects.get(initiator=delivered_by,receiver = delivered_to)
-        order_message = Order_Message(sender=delivered_by,receiver=delivered_to,text = "delivery",conversation_id=cover_detls,order_no=order_details,message_type="activity",is_read = True)
-        order_message.save()
-        resolution_interval_gap = 2
-        get_message =  Order_Message.objects.get(pk = order_message.pk)
-        resolution_ext = Addon_Parameters.objects.filter(Q(parameter_name="resolution_days") )
-        for ext in resolution_ext:
-            if(ext.parameter_name == "resolution_days"):
-                resolution_interval_gap = ext.no_of_days
-        today_date = datetime.today()
-        last_date = today_date + timedelta(days=int(resolution_interval_gap))
-        resolution= User_Order_Resolution(resolution_type="draft",resolution_text = "Delivery",resolution_message="Delivered",resolution_desc="successfuly delivered",resolution_status="pending",order_no=order_details,raised_by=delivered_by,raised_to=delivered_to,message=get_message , resolution_last_date= last_date)
-        resolution.save()
-        get_resolution =  User_Order_Resolution.objects.get(pk = resolution.pk)
         order_offer_details = Request_Offers.objects.get(pk = order_details.offer_id.pk)
         delivery_count = Order_Delivery.objects.filter(order_no=order_details).count()
-        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="delivered",resolution= get_resolution,total_revision= order_offer_details.no_revisions,current_revision = int(delivery_count) + 1)
+        orde_delivery = Order_Delivery(delivery_message=d_message,attachment=d_images,order_no=order_details,delivered_by=delivered_by,delivered_to=delivered_to,delivery_status="draft",total_revision= order_offer_details.no_revisions,current_revision = int(delivery_count) + 1)
         orde_delivery.save()
-        order_ativity = User_Order_Activity(order_message = "×1 Order Draft" , order_no=order_details,activity_type="delivered",activity_by=delivered_by,activity_to=delivered_to)
-        order_ativity.save()
-        return HttpResponse('sucess')
-    
+        return HttpResponse('sucess')    
     
 @csrf_exempt
 def post_delivered_object_view(request):
@@ -5259,7 +5239,7 @@ def post_accept_click_view(request):
                 transaction = User_Transactions.objects.get(order_no=order_details,paid_for='order')
                 transaction.transaction_status = "cancelled"
                 transaction.save()
-                refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user)
+                refund_details = User_Refund(refund_amount=order_details.order_amount,resolution=res_details,order_no=order_details,transaction=transaction ,user_id=order_by_user,refund_status= 'cancelled')
                 refund_details.save()
                 try:    
                     cover_detls = Order_Conversation.objects.get(initiator=order_by_user,receiver = order_to_user)
@@ -6014,12 +5994,13 @@ def post_initiate_withdrawl_view(request):
         initiation_type = request.GET['initiation_type']
         pay_id = request.GET['pay_id']
         userDetails = User.objects.get(username = username)
-        withdrawal_initiated = Withdrwal_initiated(withdrawal_amount=round(float(available_balance),2),user_id= userDetails,withdrawan_status="initiated",withdrawn_date=None,initiated_type=initiation_type,with_email=pay_id )
-        withdrawal_initiated.save()
-        a_logging = AdminLogging(username=userDetails.username,reqst_message="Withdrawal is initiated Amount: " + str(round(float(available_balance),2)),reqst_details=str(withdrawal_initiated.pk),mail_address=userDetails.email,log_type="withdrawal")
-        a_logging.save()
+        if(Withdrwal_initiated.objects.filter(user_id= userDetails,withdrawan_status="initiated",withdrawal_amount=str(round(float(available_balance),2)),initiated_type=initiation_type,withdrawn_date=None).exists() == False):
+            withdrawal_initiated = Withdrwal_initiated(withdrawal_amount=round(float(available_balance),2),user_id= userDetails,withdrawan_status="initiated",withdrawn_date=None,initiated_type=initiation_type,with_email=pay_id )
+            withdrawal_initiated.save()
+            a_logging = AdminLogging(username=userDetails.username,reqst_message="Withdrawal is initiated Amount: " + str(round(float(available_balance),2)),reqst_details=str(withdrawal_initiated.pk),mail_address=userDetails.email,log_type="withdrawal")
+            a_logging.save()
         return HttpResponse('sucess')
-    
+        
 def post_check_conver_view(request):
     if request.method == 'GET':
         initiator = request.GET['initiator']
@@ -6682,7 +6663,7 @@ def post_view_gig_offer_view(request):
         gig_details = UserGigs.objects.get(pk = gig_id)
         requirements = Usergig_requirement.objects.filter(package_gig_name=gig_details ).count()
         ask_req = False
-        if(requirements > 1):
+        if(requirements >= 1):
             ask_req = True
         userpack= UserGigPackages.objects.filter(package_gig_name=gig_details, package_type= package).first()
         o_text_no_revs = userpack.package_revisions

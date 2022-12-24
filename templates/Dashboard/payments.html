@@ -622,7 +622,7 @@
          else{
             ser_fee_cal = parseInt($("#service_f_flat").val());
          }
-         $("#flutter_base_price_wsdf").val(base_price);
+         $("#flutter_base_price_wsdf").val(totl_price_cal);
          $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
          $("#serv_total_fees").text("$ "+  totl_price_cal);
@@ -643,8 +643,6 @@
       }
       else
       {
-         $("#flutter_base_price_wsdf").val(base_price);
-         $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          totl_price_cal = parseInt(base_price) + parseInt(price);
          ser_fee_cal = ''
          if(parseInt(totl_price_cal) > 39){
@@ -653,6 +651,8 @@
          else{
             ser_fee_cal = parseInt($("#service_f_flat").val());
          }
+         $("#flutter_base_price_wsdf").val(totl_price_cal);
+         $("#flutter_service_fees_wsdf").val(ser_fee_cal);
          totl_price_cal = parseFloat(parseFloat(totl_price_cal) + parseFloat(ser_fee_cal)).toFixed(2);
          $("#serv_total_fees").text("$ "+  totl_price_cal);
          $("#serv_fees").text("$ "+  ser_fee_cal);
