@@ -2435,7 +2435,16 @@ class dashboard_view(View):
                         truefactor = 'true'
                 except:
                     truefactor = 'true'
+                
                 if(truefactor == 'true'):
+                    ipAddress = ''
+                    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+                    if x_forwarded_for:
+                        ipAddress = x_forwarded_for.split(',')[0]
+                    if(Referral_Users.objects.filter(ip_address=str(ipAddress),refferal_user=None).exists() == True):
+                        user_referral = Referral_Users.objects.get(ip_address=str(ipAddress),refferal_user=None)
+                        user_referral.refferal_user = userDetails 
+                        user_referral.save()
                     languages = Languages.objects.exclude(lng_slug= u'english').order_by('lng_Name')
                     userProfileDetails = UserProfileDetails.objects.get(user_id=userDetails)
                     userlang = []
@@ -2472,8 +2481,7 @@ class dashboard_view(View):
                 return render(request , 'register.html')
         else:
             return render(request , 'register.html')
-
-
+        
 @csrf_exempt
 def save_content_view(request):
     if request.method == 'POST':
@@ -3763,27 +3771,28 @@ def every_minute():
                                 earning_details.save()
                     elif(res.resolution_type=="extention" and res.resolution_status == "pending"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
-                        if(order_details.order_status != "completed" or order_details.order_status != "cancel"):  
-                            res.resolution_status = 'accepted'
-                            res.save()
-                            raised_by = User.objects.get(username = res.raised_by.username)
-                            raised_to = User.objects.get(username = res.raised_to.username)
-                            order_details.due_date = res.ext_new_date
-                            order_details.save()   
-                            order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
-                            order_ativity.save()
-                            notification_extension = Notification_commands.objects.get(slug = "order_extended")
-                            if(notification_extension.is_active == True):
-                                noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
-                                noti_create.save()
-                            if(raised_by.mail_order == True):
-                                mail_content = MailTemplates.order_extension_accepted(str(raised_by.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
-                                SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved by " + str(raised_to.username).title() + ".")
+                        if(res.ext_new_date.date() != order_details.due_date.date()):
+                            if(order_details.order_status != "completed" or order_details.order_status != "cancel"):  
+                                res.resolution_status = 'accepted'
+                                res.save()
+                                raised_by = User.objects.get(username = res.raised_by.username)
+                                raised_to = User.objects.get(username = res.raised_to.username)
+                                order_details.due_date = res.ext_new_date
+                                order_details.save()   
+                                order_ativity = User_Order_Activity(order_message = "×1 Extended Delivery Time" , order_no=order_details,activity_type="extension",activity_by=raised_by,activity_to=raised_to)
+                                order_ativity.save()
+                                notification_extension = Notification_commands.objects.get(slug = "order_extended")
+                                if(notification_extension.is_active == True):
+                                    noti_create = CustomNotifications(sender = raised_to, recipient=raised_by, verb='order',order_no = order_details,description=  "Your order Due Date Automatically Extended.")
+                                    noti_create.save()
+                                if(raised_by.mail_order == True):
+                                    mail_content = MailTemplates.order_extension_accepted(str(raised_by.username).title(),str(raised_to.username).title(),str("#"+order_details.order_no))
+                                    SendEmailAct(str(raised_by.email),mail_content,"Order Extension has been Approved by " + str(raised_to.username).title() + ".")
                     elif(res.resolution_type=="delivered" and res.resolution_status == "pending"):
                         order_details = User_orders.objects.get(order_no = res.order_no)
                         order_by =  User.objects.get(username= order_details.order_by.username)   
                         order_to =  User.objects.get(username= order_details.order_to.username) 
-                        if(User_Earnings.objects.filter(order_no= order_details,user_id=order_to,earning_type="order").exists() == False):
+                        if(User_Earnings.objects.filter(order_no= order_details,earning_type="order").exists() == False):
                             if(order_details.order_status != "completed" or order_details.order_status != "cancel"):
                                 service_fees_price = 0
                                 if(float(order_details.order_amount) < 40):
@@ -3848,7 +3857,7 @@ def every_minute():
                                 User_Order_Resolution.objects.filter(Q(raised_by = raised_by, raised_to= raised_to,resolution_status="pending",order_no = order_details) | Q(raised_by = raised_to, raised_to= raised_by,resolution_status="pending",order_no = order_details)).update(resolution_status="rejected", resolution_cancel_mssg = "Order Completed.")
         total_earnng = User_Earnings.objects.filter(user_id=userDetails,clearence_status = "pending")
         for earn in total_earnng:
-            if(earn.clearence_date != None):
+            if(earn.clearence_date != None and earn.clearence_status == "pending"):
                 try:
                     clearence_date = datetime.strptime(str(earn.clearence_date),"%Y-%m-%d %H:%M:%S")
                 except:
@@ -3866,7 +3875,7 @@ def every_minute():
                     except:
                         earned_date = datetime.strptime(str(earn.earning_date),"%Y-%m-%d %H:%M:%S.%f").date()
                     User_Order_Activity.objects.filter(order_no=order_details,activity_type="pending",activity_by=order_by,activity_to=order_to,activity_date__year=earned_date.year,activity_date__month=earned_date.month, activity_date__day=earned_date.day).update(order_message="Available for Withdrawal.")                 
-                    if(earn.earning_type == "order"):
+                    if(earn.earning_type == "order" ):
                         re_withdrwal_val = 0
                         re_withdrawal_ext = Addon_Parameters.objects.filter(Q(parameter_name="withdrawal_clearence_days") )
                         for ext in re_withdrawal_ext:
@@ -3882,19 +3891,20 @@ def every_minute():
                         if(buyer_refferal != None):
                             affiliate_amount = 0
                             if(buyer_refferal.buyer_affi_done == False):
-                                if(float(order_details.order_amount) > 40):
-                                    affiliate_amount = 5
+                                if(float(order_details.order_amount) >= 40):
                                     refferalby_user = User.objects.get(pk =buyer_refferal.user_id.pk)
-                                    refferal_user = User.objects.get(pk =buyer_refferal.refferal_user.pk)
-                                    earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=refferalby_user,earning_type="affiliate",affiliate_user= refferal_user)
-                                    earnings_details.save()
-                                    order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,order_amount = affiliate_amount,activity_type="affiliate",order_no=order_details,activity_by=refferal_user,activity_to=refferalby_user)
-                                    order_ativity.save()
-                                    order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = affiliate_amount ,order_no=order_details,activity_type="pending",activity_by=refferal_user,activity_to=refferalby_user)
-                                    order_ativity1.save()
-                                    buyer_refferal.buyer_affi_amount = affiliate_amount
-                                    buyer_refferal.buyer_affi_done = True
-                                    buyer_refferal.save()
+                                    if(User_Earnings.objects.filter(order_no= order_details,earning_type="affiliate",user_id=refferalby_user).exists() == False):
+                                        affiliate_amount = 5
+                                        refferal_user = User.objects.get(pk =buyer_refferal.refferal_user.pk)
+                                        earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=refferalby_user,earning_type="affiliate",affiliate_user= refferal_user)
+                                        earnings_details.save()
+                                        order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,order_amount = affiliate_amount,activity_type="affiliate",order_no=order_details,activity_by=refferal_user,activity_to=refferalby_user)
+                                        order_ativity.save()
+                                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = affiliate_amount ,order_no=order_details,activity_type="pending",activity_by=refferal_user,activity_to=refferalby_user)
+                                        order_ativity1.save()
+                                buyer_refferal.buyer_affi_amount = affiliate_amount
+                                buyer_refferal.buyer_affi_done = True
+                                buyer_refferal.save()
                         seller_refferal = None
                         try:
                             seller_refferal = Referral_Users.objects.get(refferal_user = order_to)
@@ -3903,19 +3913,20 @@ def every_minute():
                         if(seller_refferal != None):
                             s_affiliate_amount = 0
                             if(seller_refferal.seller_affi_done == False):
-                                if(float(order_details.order_amount) > 40):
+                                if(float(order_details.order_amount) >= 40):
                                     affiliate_amount = 5
                                     s_refferalby_user = User.objects.get(pk =seller_refferal.user_id.pk)
-                                    s_refferal_user = User.objects.get(pk =seller_refferal.refferal_user.pk)
-                                    earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=s_refferalby_user,earning_type="affiliate",affiliate_user=s_refferal_user)
-                                    earnings_details.save()
-                                    order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,order_amount = affiliate_amount,activity_type="affiliate",order_no=order_details,activity_by=s_refferal_user,activity_to=s_refferalby_user)
-                                    order_ativity.save()
-                                    order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = affiliate_amount ,order_no=order_details,activity_type="pending",activity_by=s_refferal_user,activity_to=s_refferalby_user)
-                                    order_ativity1.save()
-                                    seller_refferal.seller_affi_amount = affiliate_amount
-                                    seller_refferal.seller_affi_done = True
-                                    seller_refferal.save()    
+                                    if(User_Earnings.objects.filter(order_no= order_details,earning_type="affiliate",user_id=s_refferalby_user).exists() == False):
+                                        s_refferal_user = User.objects.get(pk =seller_refferal.refferal_user.pk)
+                                        earnings_details = User_Earnings(order_amount=affiliate_amount,earning_amount=affiliate_amount,platform_fees=0,aval_with="",order_no= order_details,clearence_date=re_clearencedate,clearence_status="pending",cleared_on=None,user_id=s_refferalby_user,earning_type="affiliate",affiliate_user=s_refferal_user)
+                                        earnings_details.save()
+                                        order_ativity = User_Order_Activity(order_message = "×1 Affiliate Commission" ,order_amount = affiliate_amount,activity_type="affiliate",order_no=order_details,activity_by=s_refferal_user,activity_to=s_refferalby_user)
+                                        order_ativity.save()
+                                        order_ativity1 = User_Order_Activity(order_message = "Pending for Clearence",order_amount = affiliate_amount ,order_no=order_details,activity_type="pending",activity_by=s_refferal_user,activity_to=s_refferalby_user)
+                                        order_ativity1.save()
+                                seller_refferal.seller_affi_amount = affiliate_amount
+                                seller_refferal.seller_affi_done = True
+                                seller_refferal.save()    
                                                         
 def monthly_routine():
     all_users = []

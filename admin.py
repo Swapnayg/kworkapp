@@ -174,19 +174,6 @@ def get_app_list(self, request):
 
 admin.AdminSite.get_app_list = get_app_list
 
-@receiver(post_save, sender=User)
-def add_user(sender, **kwargs):
-    if kwargs['created']: 
-        if(kwargs.get('instance').is_admin == False):
-            curr_user = User.objects.get(id=kwargs.get('instance').id)
-            ip_address = str(whatismyip.whatismyip())
-            try:               
-                user_referral = Referral_Users.objects.get(ip_address=ip_address,refferal_user=None)
-                user_referral.refferal_user = curr_user 
-                user_referral.save()
-            except:
-                pass
-
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)
 admin.site.unregister(Attachment)
@@ -888,6 +875,8 @@ def update_admin_log_status(sender, instance, **kwargs):
                     gig_details.save()
                     mail_content = MailTemplates.gig_modifications(str(gig_details.gig_title).title(),str(gig_details.gig_category.category_Name).title(),str(instance.rejection_message),str(gig_details.user_id.username))
                     SendEmailAct(str(gig_details.user_id.email),mail_content,"Your Gig Requires Some Modifications.")
+                else:
+                    instance.log_status = "pending"
             elif(instance.log_status == "approve"):
                 gig_details = UserGigs.objects.get(pk= int(instance.reqst_details))
                 gig_details.gig_status = "active"
@@ -900,10 +889,12 @@ def update_admin_log_status(sender, instance, **kwargs):
                     request_details.save()
                     mail_content = MailTemplates.request_modifications(str(request_details.user_id.username).title(),str(request_details.service_category.category_Name).title(),str(request_details.service_sub_category.sub_category_Name),str(request_details.service_date.strftime('%d %b, %Y')),str(instance.rejection_message).capitalize())
                     SendEmailAct(str(request_details.user_id.email),mail_content,"Your Request Requires Some Modifications.")
+                else:
+                    instance.log_status = "pending"
             elif(instance.log_status == "approve"):
-                gig_details = Buyer_Post_Request.objects.get(pk= int(instance.reqst_details))
-                gig_details.gig_status = "active"
-                gig_details.save()
+                request_details = Buyer_Post_Request.objects.get(pk= int(instance.reqst_details))
+                request_details.service_status = "active"
+                request_details.save()
         elif(instance.log_type == "support"):
             if(instance.log_status == "close"):
                 contact_details = Contactus.objects.get(pk= int(instance.reqst_details))

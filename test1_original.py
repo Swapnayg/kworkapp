@@ -2941,8 +2941,7 @@ def post_request_image_upload_view(request):
         if len(files) != 0:
             for file in files:
                 fs= FileSystemStorage(location= settings.MEDIA_ROOT +'/buyer_request/')
-                file_path=fs.save(file.name.replace(' ','_')
-                                  file) 
+                file_path=fs.save(file.name.replace(' ','_'),file) 
                 url = '/media/buyer_request/'+file_path
                 urls.append(url)
         else:
